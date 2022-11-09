@@ -6,7 +6,7 @@ import { validateBody } from "../../../lib/middlewares/ajv"
 import auths from "../../../lib/middlewares/auth"
 import { getMongoDb } from "../../../lib/mongodb"
 import { ValidateProps } from "../../../lib/schema"
-import { findUserByEmail, updateUserById } from "../../../lib/utils/user"
+import { findUserByEmail, updateUserById } from "../../../lib/queries/user"
 
 const ncOpts = {
   onError(err: any, req: any, res: any) {
@@ -32,15 +32,10 @@ if (process.env.CLOUDINARY_URL) {
 
 handler.use(...auths)
 
-console.log(3)
-
 handler.get(async (req: any, res: any) => {
   if (!req.user) return res.json({ user: null })
-  console.log("no user")
   return res.json({ user: req.user })
 })
-
-console.log(4)
 
 handler.patch(
   /*
@@ -56,7 +51,6 @@ handler.patch(
   */
 
   async (req, res) => {
-    console.log(6)
     if (!req.user) {
       req.status(401).end()
       return
@@ -90,13 +84,9 @@ handler.patch(
       ...(profilePicture && { profilePicture }),
     })
 
-    console.log(user)
-
     res.json({ user })
   }
 )
-
-console.log(5)
 
 export const config = {
   api: {

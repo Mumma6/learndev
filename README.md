@@ -2,6 +2,12 @@
 
 https://github.com/hoangvvo/nextjs-mongodb-app
 
+https://dev.to/hoangvvo/how-i-build-a-full-fledged-app-with-next-js-and-mongodb-part-1-user-authentication-using-passport-js-4b16
+
+Building the Signup API
+
+Skapa en types map.
+
 [MongoDB](https://www.mongodb.com/) is a general purpose, document-based, distributed database built for modern application developers and for the cloud era. This example will show you how to connect to and use MongoDB as your backend for your Next.js app.
 
 If you want to learn more about MongoDB, visit the following pages:

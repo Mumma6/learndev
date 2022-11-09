@@ -1,7 +1,7 @@
 import passport from "passport"
 import { Strategy as LocalStrategy } from "passport-local"
 import { getMongoDb } from "./mongodb"
-import { findUserForAuth, findUserWithEmailAndPassword } from "./utils/user"
+import { findUserForAuth, findUserWithEmailAndPassword } from "./queries/user"
 
 // TODO
 /*
@@ -27,10 +27,13 @@ passport.deserializeUser((req: any, id: any, done: any) => {
 passport.use(
   new LocalStrategy({ usernameField: "email", passReqToCallback: true }, async (req, email, password, done) => {
     const db = await getMongoDb()
+
     const user = await findUserWithEmailAndPassword(db, email, password)
     if (user) done(null, user)
+    // Denna else funkar inte om man använder passport.authenticate("local")
+    // Se passport.ts för info
+    // detta fel hanteras i fetcher istället baserat på om man får en 401
     else done(null, false, { message: "Email or password is incorrect" })
   })
 )
-
 export default passport

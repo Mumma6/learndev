@@ -4,6 +4,7 @@ import type { NextComponentType } from "next/types"
 import { ToastContainer } from "react-toastify"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "react-toastify/dist/ReactToastify.css"
+import Header from "../components/layout/Header"
 
 interface AppProps extends AppInitialProps {
   Component: NextComponentType
@@ -13,8 +14,9 @@ interface AppProps extends AppInitialProps {
 export default function PopularMusicVenue({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <>
+      <Header />
       <Component {...pageProps} />
-      <ToastContainer />
+      <ToastContainer position="bottom-right" autoClose={2000} />
     </>
   )
 }

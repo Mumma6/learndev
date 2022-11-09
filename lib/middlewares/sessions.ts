@@ -5,6 +5,7 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { NextResponse } from "next/server"
 import { getMongoClient } from "../mongodb"
 
+// Will this create to many connections to the db?
 const mongoStore = MongoStore.create({
   clientPromise: getMongoClient(),
   dbName: "dev",

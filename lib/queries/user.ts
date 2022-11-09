@@ -2,6 +2,8 @@ import bcrypt from "bcryptjs"
 import { Db, ObjectId } from "mongodb"
 import normalizeEmail from "validator/lib/normalizeEmail"
 
+// Döp om till queries
+
 export function dbProjectionUsers(prefix = "") {
   return {
     [`${prefix}password`]: 0,
@@ -12,7 +14,7 @@ export function dbProjectionUsers(prefix = "") {
 
 export async function findUserWithEmailAndPassword(db: Db, email: string, password: string) {
   const normalizedEmail = normalizeEmail(email)
-  const user = await db.collection("users").findOne({ normalizedEmail })
+  const user = await db.collection("users").findOne({ email: normalizedEmail })
   if (user && (await bcrypt.compare(password, user.password))) {
     return { ...user, password: undefined } // filtered out password
   }

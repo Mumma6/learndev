@@ -1,6 +1,6 @@
 import Head from "next/head"
 
-import SignUp from "../components/ui/SignUp"
+import SignUp from "../components/auth/SignUp"
 
 const SignupPage = () => {
   return (

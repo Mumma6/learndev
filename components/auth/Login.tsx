@@ -1,32 +1,31 @@
-import React from "react"
-import { useCurrentUser } from "../../lib/hooks"
-import { toast } from "react-toastify"
+import { ChangeEvent, useCallback, useEffect, useState } from "react"
+import Head from "next/head"
+import Link from "next/link"
 import { useRouter } from "next/router"
-import { ChangeEvent, useCallback, useState } from "react"
-import { Button, Form, Container } from "react-bootstrap"
+import { Button, Form, Container, Spinner } from "react-bootstrap"
+import { toast } from "react-toastify"
+import { useCurrentUser } from "../../lib/hooks"
 import { fetcher } from "../../lib/fetcher"
+import SubmitButton from "../SubmitButton"
 
 interface FormData {
-  name: string
   email: string
   password: string
 }
 
 const initialState = {
-  name: "",
   email: "",
   password: "",
 }
 
-const SignUp = () => {
+const Login = () => {
   const [formData, setFormData] = useState<FormData>(initialState)
 
-  const { name, email, password } = formData
-
-  // lägga denna i en useEffect?
-  const { mutate } = useCurrentUser()
+  const { email, password } = formData
 
   const [isLoading, setIsLoading] = useState(false)
+
+  const { data: { user } = {}, mutate, isValidating } = useCurrentUser()
 
   const router = useRouter()
 
@@ -37,32 +36,31 @@ const SignUp = () => {
     }))
   }
 
-  const onSubmit = async (event: { preventDefault: () => void }) => {
+  useEffect(() => {
+    if (isValidating) return
+    if (user) router.replace("/dashboard")
+  }, [user, router, isValidating])
+
+  const onSubmit = async (event: any) => {
     event.preventDefault()
     try {
-      setIsLoading(true)
-      const response = await fetcher("/api/users", {
+      const response = await fetcher("/api/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email,
-          name,
-          password,
+          email: email,
+          password: password,
         }),
       })
       console.log(response)
       if (response.error) {
-        console.log("toarst error")
+        toast.error(response.error)
         setFormData(initialState)
-        toast.error(response.error.message)
       } else {
         mutate({ user: response.user }, false)
-        toast("Your account has been created")
       }
-    } catch (e: any) {
-      console.log(e)
-    } finally {
-      setIsLoading(false)
+    } catch (e) {
+      console.error(e)
     }
   }
 
@@ -77,29 +75,23 @@ const SignUp = () => {
       }}
     >
       <Container>
-        <h1>Register</h1>
-        <p>Please create an account</p>
+        <h1>Login</h1>
+        <p>Login to acces you profile</p>
       </Container>
       <Form onSubmit={onSubmit}>
-        <Form.Group className="mb-3">
-          <Form.Control name="name" value={name} type="text" placeholder="Enter name" onChange={onChange} />
-        </Form.Group>
-        <Form.Group className="mb-3">
+        <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Control name="email" value={email} type="email" placeholder="Enter email" onChange={onChange} />
         </Form.Group>
 
-        <Form.Group className="mb-3">
-          <Form.Control name="password" value={password} type="password" placeholder="Password" onChange={onChange} />
+        <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Control name="password" value={password} onChange={onChange} type="password" placeholder="Password" />
         </Form.Group>
-
         <div className="d-grid gap-2">
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
+          <SubmitButton isLoading={isLoading} isDisabled={email === "" || password === ""} />
         </div>
       </Form>
     </Container>
   )
 }
 
-export default SignUp
+export default Login

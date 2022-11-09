@@ -6,7 +6,7 @@ import { ValidateProps } from "../../../lib/schema"
 import slug from "slug"
 import normalizeEmail from "validator/lib/normalizeEmail"
 import isEmail from "validator/lib/isEmail"
-import { findUserByEmail, insertUser } from "../../../lib/utils/user"
+import { findUserByEmail, insertUser } from "../../../lib/queries/user"
 
 const ncOpts = {
   onError(err: any, req: any, res: any) {
@@ -19,7 +19,6 @@ const ncOpts = {
 const handler = nc(ncOpts)
 
 handler.post(
-  /*
   validateBody({
     type: "object",
     properties: {
@@ -30,12 +29,10 @@ handler.post(
     required: ["name", "password", "email"],
     additionalProperties: false,
   }),
-  */
+
   ...auths,
   async (req, res) => {
     const db = await getMongoDb()
-
-    console.log(1)
 
     let { name, email, password } = req.body
     const normalizedEmail = normalizeEmail(req.body.email) as string
@@ -54,7 +51,6 @@ handler.post(
       bio: "",
       name,
     })
-    console.log(user)
     req.logIn(user, (err: any) => {
       if (err) throw err
       res.status(201).json({
