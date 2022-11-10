@@ -1,0 +1,12 @@
+skapa en cache for useSWR
+
+Settings sida
+
+
+Dashboard sida
+
+
+
+Arciteture
+
+queries, varje collection ska ha en egen fil

@@ -16,7 +16,6 @@ export const fetcher = (...args: [string, Object]) => {
       if (res.ok) {
         return payload
       } else {
-        console.log(payload)
         return { error: payload?.error || payload?.message } || new Error("Something went wrong")
       }
     })

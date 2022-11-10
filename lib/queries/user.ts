@@ -31,7 +31,7 @@ export async function findUserForAuth(db: Db, userId: string) {
 export async function findUserById(db: Db, userId: string) {
   return db
     .collection("users")
-    .findOne({ _id: new ObjectId(userId) }, { projection: dbProjectionUsers() })
+    .findOne({ _id: new ObjectId(userId) }, { projection: { password: 0 } })
     .then((user) => user || null)
 }
 
