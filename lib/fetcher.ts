@@ -11,7 +11,8 @@ export const fetcher = (...args: [string, Object]) => {
         /* noop */
       }
       if (res.status === 401) {
-        return { error: "Email or password is incorrect" }
+        console.log(payload)
+        return { error: payload?.error || "Email or password is incorrect" }
       }
       if (res.ok) {
         return payload

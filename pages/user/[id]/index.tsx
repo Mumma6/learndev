@@ -4,6 +4,8 @@ import Head from "next/head"
 import { getMongoDb } from "../../../lib/mongodb"
 import { findUserById } from "../../../lib/queries/user"
 import { ParsedUrlQuery } from "querystring"
+import { WithId } from "mongodb"
+import { IUser } from "../../../types/user"
 
 interface IParams extends ParsedUrlQuery {
   id: string
@@ -33,8 +35,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 }
 
-const index = () => {
-  return <div>index</div>
+// User type?
+const Profile = ({ user }: { user: IUser }) => {
+  return (
+    <>
+      <h2>Profile page for: {user.name}</h2>
+    </>
+  )
 }
 
-export default index
+export default Profile

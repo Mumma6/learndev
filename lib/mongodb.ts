@@ -15,7 +15,7 @@ async function createIndexes(client: MongoClient) {
     //db.collection("tokens").createIndex({ expireAt: -1 }, { expireAfterSeconds: 0 }),
     // db.collection("posts").createIndexes([{ key: { createdAt: -1 } }, { key: { creatorId: -1 } }]),
     // db.collection("comments").createIndexes([{ key: { createdAt: -1 } }, { key: { postId: -1 } }]),
-    //db.collection("users").createIndexes([{ key: { email: 1 }, unique: true }]),
+    db.collection("users").createIndexes([{ key: { email: 1 }, unique: true }]),
   ])
   indexesCreated = true
   return client
@@ -31,9 +31,10 @@ export async function getMongoClient() {
   if (!global._mongoClientPromise) {
     const client = new MongoClient(uri)
     // client.connect() returns an instance of MongoClient when resolved
+    console.log("Connected to MongoDB")
     global._mongoClientPromise = client.connect().then((client) => createIndexes(client))
   }
-  console.log("Connected to MongoDB")
+  console.log("Return MongoPromise")
   return global._mongoClientPromise
 }
 

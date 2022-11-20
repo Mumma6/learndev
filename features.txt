@@ -10,3 +10,26 @@ Dashboard sida
 Arciteture
 
 queries, varje collection ska ha en egen fil
+
+
+Hitta en ersättning till next-connect
+
+Gör en egen handler eller gör koden renare
+renare -> https://github.com/vercel/next.js/blob/canary/examples/with-passport-and-next-connect/pages/api/user.js
+eget -> https://github.com/basir/next-tailwind-amazona/blob/main/pages/api/admin/products/index.js
+if sats på reg.method
+
+Hur fungerar det med middlewares?
+
+
+-------------------- STATE --------------------
+https://www.youtube.com/watch?v=-bEzt5ISACA&ab_channel=freeCodeCamp.org
+
+https://github.com/jherr/fcc-state
+
+
+
+pic upload later 
+https://dev.to/hoangvvo/how-i-build-a-full-fledged-app-with-next-js-and-mongodb-part-2-user-profile-and-profile-picture-hcp
+
+settings.jsx and api/user 

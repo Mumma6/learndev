@@ -10,6 +10,7 @@ const dashboard = () => {
     <>
       <div>dashboard</div>
       <p>knapp till profile user/_id</p>
+      <p>knapp till settings page</p>
     </>
   )
 }

@@ -43,6 +43,7 @@ const Login = () => {
 
   const onSubmit = async (event: any) => {
     event.preventDefault()
+    console.log("subbmiting", email, password)
     try {
       const response = await fetcher("/api/auth", {
         method: "POST",
@@ -86,6 +87,9 @@ const Login = () => {
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Control name="password" value={password} onChange={onChange} type="password" placeholder="Password" />
         </Form.Group>
+        <Link href="/forgot-password" passHref>
+          Forget password
+        </Link>
         <div className="d-grid gap-2">
           <SubmitButton isLoading={isLoading} isDisabled={email === "" || password === ""} />
         </div>

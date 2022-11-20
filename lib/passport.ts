@@ -28,7 +28,9 @@ passport.use(
   new LocalStrategy({ usernameField: "email", passReqToCallback: true }, async (req, email, password, done) => {
     const db = await getMongoDb()
 
+    console.log(email, password)
     const user = await findUserWithEmailAndPassword(db, email, password)
+    console.log(user)
     if (user) done(null, user)
     // Denna else funkar inte om man använder passport.authenticate("local")
     // Se passport.ts för info

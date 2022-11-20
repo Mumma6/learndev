@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs"
 import { Db, ObjectId } from "mongodb"
 import normalizeEmail from "validator/lib/normalizeEmail"
+import { IUser } from "../../types/user"
 
 // Döp om till queries
 
@@ -52,15 +53,6 @@ export async function updateUserById(db: Db, id: string, data: any) {
     .then(({ value }) => value)
 }
 
-interface IUser {
-  emailVerified: boolean
-  profilePicture: any
-  email: string
-  name: string
-  bio: any
-  _id?: any
-}
-
 export async function insertUser(db: Db, { email, originalPassword, bio = "", name, profilePicture }: any) {
   const user: IUser = {
     emailVerified: false,
@@ -73,4 +65,20 @@ export async function insertUser(db: Db, { email, originalPassword, bio = "", na
   const { insertedId } = await db.collection("users").insertOne({ ...user, password })
   user._id = insertedId
   return user
+}
+
+export async function updateUserPasswordByOldPassword(db: Db, id: string, oldPassword: string, newPassword: string) {
+  const user = await db.collection("users").findOne(new ObjectId(id))
+  if (!user) return false
+  const matched = await bcrypt.compare(oldPassword, user.password)
+  if (!matched) return false
+  const password = await bcrypt.hash(newPassword, 10)
+  await db.collection("users").updateOne({ _id: new ObjectId(id) }, { $set: { password } })
+  return true
+}
+
+// whhy is this unsafe
+export async function UNSAFE_updateUserPassword(db: Db, id: string, newPassword: string) {
+  const password = await bcrypt.hash(newPassword, 10)
+  await db.collection("users").updateOne({ _id: new ObjectId(id) }, { $set: { password } })
 }

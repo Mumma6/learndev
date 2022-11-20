@@ -38,8 +38,8 @@ handler.get(async (req: any, res: any) => {
 })
 
 handler.patch(
+  //upload.single("profilePicture"),
   /*
-  upload.single("profilePicture"),
   validateBody({
     type: "object",
     properties: {
@@ -67,7 +67,10 @@ handler.patch(
       })
       profilePicture = image.secure_url
     }
-    const { name, bio } = req.body
+
+    console.log(req.body)
+    const { bio } = req.body
+    console.log(bio, " bio")
 
     let email
 
@@ -79,6 +82,7 @@ handler.patch(
       }
     }
 
+    console.log("await update user")
     const user = await updateUserById(db, req.user._id, {
       ...(typeof bio === "string" && { bio }),
       ...(profilePicture && { profilePicture }),
@@ -87,11 +91,5 @@ handler.patch(
     res.json({ user })
   }
 )
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-}
 
 export default handler

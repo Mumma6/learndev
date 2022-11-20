@@ -19,7 +19,9 @@ console.log(1)
 // This wont return anything if password or email is incorrect.
 // The error is handeld in fetcher instead.
 // passport.authenticate("local")
-handler.post(passport.authenticate("local"))
+handler.post(passport.authenticate("local"), (req, res) => {
+  res.json({ user: req.user })
+})
 
 /*
 
