@@ -25,6 +25,7 @@ const Header = () => {
     }
   }, [mutate])
 
+  // Ska likna headern från Designen.
   const loggedIn = (
     <>
       <Link href="/dashboard" passHref className="nav-link">
@@ -36,12 +37,11 @@ const Header = () => {
     </>
   )
 
+  // TODO. Visa massa fler saker, abouts osv-
   return (
     <Navbar style={{ marginBottom: 20 }}>
       <Container>
-        <Link href="/" passHref className="navbar-brand">
-          devlearner
-        </Link>
+        <div className="navbar-brand">devlearner</div>
         <Nav className="justify-content-end">
           {user ? (
             loggedIn

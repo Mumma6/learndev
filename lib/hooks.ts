@@ -6,6 +6,12 @@ import { fetcher } from "./fetcher"
 // Add a SWR cache to avoid unnacassary network calls
 // https://swr.vercel.app/docs/advanced/cache
 
+/*
+Använd useContext och skapa ett globalt state istället
+för att kalla på denna hook i alla komponenter.
+
+*/
+
 export function useCurrentUser() {
   console.log("use current user, borde inte köra om varje render")
   return useSWR("/api/user", fetcher)

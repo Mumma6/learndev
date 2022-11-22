@@ -21,6 +21,8 @@ async function createIndexes(client: MongoClient) {
   return client
 }
 
+// Should not use a cache in production
+
 export async function getMongoClient() {
   /**
    * Global is used here to maintain a cached connection across hot reloads

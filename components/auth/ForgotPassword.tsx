@@ -5,8 +5,7 @@ import SubmitButton from "../SubmitButton"
 import { toast } from "react-toastify"
 import Link from "next/link"
 import useRedirect from "../customHooks/useRedirect"
-
-type Status = "success" | "loading" | "idle" | "error"
+import { Status } from "../../types/status"
 
 const ForgotPassword = () => {
   const [status, setStatus] = useState<Status>("idle")

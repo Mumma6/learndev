@@ -15,9 +15,11 @@ export function findAndDeleteTokenByIdAndType(db: Db, id: string, type: any) {
     .then(({ value }) => value)
 }
 
-export async function createToken(db: Db, { creatorId, type, expireAt }: { creatorId: ObjectId; type: any; expireAt: any }) {
+export async function createToken(
+  db: Db,
+  { creatorId, type, expireAt }: { creatorId: ObjectId; type: string; expireAt: Date }
+) {
   const securedTokenId = nanoid(24)
-  console.log(securedTokenId)
   const token = {
     securedTokenId,
     creatorId,

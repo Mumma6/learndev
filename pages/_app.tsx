@@ -13,6 +13,7 @@ interface AppProps extends AppInitialProps {
 }
 
 // Context och andra providers används här.
+// TODO. lägg till en routeguard
 
 export default function PopularMusicVenue({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (

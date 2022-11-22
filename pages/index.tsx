@@ -1,6 +1,8 @@
 import Head from "next/head"
 import Link from "next/link"
 
+// TODO. lägg till en routeguard
+
 export default function Home(): React.ReactElement {
   return (
     <>
