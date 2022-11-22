@@ -28,7 +28,7 @@ const EmailVerify = ({ user }: { user: IUser }) => {
       } else {
         setStatus("success")
 
-        toast.success("An email has been sent to your mailbox. Follow the instruction to verify your email.", {
+        toast.info("An email has been sent to your mailbox. Follow the instruction to verify your email.", {
           autoClose: 4000,
         })
       }
