@@ -67,6 +67,7 @@ const Login = () => {
 
   return (
     <Container
+      className="shadow-sm p-3 mb-5 bg-white rounded"
       style={{
         marginTop: 40,
         paddingTop: 20,
@@ -90,7 +91,7 @@ const Login = () => {
         <Link href="/forgot-password" passHref>
           Forget password
         </Link>
-        <div className="d-grid gap-2">
+        <div style={{ marginTop: 10 }} className="d-grid gap-2">
           <SubmitButton isLoading={isLoading} isDisabled={email === "" || password === ""} />
         </div>
       </Form>

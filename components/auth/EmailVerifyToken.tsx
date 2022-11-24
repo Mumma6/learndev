@@ -28,7 +28,7 @@ const EmailVerifyToken = ({ valid }: { valid: boolean }) => {
         <>
           <h1>Thank you for verifying your email. You may close this page.</h1>
           <Link href="/settings" passHref>
-            Go back home
+            Return to settings
           </Link>
         </>
       )}

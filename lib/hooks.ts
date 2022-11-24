@@ -1,20 +1,13 @@
 import useSWR from "swr"
+import useSWRImmutable from "swr/immutable"
 import { fetcher } from "./fetcher"
 
-// TODO
-
-// Add a SWR cache to avoid unnacassary network calls
-// https://swr.vercel.app/docs/advanced/cache
-
-/*
-Använd useContext och skapa ett globalt state istället
-för att kalla på denna hook i alla komponenter.
-
-*/
+// useSWR vs useSWRImmutable
+// https://swr.vercel.app/docs/revalidation#disable-automatic-revalidations
+// https://stackoverflow.com/questions/73309030/swr-not-pulling-from-cache
 
 export function useCurrentUser() {
-  console.log("use current user, borde inte köra om varje render")
-  return useSWR("/api/user", fetcher)
+  return useSWRImmutable("/api/user", fetcher)
 }
 
 export function useUser(id: string) {

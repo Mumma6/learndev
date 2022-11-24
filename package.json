@@ -6,6 +6,12 @@
     "start": "next start"
   },
   "dependencies": {
+    "@emotion/cache": "^11.10.5",
+    "@emotion/react": "^11.10.5",
+    "@emotion/server": "^11.10.0",
+    "@emotion/styled": "^11.10.5",
+    "@mui/material": "^5.10.15",
+    "@mui/types": "^7.2.1",
     "ajv": "^8.11.0",
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",

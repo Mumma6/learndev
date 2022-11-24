@@ -33,7 +33,7 @@ const EmailVerify = ({ user }: { user: IUser }) => {
         })
       }
     } catch (e) {
-      setStatus("idle")
+      setStatus("error")
       console.error(e)
     }
   }
@@ -44,7 +44,7 @@ const EmailVerify = ({ user }: { user: IUser }) => {
     <>
       <Alert variant="info" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         {`Note: ${note}`}
-        <Button disabled={status === "success"} onClick={(event) => onSubmit(event)} variant="info">
+        <Button disabled={status === "success" || status === "loading"} onClick={(event) => onSubmit(event)} variant="info">
           Verify
         </Button>
       </Alert>
