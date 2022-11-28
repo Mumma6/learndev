@@ -33,3 +33,6 @@ pic upload later
 https://dev.to/hoangvvo/how-i-build-a-full-fledged-app-with-next-js-and-mongodb-part-2-user-profile-and-profile-picture-hcp
 
 settings.jsx and api/user 
+
+
+landing som denna https://startup-agency-minimal.vercel.app/

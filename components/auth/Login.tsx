@@ -77,6 +77,8 @@ const Login = () => {
       }}
     >
       <Container>
+        <h1>En knapp som går till /</h1>
+        <h1>Ändra allt till MUI</h1>
         <h1>Login</h1>
         <p>Login to acces you profile</p>
       </Container>

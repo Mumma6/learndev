@@ -23,7 +23,7 @@ const SignUp = () => {
   const [formData, setFormData] = useState<FormData>(initialState)
 
   const { name, email, password } = formData
-  const { mutate } = useCurrentUser()
+  const { data: { user } = {}, mutate } = useCurrentUser()
 
   // lägga denna i en useEffect?
 
@@ -37,6 +37,10 @@ const SignUp = () => {
       [event.target.name]: event.target.value,
     }))
   }
+
+  useEffect(() => {
+    if (user) router.replace("/dashboard")
+  }, [user, router])
 
   // Gör en redirect när man har reggat sig
 

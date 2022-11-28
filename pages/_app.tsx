@@ -4,7 +4,6 @@ import type { NextComponentType } from "next/types"
 import { ToastContainer } from "react-toastify"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "react-toastify/dist/ReactToastify.css"
-import Header from "../components/layout/Header"
 import Container from "react-bootstrap/Container"
 import "../styles/index.css"
 import { theme } from "../theme"
@@ -32,10 +31,7 @@ export default function App({
   return (
     <CacheProvider value={emotionCache}>
       <ThemeProvider theme={theme}>
-        <Header />
-        <Container>
-          <Component {...pageProps} />
-        </Container>
+        <Component {...pageProps} />
 
         <ToastContainer position="bottom-right" autoClose={2000} />
       </ThemeProvider>

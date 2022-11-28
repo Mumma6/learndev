@@ -37,7 +37,7 @@ const EmailVerify = ({ user }: { user: IUser }) => {
       console.error(e)
     }
   }
-  if (user.emailVerified) return null
+  if (user?.emailVerified) return null
 
   const note = status === "success" ? "An email has been sent to your inbox" : `Your email ${user.email} is not verified`
   return (

@@ -6,12 +6,33 @@ import { useTheme } from "@mui/material/styles"
 
 import { FaCog, FaHome, FaUser } from "react-icons/fa"
 import NavItem from "./NavItem"
+import Link from "next/link"
 
 const items = [
   {
     href: "/dashboard",
     icon: <FaHome fontSize="small" />,
     title: "Home",
+  },
+  {
+    href: "/courses",
+    icon: <FaCog fontSize="small" />,
+    title: "Courses",
+  },
+  {
+    href: "/learning-path",
+    icon: <FaCog fontSize="small" />,
+    title: "Learning path",
+  },
+  {
+    href: "/profile",
+    icon: <FaCog fontSize="small" />,
+    title: "Profile",
+  },
+  {
+    href: "/planning",
+    icon: <FaCog fontSize="small" />,
+    title: "Planning",
   },
   {
     href: "/settings",
@@ -31,9 +52,17 @@ const DashboardSidebar = ({ open, onClose }: IProps) => {
 
   const content = (
     <>
+      <Box sx={{ margin: 2 }}>
+        <Link style={{ textDecoration: "none" }} href="/" passHref>
+          <Button size="large" color="primary" variant="contained">
+            LOGO
+          </Button>
+        </Link>
+      </Box>
+
       <Box
         sx={{
-          marginTop: 10,
+          marginTop: 5,
           display: "flex",
           flexDirection: "column",
           height: "100%",

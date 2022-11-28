@@ -8,16 +8,8 @@ import ChangePassword from "./ChangePassword"
 
 const Settings = () => {
   const { data, error, mutate } = useCurrentUser()
+  console.log("calling settings.tsx")
 
-  const router = useRouter()
-  useEffect(() => {
-    if (!data && !error) return
-    if (!data?.user) {
-      router.replace("/login")
-    }
-  }, [router, data, error])
-
-  if (!data && !error) return <p>Loadding</p>
   return (
     <>
       <p>Settings page</p>
