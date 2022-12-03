@@ -20,6 +20,11 @@ const items = [
     title: "Courses",
   },
   {
+    href: "/projects",
+    icon: <FaCog fontSize="small" />,
+    title: "Projects",
+  },
+  {
     href: "/learning-path",
     icon: <FaCog fontSize="small" />,
     title: "Learning path",
