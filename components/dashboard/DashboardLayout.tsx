@@ -59,7 +59,7 @@ export const DashboardLayout = ({ children }: IProps) => {
         </Box>
       </DashboardLayoutRoot>
       <DashboardNavbar onSidebarOpen={() => setSidebarOpen(true)} />
-      <DashboardSidebar onClose={() => setSidebarOpen(false)} open={isSidebarOpen} />
+      <DashboardSidebar user={data.user} onClose={() => setSidebarOpen(false)} open={isSidebarOpen} />
     </>
   )
 }

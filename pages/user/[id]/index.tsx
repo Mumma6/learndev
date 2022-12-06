@@ -13,6 +13,8 @@ interface IParams extends ParsedUrlQuery {
 
 // Detta är en public route som alla kommer åt. Vem som helst kan se användaren.
 
+// Visa en sida likt dashboard här. En överblick över personen.
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const db = await getMongoDb()
 
@@ -40,6 +42,7 @@ const Profile = ({ user }: { user: IUser }) => {
   return (
     <>
       <h2>Profile page for: {user.name}</h2>
+      <h1>Show cool stuff similar to the dashboard</h1>
     </>
   )
 }

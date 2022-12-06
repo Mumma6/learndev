@@ -27,19 +27,17 @@ const NavItem = ({ href, icon, title }: IProps) => {
           disableRipple
           sx={{
             fontSize: 20,
-            backgroundColor: active ? "primary.light" : undefined,
-            color: active ? "primary.main" : "#D1D5DB",
+            backgroundColor: active ? "primary.main" : undefined,
+            color: active ? "secondary.light" : "primary.main",
             borderRadius: 1,
             justifyContent: "flex-start",
             px: 3,
             textAlign: "left",
             textTransform: "none",
             width: "100%",
-            "& .MuiButton-startIcon": {
-              color: active ? "#10B981" : "#9CA3AF",
-            },
             "&:hover": {
               backgroundColor: "primary.main",
+              color: "secondary.light",
             },
           }}
         >

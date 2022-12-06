@@ -11,6 +11,10 @@ import createEmotionCache from "../utils/createEmotionCache"
 import { CacheProvider, EmotionCache } from "@emotion/react"
 import { createTheme, ThemeProvider } from "@mui/material/styles"
 
+import { registerChartJs } from "../utils/registerChart"
+
+registerChartJs()
+
 interface AppProps extends AppInitialProps {
   Component: NextComponentType
   router: Router

@@ -1,12 +1,13 @@
 import React from "react"
-import { Box, Button, Divider, Drawer, Typography, useMediaQuery } from "@mui/material"
+import { Box, Button, Divider, Drawer, IconButton, Tooltip, Typography, useMediaQuery } from "@mui/material"
 import NextLink from "next/link"
 import { useRouter } from "next/router"
 import { useTheme } from "@mui/material/styles"
 
-import { FaCog, FaHome, FaUser } from "react-icons/fa"
+import { FaCog, FaHome, FaUser, FaUsers } from "react-icons/fa"
 import NavItem from "./NavItem"
 import Link from "next/link"
+import { IUser } from "../../types/user"
 
 const items = [
   {
@@ -35,6 +36,11 @@ const items = [
     title: "Profile",
   },
   {
+    href: "/quizzes",
+    icon: <FaCog fontSize="small" />,
+    title: "Quizzes",
+  },
+  {
     href: "/planning",
     icon: <FaCog fontSize="small" />,
     title: "Planning",
@@ -49,9 +55,10 @@ const items = [
 interface IProps {
   open: boolean
   onClose: () => void
+  user: IUser
 }
 
-const DashboardSidebar = ({ open, onClose }: IProps) => {
+const DashboardSidebar = ({ open, onClose, user }: IProps) => {
   const theme = useTheme()
   const lgUp = useMediaQuery(theme.breakpoints.up("lg"))
 
@@ -61,6 +68,13 @@ const DashboardSidebar = ({ open, onClose }: IProps) => {
         <Link style={{ textDecoration: "none" }} href="/" passHref>
           <Button size="large" color="primary" variant="contained">
             LOGO
+          </Button>
+        </Link>
+      </Box>
+      <Box sx={{ margin: 2 }}>
+        <Link style={{ textDecoration: "none" }} href={`/user/${user._id}`} target="_blank" passHref>
+          <Button size="large" color="primary" variant="outlined">
+            Share profile
           </Button>
         </Link>
       </Box>
@@ -89,7 +103,7 @@ const DashboardSidebar = ({ open, onClose }: IProps) => {
         open
         PaperProps={{
           sx: {
-            color: "#FFFFFF",
+            backgroundColor: "#e0e0e0",
             width: 280,
           },
         }}
@@ -107,7 +121,7 @@ const DashboardSidebar = ({ open, onClose }: IProps) => {
       open={open}
       PaperProps={{
         sx: {
-          color: "#FFFFFF",
+          backgroundColor: "#e0e0e0",
           width: 280,
         },
       }}

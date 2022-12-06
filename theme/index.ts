@@ -1,5 +1,9 @@
 import { createTheme } from "@mui/material"
 
+// skapa ett darkmode theme
+
+// Ändra färgerna i svg filerna
+
 export const theme = createTheme({
   breakpoints: {
     values: {
@@ -133,16 +137,45 @@ export const theme = createTheme({
   },
   palette: {
     primary: {
-      light: "#757ce8",
-      main: "#3f50b5",
-      dark: "#002884",
+      light: "#d05ce3",
+      main: "#9c27b0",
+      dark: "#6a0080",
       contrastText: "#fff",
     },
     secondary: {
-      light: "#ff7961",
-      main: "#f44336",
-      dark: "#ba000d",
+      light: "#6ff9ff",
+      main: "#26c6da",
+      dark: "#0095a8",
       contrastText: "#000",
+    },
+    success: {
+      main: "#14B8A6",
+      light: "#43C6B7",
+      dark: "#0E8074",
+      contrastText: "#FFFFFF",
+    },
+    info: {
+      main: "#2196F3",
+      light: "#64B6F7",
+      dark: "#0B79D0",
+      contrastText: "#FFFFFF",
+    },
+    warning: {
+      main: "#FFB020",
+      light: "#FFBF4C",
+      dark: "#B27B16",
+      contrastText: "#FFFFFF",
+    },
+    error: {
+      main: "#D14343",
+      light: "#DA6868",
+      dark: "#922E2E",
+      contrastText: "#FFFFFF",
+    },
+    text: {
+      primary: "#121828",
+      secondary: "#65748B",
+      disabled: "rgba(55, 65, 81, 0.48)",
     },
   },
   shape: {

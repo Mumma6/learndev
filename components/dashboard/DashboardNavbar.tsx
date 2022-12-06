@@ -67,7 +67,7 @@ export const DashboardNavbar = ({ onSidebarOpen }: IProps) => {
           </IconButton>
 
           <Box sx={{ flexGrow: 1 }} />
-          <Tooltip title="Contacts">
+          <Tooltip title="Share profile">
             <IconButton sx={{ ml: 1 }}>
               <FaUsers />
             </IconButton>

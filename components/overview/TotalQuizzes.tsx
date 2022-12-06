@@ -1,0 +1,35 @@
+import { Avatar, Card, CardContent, Grid, Typography } from "@mui/material"
+import React from "react"
+import { FaMicroscope } from "react-icons/fa"
+
+const TotalQuizzes = () => {
+  return (
+    <Card sx={{ height: "100%" }}>
+      <CardContent>
+        <Grid container spacing={3} sx={{ justifyContent: "space-between" }}>
+          <Grid item>
+            <Typography color="textSecondary" gutterBottom variant="overline">
+              TOTAL QUIZZES
+            </Typography>
+            <Typography color="textPrimary" variant="h4">
+              5
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Avatar
+              sx={{
+                backgroundColor: "primary.main",
+                height: 56,
+                width: 56,
+              }}
+            >
+              <FaMicroscope />
+            </Avatar>
+          </Grid>
+        </Grid>
+      </CardContent>
+    </Card>
+  )
+}
+
+export default TotalQuizzes
