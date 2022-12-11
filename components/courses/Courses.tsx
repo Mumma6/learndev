@@ -1,5 +1,6 @@
 import { Box, Container, Grid, Pagination } from "@mui/material"
-import React from "react"
+import { useEffect, useState } from "react"
+import { useCourses } from "../../lib/hooks"
 import AddCourseModal from "./AddCourseModal"
 import CourseCard from "./CourseCard"
 import CoursesToolbar from "./CoursesToolbar"
@@ -12,39 +13,19 @@ export interface ICourse {
   url?: string
 }
 
-const courses: ICourse[] = [
-  {
-    _id: 1,
-    title: "React 1.0",
-    description: "Beginner course about react",
-    institution: "Udemy",
-    url: "www.udemy.com",
-  },
-  {
-    _id: 2,
-    title: "Node master",
-    description: "Advance course about node",
-    institution: "Udemy",
-    url: "www.udemy.com",
-  },
-  {
-    _id: 3,
-    title: "Functional programming",
-    description: "Course about FP",
-    institution: "Pluralsight",
-    url: "www.pluralsight.com",
-  },
-  {
-    _id: 4,
-    title: "CSS & HTML",
-    description: "Beginner course about css and html",
-    institution: "Youtube",
-    url: "www.youtube.com",
-  },
-]
-
 const Courses = () => {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useState(false)
+
+  const { data } = useCourses()
+  console.log(data)
+
+  useEffect(() => {
+    console.log("in usereffect", data)
+    if (!data) return
+    if (data?.courses === null) {
+      console.log("no user")
+    }
+  }, [data])
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -66,9 +47,9 @@ const Courses = () => {
         <CoursesToolbar handleClickOpen={handleClickOpen} />
         <Box sx={{ pt: 3 }}>
           <Grid container spacing={3}>
-            {courses.map((course) => (
+            {data?.courses.map((course: any) => (
               <Grid item key={course._id} lg={4} md={6} xs={12}>
-                <CourseCard course={course} />
+                <CourseCard course={course.content} />
               </Grid>
             ))}
           </Grid>

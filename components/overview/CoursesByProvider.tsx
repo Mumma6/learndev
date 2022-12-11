@@ -1,21 +1,41 @@
 import React from "react"
 import { Doughnut } from "react-chartjs-2"
 import { Box, Card, CardContent, CardHeader, Divider, Typography, useTheme } from "@mui/material"
+import { ICoursesData } from "../../lib/hooks"
 
-const CoursesByProvider = () => {
+interface IProps {
+  courses: ICoursesData[] | undefined
+}
+
+const CoursesByProvider = ({ courses }: IProps) => {
+  console.log(courses)
+
+  /*
+  const getAmountOfProviders = () => {
+    return courses?.reduce((total, course) => {
+      total[course.content.institution] = total[course.content.institution] ? total[course.content.institution] + 1 : 1
+      return total
+    }, {})
+  }
+
+
+  console.log(getAmountOfProviders())
+
+  */
+
   const theme = useTheme()
 
   const data = {
     datasets: [
       {
-        data: [63, 15, 22],
-        backgroundColor: ["#3F51B5", "#e53935", "#FB8C00"],
+        data: [63, 15, 22, 2],
+        backgroundColor: ["#3F51B5", "#e53935", "#FB8C00", "green"],
         borderWidth: 8,
         borderColor: "#FFFFFF",
         hoverBorderColor: "#FFFFFF",
       },
     ],
-    labels: ["Udemy", "Pluralsight", "Youtube"],
+    labels: ["Udemy", "Pluralsight", "Youtube", "Other"],
   }
 
   const options = {
@@ -55,6 +75,11 @@ const CoursesByProvider = () => {
       value: 23,
       color: "#FB8C00",
     },
+    {
+      title: "Other",
+      value: 2,
+      color: "green",
+    },
   ]
   return (
     <Card sx={{ height: "100%" }}>
@@ -87,7 +112,7 @@ const CoursesByProvider = () => {
               <Typography color="textPrimary" variant="body1">
                 {title}
               </Typography>
-              <Typography style={{ color }} variant="h4">
+              <Typography style={{ color }} variant="body1">
                 {value}%
               </Typography>
             </Box>

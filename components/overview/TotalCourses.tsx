@@ -3,7 +3,11 @@ import React from "react"
 import { FaArrowUp } from "react-icons/fa"
 import { MdSchool } from "react-icons/md"
 
-const TotalCourses = () => {
+interface IProps {
+  amount: number
+}
+
+const TotalCourses = ({ amount }: IProps) => {
   return (
     <Card sx={{ height: "100%" }}>
       <CardContent>
@@ -13,7 +17,7 @@ const TotalCourses = () => {
               TOTAL COURSES
             </Typography>
             <Typography color="textPrimary" variant="h4">
-              10
+              {amount}
             </Typography>
           </Grid>
           <Grid item>

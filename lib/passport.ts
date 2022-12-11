@@ -1,5 +1,6 @@
 import passport from "passport"
-import { Strategy as LocalStrategy } from "passport-local"
+import { Strategy as LocalStrategy, Strategy } from "passport-local"
+import { IUser } from "../types/user"
 import { getMongoDb } from "./mongodb"
 import { findUserForAuth, findUserWithEmailAndPassword } from "./queries/user"
 
@@ -11,11 +12,17 @@ Fix types for passport.
 Our passport.serializeUser function will serialize the user id into our session. Later we will use that same id to get our user object in passport.deserializeUser. The reason we have to pass it into ObjectId is because our _id in MongoDB collection is of such type, while the serialized _id is of type string.
 */
 
-passport.serializeUser((user: any, done) => {
+declare global {
+  namespace Express {
+    interface User extends IUser {}
+  }
+}
+
+passport.serializeUser((user, done) => {
   done(null, user._id)
 })
 
-passport.deserializeUser((req: any, id: any, done: any) => {
+passport.deserializeUser((req: any, id: string, done: any) => {
   getMongoDb().then((db) => {
     findUserForAuth(db, id).then(
       (user) => done(null, user),
@@ -27,8 +34,6 @@ passport.deserializeUser((req: any, id: any, done: any) => {
 passport.use(
   new LocalStrategy({ usernameField: "email", passReqToCallback: true }, async (req, email, password, done) => {
     const db = await getMongoDb()
-
-    console.log(email, password)
     const user = await findUserWithEmailAndPassword(db, email, password)
     console.log(user)
     if (user) done(null, user)

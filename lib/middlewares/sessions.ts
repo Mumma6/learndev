@@ -4,6 +4,7 @@ import { promisifyStore } from "next-session/lib/compat"
 import { NextApiRequest, NextApiResponse } from "next"
 import { NextResponse } from "next/server"
 import { getMongoClient } from "../mongodb"
+import { IUser } from "../../types/user"
 
 // Will this create to many connections to the db?
 const mongoStore = MongoStore.create({

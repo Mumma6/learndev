@@ -6,6 +6,7 @@ import LearningProgress from "../overview/LearningProgress"
 import CoursesByProvider from "../overview/CoursesByProvider"
 import TotalQuizzes from "../overview/TotalQuizzes"
 import TotalProjects from "../overview/TotalProjects"
+import { useCourses } from "../../lib/hooks"
 
 interface IProps {
   user: IUser
@@ -21,7 +22,7 @@ display:
 */
 
 const Dashboard = ({ user }: IProps) => {
-  console.log(user)
+  const { data } = useCourses()
   return (
     <>
       <Box
@@ -34,7 +35,7 @@ const Dashboard = ({ user }: IProps) => {
         <Container maxWidth={false}>
           <Grid container spacing={3}>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
-              <TotalCourses />
+              <TotalCourses amount={data?.courses.length || 0} />
             </Grid>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
               <TotalProjects />
@@ -46,7 +47,7 @@ const Dashboard = ({ user }: IProps) => {
               <TotalQuizzes />
             </Grid>
             <Grid item lg={4} md={6} xl={3} xs={12}>
-              <CoursesByProvider />
+              <CoursesByProvider courses={data?.courses} />
             </Grid>
           </Grid>
         </Container>
