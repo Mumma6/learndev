@@ -3,8 +3,6 @@ import { Db, ObjectId } from "mongodb"
 import normalizeEmail from "validator/lib/normalizeEmail"
 import { IUser } from "../../types/user"
 
-// Döp om till queries
-
 export function dbProjectionUsers(prefix = "") {
   return {
     [`${prefix}password`]: 0,

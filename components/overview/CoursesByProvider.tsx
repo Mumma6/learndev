@@ -1,41 +1,56 @@
 import React from "react"
 import { Doughnut } from "react-chartjs-2"
 import { Box, Card, CardContent, CardHeader, Divider, Typography, useTheme } from "@mui/material"
-import { ICoursesData } from "../../lib/hooks"
+import { ICourse } from "../../models/course"
+import { Institution } from "../courses/Courses"
 
-interface IProps {
-  courses: ICoursesData[] | undefined
+type InstitutionCount = {
+  [key: string]: number
 }
 
-const CoursesByProvider = ({ courses }: IProps) => {
-  console.log(courses)
+interface IProps {
+  courses: ICourse[] | undefined
+}
 
-  /*
+const colors = ["#3F51B5", "#e53935", "#FB8C00", "green"]
+
+const CoursesByProvider = ({ courses }: IProps) => {
   const getAmountOfProviders = () => {
-    return courses?.reduce((total, course) => {
+    if (!courses) {
+      return []
+    }
+    const total = courses.reduce((total: InstitutionCount, course: ICourse) => {
       total[course.content.institution] = total[course.content.institution] ? total[course.content.institution] + 1 : 1
       return total
     }, {})
-  }
 
+    const totalCount = courses.length
+
+    return Object.entries(total).map(([institution, count], i) => ({
+      institution,
+      count,
+      color: colors[i],
+      percentage: Math.round((count / totalCount) * 100),
+    }))
+  }
 
   console.log(getAmountOfProviders())
 
-  */
+  const amountOfProviders = getAmountOfProviders()
 
   const theme = useTheme()
 
   const data = {
     datasets: [
       {
-        data: [63, 15, 22, 2],
+        data: amountOfProviders.map(({ count }) => count),
         backgroundColor: ["#3F51B5", "#e53935", "#FB8C00", "green"],
         borderWidth: 8,
         borderColor: "#FFFFFF",
         hoverBorderColor: "#FFFFFF",
       },
     ],
-    labels: ["Udemy", "Pluralsight", "Youtube", "Other"],
+    labels: amountOfProviders.map(({ institution }) => institution),
   }
 
   const options = {
@@ -59,28 +74,6 @@ const CoursesByProvider = ({ courses }: IProps) => {
     },
   }
 
-  const devices = [
-    {
-      title: "Udemy",
-      value: 63,
-      color: "#3F51B5",
-    },
-    {
-      title: "Pluralsight",
-      value: 15,
-      color: "#E53935",
-    },
-    {
-      title: "Youtube",
-      value: 23,
-      color: "#FB8C00",
-    },
-    {
-      title: "Other",
-      value: 2,
-      color: "green",
-    },
-  ]
   return (
     <Card sx={{ height: "100%" }}>
       <CardHeader title="Courses by provider" />
@@ -101,19 +94,19 @@ const CoursesByProvider = ({ courses }: IProps) => {
             pt: 2,
           }}
         >
-          {devices.map(({ color, title, value }) => (
+          {amountOfProviders.map(({ color, institution, percentage }) => (
             <Box
-              key={title}
+              key={institution}
               sx={{
                 p: 1,
                 textAlign: "center",
               }}
             >
               <Typography color="textPrimary" variant="body1">
-                {title}
+                {institution}
               </Typography>
               <Typography style={{ color }} variant="body1">
-                {value}%
+                {percentage}%
               </Typography>
             </Box>
           ))}

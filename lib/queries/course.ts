@@ -1,25 +1,20 @@
 import { Db, ObjectId } from "mongodb"
+import { ICourse } from "../../models/course"
 
-interface NewCourse {
-  content: {
-    title: string
-    description: string
-    institution: string
-    url?: string
-  }
-  userId: ObjectId
-}
-
-export const insertCourse = async (db: Db, { content, userId }: NewCourse) => {
+export const insertCourse = async (db: Db, { content, userId }: ICourse) => {
   const course = {
     content,
     userId,
     createdAt: new Date(),
   }
 
-  return await db.collection("courses").insertOne(course)
+  return await db.collection<ICourse>("courses").insertOne(course)
 }
 
-export const getCoursesForUser = async (db: Db, userId: ObjectId) => {
-  return await db.collection("courses").find({ userId }).toArray()
+export const getCoursesForUser = async (db: Db, userId: string) => {
+  return await await db.collection<ICourse>("courses").find({ userId }).sort({ createdAt: -1, title: 1 }).toArray()
+}
+
+export const deleteCourseById = async (db: Db, id: string) => {
+  return await db.collection("courses").deleteOne({ _id: new ObjectId(id) })
 }

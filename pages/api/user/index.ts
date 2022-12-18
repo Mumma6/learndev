@@ -7,6 +7,8 @@ import auths from "../../../lib/middlewares/auth"
 import { getMongoDb } from "../../../lib/mongodb"
 import { ValidateProps } from "../../../lib/schema"
 import { findUserByEmail, updateUserById } from "../../../lib/queries/user"
+import { NextApiRequest, NextApiResponse } from "next"
+import { IUser } from "../../../types/user"
 
 const ncOpts = {
   onError(err: any, req: any, res: any) {
@@ -16,8 +18,21 @@ const ncOpts = {
   },
 }
 
+interface ExtendedRequest extends NextApiRequest {
+  status: Function
+  user: IUser
+  file: {
+    path: string
+  }
+  body: {
+    bio: string
+    email: string
+  }
+}
+interface ExtendedResponse extends NextApiResponse {}
+
 const upload = multer({ dest: "/tmp" })
-const handler = nc(ncOpts)
+const handler = nc<ExtendedRequest, ExtendedResponse>()
 
 // Need to register on cloudinary.com
 if (process.env.CLOUDINARY_URL) {
@@ -32,10 +47,14 @@ if (process.env.CLOUDINARY_URL) {
 
 handler.use(...auths)
 
-handler.get(async (req: any, res: any) => {
+/*
+handler.get(async (req, res) => {
   if (!req.user) return res.json({ user: null })
   return res.json({ user: req.user })
 })
+*/
+
+handler.get(async (req, res) => (!req.user ? res.json({ user: null }) : res.json({ user: req.user })))
 
 handler.patch(
   //upload.single("profilePicture"),

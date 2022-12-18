@@ -6,31 +6,34 @@ import CardContent from "@mui/material/CardContent"
 import Button from "@mui/material/Button"
 import Typography from "@mui/material/Typography"
 import { Divider } from "@mui/material"
-import { ICourse } from "./Courses"
+import { ICourse } from "../../models/course"
 
 interface IProps {
+  deleteCourse: (id: string) => void
   course: ICourse
 }
 
-const CourseCard = ({ course }: IProps) => {
+const CourseCard = ({ course, deleteCourse }: IProps) => {
   return (
     <Card sx={{ minWidth: 275 }}>
       <CardContent>
         <Typography variant="h5" component="div">
-          {course.title}
+          {course.content.title}
         </Typography>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          {course.institution}
+          {course.content.institution}
         </Typography>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
           start - slut
         </Typography>
-        <Typography variant="body2">{course.description}</Typography>
+        <Typography variant="body2">{course.content.description}</Typography>
       </CardContent>
       <Divider />
       <CardActions>
         <Button size="small">Go to course (link)</Button>
-        <Button size="small">Edit (öppna modal)</Button>
+        <Button onClick={() => deleteCourse(course._id as string)} color="error" size="small">
+          Delete
+        </Button>
       </CardActions>
     </Card>
   )

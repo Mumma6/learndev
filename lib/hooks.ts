@@ -1,35 +1,30 @@
-import useSWR from "swr"
+import useSWR, { SWRResponse } from "swr"
 import useSWRImmutable from "swr/immutable"
+import { ICourse } from "../models/course"
+import { IUser } from "../types/user"
+import { fetcher1 } from "./axiosFetcher"
 import { fetcher } from "./fetcher"
 
 // useSWR vs useSWRImmutable
 // https://swr.vercel.app/docs/revalidation#disable-automatic-revalidations
 // https://stackoverflow.com/questions/73309030/swr-not-pulling-from-cache
 
+interface CurrentUser {
+  user: IUser
+}
+
 export function useCurrentUser() {
-  return useSWRImmutable("/api/user", fetcher)
+  return useSWRImmutable<CurrentUser>("/api/user", fetcher)
 }
 
 export function useUser(id: string) {
   return useSWR(`/api/users/${id}`, fetcher)
 }
 
-export interface ICoursesData {
-  content: {
-    title: string
-    description: string
-    url: string
-    institution: string
-  }
-  createdAt: string
-  userId: string
-  _id: string
-}
-
 export interface ICourses {
-  courses: ICoursesData[]
+  courses: ICourse[]
 }
 
 export const useCourses = () => {
-  return useSWR<ICourses>("/api/courses", fetcher)
+  return useSWR("/api/courses", fetcher1<ICourses, unknown>)
 }

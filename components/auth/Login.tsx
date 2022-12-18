@@ -53,7 +53,6 @@ const Login = () => {
           password: password,
         }),
       })
-      console.log(response)
       if (response.error) {
         toast.error(response.error)
         setFormData(initialState)

@@ -1,4 +1,5 @@
 import { ChangeEvent, useCallback, useState } from "react"
+
 import TextField from "@mui/material/TextField"
 import Dialog from "@mui/material/Dialog"
 import DialogActions from "@mui/material/DialogActions"
@@ -7,83 +8,37 @@ import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import Button from "@mui/material/Button"
 import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material"
-import { fetcher } from "../../lib/fetcher"
-import { toast } from "react-toastify"
-import { useCourses } from "../../lib/hooks"
+
+import { CourseFormData, initialCourseFormState, Institution } from "./Courses"
+import { ClickEventRet, SetState } from "../../types/generics"
 
 interface IProps {
   open: boolean
-  handleClose: () => void
+  handleClose: SetState<void>
+  courseFormData: CourseFormData
+  setCourseFormData: SetState<CourseFormData>
+  onAddCourse: ClickEventRet<Promise<void>>
 }
 
-enum Institution {
-  Udemy = "Udemy",
-  Youtube = "Youtube",
-  Pluralsight = "Pluralsight",
-  Other = "Other",
-}
-
-interface FormData {
-  title: string
-  description: string
-  institution: Institution
-  url: string
-}
-
-const initialState: FormData = {
-  title: "",
-  description: "",
-  institution: Institution.Other,
-  url: "",
-}
-
-const AddCourseModal = ({ open, handleClose }: IProps) => {
-  const [formData, setFormData] = useState<FormData>(initialState)
-  const [isLoading, setIsLoading] = useState(false)
-
-  const { title, description, institution, url } = formData
+const AddCourseModal = ({ open, handleClose, courseFormData, setCourseFormData, onAddCourse }: IProps) => {
+  const { title, description, institution, url } = courseFormData
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setFormData((prevState) => ({
+    setCourseFormData((prevState) => ({
       ...prevState,
       [event.target.name]: event.target.value,
     }))
   }
 
   const handleSelectChange = (event: SelectChangeEvent) => {
-    setFormData((prevState) => ({
+    setCourseFormData((prevState) => ({
       ...prevState,
       [event.target.name]: event.target.value,
     }))
   }
 
-  const onSubmit = async (event: { preventDefault: () => void }) => {
-    event.preventDefault()
-    try {
-      setIsLoading(true)
-      const response = await fetcher("/api/courses", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          content: formData,
-        }),
-      })
-
-      if (response.error) {
-        toast.error(response.error.message)
-      } else {
-        toast.success("Course added")
-      }
-    } catch (e: any) {
-      console.log(e)
-    } finally {
-      setFormData(initialState)
-      setIsLoading(false)
-    }
-  }
-
   const onClose = () => {
-    setFormData(initialState)
+    setCourseFormData(initialCourseFormState)
     handleClose()
   }
 
@@ -149,7 +104,7 @@ const AddCourseModal = ({ open, handleClose }: IProps) => {
         <Button color="error" onClick={onClose}>
           Cancel
         </Button>
-        <Button color="success" onClick={onSubmit}>
+        <Button color="success" onClick={onAddCourse}>
           Add
         </Button>
       </DialogActions>

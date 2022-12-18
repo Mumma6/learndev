@@ -1,7 +1,19 @@
 import Ajv from "ajv"
 
 /*
-FIX TYPES
+USE THIS INSTEAD
+
+interface ExtendedRequest {
+  user: string;
+}
+interface ExtendedResponse {
+  cookie(name: string, value: string): void;
+}
+
+handler.post<ExtendedRequest, ExtendedResponse>((req, res) => {
+  req.user = "Anakin";
+  res.cookie("sid", "8108");
+});
 */
 
 export function validateBody(schema: any) {

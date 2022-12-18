@@ -35,7 +35,7 @@ const Dashboard = ({ user }: IProps) => {
         <Container maxWidth={false}>
           <Grid container spacing={3}>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
-              <TotalCourses amount={data?.courses.length || 0} />
+              <TotalCourses amount={data?.payload?.courses.length || 0} />
             </Grid>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
               <TotalProjects />
@@ -46,8 +46,8 @@ const Dashboard = ({ user }: IProps) => {
             <Grid item xl={3} lg={3} sm={6} xs={12}>
               <TotalQuizzes />
             </Grid>
-            <Grid item lg={4} md={6} xl={3} xs={12}>
-              <CoursesByProvider courses={data?.courses} />
+            <Grid item lg={6} md={6} xl={3} xs={12}>
+              {data?.payload?.courses && <CoursesByProvider courses={data?.payload?.courses} />}
             </Grid>
           </Grid>
         </Container>

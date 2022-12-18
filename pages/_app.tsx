@@ -22,8 +22,6 @@ interface AppProps extends AppInitialProps {
 }
 
 // Context och andra providers används här.
-// TODO. lägg till en routeguard
-// TODO. lägg till user context
 
 const clientSideEmotionCache = createEmotionCache()
 
@@ -36,7 +34,6 @@ export default function App({
     <CacheProvider value={emotionCache}>
       <ThemeProvider theme={theme}>
         <Component {...pageProps} />
-
         <ToastContainer position="bottom-right" autoClose={2000} />
       </ThemeProvider>
     </CacheProvider>
