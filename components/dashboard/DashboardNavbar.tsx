@@ -18,7 +18,7 @@ interface IProps {
 }
 
 export const DashboardNavbar = ({ onSidebarOpen }: IProps) => {
-  const { data: { user } = {}, mutate } = useCurrentUser()
+  const { mutate } = useCurrentUser()
 
   const router = useRouter()
 
@@ -28,7 +28,7 @@ export const DashboardNavbar = ({ onSidebarOpen }: IProps) => {
         method: "DELETE",
       })
       toast.success("You have been signed out")
-      mutate({ user: null })
+      mutate({ payload: null })
       router.replace("/")
     } catch (e: any) {
       toast.error(e.message)

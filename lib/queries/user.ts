@@ -21,11 +21,22 @@ export async function findUserWithEmailAndPassword(db: Db, email: string, passwo
 }
 
 export async function findUserForAuth(db: Db, userId: string) {
+  try {
+    const user = await db.collection("users").findOne({ _id: new ObjectId(userId) }, { projection: { password: 0 } })
+    return user || null
+  } catch (error) {
+    throw error
+  }
+}
+
+/*
+export async function findUserForAuth(db: Db, userId: string) {
   return db
     .collection("users")
     .findOne({ _id: new ObjectId(userId) }, { projection: { password: 0 } })
     .then((user) => user || null)
 }
+*/
 
 export async function findUserById(db: Db, userId: string) {
   return db

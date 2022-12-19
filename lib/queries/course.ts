@@ -1,5 +1,5 @@
 import { Db, ObjectId } from "mongodb"
-import { ICourse } from "../../models/course"
+import { ICourse } from "../../models/Course"
 
 export const insertCourse = async (db: Db, { content, userId }: ICourse) => {
   const course = {

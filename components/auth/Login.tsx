@@ -7,6 +7,8 @@ import { toast } from "react-toastify"
 import { useCurrentUser } from "../../lib/hooks"
 import { fetcher } from "../../lib/fetcher"
 import SubmitButton from "../SubmitButton"
+import { fetcher1 } from "../../lib/axiosFetcher"
+import { IUser } from "../../types/user"
 
 interface FormData {
   email: string
@@ -25,7 +27,7 @@ const Login = () => {
 
   const [isLoading, setIsLoading] = useState(false)
 
-  const { data: { user } = {}, mutate, isValidating } = useCurrentUser()
+  const { data, mutate, isValidating } = useCurrentUser()
 
   const router = useRouter()
 
@@ -38,30 +40,30 @@ const Login = () => {
 
   useEffect(() => {
     if (isValidating) return
-    if (user) router.replace("/dashboard")
-  }, [user, router, isValidating])
+    if (data?.payload) router.replace("/dashboard")
+  }, [data?.payload, router, isValidating])
 
   const onSubmit = async (event: any) => {
     event.preventDefault()
-    console.log("subbmiting", email, password)
-    try {
-      const response = await fetcher("/api/auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      })
-      if (response.error) {
-        toast.error(response.error)
-        setFormData(initialState)
-      } else {
-        mutate({ user: response.user }, false)
-      }
-    } catch (e) {
-      console.error(e)
+    setIsLoading(true)
+
+    const response = await fetcher1<IUser, FormData>("/api/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: {
+        email: email,
+        password: password,
+      },
+    })
+
+    if (response.error) {
+      toast.error(response.error)
+      setFormData(initialState)
+    } else {
+      mutate({ payload: response.payload })
     }
+
+    setIsLoading(false)
   }
 
   return (

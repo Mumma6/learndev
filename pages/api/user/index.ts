@@ -1,38 +1,18 @@
 import { v2 as cloudinary } from "cloudinary"
 import slug from "slug"
 import multer from "multer"
-import nc from "next-connect"
-import { validateBody } from "../../../lib/middlewares/ajv"
+import nextConnect from "next-connect"
 import auths from "../../../lib/middlewares/auth"
 import { getMongoDb } from "../../../lib/mongodb"
-import { ValidateProps } from "../../../lib/schema"
 import { findUserByEmail, updateUserById } from "../../../lib/queries/user"
 import { NextApiRequest, NextApiResponse } from "next"
 import { IUser } from "../../../types/user"
-
-const ncOpts = {
-  onError(err: any, req: any, res: any) {
-    console.error(err)
-    res.statusCode = err.status && err.status >= 100 && err.status < 600 ? err.status : 500
-    res.json({ message: err.message })
-  },
-}
-
-interface ExtendedRequest extends NextApiRequest {
-  status: Function
-  user: IUser
-  file: {
-    path: string
-  }
-  body: {
-    bio: string
-    email: string
-  }
-}
-interface ExtendedResponse extends NextApiResponse {}
+import { Response } from "../../../types/response"
+import { handleAPIError, handleAPIResponse } from "../../../lib/utils"
 
 const upload = multer({ dest: "/tmp" })
-const handler = nc<ExtendedRequest, ExtendedResponse>()
+
+const handler = nextConnect<NextApiRequest, NextApiResponse<Response<IUser | null>>>()
 
 // Need to register on cloudinary.com
 if (process.env.CLOUDINARY_URL) {
@@ -47,67 +27,52 @@ if (process.env.CLOUDINARY_URL) {
 
 handler.use(...auths)
 
-/*
-handler.get(async (req, res) => {
-  if (!req.user) return res.json({ user: null })
-  return res.json({ user: req.user })
-})
-*/
-
-handler.get(async (req, res) => (!req.user ? res.json({ user: null }) : res.json({ user: req.user })))
+handler.get(async (req, res) =>
+  !req.user ? handleAPIResponse(res, null, "No user found") : handleAPIResponse(res, req.user, "User found")
+)
 
 handler.patch(
   //upload.single("profilePicture"),
-  /*
-  validateBody({
-    type: "object",
-    properties: {
-      name: ValidateProps.user.name,
-      bio: ValidateProps.user.bio,
-    },
-    additionalProperties: true,
-  }),
-  */
 
   async (req, res) => {
     if (!req.user) {
-      req.status(401).end()
-      return
+      handleAPIResponse(res, null, "No user found")
     }
 
-    const db = await getMongoDb()
+    try {
+      const db = await getMongoDb()
 
-    let profilePicture
-    if (req.file) {
-      const image = await cloudinary.uploader.upload(req.file.path, {
-        width: 512,
-        height: 512,
-        crop: "fill",
-      })
-      profilePicture = image.secure_url
-    }
-
-    console.log(req.body)
-    const { bio } = req.body
-    console.log(bio, " bio")
-
-    let email
-
-    if (req.body.email) {
-      email = slug(req.body.email, "_")
-      if (email !== req.user.email && (await findUserByEmail(db, email))) {
-        res.status(403).json({ error: { message: "The email has already been taken." } })
-        return
+      let profilePicture
+      if (req.file) {
+        const image = await cloudinary.uploader.upload(req.file.path, {
+          width: 512,
+          height: 512,
+          crop: "fill",
+        })
+        profilePicture = image.secure_url
       }
+
+      const { bio } = req.body
+
+      let email
+
+      if (req.body.email) {
+        email = slug(req.body.email, "_")
+        if (email !== req.user?.email && (await findUserByEmail(db, email))) {
+          handleAPIResponse(res, null, "The email has already been taken.")
+        }
+      }
+
+      const user = (await updateUserById(db, req.user?._id, {
+        ...(typeof bio === "string" && { bio }),
+        ...(profilePicture && { profilePicture }),
+      })) as IUser | null
+
+      handleAPIResponse(res, user, "User updated successfully")
+    } catch (error) {
+      console.log("Error when updating user")
+      handleAPIError(res, error)
     }
-
-    console.log("await update user")
-    const user = await updateUserById(db, req.user._id, {
-      ...(typeof bio === "string" && { bio }),
-      ...(profilePicture && { profilePicture }),
-    })
-
-    res.json({ user })
   }
 )
 

@@ -33,9 +33,15 @@ const Dashboard = ({ user }: IProps) => {
         }}
       >
         <Container maxWidth={false}>
+          <Box>
+            <Typography color="textPrimary" variant="h4">
+              Welcome {user.name}
+            </Typography>
+          </Box>
+
           <Grid container spacing={3}>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
-              <TotalCourses amount={data?.payload?.courses.length || 0} />
+              <TotalCourses amount={data?.payload?.length || 0} />
             </Grid>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
               <TotalProjects />
@@ -47,7 +53,7 @@ const Dashboard = ({ user }: IProps) => {
               <TotalQuizzes />
             </Grid>
             <Grid item lg={6} md={6} xl={3} xs={12}>
-              {data?.payload?.courses && <CoursesByProvider courses={data?.payload?.courses} />}
+              {data?.payload && <CoursesByProvider courses={data?.payload} />}
             </Grid>
           </Grid>
         </Container>

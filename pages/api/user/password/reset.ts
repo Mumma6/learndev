@@ -34,7 +34,7 @@ handler.post(
     if (!user) {
       console.log("no user")
       res.status(404).json({
-        error: { message: "We couldn’t find that email. Please try again." },
+        error: { message: "We couldnt find that email. Please try again." },
       })
       return
     }

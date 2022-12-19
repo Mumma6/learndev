@@ -29,3 +29,10 @@ export default async function session(req: NextApiRequest, res: NextApiResponse,
   await getSession(req, res)
   next()
 }
+
+/*
+export default async function session(req: NextApiRequest, res: NextApiResponse, next: () => NextResponse) {
+  await getSession(req, res)
+  next()
+}
+*/

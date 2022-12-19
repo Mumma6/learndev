@@ -1,8 +1,7 @@
 import React from "react"
 import { Doughnut } from "react-chartjs-2"
 import { Box, Card, CardContent, CardHeader, Divider, Typography, useTheme } from "@mui/material"
-import { ICourse } from "../../models/course"
-import { Institution } from "../courses/Courses"
+import { ICourse } from "../../models/Course"
 
 type InstitutionCount = {
   [key: string]: number

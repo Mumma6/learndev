@@ -116,7 +116,7 @@ const Courses = () => {
         <Box sx={{ pt: 3 }}>
           <Grid container spacing={3}>
             {!isLoading &&
-              data?.payload?.courses.map((course) => (
+              data?.payload?.map((course) => (
                 <Grid item key={course._id} lg={4} md={6} xs={12}>
                   <CourseCard deleteCourse={deleteCourse} course={course} />
                 </Grid>

@@ -6,15 +6,15 @@ import { useCurrentUser } from "../lib/hooks"
 
 const dashboard = () => {
   // Används för att få userdata i protected routes.
-  const { data: { user } = {}, mutate } = useCurrentUser()
+  const { data } = useCurrentUser()
 
   return (
     <>
       <DashboardLayout>
         <Head>
-          <title>{`Dashboard | ${user?.name}`}</title>
+          <title>{`Dashboard | ${data?.payload?.name}`}</title>
         </Head>
-        <Dashboard user={user} />
+        <Dashboard user={data?.payload!} />
       </DashboardLayout>
     </>
   )

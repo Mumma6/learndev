@@ -23,25 +23,19 @@ interface IProps {
 export const DashboardLayout = ({ children }: IProps) => {
   const [isSidebarOpen, setSidebarOpen] = useState(true)
 
-  // Kolla om user finns här, annars redirect to /.
-  // Då borde allt som finns i dashboard vara skyddat,
+  const { data, error } = useCurrentUser()
 
-  console.log("dashboard layput")
-
-  const { data, error, mutate } = useCurrentUser()
+  console.log(data)
 
   const router = useRouter()
+
   useEffect(() => {
-    console.log("in usereffect", data)
-    if (!data && !error) return
-    if (data?.user === null) {
-      console.log("no user")
+    if (data?.payload === null) {
       router.replace("/")
     }
   }, [router, data, error])
 
-  console.log(data)
-  if (!data?.user) return <CircularProgress />
+  if (!data?.payload) return <CircularProgress />
   if (!data && !error) return <CircularProgress />
 
   return (
@@ -59,7 +53,7 @@ export const DashboardLayout = ({ children }: IProps) => {
         </Box>
       </DashboardLayoutRoot>
       <DashboardNavbar onSidebarOpen={() => setSidebarOpen(true)} />
-      <DashboardSidebar user={data.user} onClose={() => setSidebarOpen(false)} open={isSidebarOpen} />
+      <DashboardSidebar user={data.payload} onClose={() => setSidebarOpen(false)} open={isSidebarOpen} />
     </>
   )
 }
