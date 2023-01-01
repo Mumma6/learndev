@@ -12,8 +12,10 @@ import { Response } from "../../../types/response"
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<ICourse[] | null>>>()
 
 handler.get(...auths, async (req, res) => {
+  // create a middleware for this. Add it to all handlers that looks similar.
   if (!req.user) {
     handleAPIResponse(res, [], "User auth")
+    return
   }
 
   try {

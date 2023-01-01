@@ -45,8 +45,6 @@ handler.post(
       expireAt: new Date(Date.now() + 1000 * 60 * 20),
     })
 
-    const uri = process.env.NODE_ENV === "production" ? process.env.WEB_URI_PROD : process.env.WEB_URI_DEV
-
     await sendMail({
       to: req.body.email,
       from: MAIL_CONFIG.from,
@@ -54,7 +52,7 @@ handler.post(
       html: `
       <div>
         <p>Hello, ${user.name}</p>
-        <p>Please follow <a href="${uri}/forgot-password/${token.securedTokenId}">this link</a> to reset your password.</p>
+        <p>Please follow <a href="${process.env.WEB_URI}/forgot-password/${token.securedTokenId}">this link</a> to reset your password.</p>
       </div>
       `,
     })

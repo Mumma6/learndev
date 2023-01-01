@@ -6,7 +6,7 @@ import CardContent from "@mui/material/CardContent"
 import Button from "@mui/material/Button"
 import Typography from "@mui/material/Typography"
 import { Divider } from "@mui/material"
-import { ICourse } from "../../models/course"
+import { ICourse } from "../../models/Course"
 
 interface IProps {
   deleteCourse: (id: string) => void

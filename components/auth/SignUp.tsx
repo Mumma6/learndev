@@ -1,11 +1,15 @@
-import React, { useEffect } from "react"
-import { useCurrentUser } from "../../lib/hooks"
-import { toast } from "react-toastify"
+import { ChangeEvent, useCallback, useEffect, useState } from "react"
+import { Box, Button, Container, Grid, Link, TextField, Typography } from "@mui/material"
+import { useFormik } from "formik"
+import * as Yup from "yup"
+import NextLink from "next/link"
 import { useRouter } from "next/router"
-import { ChangeEvent, useCallback, useState } from "react"
-import { Button, Form, Container } from "react-bootstrap"
-import { fetcher } from "../../lib/fetcher"
+import { toast } from "react-toastify"
+import { useCurrentUser } from "../../lib/hooks"
 import SubmitButton from "../SubmitButton"
+import { fetcher1 } from "../../lib/axiosFetcher"
+import { IUser } from "../../types/user"
+import { FaArrowLeft } from "react-icons/fa"
 
 interface FormData {
   name: string
@@ -20,89 +24,133 @@ const initialState = {
 }
 
 const SignUp = () => {
-  const [formData, setFormData] = useState<FormData>(initialState)
-
-  const { name, email, password } = formData
-  const { data: { user } = {}, mutate } = useCurrentUser()
-
-  // lägga denna i en useEffect?
-
-  const [isLoading, setIsLoading] = useState(false)
+  const { data, mutate } = useCurrentUser()
 
   const router = useRouter()
 
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      [event.target.name]: event.target.value,
-    }))
-  }
+  const formik = useFormik({
+    initialValues: initialState,
+    validationSchema: Yup.object({
+      email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
+      name: Yup.string().max(255).required("Name is required"),
+      password: Yup.string().max(255).required("Password is required"),
+    }),
+    onSubmit: (formValues) => {
+      onSubmit(formValues)
+    },
+  })
 
   useEffect(() => {
-    if (user) router.replace("/dashboard")
-  }, [user, router])
+    if (data?.payload) router.replace("/dashboard")
+  }, [data?.payload, router])
 
-  // Gör en redirect när man har reggat sig
-
-  const onSubmit = async (event: { preventDefault: () => void }) => {
-    event.preventDefault()
+  const onSubmit = async (formValues: FormData) => {
     try {
-      setIsLoading(true)
-      const response = await fetcher("/api/users", {
+      const response = await fetcher1<IUser, FormData>("/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          name,
-          password,
-        }),
+        data: formValues,
       })
       if (response.error) {
-        toast.error(response.error.message)
+        toast.error(response.error)
       } else {
-        mutate({ user: response.user }, false)
+        mutate({ payload: response.payload }, false)
         toast.success("Your account has been created")
         router.replace("/dashboard")
       }
     } catch (e: any) {
       console.log(e)
     } finally {
-      setFormData(initialState)
-      setIsLoading(false)
+      formik.resetForm()
     }
   }
 
   return (
-    <Container
-      style={{
-        marginTop: 40,
-        paddingTop: 20,
-        paddingBottom: 20,
-        backgroundColor: "white",
-        width: 600,
+    <Box
+      component="main"
+      sx={{
+        alignItems: "center",
+        display: "flex",
+        flexGrow: 1,
+        minHeight: "100%",
+        marginTop: 20,
       }}
     >
-      <Container>
-        <h1>Register</h1>
-        <p>Please create an account</p>
+      <Container maxWidth="sm">
+        <NextLink href="/" passHref>
+          <Button component="a" startIcon={<FaArrowLeft />}>
+            Home
+          </Button>
+        </NextLink>
+        <form onSubmit={formik.handleSubmit}>
+          <Box sx={{ my: 3 }}>
+            <Typography color="textPrimary" variant="h4">
+              Create a new account
+            </Typography>
+            <Typography color="textSecondary" gutterBottom variant="body2">
+              Use your email to create a new account
+            </Typography>
+          </Box>
+          <TextField
+            error={Boolean(formik.touched.name && formik.errors.name)}
+            fullWidth
+            helperText={formik.touched.name && formik.errors.name}
+            label="Name"
+            margin="normal"
+            name="name"
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            value={formik.values.name}
+            variant="outlined"
+          />
+          <TextField
+            error={Boolean(formik.touched.email && formik.errors.email)}
+            fullWidth
+            helperText={formik.touched.email && formik.errors.email}
+            label="Email Address"
+            margin="normal"
+            name="email"
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            type="email"
+            value={formik.values.email}
+            variant="outlined"
+          />
+          <TextField
+            error={Boolean(formik.touched.password && formik.errors.password)}
+            fullWidth
+            helperText={formik.touched.password && formik.errors.password}
+            label="Password"
+            margin="normal"
+            name="password"
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            type="password"
+            value={formik.values.password}
+            variant="outlined"
+          />
+          <Box
+            sx={{
+              alignItems: "center",
+              display: "flex",
+              ml: -1,
+            }}
+          ></Box>
+
+          <Box sx={{ py: 2 }}>
+            <SubmitButton text="Sign up Now" isLoading={formik.isSubmitting} isDisabled={!formik.isValid || !formik.dirty} />
+          </Box>
+          <Typography color="textSecondary" variant="body2">
+            Have an account?{" "}
+            <NextLink href="/login" passHref>
+              <Link variant="subtitle2" underline="hover">
+                Sign In
+              </Link>
+            </NextLink>
+          </Typography>
+        </form>
       </Container>
-      <Form onSubmit={onSubmit}>
-        <Form.Group className="mb-3">
-          <Form.Control name="name" value={name} type="text" placeholder="Enter name" onChange={onChange} />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Control name="email" value={email} type="email" placeholder="Enter email" onChange={onChange} />
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-          <Form.Control name="password" value={password} type="password" placeholder="Password" onChange={onChange} />
-        </Form.Group>
-
-        <div className="d-grid gap-2">
-          <SubmitButton isLoading={isLoading} />
-        </div>
-      </Form>
-    </Container>
+    </Box>
   )
 }
 

@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosResponse } from "axios"
 import { Response } from "../types/response"
 
 interface Options<T> {
-  method?: "GET" | "POST" | "PUT" | "DELETE"
+  method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH"
   data?: T
   headers?: any
 }

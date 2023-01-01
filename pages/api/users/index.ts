@@ -11,6 +11,7 @@ import { IUser } from "../../../types/user"
 import { NextApiRequest, NextApiResponse } from "next"
 import { handleAPIError, handleAPIResponse } from "../../../lib/utils"
 
+// its better to use the validatebody function?
 interface RequestBody {
   body: {
     name: string

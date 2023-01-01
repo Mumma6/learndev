@@ -1,17 +1,13 @@
 import nextConnect from "next-connect"
 import auths from "../../../../lib/middlewares/auth"
+import { NextApiRequest, NextApiResponse } from "next"
 import { getMongoDb } from "../../../../lib/mongodb"
 import { updateUserPasswordByOldPassword } from "../../../../lib/queries/user"
+import { Response } from "../../../../types/response"
+import { handleAPIError, handleAPIResponse } from "../../../../lib/utils"
 
-const ncOpts = {
-  onError(err: any, req: any, res: any) {
-    console.error(err)
-    res.statusCode = err.status && err.status >= 100 && err.status < 600 ? err.status : 500
-    res.json({ message: err.message })
-  },
-}
+const handler = nextConnect<NextApiRequest, NextApiResponse<Response<null>>>()
 
-const handler = nextConnect(ncOpts)
 handler.use(...auths)
 
 handler.put(
@@ -26,30 +22,29 @@ handler.put(
     additionalProperties: false,
   }),
   */
-  async (req: any, res: any) => {
+  async (req, res) => {
     if (!req.user) {
-      res.json(401).end()
+      handleAPIResponse(res, null, "User auth", 401)
       return
     }
 
-    const db = await getMongoDb()
+    try {
+      const db = await getMongoDb()
 
-    const { oldPassword, newPassword } = req.body
+      const { oldPassword, newPassword } = req.body
 
-    console.log(req.body)
+      const success = await updateUserPasswordByOldPassword(db, req.user._id, oldPassword, newPassword)
 
-    const success = await updateUserPasswordByOldPassword(db, req.user._id, oldPassword, newPassword)
+      if (!success) {
+        handleAPIResponse(res, null, "The old password you entered is incorrect.", 401)
+        return
+      }
 
-    console.log(success)
-
-    if (!success) {
-      res.status(401).json({
-        error: { message: "The old password you entered is incorrect." },
-      })
-      return
+      handleAPIResponse(res, null, "Password updated")
+    } catch (error) {
+      console.log("Error when changing password")
+      handleAPIError(res, error)
     }
-
-    res.status(200).json({ message: "Password updated" })
   }
 )
 

@@ -4,7 +4,7 @@ import multer from "multer"
 import nextConnect from "next-connect"
 import auths from "../../../lib/middlewares/auth"
 import { getMongoDb } from "../../../lib/mongodb"
-import { findUserByEmail, updateUserById } from "../../../lib/queries/user"
+import { deleteUser, findUserByEmail, updateUserById } from "../../../lib/queries/user"
 import { NextApiRequest, NextApiResponse } from "next"
 import { IUser } from "../../../types/user"
 import { Response } from "../../../types/response"
@@ -30,6 +30,22 @@ handler.use(...auths)
 handler.get(async (req, res) =>
   !req.user ? handleAPIResponse(res, null, "No user found") : handleAPIResponse(res, req.user, "User found")
 )
+
+handler.delete(async (req, res) => {
+  if (!req.user) {
+    handleAPIResponse(res, null, "No user found")
+  }
+
+  try {
+    const db = await getMongoDb()
+    await deleteUser(db, req.user?._id)
+    await req.session.destroy()
+    handleAPIResponse(res, null, "User deleted")
+  } catch (error) {
+    console.log("Error when deleting user")
+    handleAPIError(res, error)
+  }
+})
 
 handler.patch(
   //upload.single("profilePicture"),

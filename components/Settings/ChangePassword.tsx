@@ -1,9 +1,10 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect } from "react"
-import { Form } from "react-bootstrap"
+
 import { toast } from "react-toastify"
 import { fetcher } from "../../lib/fetcher"
 import SubmitButton from "../SubmitButton"
-import Alert from "react-bootstrap/Alert"
+import { Box, Alert, Card, CardContent, CardHeader, Divider, TextField } from "@mui/material"
+import { fetcher1 } from "../../lib/axiosFetcher"
 
 const ChangePassword = () => {
   const [oldPassword, setOldPassword] = useState("")
@@ -11,42 +12,55 @@ const ChangePassword = () => {
   const [confirmNewPassword, setConfirmNewPassword] = useState("")
 
   const [displayPasswordAlert, setDisplayPasswordAlert] = useState(false)
+  const [displayPasswordAlertText, setDisplayPasswordAlertText] = useState("")
 
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
+    if (newPassword === "" || oldPassword === "" || confirmNewPassword === "") {
+      return setDisplayPasswordAlert(false)
+    }
+
     if (newPassword !== confirmNewPassword) {
+      setDisplayPasswordAlertText("The new password doesn't match")
       setDisplayPasswordAlert(true)
     } else {
       setDisplayPasswordAlert(false)
     }
-  }, [confirmNewPassword])
+
+    if (oldPassword === newPassword && oldPassword === confirmNewPassword) {
+      setDisplayPasswordAlertText("The new password cant be the same as the old")
+      setDisplayPasswordAlert(true)
+    }
+  }, [confirmNewPassword, newPassword, oldPassword])
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     try {
       setIsLoading(true)
-      const response = await fetcher("/api/user/password", {
+      const response = await fetcher1("/api/user/password", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        data: {
           oldPassword,
           newPassword,
-        }),
+        },
       })
-
-      console.log(response)
 
       if (response.error) {
         console.log(response)
         setIsLoading(false)
-        toast.success(response.error.message)
+        toast.error(response.error)
         setOldPassword("")
         setNewPassword("")
+        setConfirmNewPassword("")
       } else {
         setIsLoading(false)
         toast.success(response.message)
+        setOldPassword("")
+        setNewPassword("")
+        setConfirmNewPassword("")
       }
     } catch (e: any) {
       console.log(e)
@@ -55,51 +69,65 @@ const ChangePassword = () => {
   }
   return (
     <>
-      <h1 style={{ marginTop: 50 }}>Change password</h1>
-      <Form onSubmit={onSubmit}>
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Old password</Form.Label>
-          <Form.Control
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setOldPassword(event.target.value)}
-            value={oldPassword}
-            type="password"
-            placeholder=""
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>New password</Form.Label>
-          <Form.Control
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setNewPassword(event.target.value)}
-            value={newPassword}
-            type="password"
-            placeholder=""
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Form.Label>Confirm new password</Form.Label>
-            {displayPasswordAlert && (
-              <Alert
-                style={{ marginBottom: 6, paddingTop: 0, paddingBottom: 0, paddingLeft: 50, paddingRight: 50 }}
-                variant="danger"
-              >
-                New password dosent match
-              </Alert>
-            )}
-          </div>
-          <Form.Control
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setConfirmNewPassword(event.target.value)}
-            value={confirmNewPassword}
-            type="password"
-            placeholder=""
-          />
-        </Form.Group>
-
-        <div className="d-grid gap-2">
-          <SubmitButton isLoading={isLoading} isDisabled={oldPassword === "" || newPassword === ""} />
-        </div>
-      </Form>
+      <form onSubmit={onSubmit}>
+        <Card>
+          <CardHeader subheader="Update password" title="Password" />
+          <Divider />
+          <CardContent>
+            <TextField
+              fullWidth
+              label="Old password"
+              margin="normal"
+              name="old"
+              onChange={(event: ChangeEvent<HTMLInputElement>) => setOldPassword(event.target.value)}
+              type="password"
+              value={oldPassword}
+              variant="outlined"
+              placeholder=""
+            />
+            <TextField
+              fullWidth
+              label="New password"
+              margin="normal"
+              name="new"
+              onChange={(event: ChangeEvent<HTMLInputElement>) => setNewPassword(event.target.value)}
+              value={newPassword}
+              type="password"
+              variant="outlined"
+              placeholder=""
+            />
+            <TextField
+              fullWidth
+              label="Confirm password"
+              margin="normal"
+              name="confirm"
+              onChange={(event: ChangeEvent<HTMLInputElement>) => setConfirmNewPassword(event.target.value)}
+              value={confirmNewPassword}
+              type="password"
+              variant="outlined"
+              placeholder=""
+            />
+          </CardContent>
+          <Divider />
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              p: 2,
+            }}
+          >
+            {displayPasswordAlert ? <Alert severity="error">{displayPasswordAlertText}</Alert> : <div></div>}
+            <SubmitButton
+              customStyle={{ margin: 1 }}
+              fullWidth={false}
+              size={"medium"}
+              text="Update"
+              isLoading={isLoading}
+              isDisabled={oldPassword === "" || newPassword === "" || confirmNewPassword === "" || displayPasswordAlert}
+            />
+          </Box>
+        </Card>
+      </form>
     </>
   )
 }

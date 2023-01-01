@@ -17,15 +17,13 @@ const DashboardLayoutRoot = styled("div")(({ theme }) => ({
 }))
 
 interface IProps {
-  children: JSX.Element[]
+  children: JSX.Element[] | JSX.Element
 }
 
 export const DashboardLayout = ({ children }: IProps) => {
   const [isSidebarOpen, setSidebarOpen] = useState(true)
 
-  const { data, error } = useCurrentUser()
-
-  console.log(data)
+  const { data } = useCurrentUser()
 
   const router = useRouter()
 
@@ -33,10 +31,9 @@ export const DashboardLayout = ({ children }: IProps) => {
     if (data?.payload === null) {
       router.replace("/")
     }
-  }, [router, data, error])
+  }, [router, data])
 
   if (!data?.payload) return <CircularProgress />
-  if (!data && !error) return <CircularProgress />
 
   return (
     <>

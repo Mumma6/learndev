@@ -41,6 +41,11 @@ const items = [
     title: "Quizzes",
   },
   {
+    href: "/work-experience",
+    icon: <FaCog fontSize="small" />,
+    title: "Work experience",
+  },
+  {
     href: "/planning",
     icon: <FaCog fontSize="small" />,
     title: "Planning",
@@ -103,7 +108,7 @@ const DashboardSidebar = ({ open, onClose, user }: IProps) => {
         open
         PaperProps={{
           sx: {
-            backgroundColor: "#e0e0e0",
+            backgroundColor: "#ededed",
             width: 280,
           },
         }}
@@ -121,7 +126,7 @@ const DashboardSidebar = ({ open, onClose, user }: IProps) => {
       open={open}
       PaperProps={{
         sx: {
-          backgroundColor: "#e0e0e0",
+          backgroundColor: "#ededed",
           width: 280,
         },
       }}

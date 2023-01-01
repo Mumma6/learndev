@@ -1,11 +1,9 @@
 import React, { useState } from "react"
 import { Alert, Button } from "react-bootstrap"
 import { toast } from "react-toastify"
-import { fetcher } from "../../lib/fetcher"
+import { fetcher1 } from "../../lib/axiosFetcher"
 import { Status } from "../../types/status"
 import { IUser } from "../../types/user"
-import useRedirect from "../customHooks/useRedirect"
-import SubmitButton from "../SubmitButton"
 
 const EmailVerify = ({ user }: { user: IUser }) => {
   const [status, setStatus] = useState<Status>("idle")
@@ -14,17 +12,16 @@ const EmailVerify = ({ user }: { user: IUser }) => {
     event.preventDefault()
     try {
       setStatus("loading")
-      const response = await fetcher("/api/user/email/verify", {
+      const response = await fetcher1("/api/user/email/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        data: {
           userId: user._id,
-        }),
+        },
       })
-      console.log(response)
       if (response.error) {
         setStatus("error")
-        toast.error(response.error.message)
+        toast.error(response.error)
       } else {
         setStatus("success")
 

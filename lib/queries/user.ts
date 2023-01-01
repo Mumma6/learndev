@@ -91,3 +91,8 @@ export async function UNSAFE_updateUserPassword(db: Db, id: string, newPassword:
   const password = await bcrypt.hash(newPassword, 10)
   await db.collection("users").updateOne({ _id: new ObjectId(id) }, { $set: { password } })
 }
+
+export const deleteUser = async (db: Db, id: string) => {
+  await db.collection("users").deleteOne({ _id: new ObjectId(id) })
+  await db.collection("courses").deleteMany({ userId: new ObjectId(id) })
+}

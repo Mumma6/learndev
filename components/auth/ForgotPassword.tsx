@@ -1,11 +1,14 @@
-import React, { useState, ChangeEvent } from "react"
+import React, { useState, ChangeEvent, FormEvent } from "react"
 import { Alert, Form } from "react-bootstrap"
 import { fetcher } from "../../lib/fetcher"
 import SubmitButton from "../SubmitButton"
 import { toast } from "react-toastify"
-import Link from "next/link"
 import useRedirect from "../customHooks/useRedirect"
 import { Status } from "../../types/status"
+import { FaArrowLeft } from "react-icons/fa"
+import NextLink from "next/link"
+import { Box, Button, Container, Grid, Link, TextField, Typography } from "@mui/material"
+import { fetcher1 } from "../../lib/axiosFetcher"
 
 const ForgotPassword = () => {
   const [status, setStatus] = useState<Status>("idle")
@@ -13,21 +16,19 @@ const ForgotPassword = () => {
 
   const { activateTimer } = useRedirect("/login", 4)
 
-  const onSubmit = async (event: any) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     try {
       setStatus("loading")
-      const response = await fetcher("/api/user/password/reset", {
+      const response = await fetcher1("/api/user/password/reset", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-        }),
+        data: email,
       })
       console.log(response)
       if (response.error) {
         setStatus("error")
-        toast.error(response.error.message)
+        toast.error(response.error)
         setEmail("")
       } else {
         setStatus("success")
@@ -46,27 +47,54 @@ const ForgotPassword = () => {
     }
   }
   return (
-    <>
-      <h1>Forget password</h1>
-      <Form onSubmit={onSubmit}>
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Enter your email address</Form.Label>
-          <Form.Control
+    <Box
+      component="main"
+      sx={{
+        alignItems: "center",
+        display: "flex",
+        flexGrow: 1,
+        minHeight: "100%",
+        marginTop: 20,
+      }}
+    >
+      <Container maxWidth="sm">
+        <NextLink href="/login" passHref>
+          <Button component="a" startIcon={<FaArrowLeft />}>
+            Sign in
+          </Button>
+        </NextLink>
+        <form onSubmit={onSubmit}>
+          <Box sx={{ my: 3 }}>
+            <Typography color="textPrimary" variant="h4">
+              Forgot password
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              pb: 1,
+              pt: 1,
+            }}
+          >
+            <Typography align="center" color="textSecondary" variant="body1">
+              Enter your email
+            </Typography>
+          </Box>
+          <TextField
+            fullWidth
+            label="Password"
+            margin="normal"
+            name="password"
             onChange={(event: ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}
             value={email}
-            type="email"
-            placeholder=""
+            type="text"
+            variant="outlined"
           />
-        </Form.Group>
-
-        <div className="d-grid gap-2">
-          <SubmitButton isLoading={status === "loading"} isDisabled={email === "" || status === "success"} />
-        </div>
-        <Link href="/login" passHref>
-          Return to login
-        </Link>
-      </Form>
-    </>
+          <Box sx={{ py: 2 }}>
+            <SubmitButton text="Reset" isLoading={status === "loading"} isDisabled={status === "error"} />
+          </Box>
+        </form>
+      </Container>
+    </Box>
   )
 }
 

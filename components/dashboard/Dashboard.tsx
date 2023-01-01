@@ -53,7 +53,7 @@ const Dashboard = ({ user }: IProps) => {
               <TotalQuizzes />
             </Grid>
             <Grid item lg={6} md={6} xl={3} xs={12}>
-              {data?.payload && <CoursesByProvider courses={data?.payload} />}
+              {!!data?.payload?.length && <CoursesByProvider courses={data?.payload} />}
             </Grid>
           </Grid>
         </Container>

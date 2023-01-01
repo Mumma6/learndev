@@ -9,9 +9,6 @@ const SettingPage = () => {
   return (
     <>
       <DashboardLayout>
-        <Head>
-          <title>{`Settings |`}</title>
-        </Head>
         <Settings />
       </DashboardLayout>
     </>

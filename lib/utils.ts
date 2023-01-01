@@ -6,12 +6,17 @@ Update to function to include a status code aswell
 
 */
 
-export const handleAPIResponse = <T>(res: NextApiResponse<Response<T>>, payload: T, message: string): void => {
-  res.statusCode = 200
+export const handleAPIResponse = <T>(
+  res: NextApiResponse<Response<T>>,
+  payload: T,
+  message: string,
+  statusCode = 200
+): void => {
+  res.statusCode = statusCode
   res.json({ payload, error: null, message })
 }
 
 export const handleAPIError = (res: NextApiResponse, error: any): void => {
-  res.statusCode = 200
+  res.statusCode = 400
   res.json({ payload: null, error: error.message, message: "An error occurred" })
 }

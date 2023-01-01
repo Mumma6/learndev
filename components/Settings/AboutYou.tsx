@@ -1,29 +1,46 @@
 import React, { ChangeEvent, useState } from "react"
 import { IUser } from "../../types/user"
-import Button from "react-bootstrap/Button"
-import Form from "react-bootstrap/Form"
-import SubmitButton from "../SubmitButton"
+
 import { fetcher } from "../../lib/fetcher"
 import { toast } from "react-toastify"
 
-const AboutYou = ({ user, mutate }: { user: IUser; mutate: Function }) => {
-  console.log(user)
-  const [userName, setUserName] = useState(user?.name || "")
+import { useFormik } from "formik"
+import * as Yup from "yup"
 
-  const [userBio, setUserBio] = useState(user?.bio || "")
+import SubmitButton from "../SubmitButton"
+import { Box, Alert, Card, CardContent, CardHeader, Divider, TextField } from "@mui/material"
+import { fetcher1 } from "../../lib/axiosFetcher"
+import { Mutate } from "../../types/generics"
 
+interface FormData {
+  name: string
+  bio: string
+}
+
+const AboutYou = ({ user, mutate }: { user: IUser; mutate: Mutate<IUser | null> }) => {
   const [isLoading, setIsLoading] = useState(false)
+  const formik = useFormik({
+    initialValues: {
+      name: user.name,
+      bio: user.bio,
+    },
+    validationSchema: Yup.object({
+      name: Yup.string().max(255).required("Name is required"),
+      bio: Yup.string().max(255).required("Bio is required"),
+    }),
+    onSubmit: (formValues) => {
+      onSubmit(formValues)
+    },
+  })
 
-  const onSubmit = async (event: any) => {
-    event.preventDefault()
-
+  const onSubmit = async (formValues: FormData) => {
     // this is to make it easier to update profile pic later.
     // https://dev.to/hoangvvo/how-i-build-a-full-fledged-app-with-next-js-and-mongodb-part-2-user-profile-and-profile-picture-hcp
     /*
     const formdata = new FormData()
-    console.log(userBio)
-    formdata.append("name", userName)
-    formdata.append("bio", userBio)
+    console.log(bio)
+    formdata.append("name", name)
+    formdata.append("bio", bio)
     console.log(formdata)
     */
 
@@ -32,63 +49,81 @@ const AboutYou = ({ user, mutate }: { user: IUser; mutate: Function }) => {
     */
     try {
       setIsLoading(true)
-      const response = await fetcher("/api/user", {
+      const response = await fetcher1<IUser, FormData>("/api/user", {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
-        body: JSON.stringify({
-          name: userName,
-          bio: userBio,
-        }),
+        data: formValues,
       })
-      console.log(response)
       if (response.error) {
-        setIsLoading(false)
         toast.error(response.error)
-        setUserBio(user.bio)
-        setUserName(user.name)
-      } else {
+        formik.setFieldValue("name", user.name)
+        formik.setFieldValue("bio", user.bio)
         setIsLoading(false)
-        mutate({ user: response.user }, false)
+      } else {
+        mutate({ payload: response.payload }, false)
         toast.success("Your profile has been updated")
+        setIsLoading(false)
       }
     } catch (e) {
-      setIsLoading(false)
       console.error(e)
     }
   }
 
   return (
     <>
-      <h1>Abouy you</h1>
-      <Form onSubmit={onSubmit}>
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Your name</Form.Label>
-          <Form.Control
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setUserName(event.target.value)}
-            value={userName}
-            type="text"
-            placeholder="Name"
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Your bio</Form.Label>
-          <Form.Control
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setUserBio(event.target.value)}
-            value={userBio}
-            as="textarea"
-            rows={3}
-            type="text"
-            placeholder="Bio"
-          />
-        </Form.Group>
-        <div className="d-grid gap-2">
-          <SubmitButton
-            isLoading={isLoading}
-            isDisabled={userBio === "" || userName === "" || (user?.name === userName && user?.bio === userBio)}
-          />
-        </div>
-      </Form>
+      <form onSubmit={formik.handleSubmit}>
+        <Card>
+          <h1>Detta ska vara under profile</h1>
+          <CardHeader subheader="Update your info" title="About you" />
+          <Divider />
+          <CardContent>
+            <TextField
+              fullWidth
+              label="Name"
+              margin="normal"
+              name="name"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              type="text"
+              value={formik.values.name}
+              variant="outlined"
+            />
+            <TextField
+              multiline
+              rows={3}
+              fullWidth
+              label="Bio"
+              margin="normal"
+              name="bio"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.bio}
+              type="text"
+              variant="outlined"
+              placeholder=""
+            />
+          </CardContent>
+          <p>Social media links osv här</p>
+          <Divider />
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              p: 2,
+              float: "right",
+            }}
+          >
+            <SubmitButton
+              customStyle={{ margin: 1 }}
+              fullWidth={false}
+              size={"medium"}
+              text="Update"
+              isLoading={isLoading}
+              isDisabled={!formik.isValid || !formik.dirty}
+            />
+          </Box>
+        </Card>
+      </form>
     </>
   )
 }
