@@ -8,6 +8,7 @@ import CoursesToolbar from "./CoursesToolbar"
 import { toast } from "react-toastify"
 import { ClickEvent } from "../../types/generics"
 import { fetcher1 } from "../../lib/axiosFetcher"
+import { ICourse } from "../../models/Course"
 
 export enum Institution {
   Udemy = "Udemy",
@@ -116,7 +117,7 @@ const Courses = () => {
         <Box sx={{ pt: 3 }}>
           <Grid container spacing={3}>
             {!isLoading &&
-              data?.payload?.map((course) => (
+              data?.payload?.map((course: ICourse) => (
                 <Grid item key={course._id} lg={4} md={6} xs={12}>
                   <CourseCard deleteCourse={deleteCourse} course={course} />
                 </Grid>
