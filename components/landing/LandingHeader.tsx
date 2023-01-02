@@ -130,7 +130,7 @@ function LandingHeader() {
                 </Button>
               </Link>
             ) : (
-              <Link style={{ textDecoration: "none" }} href="/dashboard" passHref>
+              <Link style={{ textDecoration: "none" }} href="/home" passHref>
                 <Button size="large" color="primary" variant="contained">
                   Dashboard
                 </Button>
