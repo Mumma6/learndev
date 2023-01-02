@@ -54,21 +54,21 @@ export async function findUserByEmail(db: Db, email: string) {
     .then((user) => user || null)
 }
 
-export async function updateUserById(db: Db, id: string, data: any) {
-  console.log("update")
+export async function updateUserById(db: Db, id: string, data: Partial<IUser>) {
   return db
     .collection("users")
     .findOneAndUpdate({ _id: new ObjectId(id) }, { $set: data }, { returnDocument: "after", projection: { password: 0 } })
     .then(({ value }) => value)
 }
 
-export async function insertUser(db: Db, { email, originalPassword, bio = "", name, profilePicture }: any) {
+export async function insertUser(db: Db, { email, originalPassword, bio = "", name, profilePicture, skills }: any) {
   const user: IUser = {
     emailVerified: false,
     profilePicture,
     email,
     name,
     bio,
+    skills,
   }
   const password = await bcrypt.hash(originalPassword, 10)
   const { insertedId } = await db.collection("users").insertOne({ ...user, password })

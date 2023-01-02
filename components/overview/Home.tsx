@@ -1,17 +1,18 @@
 import React from "react"
 import { IUser } from "../../types/user"
 import { Box, Button, Container, Grid, Typography } from "@mui/material"
-import TotalCourses from "../overview/TotalCourses"
-import LearningProgress from "../overview/LearningProgress"
-import CoursesByProvider from "../overview/CoursesByProvider"
-import TotalQuizzes from "../overview/TotalQuizzes"
-import TotalProjects from "../overview/TotalProjects"
+import TotalCourses from "./TotalCourses"
+import LearningProgress from "./LearningProgress"
+import CoursesByProvider from "./CoursesByProvider"
+import TotalQuizzes from "./TotalQuizzes"
+import TotalProjects from "./TotalProjects"
 import { useCourses } from "../../lib/hooks"
 
 interface IProps {
   user: IUser
 }
 
+// döp om denna fil till Home.tsx och lägg under Overview
 /*
 
 display:
@@ -21,7 +22,7 @@ display:
 
 */
 
-const Dashboard = ({ user }: IProps) => {
+const Home = ({ user }: IProps) => {
   const { data } = useCourses()
   return (
     <>
@@ -62,4 +63,4 @@ const Dashboard = ({ user }: IProps) => {
   )
 }
 
-export default Dashboard
+export default Home

@@ -4,7 +4,7 @@ import { useCurrentUser } from "../../lib/hooks"
 import Head from "next/head"
 import { IUser } from "../../types/user"
 import EmailVerify from "../auth/EmailVerify"
-import AboutYou from "./AboutYou"
+import AboutYou from "../profile/AboutYou"
 import ChangePassword from "./ChangePassword"
 import { Box, Container, Typography } from "@mui/material"
 import DeleteAccount from "./DeleteAccount"
@@ -29,7 +29,7 @@ const Settings = () => {
             Settings
           </Typography>
           <EmailVerify user={data?.payload!} />
-          <AboutYou user={data?.payload!} mutate={mutate} />
+
           <Box sx={{ pt: 3 }}>
             <ChangePassword />
           </Box>

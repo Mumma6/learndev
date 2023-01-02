@@ -39,7 +39,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isValidating) return
-    if (data?.payload) router.replace("/dashboard")
+    if (data?.payload) router.replace("/home")
   }, [data?.payload, router, isValidating])
 
   const onSubmit = async (formValue: FormData) => {

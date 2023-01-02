@@ -41,7 +41,7 @@ const SignUp = () => {
   })
 
   useEffect(() => {
-    if (data?.payload) router.replace("/dashboard")
+    if (data?.payload) router.replace("/home")
   }, [data?.payload, router])
 
   const onSubmit = async (formValues: FormData) => {
@@ -56,7 +56,7 @@ const SignUp = () => {
       } else {
         mutate({ payload: response.payload }, false)
         toast.success("Your account has been created")
-        router.replace("/dashboard")
+        router.replace("/home")
       }
     } catch (e: any) {
       console.log(e)

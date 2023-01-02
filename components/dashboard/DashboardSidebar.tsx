@@ -5,19 +5,25 @@ import { useRouter } from "next/router"
 import { useTheme } from "@mui/material/styles"
 
 import { FaCog, FaHome, FaUser, FaUsers } from "react-icons/fa"
+import { ImBooks } from "react-icons/im"
 import NavItem from "./NavItem"
 import Link from "next/link"
 import { IUser } from "../../types/user"
 
 const items = [
   {
-    href: "/dashboard",
+    href: "/home",
     icon: <FaHome fontSize="small" />,
     title: "Home",
   },
   {
+    href: "/profile",
+    icon: <FaUser fontSize="small" />,
+    title: "Profile",
+  },
+  {
     href: "/courses",
-    icon: <FaCog fontSize="small" />,
+    icon: <ImBooks fontSize="small" />,
     title: "Courses",
   },
   {
@@ -30,11 +36,7 @@ const items = [
     icon: <FaCog fontSize="small" />,
     title: "Learning path",
   },
-  {
-    href: "/profile",
-    icon: <FaCog fontSize="small" />,
-    title: "Profile",
-  },
+
   {
     href: "/quizzes",
     icon: <FaCog fontSize="small" />,
@@ -109,7 +111,11 @@ const DashboardSidebar = ({ open, onClose, user }: IProps) => {
         PaperProps={{
           sx: {
             backgroundColor: "#ededed",
-            width: 280,
+            background: "linear-gradient(195deg, rgb(66, 66, 74), rgb(25, 25,25))",
+            width: 270,
+            // borderRadius: 2,
+            //margin: 2,
+            //height: "calc(100vh - 2rem)",
           },
         }}
         variant="permanent"

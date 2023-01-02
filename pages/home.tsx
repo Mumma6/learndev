@@ -1,10 +1,10 @@
 import Head from "next/head"
 import React from "react"
-import Dashboard from "../components/dashboard/Dashboard"
+import Home from "../components/overview/Home"
 import { DashboardLayout } from "../components/dashboard/DashboardLayout"
 import { useCurrentUser } from "../lib/hooks"
 
-const dashboard = () => {
+const home = () => {
   // Används för att få userdata i protected routes.
   const { data } = useCurrentUser()
 
@@ -14,10 +14,10 @@ const dashboard = () => {
         <Head>
           <title>{`Dashboard | ${data?.payload?.name}`}</title>
         </Head>
-        <Dashboard user={data?.payload!} />
+        <Home user={data?.payload!} />
       </DashboardLayout>
     </>
   )
 }
 
-export default dashboard
+export default home

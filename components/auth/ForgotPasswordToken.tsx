@@ -70,7 +70,7 @@ const ForgotPasswordToken = ({ valid, token }: { valid: boolean; token: any }) =
             </Form.Group>
 
             <div className="d-grid gap-2">
-              <SubmitButton isLoading={status === "loading"} isDisabled={newPassword === "" || status === "success"} />
+              <SubmitButton text="Submit" isLoading={status === "loading"} isDisabled={newPassword === "" || status === "success"} />
             </div>
             <Link href="/login" passHref>
               Return to login

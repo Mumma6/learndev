@@ -48,6 +48,7 @@ handler.post<RequestBody>(...auths, async (req, res) => {
       originalPassword: password,
       bio: "",
       name,
+      skills: [],
     })
     req.logIn(user, (err: any) => {
       if (err) {

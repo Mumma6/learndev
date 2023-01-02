@@ -68,7 +68,11 @@ handler.patch(
         profilePicture = image.secure_url
       }
 
-      const { bio } = req.body
+      const { bio, skills } = req.body
+
+      console.log(req.body)
+
+      console.log(skills)
 
       let email
 
@@ -82,6 +86,7 @@ handler.patch(
       const user = (await updateUserById(db, req.user?._id, {
         ...(typeof bio === "string" && { bio }),
         ...(profilePicture && { profilePicture }),
+        ...(skills && { skills }),
       })) as IUser | null
 
       handleAPIResponse(res, user, "User updated successfully")

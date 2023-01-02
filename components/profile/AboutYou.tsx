@@ -73,8 +73,7 @@ const AboutYou = ({ user, mutate }: { user: IUser; mutate: Mutate<IUser | null> 
     <>
       <form onSubmit={formik.handleSubmit}>
         <Card>
-          <h1>Detta ska vara under profile</h1>
-          <CardHeader subheader="Update your info" title="About you" />
+          <CardHeader subheader="Update your info" title="Profile information" />
           <Divider />
           <CardContent>
             <TextField
@@ -103,7 +102,6 @@ const AboutYou = ({ user, mutate }: { user: IUser; mutate: Mutate<IUser | null> 
               placeholder=""
             />
           </CardContent>
-          <p>Social media links osv här</p>
           <Divider />
           <Box
             sx={{
@@ -115,9 +113,10 @@ const AboutYou = ({ user, mutate }: { user: IUser; mutate: Mutate<IUser | null> 
           >
             <SubmitButton
               customStyle={{ margin: 1 }}
+              color="success"
               fullWidth={false}
               size={"medium"}
-              text="Update"
+              text="Update information"
               isLoading={isLoading}
               isDisabled={!formik.isValid || !formik.dirty}
             />
