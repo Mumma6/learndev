@@ -22,7 +22,7 @@ const initialState = {
 }
 
 const Login = () => {
-  const { data, mutate, isValidating } = useCurrentUser()
+  const { data, mutate } = useCurrentUser()
 
   const router = useRouter()
 
@@ -38,9 +38,8 @@ const Login = () => {
   })
 
   useEffect(() => {
-    if (isValidating) return
     if (data?.payload) router.replace("/home")
-  }, [data?.payload, router, isValidating])
+  }, [data?.payload, router])
 
   const onSubmit = async (formValue: FormData) => {
     const response = await fetcher1<IUser, FormData>("/api/auth", {

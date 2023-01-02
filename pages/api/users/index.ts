@@ -20,15 +20,7 @@ interface RequestBody {
   }
 }
 
-interface ExtendedRequest extends NextApiRequest {
-  body: {
-    name: string
-    email: string
-    password: string
-  }
-}
-
-const handler = nextConnect<ExtendedRequest, NextApiResponse<Response<IUser | null>>>()
+const handler = nextConnect<NextApiRequest, NextApiResponse<Response<IUser | null>>>()
 
 handler.post<RequestBody>(...auths, async (req, res) => {
   const db = await getMongoDb()

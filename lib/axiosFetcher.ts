@@ -23,7 +23,7 @@ const handleError = <R>(error: AxiosError): Response<R> => {
   }
 }
 
-export const fetcher1 = <R, T>(url: string, options: Options<T>): Promise<Response<R>> => {
+export const fetcher1 = <R, T>(url?: string, options?: Options<T>): Promise<Response<R>> => {
   return axios
     .request({ url, ...options })
     .then(handleResponse)

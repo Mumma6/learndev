@@ -1,6 +1,7 @@
 import useSWR, { SWRResponse } from "swr"
 import useSWRImmutable from "swr/immutable"
 import { ICourse } from "../models/Course"
+import { Response } from "../types/response"
 import { IUser } from "../types/user"
 import { fetcher1 } from "./axiosFetcher"
 import { fetcher } from "./fetcher"
@@ -9,8 +10,13 @@ import { fetcher } from "./fetcher"
 // https://swr.vercel.app/docs/revalidation#disable-automatic-revalidations
 // https://stackoverflow.com/questions/73309030/swr-not-pulling-from-cache
 
+interface UserHookResponse {
+  data?: Response<IUser | null> | undefined
+  mutate: (newData: Response<IUser | null>, b?: boolean) => void
+}
+
 export function useCurrentUser() {
-  return useSWRImmutable("/api/user", fetcher1<IUser | null, unknown>)
+  return useSWRImmutable("/api/user", (url) => fetcher1<IUser | null, undefined>(url))
 }
 
 export function useUser(id: string) {
@@ -18,5 +24,5 @@ export function useUser(id: string) {
 }
 
 export const useCourses = () => {
-  return useSWR("/api/courses", fetcher1<ICourse[], unknown>)
+  return useSWR("/api/courses", (url) => fetcher1<ICourse[], undefined>(url))
 }
