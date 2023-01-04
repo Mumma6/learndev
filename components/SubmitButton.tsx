@@ -40,7 +40,7 @@ const SubmitButton = ({
       color={color}
       disabled={isDisabled}
       fullWidth={fullWidth}
-      size="large"
+      size={size}
       type="submit"
       variant="contained"
     >

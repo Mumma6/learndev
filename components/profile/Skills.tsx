@@ -52,7 +52,7 @@ const Skills = () => {
 
     try {
       setIsLoading(true)
-      const response = await fetcher1<IUser, Partial<IUser>>("/api/user", {
+      const response = await fetcher1<IUser, Pick<IUser, "skills">>("/api/user", {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
         data: {

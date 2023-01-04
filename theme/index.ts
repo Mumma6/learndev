@@ -137,15 +137,15 @@ export const theme = createTheme({
   },
   palette: {
     primary: {
-      light: "#8d98f2",
-      main: "#5a6abf",
-      dark: "#23408e",
+      light: "#b47cff",
+      main: "#7c4dff",
+      dark: "#3f1dcb",
       contrastText: "#fff",
     },
     secondary: {
-      light: "#64d8cb",
-      main: "#26a69a",
-      dark: "#00766c",
+      light: "#ffb2ff",
+      main: "#ea80fc",
+      dark: "#b64fc8",
       contrastText: "#000",
     },
     success: {
@@ -242,7 +242,7 @@ export const theme = createTheme({
       textTransform: "uppercase",
     },
     caption: {
-      fontSize: "0.75rem",
+      fontSize: "0.95rem",
       fontWeight: 400,
       lineHeight: 1.66,
     },

@@ -8,11 +8,9 @@ export function findTokenByIdAndType(db: Db, id: string, type: any) {
   })
 }
 
-export function findAndDeleteTokenByIdAndType(db: Db, id: string, type: any) {
-  return db
-    .collection("tokens")
-    .findOneAndDelete({ securedTokenId: id, type })
-    .then(({ value }) => value)
+export async function findAndDeleteTokenByIdAndType(db: Db, id: string, type: any) {
+  const { value } = await db.collection("tokens").findOneAndDelete({ securedTokenId: id, type })
+  return value
 }
 
 export async function createToken(

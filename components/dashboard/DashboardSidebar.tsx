@@ -26,6 +26,7 @@ const items = [
     icon: <ImBooks fontSize="small" />,
     title: "Courses",
   },
+  /*
   {
     href: "/projects",
     icon: <FaCog fontSize="small" />,
@@ -43,15 +44,11 @@ const items = [
     title: "Quizzes",
   },
   {
-    href: "/work-experience",
-    icon: <FaCog fontSize="small" />,
-    title: "Work experience",
-  },
-  {
     href: "/planning",
     icon: <FaCog fontSize="small" />,
     title: "Planning",
   },
+  */
   {
     href: "/settings",
     icon: <FaCog fontSize="small" />,
@@ -133,6 +130,7 @@ const DashboardSidebar = ({ open, onClose, user }: IProps) => {
       PaperProps={{
         sx: {
           backgroundColor: "#ededed",
+          background: "linear-gradient(195deg, rgb(66, 66, 74), rgb(25, 25,25))",
           width: 280,
         },
       }}

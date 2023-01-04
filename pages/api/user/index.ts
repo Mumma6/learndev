@@ -9,6 +9,7 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { IUser } from "../../../types/user"
 import { Response } from "../../../types/response"
 import { handleAPIError, handleAPIResponse } from "../../../lib/utils"
+import { ObjectId } from "mongodb"
 
 const upload = multer({ dest: "/tmp" })
 
@@ -68,11 +69,11 @@ handler.patch(
         profilePicture = image.secure_url
       }
 
-      const { bio, skills } = req.body
+      const { bio, skills, workexperience }: Partial<IUser> = req.body
 
-      console.log(req.body)
-
-      console.log(skills)
+      workexperience?.forEach((w) => {
+        w._id = new ObjectId()
+      })
 
       let email
 
@@ -87,6 +88,7 @@ handler.patch(
         ...(typeof bio === "string" && { bio }),
         ...(profilePicture && { profilePicture }),
         ...(skills && { skills }),
+        ...(workexperience && { workexperience }),
       })) as IUser | null
 
       handleAPIResponse(res, user, "User updated successfully")

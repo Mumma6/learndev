@@ -61,7 +61,22 @@ export async function updateUserById(db: Db, id: string, data: Partial<IUser>) {
     .then(({ value }) => value)
 }
 
-export async function insertUser(db: Db, { email, originalPassword, bio = "", name, profilePicture, skills }: any) {
+interface InsertUser {
+  originalPassword: string
+}
+
+export async function insertUser(
+  db: Db,
+  {
+    email = "",
+    originalPassword = "",
+    bio = "",
+    name = "",
+    profilePicture,
+    skills = [],
+    workexperience = [],
+  }: Partial<IUser & InsertUser>
+) {
   const user: IUser = {
     emailVerified: false,
     profilePicture,
@@ -69,6 +84,7 @@ export async function insertUser(db: Db, { email, originalPassword, bio = "", na
     name,
     bio,
     skills,
+    workexperience,
   }
   const password = await bcrypt.hash(originalPassword, 10)
   const { insertedId } = await db.collection("users").insertOne({ ...user, password })
