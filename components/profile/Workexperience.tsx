@@ -12,6 +12,7 @@ import { fetcher1 } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
 import * as _ from "lodash"
 
+// Använd formink här istället.
 export const initialFormState: Workexperience = {
   role: "",
   company: "",
@@ -45,8 +46,6 @@ const Workexperience = () => {
   }
 
   const deleteWorkexperience = (workexperience: Workexperience) => {
-    console.log(workexperience)
-
     if (workexperience._id) {
       setWorkexperience((state) => state.filter((w) => w._id !== workexperience._id))
     } else {

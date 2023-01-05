@@ -10,6 +10,7 @@ interface IProps {
   size?: "large" | "small" | "medium" | undefined
   customStyle?: Object
   color?: "primary" | "inherit" | "secondary" | "success" | "error" | "info" | "warning" | undefined
+  customOnClick?: Function
 }
 
 const SubmitButton = ({

@@ -9,6 +9,7 @@ import { ImBooks } from "react-icons/im"
 import NavItem from "./NavItem"
 import Link from "next/link"
 import { IUser } from "../../types/user"
+import { MdQuiz } from "react-icons/md"
 
 const items = [
   {
@@ -26,6 +27,11 @@ const items = [
     icon: <ImBooks fontSize="small" />,
     title: "Courses",
   },
+  {
+    href: "/quizzes",
+    icon: <MdQuiz fontSize="small" />,
+    title: "Quizzes",
+  },
   /*
   {
     href: "/projects",
@@ -38,11 +44,7 @@ const items = [
     title: "Learning path",
   },
 
-  {
-    href: "/quizzes",
-    icon: <FaCog fontSize="small" />,
-    title: "Quizzes",
-  },
+  
   {
     href: "/planning",
     icon: <FaCog fontSize="small" />,
@@ -109,7 +111,7 @@ const DashboardSidebar = ({ open, onClose, user }: IProps) => {
           sx: {
             backgroundColor: "#ededed",
             background: "linear-gradient(195deg, rgb(66, 66, 74), rgb(25, 25,25))",
-            width: 270,
+            width: 280,
             // borderRadius: 2,
             //margin: 2,
             //height: "calc(100vh - 2rem)",

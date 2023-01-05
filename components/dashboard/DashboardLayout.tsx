@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Box, CircularProgress } from "@mui/material"
+import { Box, CircularProgress, Container } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import DashboardSidebar from "./DashboardSidebar"
 import { DashboardNavbar } from "./DashboardNavbar"
@@ -33,7 +33,12 @@ export const DashboardLayout = ({ children }: IProps) => {
     }
   }, [router, data])
 
-  if (!data?.payload) return <CircularProgress />
+  if (!data?.payload)
+    return (
+      <Container>
+        <CircularProgress />
+      </Container>
+    )
 
   return (
     <>

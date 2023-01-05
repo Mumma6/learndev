@@ -1,6 +1,7 @@
 import useSWR, { SWRResponse } from "swr"
 import useSWRImmutable from "swr/immutable"
 import { ICourse } from "../models/Course"
+import { IQuiz } from "../models/Quiz"
 import { Response } from "../types/response"
 import { IUser } from "../types/user"
 import { fetcher1 } from "./axiosFetcher"
@@ -25,4 +26,8 @@ export function useUser(id: string) {
 
 export const useCourses = () => {
   return useSWR("/api/courses", (url) => fetcher1<ICourse[], undefined>(url))
+}
+
+export const useQuizzes = () => {
+  return useSWR("/api/quizzes", (url) => fetcher1<IQuiz[], undefined>(url))
 }

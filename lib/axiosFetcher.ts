@@ -16,6 +16,7 @@ const handleResponse = <R>(response: AxiosResponse<R>): Response<R> => {
 }
 
 const handleError = <R>(error: AxiosError): Response<R> => {
+  console.log(error)
   if (error.response && error.response.status === 401) {
     return { error: "User not found" }
   } else {
