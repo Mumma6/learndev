@@ -1,12 +1,13 @@
 import React from "react"
 
-import { Box, Container, Typography, Pagination, Card, CardContent, CardHeader, Divider } from "@mui/material"
+import { EventApi, DateSelectArg, EventClickArg, EventContentArg, formatDate } from "@fullcalendar/core"
 
 import FullCalendar from "@fullcalendar/react"
-import dayGridPlugin from "@fullcalendar/daygrid"
-import timeGridPlugin from "@fullcalendar/timegrid"
 import interactionPlugin from "@fullcalendar/interaction"
-import { EventApi, DateSelectArg, EventClickArg, EventContentArg, formatDate } from "@fullcalendar/core"
+import timeGridPlugin from "@fullcalendar/timegrid"
+import dayGridPlugin from "@fullcalendar/daygrid"
+
+import { Box, Container, Typography, Pagination, Card, CardContent, CardHeader, Divider } from "@mui/material"
 
 /*
 
