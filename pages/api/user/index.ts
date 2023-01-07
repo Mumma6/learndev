@@ -69,10 +69,10 @@ handler.patch(
         profilePicture = image.secure_url
       }
 
-      const { bio, skills, workexperience }: Partial<IUser> = req.body
+      const { bio, skills, workexperience, completedQuizzes }: Partial<IUser> = req.body
 
       workexperience?.forEach((w) => {
-        w._id = new ObjectId()
+        w._id = w._id || new ObjectId()
       })
 
       let email
@@ -84,11 +84,13 @@ handler.patch(
         }
       }
 
+      // Make sure that all the old propertes are also sent from the frontend because we overwrite it and dont want to lose the old data, ex completedQuizzes
       const user = (await updateUserById(db, req.user?._id, {
         ...(typeof bio === "string" && { bio }),
         ...(profilePicture && { profilePicture }),
         ...(skills && { skills }),
         ...(workexperience && { workexperience }),
+        ...(completedQuizzes && { completedQuizzes }),
       })) as IUser | null
 
       handleAPIResponse(res, user, "User updated successfully")

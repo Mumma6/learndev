@@ -6,6 +6,9 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa"
 import NextLink from "next/link"
 import Question from "./Question"
 import { useCurrentUser } from "../../lib/hooks"
+import { fetcher1 } from "../../lib/axiosFetcher"
+import { IUser } from "../../types/user"
+import { toast } from "react-toastify"
 
 interface IProps {
   quiz: IQuiz
@@ -17,6 +20,9 @@ const Quiz = ({ quiz }: IProps) => {
 
   const [currentIndex, setCurrentIndex] = React.useState(0)
   const [currentQuestion, setCurrentQuestion] = React.useState<IQuestion>(questions[currentIndex])
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [quizCompleted, setQuizCompleted] = React.useState(false)
+  const [quizCompletedMessage, setQuizCompletedMessage] = React.useState("")
 
   const [choosenAnwserKey, setChoosenAnwserKey] = React.useState<number | null>(null)
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,63 +47,108 @@ const Quiz = ({ quiz }: IProps) => {
     setCurrentQuestion(questions[currentIndex])
   }, [currentIndex])
 
-  const submitQuiz = (event: React.FormEvent<HTMLFormElement>) => {
+  const submitQuiz = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     console.log("User", data?.payload?.name, " fick", score, " poäng")
 
-    // score <= passingScore så blir det godkänt.
-    // Gör en post till quizresults collection
-    // quizResults collectionen ska användas i dashboarden för att hämta
-    // alla quiz resultat som en användare har. Samt för att föra
-    // statisitk mot andra annvändare, t ex bättre än 70% av alla som tagit det
-    // skicka med user_id och score.
+    const quizResultResponse = await fetcher1("/api/quizresults", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: {
+        quiz_id: quiz._id,
+        user_id: data?.payload?._id,
+        score,
+        approved: score >= passingScore,
+      },
+    })
 
-    // Lägg även till quiz._id i userObjectet under "completedQuizzes".
+    const userResponse = await fetcher1<IUser, Pick<IUser, "completedQuizzes">>("/api/user", {
+      headers: { "Content-Type": "application/json" },
+      method: "PATCH",
+      data: {
+        completedQuizzes: [...(data?.payload?.completedQuizzes || []), quiz._id],
+      },
+    })
+
+    if (quizResultResponse.error) {
+      toast.error(quizResultResponse.error)
+      setIsLoading(false)
+    } else if (userResponse.error) {
+      toast.error(quizResultResponse.error)
+      setIsLoading(false)
+    } else {
+      setIsLoading(false)
+      toast.success("Quiz completed")
+      setQuizCompleted(true)
+      setQuizCompletedMessage(
+        score >= passingScore
+          ? "You have passed the quiz. Congratulations!"
+          : "Sorry you did not pass the score for this quiz. You can try again in 30 days"
+      )
+    }
   }
 
-  return (
-    <>
-      <form onSubmit={submitQuiz}>
-        <Box
-          component="main"
-          sx={{
-            flexGrow: 1,
-            py: 8,
-          }}
-        >
-          <Container maxWidth="lg">
-            <Card>
-              <Box m={2}>
-                <NextLink style={{ textDecoration: "none" }} href="/quizzes" passHref>
-                  <Button component="a" startIcon={<FaArrowLeft />}>
-                    Back
-                  </Button>
-                </NextLink>
-              </Box>
-              <CardHeader subheader={`Question ${currentIndex + 1}/${questions.length}`} title={title} />
-              <Divider />
-              <CardContent>
-                <Question question={currentQuestion} choosenAnwserKey={choosenAnwserKey} handleChange={handleChange} />
-                <Box mt={1}>
-                  <Button
-                    disabled={currentIndex === questions.length - 1 || choosenAnwserKey === null}
-                    onClick={() => setNextQuestion()}
-                    endIcon={<FaArrowRight />}
-                  >
-                    Next question
-                  </Button>
-                </Box>
-              </CardContent>
+  const CompletedCard = () => (
+    <Box
+      component="main"
+      sx={{
+        flexGrow: 1,
+        py: 8,
+      }}
+    >
+      <Container maxWidth="lg">
+        <Card>
+          <Box m={2}>
+            <NextLink style={{ textDecoration: "none" }} href="/quizzes" passHref>
+              <Button disabled={isLoading} component="a" startIcon={<FaArrowLeft />}>
+                Back
+              </Button>
+            </NextLink>
+          </Box>
+          <CardHeader subheader={"Quiz completed"} title={title} />
+          <Divider />
+          <CardContent>{quizCompletedMessage}</CardContent>
+          <Divider />
+        </Card>
+      </Container>
+    </Box>
+  )
 
-              <Divider />
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  p: 2,
-                  float: "right",
-                }}
-              >
+  const InProgressCard = () => (
+    <form onSubmit={submitQuiz}>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          py: 8,
+        }}
+      >
+        <Container maxWidth="lg">
+          <Card>
+            <Box m={2}>
+              <NextLink style={{ textDecoration: "none" }} href="/quizzes" passHref>
+                <Button disabled={isLoading} component="a" startIcon={<FaArrowLeft />}>
+                  Back
+                </Button>
+              </NextLink>
+            </Box>
+            <CardHeader subheader={`Question ${currentIndex + 1}/${questions.length}`} title={title} />
+            <Divider />
+            <CardContent>
+              <Question question={currentQuestion} choosenAnwserKey={choosenAnwserKey} handleChange={handleChange} />
+            </CardContent>
+
+            <Divider />
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                p: 2,
+                float: "right",
+              }}
+            >
+              {" "}
+              {currentIndex === questions.length - 1 ? (
                 <SubmitButton
                   customStyle={{ margin: 1 }}
                   color="success"
@@ -105,15 +156,25 @@ const Quiz = ({ quiz }: IProps) => {
                   size={"medium"}
                   text="Submit quiz"
                   isLoading={false}
-                  isDisabled={currentIndex !== questions.length - 1 || choosenAnwserKey === null}
+                  isDisabled={currentIndex !== questions.length - 1 || choosenAnwserKey === null || isLoading}
                 />
-              </Box>
-            </Card>
-          </Container>
-        </Box>
-      </form>
-    </>
+              ) : (
+                <Button
+                  disabled={currentIndex === questions.length - 1 || choosenAnwserKey === null}
+                  onClick={() => setNextQuestion()}
+                  endIcon={<FaArrowRight />}
+                >
+                  Next question
+                </Button>
+              )}
+            </Box>
+          </Card>
+        </Container>
+      </Box>
+    </form>
   )
+
+  return quizCompleted ? <CompletedCard /> : <InProgressCard />
 }
 
 export default Quiz

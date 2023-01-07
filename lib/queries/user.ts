@@ -75,6 +75,7 @@ export async function insertUser(
     profilePicture,
     skills = [],
     workexperience = [],
+    completedQuizzes = [],
   }: Partial<IUser & InsertUser>
 ) {
   const user: IUser = {
@@ -85,6 +86,7 @@ export async function insertUser(
     bio,
     skills,
     workexperience,
+    completedQuizzes,
   }
   const password = await bcrypt.hash(originalPassword, 10)
   const { insertedId } = await db.collection("users").insertOne({ ...user, password })

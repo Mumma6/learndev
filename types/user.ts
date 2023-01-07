@@ -20,8 +20,8 @@ export interface IUser {
   email: string
   name: string
   bio: any
-  skills: Skill[] // profile
-  workexperience: Workexperience[] // profil
-  // completedQuizzes: any // profile
+  skills: Skill[]
+  workexperience: Workexperience[]
+  completedQuizzes: string[]
   _id?: any
 }

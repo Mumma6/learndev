@@ -12,16 +12,12 @@ import {
   Container,
 } from "@mui/material"
 import { FaSearch } from "react-icons/fa"
-import { useQuizzes } from "../../lib/hooks"
+import { useCurrentUser, useQuizzes } from "../../lib/hooks"
 import QuizzesCard from "./QuizzesCard"
 import { IQuestion } from "../../models/Quiz"
 
 const Quizzes = () => {
   const { data } = useQuizzes()
-
-  // Hämta user
-  // Alla quizzes som är completede ska inte gå att välja. Visa istället vilken poäng dom fått.
-  // Misslyckade quizzes ska kunna göras om efter en månad?
 
   return (
     <>

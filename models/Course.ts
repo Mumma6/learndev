@@ -10,4 +10,6 @@ export interface ICourse {
   userId: string
   createdAt?: string | Date
   _id?: string
+  tags?: string[] // vad har man lärt sig av kursen. t ex "javascript", "react" Plocka saker från Constant objectet? Välja flera "kompetenser" kopplat till varje kurs.
+  completed?: boolean
 }
