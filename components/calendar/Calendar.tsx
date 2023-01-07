@@ -45,13 +45,16 @@ const Calendar = () => {
   }
 
   const handleDateSelect = (selectInfo: DateSelectArg) => {
-    console.log(selectInfo)
+    console.log("click")
 
-    if (!selectInfo) {
+    if (selectInfo === undefined || selectInfo === null) {
       return null
     }
+
+    console.log(selectInfo)
+
     let title = prompt("Please enter a new title for your event")
-    let calendarApi = selectInfo.view.calendar
+    let calendarApi = selectInfo?.view?.calendar
 
     calendarApi.unselect() // clear date selection
 
