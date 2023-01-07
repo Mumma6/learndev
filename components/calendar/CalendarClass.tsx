@@ -37,15 +37,15 @@ export default class CalendarClass extends React.Component<{}, CalendarClassStat
 
     calendarApi.unselect() // clear date selection
 
-    if (title) {
+    if (title && selectInfo) {
       calendarApi.addEvent({
         id: Math.floor(Math.random() * 1000).toString(),
         title,
         url: "en url",
         backgroundColor: "red",
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        allDay: selectInfo.allDay,
+        start: selectInfo?.startStr,
+        end: selectInfo?.endStr,
+        allDay: selectInfo?.allDay,
         hej: "hej",
       })
     }
