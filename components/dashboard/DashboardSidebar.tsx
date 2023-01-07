@@ -4,7 +4,7 @@ import NextLink from "next/link"
 import { useRouter } from "next/router"
 import { useTheme } from "@mui/material/styles"
 
-import { FaCog, FaHome, FaUser, FaUsers } from "react-icons/fa"
+import { FaCog, FaHome, FaRegCalendarAlt, FaUser, FaUsers } from "react-icons/fa"
 import { ImBooks } from "react-icons/im"
 import NavItem from "./NavItem"
 import Link from "next/link"
@@ -31,6 +31,11 @@ const items = [
     href: "/quizzes",
     icon: <MdQuiz fontSize="small" />,
     title: "Quizzes",
+  },
+  {
+    href: "/calendar",
+    icon: <FaRegCalendarAlt fontSize="small" />,
+    title: "Calendar",
   },
   /*
   {
