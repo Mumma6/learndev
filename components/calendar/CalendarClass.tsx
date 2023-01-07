@@ -31,6 +31,7 @@ export default class CalendarClass extends React.Component<{}, CalendarClassStat
   }
 
   handleDateSelect = (selectInfo: DateSelectArg) => {
+    console.log(selectInfo)
     let title = prompt("Please enter a new title for your event")
     let calendarApi = selectInfo.view.calendar
 
