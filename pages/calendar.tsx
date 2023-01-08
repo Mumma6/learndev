@@ -1,7 +1,7 @@
 import React from "react"
 import { DashboardLayout } from "../components/dashboard/DashboardLayout"
 import Head from "next/head"
-import Calendar from "../components/calendar/Calendar"
+import StudyCalendar from "../components/calendar/StudyCalendar"
 
 const calendar = () => {
   return (
@@ -10,7 +10,7 @@ const calendar = () => {
         <Head>
           <title>Calendar</title>
         </Head>
-        <Calendar />
+        <StudyCalendar />
       </DashboardLayout>
     </>
   )

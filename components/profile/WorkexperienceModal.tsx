@@ -13,6 +13,7 @@ import { ClickEventRet, SetState } from "../../types/generics"
 import { Workexperience } from "../../types/user"
 import { initialFormState } from "./Workexperience"
 
+// Ersätt dayjs med date-fns
 import dayjs, { Dayjs } from "dayjs"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
