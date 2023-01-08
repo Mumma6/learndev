@@ -122,6 +122,12 @@ const StudyCalendar = () => {
               onAddEvent={onAddEvent}
               currentEvent={currentEvent}
             />
+            <p>
+              Knapp för att lägga till ett mål (course som ska vara klar, quiz som ska tas, skill som ska läras, project som
+              ska vara klart.) osv osv
+            </p>
+            <p>Målen ska sträcka sig över hela dagen. Så "allDay" true.</p>
+            <p>Detta blir inte currentEvent som kommer från kalendenr. Lägg till en mui date picker. i En ny modal.</p>
             <Calendar
               localizer={localizer}
               events={myEvents}
