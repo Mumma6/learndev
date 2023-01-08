@@ -116,7 +116,7 @@ function LandingHeader() {
           {!data?.payload && (
             <Box>
               <Link style={{ textDecoration: "none" }} href="/sign-up" passHref>
-                <Button size="large" color="secondary" variant="outlined">
+                <Button disabled={!data} size="large" color="secondary" variant="outlined">
                   Register
                 </Button>
               </Link>
@@ -125,7 +125,7 @@ function LandingHeader() {
           <Box sx={{ marginLeft: 2 }}>
             {!data?.payload ? (
               <Link style={{ textDecoration: "none" }} href="/login" passHref>
-                <Button size="large" color="primary" variant="outlined">
+                <Button disabled={!data} size="large" color="primary" variant="outlined">
                   Sign in
                 </Button>
               </Link>
