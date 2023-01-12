@@ -10,7 +10,7 @@ const DashboardLayoutRoot = styled("div")(({ theme }) => ({
   display: "flex",
   flex: "1 1 auto",
   maxWidth: "100%",
-  paddingTop: 64,
+  paddingTop: 40,
   [theme.breakpoints.up("lg")]: {
     paddingLeft: 280,
   },
@@ -55,7 +55,11 @@ export const DashboardLayout = ({ children }: IProps) => {
         </Box>
       </DashboardLayoutRoot>
       <DashboardNavbar onSidebarOpen={() => setSidebarOpen(true)} />
-      <DashboardSidebar user={data.payload} onClose={() => setSidebarOpen(false)} open={isSidebarOpen} />
+      <DashboardSidebar
+        user={data.payload}
+        onClose={() => setSidebarOpen(false)}
+        open={isSidebarOpen}
+      />
     </>
   )
 }

@@ -1,6 +1,7 @@
 import useSWR, { SWRResponse } from "swr"
 import useSWRImmutable from "swr/immutable"
 import { ICourse } from "../models/Course"
+import { IEventInfo } from "../models/EventInfo"
 import { IQuiz } from "../models/Quiz"
 import { IQuizResult } from "../models/QuizResult"
 import { Response } from "../types/response"
@@ -27,6 +28,10 @@ export function useUser(id: string) {
 
 export const useCourses = () => {
   return useSWR("/api/courses", (url) => fetcher1<ICourse[], undefined>(url))
+}
+
+export const useEvents = () => {
+  return useSWR("/api/events", (url) => fetcher1<IEventInfo[], undefined>(url))
 }
 
 export const useQuizzes = () => {

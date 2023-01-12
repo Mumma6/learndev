@@ -40,13 +40,6 @@ const Courses = () => {
   const { mutate } = useSWRConfig()
   console.log(data)
 
-  useEffect(() => {
-    console.log("in usereffect", data)
-    if (!data) return
-    if (data?.payload === null) {
-      console.log("no user")
-    }
-  }, [data])
 
   const deleteCourse = async (id: string) => {
     console.log("deleing", id)

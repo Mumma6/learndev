@@ -1,6 +1,15 @@
-import React, { useState, useCallback } from "react"
+import React, { useState, useCallback, useEffect } from "react"
 
-import { Box, Container, Typography, Pagination, Card, CardContent, CardHeader, Divider } from "@mui/material"
+import {
+  Box,
+  Container,
+  Typography,
+  Pagination,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+} from "@mui/material"
 
 import { Calendar, dateFnsLocalizer, Event, Views } from "react-big-calendar"
 
@@ -19,6 +28,10 @@ import { IEventInfo } from "../../models/EventInfo"
 import { IQuiz } from "../../models/Quiz"
 import AddEventInfoModal from "./AddEventInfoModal"
 import { ClickEvent } from "../../types/generics"
+import { useCurrentUser, useEvents } from "../../lib/hooks"
+import { fetcher1 } from "../../lib/axiosFetcher"
+import { toast } from "react-toastify"
+import { useSWRConfig } from "swr"
 
 const locales = {
   "en-US": enUS,
@@ -47,23 +60,24 @@ export const initialEventFormState: EventFormData = {
 }
 
 const StudyCalendar = () => {
-  const [myEvents, setEvents] = useState<IEventInfo[]>([])
+  const [myEvents, setEvents] = useState<Omit<IEventInfo, "userId">[]>([])
   const [currentEvent, setCurrentEvent] = useState<Event | null>(null)
   const [open, setOpen] = useState(false)
   const [eventFormData, setEventFormData] = useState<EventFormData>(initialEventFormState)
 
-  const handleSelectSlot1 = useCallback(
-    (event: Event) => {
-      console.log(event)
+  const { data: eventsData } = useEvents()
 
-      // Ersätt detta med en vettig modal.
-      const title = window.prompt("New Event name")
-      if (title) {
-        setEvents((prev) => [...prev, { start: event.start, end: event.end, title, description: "hej", kurs: "1" }])
-      }
-    },
-    [setEvents]
-  )
+  useEffect(() => {
+    setEvents([
+      ...(eventsData?.payload || []).map((e) => ({
+        ...e,
+        start: new Date(e.start!),
+        end: new Date(e.end!),
+      })),
+    ])
+  }, [eventsData?.payload])
+
+  const { mutate } = useSWRConfig()
 
   const handleSelectSlot = (event: Event) => {
     setOpen(true)
@@ -82,23 +96,33 @@ const StudyCalendar = () => {
     setOpen(false)
   }
 
-  const onAddEvent = (e: ClickEvent) => {
+  const onAddEvent = async (e: ClickEvent) => {
     e.preventDefault()
-    console.log("nytt event")
 
-    setEventFormData(initialEventFormState)
+    try {
+      const response = await fetcher1<undefined, Omit<IEventInfo, "userId">>("/api/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        data: {
+          ...eventFormData,
+          start: currentEvent?.start,
+          end: currentEvent?.end,
+        },
+      })
 
-    setEvents((prev) => [
-      ...prev,
-      {
-        start: currentEvent?.start,
-        end: currentEvent?.end,
-        title: eventFormData.title,
-        description: eventFormData.description,
-      },
-    ])
+      if (response?.error) {
+        toast.error(response.error)
+      } else {
+        mutate("/api/events")
+        toast.success(response?.message)
+      }
+    } catch (e: any) {
+      console.log(e)
+    } finally {
+      setEventFormData(initialEventFormState)
 
-    setOpen(false)
+      handleClose()
+    }
   }
 
   return (
@@ -114,6 +138,7 @@ const StudyCalendar = () => {
           <CardHeader title="Calendar" subheader="Use for planning" />
           <Divider />
           <CardContent>
+            <p>Add event (egen modal)</p>
             <AddEventInfoModal
               open={open}
               handleClose={handleClose}

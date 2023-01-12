@@ -3,9 +3,10 @@ import session from "./sessions"
 import { NextConnect } from "next-connect"
 
 import { NextApiRequest, NextApiResponse } from "next"
+import userExists from "./userExists"
 
 interface IMiddleware extends NextConnect<NextApiRequest, NextApiResponse> {}
 
-const auths: IMiddleware[] = [session, passport.initialize(), passport.session()]
+const auths: IMiddleware[] = [session, passport.initialize(), passport.session(), userExists]
 
 export default auths

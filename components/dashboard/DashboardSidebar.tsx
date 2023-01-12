@@ -1,11 +1,21 @@
 import React from "react"
-import { Box, Button, Divider, Drawer, IconButton, Tooltip, Typography, useMediaQuery } from "@mui/material"
+import {
+  Box,
+  Button,
+  Divider,
+  Drawer,
+  IconButton,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+} from "@mui/material"
 import NextLink from "next/link"
 import { useRouter } from "next/router"
 import { useTheme } from "@mui/material/styles"
 
 import { FaCog, FaHome, FaRegCalendarAlt, FaUser, FaUsers } from "react-icons/fa"
 import { ImBooks } from "react-icons/im"
+import { AiOutlineFundProjectionScreen } from "react-icons/ai"
 import NavItem from "./NavItem"
 import Link from "next/link"
 import { IUser } from "../../types/user"
@@ -18,14 +28,20 @@ const items = [
     title: "Home",
   },
   {
-    href: "/profile",
-    icon: <FaUser fontSize="small" />,
-    title: "Profile",
+    href: "/calendar",
+    icon: <FaRegCalendarAlt fontSize="small" />,
+    title: "Calendar",
   },
+
   {
     href: "/courses",
     icon: <ImBooks fontSize="small" />,
     title: "Courses",
+  },
+  {
+    href: "/projects",
+    icon: <AiOutlineFundProjectionScreen fontSize="small" />,
+    title: "Projects",
   },
   {
     href: "/quizzes",
@@ -33,16 +49,13 @@ const items = [
     title: "Quizzes",
   },
   {
-    href: "/calendar",
-    icon: <FaRegCalendarAlt fontSize="small" />,
-    title: "Calendar",
+    href: "/profile",
+    icon: <FaUser fontSize="small" />,
+    title: "Profile",
   },
+
   /*
-  {
-    href: "/projects",
-    icon: <FaCog fontSize="small" />,
-    title: "Projects",
-  },
+  
   {
     href: "/learning-path",
     icon: <FaCog fontSize="small" />,
@@ -83,7 +96,12 @@ const DashboardSidebar = ({ open, onClose, user }: IProps) => {
         </Link>
       </Box>
       <Box sx={{ margin: 2 }}>
-        <Link style={{ textDecoration: "none" }} href={`/user/${user._id}`} target="_blank" passHref>
+        <Link
+          style={{ textDecoration: "none" }}
+          href={`/user/${user._id}`}
+          target="_blank"
+          passHref
+        >
           <Button size="large" color="primary" variant="outlined">
             Share profile
           </Button>
