@@ -14,3 +14,7 @@ export const findQuizbyId = async (db: Db, _id: string) => {
 export const addQuizResult = async (db: Db, data: Omit<IQuizResult, "_id">) => {
   return await db.collection("quizresults").insertOne(data)
 }
+
+export const getAllQuizResults = async (db: Db) => {
+  return await db.collection("quizresults").find({}).toArray()
+}
