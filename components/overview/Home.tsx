@@ -6,7 +6,8 @@ import LearningProgress from "./LearningProgress"
 import CoursesByProvider from "./CoursesByProvider"
 import TotalQuizzes from "./TotalQuizzes"
 import TotalProjects from "./TotalProjects"
-import { useCourses } from "../../lib/hooks"
+import { useCourses, useQuizResults } from "../../lib/hooks"
+import LatestQuizResults from "./LatestQuizResults"
 
 interface IProps {
   user: IUser
@@ -24,6 +25,10 @@ display:
 
 const Home = ({ user }: IProps) => {
   const { data } = useCourses()
+  const { data: quizResultsData } = useQuizResults()
+  const userQuizResult = quizResultsData?.payload
+    ?.filter((p) => p.user_id === user._id)
+    .filter((x) => x.approved)
   return (
     <>
       <Box
@@ -51,10 +56,13 @@ const Home = ({ user }: IProps) => {
               <LearningProgress />
             </Grid>
             <Grid item xl={3} lg={3} sm={6} xs={12}>
-              <TotalQuizzes />
+              <TotalQuizzes amount={userQuizResult?.length || 0} />
             </Grid>
             <Grid item lg={6} md={6} xl={3} xs={12}>
               {!!data?.payload?.length && <CoursesByProvider courses={data?.payload} />}
+            </Grid>
+            <Grid item lg={6} md={6} xl={3} xs={12}>
+              <LatestQuizResults />
             </Grid>
           </Grid>
         </Container>

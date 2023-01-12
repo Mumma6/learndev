@@ -14,7 +14,7 @@ const TotalCourses = ({ amount }: IProps) => {
         <Grid container spacing={3} sx={{ justifyContent: "space-between" }}>
           <Grid item>
             <Typography color="textSecondary" gutterBottom variant="overline">
-              TOTAL COURSES
+              COMPLETED COURSES
             </Typography>
             <Typography color="textPrimary" variant="h4">
               {amount}

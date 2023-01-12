@@ -1,18 +1,23 @@
 import { Avatar, Card, CardContent, Grid, Typography } from "@mui/material"
 import React from "react"
 import { FaMicroscope } from "react-icons/fa"
+import { useCurrentUser, useQuizResults } from "../../lib/hooks"
 
-const TotalQuizzes = () => {
+interface IProps {
+  amount: number
+}
+
+const TotalQuizzes = ({ amount }: IProps) => {
   return (
     <Card sx={{ height: "100%" }}>
       <CardContent>
         <Grid container spacing={3} sx={{ justifyContent: "space-between" }}>
           <Grid item>
             <Typography color="textSecondary" gutterBottom variant="overline">
-              TOTAL QUIZZES
+              APPROVED QUIZZES
             </Typography>
             <Typography color="textPrimary" variant="h4">
-              5
+              {amount}
             </Typography>
           </Grid>
           <Grid item>

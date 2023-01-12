@@ -2,6 +2,7 @@ import useSWR, { SWRResponse } from "swr"
 import useSWRImmutable from "swr/immutable"
 import { ICourse } from "../models/Course"
 import { IQuiz } from "../models/Quiz"
+import { IQuizResult } from "../models/QuizResult"
 import { Response } from "../types/response"
 import { IUser } from "../types/user"
 import { fetcher1 } from "./axiosFetcher"
@@ -30,4 +31,9 @@ export const useCourses = () => {
 
 export const useQuizzes = () => {
   return useSWR("/api/quizzes", (url) => fetcher1<IQuiz[], undefined>(url))
+}
+
+// This will get ALL results. Create a seperate serverless function for user specifik results?
+export const useQuizResults = () => {
+  return useSWR("/api/quizresults", (url) => fetcher1<IQuizResult[], undefined>(url))
 }
