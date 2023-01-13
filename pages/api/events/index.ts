@@ -35,14 +35,14 @@ handler.post(...auths, async (req, res) => {
 })
 
 handler.delete(...auths, async (req, res) => {
-  if (!req.query.id) {
+  if (!req.query._id) {
     handleAPIResponse(res, null, "ID provided")
   }
 
   try {
     const db = await getMongoDb()
-    deleteEventById(db, req.query.id as string)
-    handleAPIResponse(res, null, `Course with id: ${req.query.id} was deleted successfully`)
+    deleteEventById(db, req.query._id as string)
+    handleAPIResponse(res, null, `Event deleted successfully`)
   } catch (error) {
     console.log("Error when deleting course")
     handleAPIError(res, error)

@@ -21,7 +21,13 @@ interface IProps {
   currentEvent: Event | null
 }
 
-const AddEventInfoModal = ({ open, handleClose, eventFormData, setEventFormData, onAddEvent, currentEvent }: IProps) => {
+const AddEventInfoModal = ({
+  open,
+  handleClose,
+  eventFormData,
+  setEventFormData,
+  onAddEvent,
+}: IProps) => {
   const { title, description } = eventFormData
 
   const onClose = () => {
@@ -39,7 +45,9 @@ const AddEventInfoModal = ({ open, handleClose, eventFormData, setEventFormData,
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Add event</DialogTitle>
       <DialogContent>
-        <DialogContentText>To add a course, please fill in the information below.</DialogContentText>
+        <DialogContentText>
+          To add a course, please fill in the information below.
+        </DialogContentText>
         <Box component="form">
           <TextField
             name="title"

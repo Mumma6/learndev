@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react"
+import * as _ from "lodash"
 
 import {
   Box,
@@ -32,6 +33,7 @@ import { useCurrentUser, useEvents } from "../../lib/hooks"
 import { fetcher1 } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
 import { useSWRConfig } from "swr"
+import EditEventInfoModal from "./EditEventInfoModal"
 
 const locales = {
   "en-US": enUS,
@@ -63,6 +65,7 @@ const StudyCalendar = () => {
   const [myEvents, setEvents] = useState<Omit<IEventInfo, "userId">[]>([])
   const [currentEvent, setCurrentEvent] = useState<Event | null>(null)
   const [open, setOpen] = useState(false)
+  const [editModalOpen, setEditModalOpen] = useState(false)
   const [eventFormData, setEventFormData] = useState<EventFormData>(initialEventFormState)
 
   const { data: eventsData } = useEvents()
@@ -84,12 +87,57 @@ const StudyCalendar = () => {
     setCurrentEvent(event)
   }
 
-  // detta ska rendera en EventDescription komponent.
-  // Där man kan ändra/ta bort
-  const handleSelectEvent = useCallback((event: any) => window.alert(event.title), [])
+  // kanske kan ha type EventInfo
+  const handleSelectEvent = (event: Event) => {
+    setCurrentEvent(event)
+    setEditModalOpen(true)
+  }
 
-  const handleClickOpen = () => {
-    setOpen(true)
+  const handleEditModalClose = () => {
+    setEditModalOpen(false)
+  }
+
+  const onDeleteEvent = async (e: ClickEvent) => {
+    e.preventDefault()
+
+    const e1 = {
+      title: currentEvent?.title,
+      start: currentEvent?.start,
+      end: currentEvent?.end,
+    }
+
+    // This is only because currentEvent dont have a id field....
+    const findFn = (event: IEventInfo) => {
+      const matchEvent = {
+        title: event.title,
+        start: new Date(event.start!),
+        end: new Date(event.end!),
+      }
+
+      return _.isEqual(e1, matchEvent)
+    }
+
+    const match = eventsData?.payload?.find(findFn)
+
+    if (match) {
+      try {
+        const { _id } = match
+        const response = await fetcher1(`/api/events?_id=${_id}`, {
+          method: "DELETE",
+        })
+
+        if (response?.error) {
+          toast.error(response.error)
+        } else {
+          mutate("/api/events")
+          toast.success(response?.message)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    handleEditModalClose()
   }
 
   const handleClose = () => {
@@ -139,6 +187,11 @@ const StudyCalendar = () => {
           <Divider />
           <CardContent>
             <p>Add event (egen modal)</p>
+            <EditEventInfoModal
+              open={editModalOpen}
+              handleClose={handleEditModalClose}
+              onDeleteEvent={onDeleteEvent}
+            />
             <AddEventInfoModal
               open={open}
               handleClose={handleClose}
