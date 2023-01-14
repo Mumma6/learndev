@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next"
 import nextConnect from "next-connect"
 import auths from "../../../lib/middlewares/auth"
 import { getMongoDb } from "../../../lib/mongodb"
-import { addQuizResult, getAllQuizzes } from "../../../lib/queries/quizzes"
+import { addQuizResult, getAllQuizResults, getAllQuizzes } from "../../../lib/queries/quizzes"
 
 import { handleAPIError, handleAPIResponse } from "../../../lib/utils"
 
@@ -29,6 +29,22 @@ handler.post(...auths, async (req, res) => {
     handleAPIResponse(res, null, "Quiz result added")
   } catch (error) {
     console.log("Error when adding quiz result")
+    handleAPIError(res, error)
+  }
+})
+
+handler.get(...auths, async (req, res) => {
+  if (!req.user) {
+    handleAPIResponse(res, [], "User auth")
+    return
+  }
+
+  try {
+    const db = await getMongoDb()
+    const quizResults = await getAllQuizResults(db)
+    handleAPIResponse(res, quizResults, "All quizResults")
+  } catch (error) {
+    console.log("Error when fethcing quizResults")
     handleAPIError(res, error)
   }
 })

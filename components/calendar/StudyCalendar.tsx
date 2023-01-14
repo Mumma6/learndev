@@ -1,6 +1,16 @@
-import React, { useState, useCallback } from "react"
+import React, { useState, useCallback, useEffect } from "react"
+import * as _ from "lodash"
 
-import { Box, Container, Typography, Pagination, Card, CardContent, CardHeader, Divider } from "@mui/material"
+import {
+  Box,
+  Container,
+  Typography,
+  Pagination,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+} from "@mui/material"
 
 import { Calendar, dateFnsLocalizer, Event, Views } from "react-big-calendar"
 
@@ -19,6 +29,11 @@ import { IEventInfo } from "../../models/EventInfo"
 import { IQuiz } from "../../models/Quiz"
 import AddEventInfoModal from "./AddEventInfoModal"
 import { ClickEvent } from "../../types/generics"
+import { useCurrentUser, useEvents } from "../../lib/hooks"
+import { fetcher1 } from "../../lib/axiosFetcher"
+import { toast } from "react-toastify"
+import { useSWRConfig } from "swr"
+import EditEventInfoModal from "./EditEventInfoModal"
 
 const locales = {
   "en-US": enUS,
@@ -47,58 +62,115 @@ export const initialEventFormState: EventFormData = {
 }
 
 const StudyCalendar = () => {
-  const [myEvents, setEvents] = useState<IEventInfo[]>([])
+  const [myEvents, setEvents] = useState<Omit<IEventInfo, "userId">[]>([])
   const [currentEvent, setCurrentEvent] = useState<Event | null>(null)
   const [open, setOpen] = useState(false)
+  const [editModalOpen, setEditModalOpen] = useState(false)
   const [eventFormData, setEventFormData] = useState<EventFormData>(initialEventFormState)
 
-  const handleSelectSlot1 = useCallback(
-    (event: Event) => {
-      console.log(event)
+  const { data: eventsData } = useEvents()
 
-      // Ersätt detta med en vettig modal.
-      const title = window.prompt("New Event name")
-      if (title) {
-        setEvents((prev) => [...prev, { start: event.start, end: event.end, title, description: "hej", kurs: "1" }])
-      }
-    },
-    [setEvents]
-  )
+  useEffect(() => {
+    setEvents([
+      ...(eventsData?.payload || []).map((e) => ({
+        ...e,
+        start: new Date(e.start!),
+        end: new Date(e.end!),
+      })),
+    ])
+  }, [eventsData?.payload])
+
+  const { mutate } = useSWRConfig()
 
   const handleSelectSlot = (event: Event) => {
     setOpen(true)
     setCurrentEvent(event)
   }
 
-  // detta ska rendera en EventDescription komponent.
-  // Där man kan ändra/ta bort
-  const handleSelectEvent = useCallback((event: any) => window.alert(event.title), [])
+  // kanske kan ha type EventInfo
+  const handleSelectEvent = (event: Event) => {
+    setCurrentEvent(event)
+    setEditModalOpen(true)
+  }
 
-  const handleClickOpen = () => {
-    setOpen(true)
+  const handleEditModalClose = () => {
+    setEditModalOpen(false)
+  }
+
+  const onDeleteEvent = async (e: ClickEvent) => {
+    e.preventDefault()
+
+    const e1 = {
+      title: currentEvent?.title,
+      start: currentEvent?.start,
+      end: currentEvent?.end,
+    }
+
+    // This is only because currentEvent dont have a id field....
+    const findFn = (event: IEventInfo) => {
+      const matchEvent = {
+        title: event.title,
+        start: new Date(event.start!),
+        end: new Date(event.end!),
+      }
+
+      return _.isEqual(e1, matchEvent)
+    }
+
+    const match = eventsData?.payload?.find(findFn)
+
+    if (match) {
+      try {
+        const { _id } = match
+        const response = await fetcher1(`/api/events?_id=${_id}`, {
+          method: "DELETE",
+        })
+
+        if (response?.error) {
+          toast.error(response.error)
+        } else {
+          mutate("/api/events")
+          toast.success(response?.message)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    handleEditModalClose()
   }
 
   const handleClose = () => {
     setOpen(false)
   }
 
-  const onAddEvent = (e: ClickEvent) => {
+  const onAddEvent = async (e: ClickEvent) => {
     e.preventDefault()
-    console.log("nytt event")
 
-    setEventFormData(initialEventFormState)
+    try {
+      const response = await fetcher1<undefined, Omit<IEventInfo, "userId">>("/api/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        data: {
+          ...eventFormData,
+          start: currentEvent?.start,
+          end: currentEvent?.end,
+        },
+      })
 
-    setEvents((prev) => [
-      ...prev,
-      {
-        start: currentEvent?.start,
-        end: currentEvent?.end,
-        title: eventFormData.title,
-        description: eventFormData.description,
-      },
-    ])
+      if (response?.error) {
+        toast.error(response.error)
+      } else {
+        mutate("/api/events")
+        toast.success(response?.message)
+      }
+    } catch (e: any) {
+      console.log(e)
+    } finally {
+      setEventFormData(initialEventFormState)
 
-    setOpen(false)
+      handleClose()
+    }
   }
 
   return (
@@ -114,6 +186,12 @@ const StudyCalendar = () => {
           <CardHeader title="Calendar" subheader="Use for planning" />
           <Divider />
           <CardContent>
+            <p>Add event (egen modal)</p>
+            <EditEventInfoModal
+              open={editModalOpen}
+              handleClose={handleEditModalClose}
+              onDeleteEvent={onDeleteEvent}
+            />
             <AddEventInfoModal
               open={open}
               handleClose={handleClose}
