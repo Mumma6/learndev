@@ -36,7 +36,7 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme, value }) => ({
 
 const LatestQuizResults = () => {
   return (
-    <Card>
+    <Card sx={{ height: "100%" }}>
       <CardHeader title="Latest quizzes" />
       <Divider />
       <CardContent>
@@ -52,11 +52,7 @@ const LatestQuizResults = () => {
               <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                 <TableCell component="th" scope="row">
                   <Box sx={{ display: "flex" }}>
-                    <Avatar
-                      sx={{ width: 24, height: 24 }}
-                      alt="JS Logo"
-                      src="/assets/images/Javascript_Logo.png"
-                    />
+                    <Avatar sx={{ width: 24, height: 24 }} alt="JS Logo" src="/assets/images/Javascript_Logo.png" />
                     <Typography ml={1}>Javascript</Typography>
                   </Box>
                 </TableCell>
@@ -71,11 +67,7 @@ const LatestQuizResults = () => {
               <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                 <TableCell component="th" scope="row">
                   <Box sx={{ display: "flex" }}>
-                    <Avatar
-                      sx={{ width: 24, height: 24 }}
-                      alt="JS Logo"
-                      src="/assets/images/react-logo.png"
-                    />
+                    <Avatar sx={{ width: 24, height: 24 }} alt="JS Logo" src="/assets/images/react-logo.png" />
                     <Typography ml={1}>React</Typography>
                   </Box>
                 </TableCell>

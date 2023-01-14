@@ -118,7 +118,9 @@ const AboutYou = ({ user, mutate }: { user: IUser; mutate: Mutate<IUser | null> 
               size={"medium"}
               text="Update information"
               isLoading={isLoading}
-              isDisabled={!formik.isValid || !formik.dirty}
+              isDisabled={
+                !formik.isValid || !formik.dirty || (formik.values.bio === user.bio && formik.values.name === user.name)
+              }
             />
           </Box>
         </Card>

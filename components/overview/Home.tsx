@@ -21,14 +21,14 @@ display:
   - latest quizzes
   - ...other stuff?
 
+  Ska man kunna välja själv vilka grafer osv man vill se? Premium tjänst kanske?
+
 */
 
 const Home = ({ user }: IProps) => {
   const { data } = useCourses()
   const { data: quizResultsData } = useQuizResults()
-  const userQuizResult = quizResultsData?.payload
-    ?.filter((p) => p.user_id === user._id)
-    .filter((x) => x.approved)
+  const userQuizResult = quizResultsData?.payload?.filter((p) => p.user_id === user._id).filter((x) => x.approved)
   return (
     <>
       <Box

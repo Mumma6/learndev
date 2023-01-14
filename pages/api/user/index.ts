@@ -69,7 +69,7 @@ handler.patch(
         profilePicture = image.secure_url
       }
 
-      const { bio, skills, workexperience, completedQuizzes }: Partial<IUser> = req.body
+      const { bio, skills, workexperience, completedQuizzes, socials }: Partial<IUser> = req.body
 
       workexperience?.forEach((w) => {
         w._id = w._id || new ObjectId()
@@ -91,6 +91,7 @@ handler.patch(
         ...(skills && { skills }),
         ...(workexperience && { workexperience }),
         ...(completedQuizzes && { completedQuizzes }),
+        ...(socials && { socials }),
       })) as IUser | null
 
       handleAPIResponse(res, user, "User updated successfully")

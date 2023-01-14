@@ -35,13 +35,11 @@ handler.post<RequestBody>(...auths, async (req, res) => {
   }
 
   try {
+    // All other props will get a default value in the function
     const user = await insertUser(db, {
       email,
-      originalPassword: password,
-      bio: "",
+      password,
       name,
-      skills: [],
-      workexperience: [],
     })
     req.logIn(user, (err: any) => {
       if (err) {

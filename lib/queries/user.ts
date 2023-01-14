@@ -54,42 +54,59 @@ export async function findUserByEmail(db: Db, email: string) {
     .then((user) => user || null)
 }
 
+// test by adding a new default value "test"
+const defaultUserValues: Omit<IUser, "password"> = {
+  email: "",
+  bio: "",
+  name: "",
+  profilePicture: "",
+  skills: [],
+  workexperience: [],
+  completedQuizzes: [],
+  emailVerified: false,
+  userSettings: {},
+  socials: {
+    linkedin: "",
+    twitter: "",
+    youtube: "",
+    github: "",
+    blog: "",
+    personalWebsite: "",
+  },
+}
+
+// The idea is when something new is added to the IUser, all users will automaticaly get the default values. ex Socails.
+const setDefaultValues = async (data: Partial<IUser>, db: Db, id: string): Promise<Omit<IUser, "password">> => {
+  const userDbValues = await findUserById(db, id)
+
+  return {
+    ...defaultUserValues,
+    ...(userDbValues && { ...userDbValues }),
+    ...data,
+  }
+}
+
 export async function updateUserById(db: Db, id: string, data: Partial<IUser>) {
   return db
     .collection("users")
-    .findOneAndUpdate({ _id: new ObjectId(id) }, { $set: data }, { returnDocument: "after", projection: { password: 0 } })
+    .findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: await setDefaultValues(data, db, id) },
+      { returnDocument: "after", projection: { password: 0 } }
+    )
     .then(({ value }) => value)
 }
 
-interface InsertUser {
-  originalPassword: string
-}
-
-export async function insertUser(
-  db: Db,
-  {
-    email = "",
-    originalPassword = "",
-    bio = "",
-    name = "",
-    profilePicture,
-    skills = [],
-    workexperience = [],
-    completedQuizzes = [],
-  }: Partial<IUser & InsertUser>
-) {
+export async function insertUser(db: Db, { email, password, name }: Pick<IUser, "email" | "password" | "name">) {
   const user: IUser = {
-    emailVerified: false,
-    profilePicture,
+    ...defaultUserValues,
     email,
+    password,
     name,
-    bio,
-    skills,
-    workexperience,
-    completedQuizzes,
   }
-  const password = await bcrypt.hash(originalPassword, 10)
-  const { insertedId } = await db.collection("users").insertOne({ ...user, password })
+  const hashedPassword = await bcrypt.hash(user.password, 10)
+
+  const { insertedId } = await db.collection("users").insertOne({ ...user, password: hashedPassword })
   user._id = insertedId
   return user
 }
