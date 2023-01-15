@@ -4,6 +4,7 @@ import AboutYou from "./AboutYou"
 import { Box, Container, Typography } from "@mui/material"
 import Skills from "./Skills"
 import Workexperience from "./Workexperience"
+import Socials from "./Socials"
 
 const Profile = () => {
   const { data, mutate } = useCurrentUser()
@@ -27,7 +28,9 @@ const Profile = () => {
           <Box sx={{ pt: 3 }}>
             <Workexperience />
           </Box>
-          <Box sx={{ pt: 3 }}>Socials</Box>
+          <Box sx={{ pt: 3 }}>
+            <Socials />
+          </Box>
         </Container>
       </Box>
     </>
