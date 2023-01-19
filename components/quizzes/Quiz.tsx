@@ -66,7 +66,7 @@ const Quiz = ({ quiz }: IProps) => {
       headers: { "Content-Type": "application/json" },
       method: "PATCH",
       data: {
-        completedQuizzes: [...(data?.payload?.completedQuizzes || []), quiz._id],
+        completedQuizzes: [...(data?.payload?.completedQuizzes || []), quiz._id.toString()],
       },
     })
 
