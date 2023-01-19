@@ -40,7 +40,6 @@ const Courses = () => {
   const { mutate } = useSWRConfig()
   console.log(data)
 
-
   const deleteCourse = async (id: string) => {
     console.log("deleing", id)
     const response = await fetcher1(`/api/courses?id=${id}`, {
@@ -111,7 +110,7 @@ const Courses = () => {
           <Grid container spacing={3}>
             {!isLoading &&
               data?.payload?.map((course: ICourse) => (
-                <Grid item key={course._id} lg={4} md={6} xs={12}>
+                <Grid item key={course._id?.toString()} lg={4} md={6} xs={12}>
                   <CourseCard deleteCourse={deleteCourse} course={course} />
                 </Grid>
               ))}
