@@ -6,21 +6,24 @@ import { findQuizbyId } from "../../lib/queries/quizzes"
 import { IQuiz } from "../../models/Quiz"
 import Quiz from "../../components/quizzes/Quiz"
 import { handleAuthGetServerSideProps } from "../../lib/utils"
+import { ICourse } from "../../models/Course"
+import Course from "../../components/courses/Course"
+import { findCoursebyId } from "../../lib/queries/course"
 
 export const getServerSideProps: GetServerSideProps = async (context) =>
-  handleAuthGetServerSideProps<IQuiz>(context, findQuizbyId, "quiz")
+  handleAuthGetServerSideProps<ICourse>(context, findCoursebyId, "course")
 
-const quizePage = ({ quiz }: { quiz: IQuiz }) => {
+const coursePage = ({ course }: { course: ICourse }) => {
   return (
     <>
       <DashboardLayout>
         <Head>
-          <title>Quiz | {quiz.title}</title>
+          <title>Course | {course.content.title}</title>
         </Head>
-        <Quiz quiz={quiz} />
+        <Course course={course} />
       </DashboardLayout>
     </>
   )
 }
 
-export default quizePage
+export default coursePage

@@ -1,15 +1,5 @@
 import React from "react"
-import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Divider,
-  Grid,
-  Typography,
-} from "@mui/material"
+import { Avatar, Box, Button, Card, CardContent, Chip, Divider, Grid, Typography } from "@mui/material"
 import Rating from "@mui/material/Rating"
 import { IQuiz } from "../../models/Quiz"
 import { useRouter } from "next/router"
@@ -32,15 +22,7 @@ const QuizzesCard = ({ quiz }: IProps) => {
     .find((q) => q.quiz_id === _id)
 
   const getChipProps = (): {
-    color:
-      | "default"
-      | "success"
-      | "error"
-      | "primary"
-      | "secondary"
-      | "info"
-      | "warning"
-      | undefined
+    color: "default" | "success" | "error" | "primary" | "secondary" | "info" | "warning" | undefined
     label: string
   } => {
     if (!userQuizResult) {
@@ -69,9 +51,7 @@ const QuizzesCard = ({ quiz }: IProps) => {
   }
 
   const getAvatarUrl = () => {
-    return title.includes("React")
-      ? "/assets/images/react-logo.png"
-      : "/assets/images/Javascript_Logo.png"
+    return title.includes("React") ? "/assets/images/react-logo.png" : "/assets/images/Javascript_Logo.png"
   }
   return (
     <Card
@@ -86,7 +66,7 @@ const QuizzesCard = ({ quiz }: IProps) => {
           backgroundColor: !!userQuizResult ? "#cdcdcd" : null,
         }}
       >
-        <Button disabled={!!userQuizResult} onClick={() => router.push(`/quizzes/${_id}`)}>
+        <Button sx={{ width: "100%" }} disabled={!!userQuizResult} onClick={() => router.push(`/quizzes/${_id}`)}>
           <CardContent>
             <Box
               sx={{
@@ -95,12 +75,7 @@ const QuizzesCard = ({ quiz }: IProps) => {
                 pb: 3,
               }}
             >
-              <Avatar
-                sx={{ width: 64, height: 64 }}
-                alt="Logo"
-                src={getAvatarUrl()}
-                variant="square"
-              />
+              <Avatar sx={{ width: 64, height: 64 }} alt="Logo" src={getAvatarUrl()} variant="square" />
             </Box>
             <Typography align="center" color="textPrimary" gutterBottom variant="h5">
               {title}

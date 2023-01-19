@@ -47,7 +47,6 @@ export async function findUserById(db: Db, userId: string) {
 
 export async function findUserByEmail(db: Db, email: string) {
   const normalizedEmail = normalizeEmail(email)
-  console.log("Find user", normalizedEmail)
   return db
     .collection("users")
     .findOne({ email: normalizedEmail }, { projection: dbProjectionUsers() })
@@ -130,4 +129,17 @@ export async function UNSAFE_updateUserPassword(db: Db, id: string, newPassword:
 export const deleteUser = async (db: Db, id: string) => {
   await db.collection("users").deleteOne({ _id: new ObjectId(id) })
   await db.collection("courses").deleteMany({ userId: new ObjectId(id) })
+}
+
+export const findUserBySession = async (db: Db, sessionId: string) => {
+  try {
+    const session = await db.collection("sessions").findOne({ _id: sessionId })
+
+    if (!session) {
+      return null
+    }
+
+    const user = await db.collection("users").findOne({ _id: new ObjectId(session.session.passport.user) })
+    return user
+  } catch (error) {}
 }

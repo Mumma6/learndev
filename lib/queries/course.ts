@@ -18,3 +18,7 @@ export const getCoursesForUser = async (db: Db, userId: string) => {
 export const deleteCourseById = async (db: Db, id: string) => {
   return await db.collection("courses").deleteOne({ _id: new ObjectId(id) })
 }
+
+export const findCoursebyId = async (db: Db, _id: string) => {
+  return await db.collection<ICourse>("courses").findOne({ _id: new ObjectId(_id) })
+}

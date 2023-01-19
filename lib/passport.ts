@@ -6,6 +6,10 @@ import { Request } from "express"
 import { getMongoDb } from "./mongodb"
 import { findUserForAuth, findUserWithEmailAndPassword } from "./queries/user"
 
+/*
+The passport field in the session collection is added by Passport.js, specifically by the passport.serializeUser() function.
+
+*/
 passport.serializeUser((user, done) => {
   done(null, user._id)
 })
