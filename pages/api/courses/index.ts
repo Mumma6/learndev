@@ -32,6 +32,19 @@ handler.post(...auths, async (req, res) => {
     handleAPIResponse(res, null, "No user found")
   }
   try {
+    /*
+
+    Behöver ta emot flera saker från body här.
+
+    Detta är ett bra tillfälle att implementera ZOD.
+
+    Bäst om nog om allt skickas från Frontend så att Course objektet är komplett när det läggs till i DB.
+
+    Kolla så att ZOD och ICourse matchar. t ex om något läggs till i ICourse så ska vi få en varning här.
+
+    på så sätt behövs inga default magi som t ex user eftersom course objeketet är komplett när det skickas från FE. 
+
+    */
     const db = await getMongoDb()
     insertCourse(db, {
       content: req.body.content,

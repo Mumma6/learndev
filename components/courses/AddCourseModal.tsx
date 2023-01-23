@@ -1,16 +1,23 @@
 import { ChangeEvent, useCallback, useState } from "react"
 
 import TextField from "@mui/material/TextField"
+import Checkbox from "@mui/material/Checkbox"
+import Chip from "@mui/material/Chip"
+import Paper from "@mui/material/Paper"
 import Dialog from "@mui/material/Dialog"
 import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import Button from "@mui/material/Button"
+import FormControlLabel from "@mui/material/FormControlLabel"
 import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material"
+import Autocomplete from "@mui/material/Autocomplete"
 
 import { CourseFormData, initialCourseFormState, Institution } from "./Courses"
 import { ClickEventRet, SetState } from "../../types/generics"
+import { Skill, skillsData } from "../../constants/skillsData"
+import { FaPlus } from "react-icons/fa"
 
 interface IProps {
   open: boolean
@@ -22,6 +29,19 @@ interface IProps {
 
 const AddCourseModal = ({ open, handleClose, courseFormData, setCourseFormData, onAddCourse }: IProps) => {
   const { title, description, institution, url } = courseFormData
+  const [checked, setChecked] = useState(false)
+  const [newSkill, setNewSkill] = useState<Skill | null>()
+  const [topicData, setTopicData] = useState<Skill[]>([])
+
+  const addNewskill = () => {
+    if (newSkill) {
+      setTopicData((data) => [...data, newSkill])
+      setNewSkill(null)
+    }
+  }
+  const handleCheckBoxChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked)
+  }
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     setCourseFormData((prevState) => ({
@@ -42,11 +62,25 @@ const AddCourseModal = ({ open, handleClose, courseFormData, setCourseFormData, 
     handleClose()
   }
 
+  const handleSkillChange = (e: React.SyntheticEvent, value: Skill | null) => {
+    setNewSkill(value)
+  }
+
+  const handleTopicDelete = (topicToDelete: Skill) => () => {
+    setTopicData((topics) => topics.filter((topic) => topic.label !== topicToDelete.label))
+  }
+
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Add course</DialogTitle>
       <DialogContent>
         <DialogContentText>To add a event, please fill in the information below.</DialogContentText>
+        <FormControlLabel
+          control={
+            <Checkbox checked={checked} onChange={handleCheckBoxChange} inputProps={{ "aria-label": "controlled" }} />
+          }
+          label="Course completed"
+        />
         <Box component="form">
           <TextField
             name="title"
@@ -59,6 +93,7 @@ const AddCourseModal = ({ open, handleClose, courseFormData, setCourseFormData, 
             fullWidth
             variant="standard"
             onChange={onChange}
+            sx={{ mb: 2 }}
           />
           <TextField
             name="description"
@@ -70,6 +105,7 @@ const AddCourseModal = ({ open, handleClose, courseFormData, setCourseFormData, 
             fullWidth
             variant="standard"
             onChange={onChange}
+            sx={{ mb: 2 }}
           />
           <TextField
             name="url"
@@ -81,7 +117,48 @@ const AddCourseModal = ({ open, handleClose, courseFormData, setCourseFormData, 
             fullWidth
             variant="standard"
             onChange={onChange}
+            sx={{ mb: 2 }}
           />
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "start",
+              flexWrap: "wrap",
+              listStyle: "none",
+            }}
+          >
+            <Autocomplete
+              onChange={handleSkillChange}
+              disablePortal
+              id="combo-box-demo"
+              options={skillsData}
+              sx={{ width: 450, marginRight: 3 }}
+              renderInput={(params) => <TextField {...params} label="Topics" />}
+            />
+            <Button onClick={addNewskill} style={{ fontSize: 20 }}>
+              <FaPlus />
+            </Button>
+            {!!topicData.length && (
+              <Box>
+                <Paper
+                  sx={{
+                    display: "flex",
+                    justifyContent: "start",
+                    flexWrap: "wrap",
+                    listStyle: "none",
+                    p: 1.5,
+                    mt: 3,
+                  }}
+                  component="ul"
+                >
+                  {topicData.map((data) => (
+                    <Chip key={data.label} color="primary" label={data.label} onDelete={handleTopicDelete(data)} />
+                  ))}
+                </Paper>
+              </Box>
+            )}
+          </Box>
+
           <FormControl fullWidth style={{ marginTop: 20 }}>
             <InputLabel id="demo-simple-select-label">institution</InputLabel>
             <Select
@@ -94,6 +171,7 @@ const AddCourseModal = ({ open, handleClose, courseFormData, setCourseFormData, 
             >
               <MenuItem value={Institution.Other}>Other</MenuItem>
               <MenuItem value={Institution.Udemy}>Udemy</MenuItem>
+              <MenuItem value={Institution.Linkedin}>Linkedin</MenuItem>
               <MenuItem value={Institution.Pluralsight}>Pluralsight</MenuItem>
               <MenuItem value={Institution.Youtube}>Youtube</MenuItem>
             </Select>

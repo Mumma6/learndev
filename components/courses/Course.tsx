@@ -6,6 +6,17 @@ import { FaArrowLeft } from "react-icons/fa"
 interface IProps {
   course: ICourse
 }
+
+// single course
+
+/*
+Display all info. Should be able to edit
+
+Add resource stuff here.
+Feedback aswell. 
+
+
+*/
 const Course = ({ course }: IProps) => {
   return (
     <Box

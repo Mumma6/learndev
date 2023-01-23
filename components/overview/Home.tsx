@@ -8,6 +8,7 @@ import TotalQuizzes from "./TotalQuizzes"
 import TotalProjects from "./TotalProjects"
 import { useCourses, useQuizResults } from "../../lib/hooks"
 import LatestQuizResults from "./LatestQuizResults"
+import UserSkillProfile from "./UserSkillProfile"
 
 interface IProps {
   user: IUser
@@ -63,6 +64,9 @@ const Home = ({ user }: IProps) => {
             </Grid>
             <Grid item lg={6} md={6} xl={3} xs={12}>
               <LatestQuizResults />
+            </Grid>
+            <Grid item lg={6} md={6} xl={3} xs={12}>
+              <UserSkillProfile />
             </Grid>
           </Grid>
         </Container>

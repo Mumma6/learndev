@@ -19,16 +19,14 @@ const CourseCard = ({ course, deleteCourse }: IProps) => {
   return (
     <Card sx={{ minWidth: 275 }}>
       <Button sx={{ width: "100%" }} onClick={() => router.push(`/courses/${course._id}`)}>
-        <CardContent>
+        <CardContent style={{ padding: 0 }}>
           <Typography variant="h5" component="div">
             {course.content.title}
           </Typography>
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
             {course.content.institution}
           </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            start - slut
-          </Typography>
+
           <Typography variant="body2">{course.content.description}</Typography>
         </CardContent>
       </Button>
