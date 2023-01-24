@@ -15,9 +15,13 @@ import { ICourse } from "../../../models/Course"
 import { Response } from "../../../types/response"
 
 // this will trown an error in vercel deployment.
+
+/*
 interface ExtendedNextApiRequest extends NextApiRequest {
   body: Pick<ICourse, "content" | "completed" | "topics">
 }
+
+*/
 
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<ICourse[] | null>>>()
 
