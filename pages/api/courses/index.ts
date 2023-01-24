@@ -14,11 +14,12 @@ import { implementZod, schemaForType } from "../../../lib/zodUtils"
 import { ICourse } from "../../../models/Course"
 import { Response } from "../../../types/response"
 
+// this will trown an error in vercel deployment.
 interface ExtendedNextApiRequest extends NextApiRequest {
   body: Pick<ICourse, "content" | "completed" | "topics">
 }
 
-const handler = nextConnect<ExtendedNextApiRequest, NextApiResponse<Response<ICourse[] | null>>>()
+const handler = nextConnect<NextApiRequest, NextApiResponse<Response<ICourse[] | null>>>()
 
 handler.get(...auths, async (req, res) => {
   if (!req.user) {
