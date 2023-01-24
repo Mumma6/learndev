@@ -2,7 +2,7 @@ import { Db, ObjectId } from "mongodb"
 import { IEventInfo } from "../../models/EventInfo"
 
 export const getEventsForUser = async (db: Db, userId: ObjectId) => {
-  return await db.collection("events").find({ userId }).toArray()
+  return await db.collection<IEventInfo>("events").find({ userId }).toArray()
 }
 
 export const addEventForUser = async (db: Db, data: IEventInfo, userId: ObjectId) => {
