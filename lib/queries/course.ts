@@ -1,15 +1,10 @@
 import { Db, ObjectId } from "mongodb"
 import { ICourse } from "../../models/Course"
 
-export const insertCourse = async (db: Db, { content, userId }: ICourse) => {
+export const insertCourse = async (db: Db, data: ICourse) => {
   // Ska ta emot all kurs data här.
-  const course: ICourse = {
-    content,
-    userId,
-    createdAt: new Date(), // skicka med detta som en parameter också so att data: ICourse är komplett.
-  }
 
-  return await db.collection<ICourse>("courses").insertOne(course)
+  return await db.collection<ICourse>("courses").insertOne(data)
 }
 
 export const getCoursesForUser = async (db: Db, userId: string) => {

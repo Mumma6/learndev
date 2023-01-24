@@ -23,15 +23,28 @@ interface IProps {
   open: boolean
   handleClose: SetState<void>
   courseFormData: CourseFormData
+  topicData: Skill[]
   setCourseFormData: SetState<CourseFormData>
+  setTopicData: SetState<Skill[]>
+  setCompleted: SetState<boolean>
+  completed: boolean
   onAddCourse: ClickEventRet<Promise<void>>
 }
 
-const AddCourseModal = ({ open, handleClose, courseFormData, setCourseFormData, onAddCourse }: IProps) => {
+const AddCourseModal = ({
+  open,
+  handleClose,
+  courseFormData,
+  setCourseFormData,
+  onAddCourse,
+  setCompleted,
+  completed,
+  setTopicData,
+  topicData,
+}: IProps) => {
   const { title, description, institution, url } = courseFormData
-  const [checked, setChecked] = useState(false)
+
   const [newSkill, setNewSkill] = useState<Skill | null>()
-  const [topicData, setTopicData] = useState<Skill[]>([])
 
   const addNewskill = () => {
     if (newSkill) {
@@ -40,7 +53,8 @@ const AddCourseModal = ({ open, handleClose, courseFormData, setCourseFormData, 
     }
   }
   const handleCheckBoxChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked)
+    setCompleted(event.target.checked)
+    setCompleted(event.target.checked)
   }
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -77,7 +91,7 @@ const AddCourseModal = ({ open, handleClose, courseFormData, setCourseFormData, 
         <DialogContentText>To add a event, please fill in the information below.</DialogContentText>
         <FormControlLabel
           control={
-            <Checkbox checked={checked} onChange={handleCheckBoxChange} inputProps={{ "aria-label": "controlled" }} />
+            <Checkbox checked={completed} onChange={handleCheckBoxChange} inputProps={{ "aria-label": "controlled" }} />
           }
           label="Course completed"
         />

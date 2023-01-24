@@ -48,7 +48,7 @@ const Home = ({ user }: IProps) => {
 
           <Grid container spacing={3}>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
-              <TotalCourses amount={data?.payload?.length || 0} />
+              <TotalCourses amount={data?.payload?.filter((c) => c.completed).length || 0} />
             </Grid>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
               <TotalProjects />

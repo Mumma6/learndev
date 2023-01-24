@@ -1,15 +1,24 @@
+import { X } from "chart.js/dist/chunks/helpers.core"
 import { WithId } from "mongodb"
 import { NextApiRequest, NextApiResponse } from "next"
 import nextConnect from "next-connect"
+import { string } from "yup/lib/locale"
+import { z } from "zod"
+import { Institution } from "../../../components/courses/Courses"
 import auths from "../../../lib/middlewares/auth"
 import logger from "../../../lib/middlewares/logger"
 import { getMongoDb } from "../../../lib/mongodb"
 import { deleteCourseById, getCoursesForUser, insertCourse } from "../../../lib/queries/course"
 import { handleAPIError, handleAPIResponse } from "../../../lib/utils"
+import { implementZod, schemaForType } from "../../../lib/zodUtils"
 import { ICourse } from "../../../models/Course"
 import { Response } from "../../../types/response"
 
-const handler = nextConnect<NextApiRequest, NextApiResponse<Response<ICourse[] | null>>>()
+interface ExtendedNextApiRequest extends NextApiRequest {
+  body: Pick<ICourse, "content" | "completed" | "topics">
+}
+
+const handler = nextConnect<ExtendedNextApiRequest, NextApiResponse<Response<ICourse[] | null>>>()
 
 handler.get(...auths, async (req, res) => {
   if (!req.user) {
@@ -32,24 +41,39 @@ handler.post(...auths, async (req, res) => {
     handleAPIResponse(res, null, "No user found")
   }
   try {
-    /*
-
-    Behöver ta emot flera saker från body här.
-
-    Detta är ett bra tillfälle att implementera ZOD.
-
-    Bäst om nog om allt skickas från Frontend så att Course objektet är komplett när det läggs till i DB.
-
-    Kolla så att ZOD och ICourse matchar. t ex om något läggs till i ICourse så ska vi få en varning här.
-
-    på så sätt behövs inga default magi som t ex user eftersom course objeketet är komplett när det skickas från FE. 
-
-    */
+    const createTags = (data: any) => []
+    const tags = createTags(req.body)
     const db = await getMongoDb()
+
+    // Is it possible to make sure we dont add anything thats not in the ICourse
+    const CourseModelSchema = z.object({
+      completed: z.boolean(),
+      content: z.object({
+        title: z.string().min(1),
+        description: z.string().min(1),
+        url: z.string().min(1),
+        institution: z.string().min(1),
+      }),
+      topics: z.array(
+        z.object({
+          label: z.string(),
+        })
+      ),
+    })
+
+    const result = CourseModelSchema.safeParse(req.body)
+    if (!result.success) {
+      return handleAPIError(res, { message: "Validatation error" })
+    }
+
     insertCourse(db, {
       content: req.body.content,
       userId: req.user?._id,
+      completed: req.body.completed,
+      topics: req.body.topics,
+      createdAt: new Date(),
     })
+
     handleAPIResponse(res, null, "Course added")
   } catch (error) {
     console.log("Error when inserting course")
