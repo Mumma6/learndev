@@ -1,16 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react"
 import * as _ from "lodash"
 
-import {
-  Box,
-  Container,
-  Typography,
-  Pagination,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-} from "@mui/material"
+import { Box, Container, Typography, Pagination, Card, CardContent, CardHeader, Divider, Button } from "@mui/material"
 
 import { Calendar, dateFnsLocalizer, Event, Views } from "react-big-calendar"
 
@@ -34,6 +25,7 @@ import { fetcher1 } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
 import { useSWRConfig } from "swr"
 import EditEventInfoModal from "./EditEventInfoModal"
+import AddEventModal from "./AddEventModal"
 
 const locales = {
   "en-US": enUS,
@@ -52,6 +44,7 @@ export interface EventFormData {
   description: string
   quiz: IQuiz | null
   course: ICourse | null
+  color: null | string
 }
 
 export const initialEventFormState: EventFormData = {
@@ -59,18 +52,45 @@ export const initialEventFormState: EventFormData = {
   description: "",
   quiz: null,
   course: null,
+  color: null,
+}
+
+export interface ExternEventFormData {
+  title: string
+  description: string
+  start: Date | undefined
+  end: Date | undefined
+  allDay: boolean
+  quiz: IQuiz | null
+  course: ICourse | null
+  color: null | string
+}
+
+export const initialExternEventFormState: ExternEventFormData = {
+  title: "",
+  description: "",
+  start: undefined,
+  end: undefined,
+  allDay: false,
+  quiz: null,
+  course: null,
+  color: null,
 }
 
 const StudyCalendar = () => {
   const [myEvents, setEvents] = useState<Omit<IEventInfo, "userId">[]>([])
   const [currentEvent, setCurrentEvent] = useState<Event | null>(null)
   const [open, setOpen] = useState(false)
+  const [openExternModal, setOpenExternModal] = useState(false)
   const [editModalOpen, setEditModalOpen] = useState(false)
   const [eventFormData, setEventFormData] = useState<EventFormData>(initialEventFormState)
+
+  const [externEventFormData, setExternEventFormData] = useState<ExternEventFormData>(initialExternEventFormState)
 
   const { data: eventsData } = useEvents()
 
   useEffect(() => {
+    console.log("effect")
     setEvents([
       ...(eventsData?.payload || []).map((e) => ({
         ...e,
@@ -83,6 +103,7 @@ const StudyCalendar = () => {
   const { mutate } = useSWRConfig()
 
   const handleSelectSlot = (event: Event) => {
+    console.log(event)
     setOpen(true)
     setCurrentEvent(event)
   }
@@ -144,6 +165,49 @@ const StudyCalendar = () => {
     setOpen(false)
   }
 
+  const onAddExternEvent = async (e: ClickEvent) => {
+    console.log(externEventFormData)
+
+    console.log("lägg till via extern")
+
+    e.preventDefault()
+
+    function addHours(date: any, hours: number) {
+      date.setHours(date.getHours() + hours)
+
+      return date
+    }
+
+    const setMinToZero = (date: any) => {
+      date.setSeconds(0)
+
+      return date
+    }
+
+    try {
+      const response = await fetcher1<undefined, Omit<IEventInfo, "userId">>("/api/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        data: {
+          ...externEventFormData,
+          start: setMinToZero(externEventFormData.start),
+          end: externEventFormData.allDay ? addHours(externEventFormData.start, 12) : setMinToZero(externEventFormData.end),
+        },
+      })
+
+      if (response?.error) {
+        toast.error(response.error)
+      } else {
+        mutate("/api/events")
+        toast.success(response?.message)
+      }
+    } catch (e: any) {
+      console.log(e)
+    } finally {
+      setExternEventFormData(initialExternEventFormState)
+    }
+  }
+
   const onAddEvent = async (e: ClickEvent) => {
     e.preventDefault()
 
@@ -186,12 +250,17 @@ const StudyCalendar = () => {
           <CardHeader title="Calendar" subheader="Use for planning" />
           <Divider />
           <CardContent>
-            <p>Add event (egen modal)</p>
-            <EditEventInfoModal
-              open={editModalOpen}
-              handleClose={handleEditModalClose}
-              onDeleteEvent={onDeleteEvent}
+            <Button onClick={() => setOpenExternModal(true)} size="large" variant="contained">
+              Add event
+            </Button>
+            <AddEventModal
+              open={openExternModal}
+              handleClose={() => setOpenExternModal(false)}
+              externEventFormData={externEventFormData}
+              setExternEventFormData={setExternEventFormData}
+              onAddExternEvent={onAddExternEvent}
             />
+            <EditEventInfoModal open={editModalOpen} handleClose={handleEditModalClose} onDeleteEvent={onDeleteEvent} />
             <AddEventInfoModal
               open={open}
               handleClose={handleClose}
@@ -204,8 +273,9 @@ const StudyCalendar = () => {
               Knapp för att lägga till ett mål (course som ska vara klar, quiz som ska tas, skill som ska läras, project som
               ska vara klart.) osv osv
             </p>
-            <p>Målen ska sträcka sig över hela dagen. Så "allDay" true.</p>
-            <p>Detta blir inte currentEvent som kommer från kalendenr. Lägg till en mui date picker. i En ny modal.</p>
+            <p>ska kunna lägga till en färg/label. Visa en Select i modalerna</p>
+            <p>Kunna länka till quiz/course/project</p>
+
             <Calendar
               localizer={localizer}
               events={myEvents}
@@ -216,8 +286,16 @@ const StudyCalendar = () => {
               components={{ event: EventInfo }}
               endAccessor="end"
               defaultView="week"
+              eventPropGetter={(event) => {
+                return {
+                  style: {
+                    backgroundColor: event.color || "#b64fc8",
+                    borderColor: event.color || "#b64fc8",
+                  },
+                }
+              }}
               style={{
-                height: 700,
+                height: 900,
               }}
             />
           </CardContent>

@@ -121,25 +121,22 @@ const Courses = () => {
         <Box sx={{ pt: 3 }}>
           <Box sx={{ mt: 3, mb: 3 }}>
             <Card>
-              <CardContent style={{ padding: 1 }}>
-                <Box sx={{ maxWidth: 500 }}>
-                  <Typography sx={{ m: 1 }} variant="h5">
-                    Gör likadant som för completed
-                  </Typography>
-                </Box>
+              <CardHeader subheader="Upcoming and courses in progress" title="Courses" />
+              <Divider />
+              <CardContent style={{ padding: 13 }}>
+                <Grid mb={4} mt={2} container spacing={2}>
+                  {!isLoading &&
+                    data?.payload
+                      ?.filter((c) => !c.completed)
+                      .map((course: ICourse) => (
+                        <Grid item key={course._id?.toString()} lg={3} md={4} sm={4} xs={12}>
+                          <CourseCard deleteCourse={deleteCourse} course={course} />
+                        </Grid>
+                      ))}
+                </Grid>
               </CardContent>
             </Card>
           </Box>
-          <Grid mt={2} container spacing={3}>
-            {!isLoading &&
-              data?.payload
-                ?.filter((c) => !c.completed)
-                .map((course: ICourse) => (
-                  <Grid item key={course._id?.toString()} lg={4} md={6} xs={12}>
-                    <CourseCard deleteCourse={deleteCourse} course={course} />
-                  </Grid>
-                ))}
-          </Grid>
         </Box>
         <Box
           sx={{

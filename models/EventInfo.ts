@@ -8,6 +8,6 @@ export interface IEventInfo extends Event {
   description: string
   course?: ICourse | null
   quiz?: IQuiz | null
-  titleColor?: string | null
+  color?: string | null
   userId?: ObjectId
 }
