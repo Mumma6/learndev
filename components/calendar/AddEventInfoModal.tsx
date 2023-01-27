@@ -28,7 +28,7 @@ const AddEventInfoModal = ({
   setEventFormData,
   onAddEvent,
 }: IProps) => {
-  const { title, description } = eventFormData
+  const { title, description, color } = eventFormData
 
   const onClose = () => {
     setEventFormData(initialEventFormState)
@@ -36,6 +36,13 @@ const AddEventInfoModal = ({
   }
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setEventFormData((prevState) => ({
+      ...prevState,
+      [event.target.name]: event.target.value,
+    }))
+  }
+
+  const handleSelectChange = (event: SelectChangeEvent) => {
     setEventFormData((prevState) => ({
       ...prevState,
       [event.target.name]: event.target.value,
@@ -72,6 +79,21 @@ const AddEventInfoModal = ({
             variant="standard"
             onChange={onChange}
           />
+          <FormControl fullWidth style={{ marginTop: 10 }}>
+            <InputLabel id="demo-simple-select-label">Color</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={color}
+              label="Color"
+              onChange={handleSelectChange}
+              name="color"
+            >
+              <MenuItem value={"red"}>red</MenuItem>
+              <MenuItem value={"green"}>green</MenuItem>
+              <MenuItem value={"blue"}>blue</MenuItem>
+            </Select>
+          </FormControl>
         </Box>
       </DialogContent>
       <DialogActions>

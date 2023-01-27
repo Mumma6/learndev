@@ -27,14 +27,27 @@ interface IProps {
   onAddExternEvent: ClickEventRet<void>
 }
 
-const AddEventModal = ({ open, handleClose, externEventFormData, setExternEventFormData, onAddExternEvent }: IProps) => {
-  const { title, description, start, end, allDay } = externEventFormData
+const AddEventModal = ({
+  open,
+  handleClose,
+  externEventFormData,
+  setExternEventFormData,
+  onAddExternEvent,
+}: IProps) => {
+  const { title, description, start, end, allDay, color } = externEventFormData
 
   const onClose = () => {
     handleClose()
   }
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setExternEventFormData((prevState) => ({
+      ...prevState,
+      [event.target.name]: event.target.value,
+    }))
+  }
+
+  const handleSelectChange = (event: SelectChangeEvent) => {
     setExternEventFormData((prevState) => ({
       ...prevState,
       [event.target.name]: event.target.value,
@@ -94,7 +107,7 @@ const AddEventModal = ({ open, handleClose, externEventFormData, setExternEventF
               <DateTimePicker
                 label="Start date"
                 value={start}
-                ampm={false}
+                ampm={true}
                 minutesStep={30}
                 onChange={(newValue) => {
                   setExternEventFormData((prevState) => ({
@@ -117,7 +130,7 @@ const AddEventModal = ({ open, handleClose, externEventFormData, setExternEventF
               label="End date"
               disabled={allDay}
               minutesStep={30}
-              ampm={false}
+              ampm={true}
               value={allDay ? null : end}
               onChange={(newValue) => {
                 setExternEventFormData((prevState) => ({
@@ -128,6 +141,21 @@ const AddEventModal = ({ open, handleClose, externEventFormData, setExternEventF
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
+          <FormControl fullWidth style={{ marginTop: 10 }}>
+            <InputLabel id="demo-simple-select-label">Color</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={color}
+              label="Color"
+              onChange={handleSelectChange}
+              name="color"
+            >
+              <MenuItem value={"red"}>red</MenuItem>
+              <MenuItem value={"green"}>green</MenuItem>
+              <MenuItem value={"blue"}>blue</MenuItem>
+            </Select>
+          </FormControl>
         </Box>
       </DialogContent>
       <DialogActions>

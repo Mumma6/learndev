@@ -1,7 +1,17 @@
 import React, { useState, useCallback, useEffect } from "react"
 import * as _ from "lodash"
 
-import { Box, Container, Typography, Pagination, Card, CardContent, CardHeader, Divider, Button } from "@mui/material"
+import {
+  Box,
+  Container,
+  Typography,
+  Pagination,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  Button,
+} from "@mui/material"
 
 import { Calendar, dateFnsLocalizer, Event, Views } from "react-big-calendar"
 
@@ -44,7 +54,7 @@ export interface EventFormData {
   description: string
   quiz: IQuiz | null
   course: ICourse | null
-  color: null | string
+  color: undefined | string
 }
 
 export const initialEventFormState: EventFormData = {
@@ -52,7 +62,7 @@ export const initialEventFormState: EventFormData = {
   description: "",
   quiz: null,
   course: null,
-  color: null,
+  color: undefined,
 }
 
 export interface ExternEventFormData {
@@ -63,7 +73,7 @@ export interface ExternEventFormData {
   allDay: boolean
   quiz: IQuiz | null
   course: ICourse | null
-  color: null | string
+  color: undefined | string
 }
 
 export const initialExternEventFormState: ExternEventFormData = {
@@ -74,7 +84,7 @@ export const initialExternEventFormState: ExternEventFormData = {
   allDay: false,
   quiz: null,
   course: null,
-  color: null,
+  color: undefined,
 }
 
 const StudyCalendar = () => {
@@ -85,7 +95,9 @@ const StudyCalendar = () => {
   const [editModalOpen, setEditModalOpen] = useState(false)
   const [eventFormData, setEventFormData] = useState<EventFormData>(initialEventFormState)
 
-  const [externEventFormData, setExternEventFormData] = useState<ExternEventFormData>(initialExternEventFormState)
+  const [externEventFormData, setExternEventFormData] = useState<ExternEventFormData>(
+    initialExternEventFormState
+  )
 
   const { data: eventsData } = useEvents()
 
@@ -191,7 +203,9 @@ const StudyCalendar = () => {
         data: {
           ...externEventFormData,
           start: setMinToZero(externEventFormData.start),
-          end: externEventFormData.allDay ? addHours(externEventFormData.start, 12) : setMinToZero(externEventFormData.end),
+          end: externEventFormData.allDay
+            ? addHours(externEventFormData.start, 12)
+            : setMinToZero(externEventFormData.end),
         },
       })
 
@@ -260,7 +274,11 @@ const StudyCalendar = () => {
               setExternEventFormData={setExternEventFormData}
               onAddExternEvent={onAddExternEvent}
             />
-            <EditEventInfoModal open={editModalOpen} handleClose={handleEditModalClose} onDeleteEvent={onDeleteEvent} />
+            <EditEventInfoModal
+              open={editModalOpen}
+              handleClose={handleEditModalClose}
+              onDeleteEvent={onDeleteEvent}
+            />
             <AddEventInfoModal
               open={open}
               handleClose={handleClose}
@@ -270,10 +288,9 @@ const StudyCalendar = () => {
               currentEvent={currentEvent}
             />
             <p>
-              Knapp för att lägga till ett mål (course som ska vara klar, quiz som ska tas, skill som ska läras, project som
-              ska vara klart.) osv osv
+              Knapp för att lägga till ett mål (course som ska vara klar, quiz som ska tas, skill
+              som ska läras, project som ska vara klart.) osv osv
             </p>
-            <p>ska kunna lägga till en färg/label. Visa en Select i modalerna</p>
             <p>Kunna länka till quiz/course/project</p>
 
             <Calendar
