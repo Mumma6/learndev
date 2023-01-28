@@ -6,8 +6,10 @@ import { IQuiz } from "./Quiz"
 export interface IEventInfo extends Event {
   _id?: string
   description: string
-  course?: ICourse | null
-  quiz?: IQuiz | null
-  color?: string | null
-  userId?: ObjectId
+
+  color?: string | null | undefined
+  userId?: null | string
+  quizId?: null | string
+  courseId?: null | string
+  courseName?: null | string
 }

@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react"
+import React, { ChangeEvent, useState, useEffect } from "react"
 import TextField from "@mui/material/TextField"
 import Dialog from "@mui/material/Dialog"
 import DialogActions from "@mui/material/DialogActions"
@@ -6,7 +6,15 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import Button from "@mui/material/Button"
-import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material"
+import {
+  Box,
+  Divider,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from "@mui/material"
 import Checkbox from "@mui/material/Checkbox"
 
 // Ersätt dayjs med date-fns
@@ -18,6 +26,7 @@ import Typography from "@mui/material/Typography"
 import { ClickEventRet, SetState } from "../../types/generics"
 import { ExternEventFormData } from "./StudyCalendar"
 import { DateTimePicker } from "@mui/x-date-pickers"
+import { useCourses } from "../../lib/hooks"
 
 interface IProps {
   open: boolean
@@ -27,6 +36,11 @@ interface IProps {
   onAddExternEvent: ClickEventRet<void>
 }
 
+interface CourseData {
+  id: string | undefined
+  name: string
+}
+
 const AddEventModal = ({
   open,
   handleClose,
@@ -34,7 +48,27 @@ const AddEventModal = ({
   setExternEventFormData,
   onAddExternEvent,
 }: IProps) => {
-  const { title, description, start, end, allDay, color } = externEventFormData
+  // detta är en copy paste i båda modalerna, gör en customHook
+  const [courses, setCourses] = useState<CourseData[]>([])
+
+  const { data: courseData } = useCourses()
+
+  useEffect(() => {
+    if (courseData?.payload) {
+      setCourses([
+        ...(courseData?.payload || [])
+          .filter((c) => !c.completed)
+          .map((course) => ({
+            id: course._id?.toString(),
+            name: course.content.title.toString(),
+          })),
+      ])
+    }
+  }, [courseData?.payload])
+
+  // ---------------------------
+
+  const { title, description, start, end, allDay, color, courseId } = externEventFormData
 
   const onClose = () => {
     handleClose()
@@ -51,6 +85,16 @@ const AddEventModal = ({
     setExternEventFormData((prevState) => ({
       ...prevState,
       [event.target.name]: event.target.value,
+    }))
+  }
+
+  const handleSelectCourseChange = (event: SelectChangeEvent) => {
+    setExternEventFormData((prevState) => ({
+      ...prevState,
+      [event.target.name]: event.target.value,
+      courseName:
+        (courseData?.payload || []).find((c) => c._id?.toString() === event.target.value)?.content
+          .title || null,
     }))
   }
 
@@ -151,11 +195,34 @@ const AddEventModal = ({
               onChange={handleSelectChange}
               name="color"
             >
-              <MenuItem value={"red"}>red</MenuItem>
-              <MenuItem value={"green"}>green</MenuItem>
-              <MenuItem value={"blue"}>blue</MenuItem>
+              <MenuItem style={{ color: "white", backgroundColor: "red" }} value={"red"}>
+                red
+              </MenuItem>
+              <MenuItem style={{ color: "white", backgroundColor: "green" }} value={"green"}>
+                green
+              </MenuItem>
+              <MenuItem style={{ color: "white", backgroundColor: "blue" }} value={"blue"}>
+                blue
+              </MenuItem>
             </Select>
           </FormControl>
+          {!!courses.length && (
+            <FormControl fullWidth style={{ marginTop: 15 }}>
+              <InputLabel id="demo-simple-select-label">Link course</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={courseId || undefined}
+                label="Course"
+                onChange={handleSelectCourseChange}
+                name="courseId"
+              >
+                {courses.map((course) => (
+                  <MenuItem value={course.id}>{course.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
         </Box>
       </DialogContent>
       <DialogActions>

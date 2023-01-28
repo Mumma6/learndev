@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 
 import TextField from "@mui/material/TextField"
 import Dialog from "@mui/material/Dialog"
@@ -11,6 +11,7 @@ import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } fro
 import { ClickEventRet, SetState } from "../../types/generics"
 import { EventFormData, initialEventFormState } from "./StudyCalendar"
 import { Event } from "react-big-calendar"
+import { useCourses } from "../../lib/hooks"
 
 interface IProps {
   open: boolean
@@ -21,6 +22,11 @@ interface IProps {
   currentEvent: Event | null
 }
 
+interface CourseData {
+  id: string | undefined
+  name: string
+}
+
 const AddEventInfoModal = ({
   open,
   handleClose,
@@ -28,7 +34,27 @@ const AddEventInfoModal = ({
   setEventFormData,
   onAddEvent,
 }: IProps) => {
-  const { title, description, color } = eventFormData
+  const { title, description, color, courseId } = eventFormData
+
+  // detta är en copy paste i båda modalerna, gör en customHook
+  const [courses, setCourses] = useState<CourseData[]>([])
+
+  const { data: courseData } = useCourses()
+
+  useEffect(() => {
+    if (courseData?.payload) {
+      setCourses([
+        ...(courseData?.payload || [])
+          .filter((c) => !c.completed)
+          .map((course) => ({
+            id: course._id?.toString(),
+            name: course.content.title.toString(),
+          })),
+      ])
+    }
+  }, [courseData?.payload])
+
+  // ---------------------------------
 
   const onClose = () => {
     setEventFormData(initialEventFormState)
@@ -48,6 +74,17 @@ const AddEventInfoModal = ({
       [event.target.name]: event.target.value,
     }))
   }
+
+  const handleSelectCourseChange = (event: SelectChangeEvent) => {
+    setEventFormData((prevState) => ({
+      ...prevState,
+      [event.target.name]: event.target.value,
+      courseName:
+        (courseData?.payload || []).find((c) => c._id?.toString() === event.target.value)?.content
+          .title || null,
+    }))
+  }
+
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Add event</DialogTitle>
@@ -89,11 +126,34 @@ const AddEventInfoModal = ({
               onChange={handleSelectChange}
               name="color"
             >
-              <MenuItem value={"red"}>red</MenuItem>
-              <MenuItem value={"green"}>green</MenuItem>
-              <MenuItem value={"blue"}>blue</MenuItem>
+              <MenuItem style={{ color: "white", backgroundColor: "red" }} value={"red"}>
+                red
+              </MenuItem>
+              <MenuItem style={{ color: "white", backgroundColor: "green" }} value={"green"}>
+                green
+              </MenuItem>
+              <MenuItem style={{ color: "white", backgroundColor: "blue" }} value={"blue"}>
+                blue
+              </MenuItem>
             </Select>
           </FormControl>
+          {!!courses.length && (
+            <FormControl fullWidth style={{ marginTop: 15 }}>
+              <InputLabel id="demo-simple-select-label">Link course</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={courseId || undefined}
+                label="Course"
+                onChange={handleSelectCourseChange}
+                name="courseId"
+              >
+                {courses.map((course) => (
+                  <MenuItem value={course.id}>{course.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
         </Box>
       </DialogContent>
       <DialogActions>

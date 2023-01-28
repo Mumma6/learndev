@@ -30,7 +30,7 @@ import { IEventInfo } from "../../models/EventInfo"
 import { IQuiz } from "../../models/Quiz"
 import AddEventInfoModal from "./AddEventInfoModal"
 import { ClickEvent } from "../../types/generics"
-import { useCurrentUser, useEvents } from "../../lib/hooks"
+import { useCourses, useCurrentUser, useEvents } from "../../lib/hooks"
 import { fetcher1 } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
 import { useSWRConfig } from "swr"
@@ -53,7 +53,8 @@ export interface EventFormData {
   title: string
   description: string
   quiz: IQuiz | null
-  course: ICourse | null
+  courseId: string | null
+  courseName: string | null
   color: undefined | string
 }
 
@@ -61,7 +62,8 @@ export const initialEventFormState: EventFormData = {
   title: "",
   description: "",
   quiz: null,
-  course: null,
+  courseId: null,
+  courseName: null,
   color: undefined,
 }
 
@@ -71,8 +73,9 @@ export interface ExternEventFormData {
   start: Date | undefined
   end: Date | undefined
   allDay: boolean
-  quiz: IQuiz | null
-  course: ICourse | null
+  quizId: string | null
+  courseId: string | null
+  courseName: string | null
   color: undefined | string
 }
 
@@ -82,14 +85,15 @@ export const initialExternEventFormState: ExternEventFormData = {
   start: undefined,
   end: undefined,
   allDay: false,
-  quiz: null,
-  course: null,
+  quizId: null,
+  courseId: null,
+  courseName: null,
   color: undefined,
 }
 
 const StudyCalendar = () => {
   const [myEvents, setEvents] = useState<Omit<IEventInfo, "userId">[]>([])
-  const [currentEvent, setCurrentEvent] = useState<Event | null>(null)
+  const [currentEvent, setCurrentEvent] = useState<Event | IEventInfo | null>(null)
   const [open, setOpen] = useState(false)
   const [openExternModal, setOpenExternModal] = useState(false)
   const [editModalOpen, setEditModalOpen] = useState(false)
@@ -121,7 +125,7 @@ const StudyCalendar = () => {
   }
 
   // kanske kan ha type EventInfo
-  const handleSelectEvent = (event: Event) => {
+  const handleSelectEvent = (event: IEventInfo) => {
     setCurrentEvent(event)
     setEditModalOpen(true)
   }
@@ -267,6 +271,7 @@ const StudyCalendar = () => {
             <Button onClick={() => setOpenExternModal(true)} size="large" variant="contained">
               Add event
             </Button>
+            <Divider style={{ margin: 10 }} />
             <AddEventModal
               open={openExternModal}
               handleClose={() => setOpenExternModal(false)}
@@ -278,6 +283,7 @@ const StudyCalendar = () => {
               open={editModalOpen}
               handleClose={handleEditModalClose}
               onDeleteEvent={onDeleteEvent}
+              currentEvent={currentEvent as IEventInfo}
             />
             <AddEventInfoModal
               open={open}
@@ -287,12 +293,6 @@ const StudyCalendar = () => {
               onAddEvent={onAddEvent}
               currentEvent={currentEvent}
             />
-            <p>
-              Knapp för att lägga till ett mål (course som ska vara klar, quiz som ska tas, skill
-              som ska läras, project som ska vara klart.) osv osv
-            </p>
-            <p>Kunna länka till quiz/course/project</p>
-
             <Calendar
               localizer={localizer}
               events={myEvents}
