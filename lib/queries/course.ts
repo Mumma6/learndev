@@ -8,7 +8,11 @@ export const insertCourse = async (db: Db, data: ICourse) => {
 }
 
 export const getCoursesForUser = async (db: Db, userId: string) => {
-  return await db.collection<ICourse>("courses").find({ userId }).sort({ createdAt: -1, title: 1 }).toArray()
+  return await db
+    .collection<ICourse>("courses")
+    .find({ userId })
+    .sort({ createdAt: -1, title: 1 })
+    .toArray()
 }
 
 export const deleteCourseById = async (db: Db, id: string) => {

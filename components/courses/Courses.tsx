@@ -1,4 +1,14 @@
-import { Box, Container, Grid, Pagination, Card, CardContent, Typography, Divider, CardHeader } from "@mui/material"
+import {
+  Box,
+  Container,
+  Grid,
+  Pagination,
+  Card,
+  CardContent,
+  Typography,
+  Divider,
+  CardHeader,
+} from "@mui/material"
 import { useEffect, useState } from "react"
 import { useCourses } from "../../lib/hooks"
 import { useSWRConfig } from "swr"
@@ -63,7 +73,7 @@ const Courses = () => {
     try {
       setIsLoading(true)
 
-      const response = await fetcher1<ICourse, Partial<ICourse>>("/api/courses", {
+      const response = await fetcher1<undefined, Partial<ICourse>>("/api/courses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: {

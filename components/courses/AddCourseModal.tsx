@@ -54,7 +54,6 @@ const AddCourseModal = ({
   }
   const handleCheckBoxChange = (event: ChangeEvent<HTMLInputElement>) => {
     setCompleted(event.target.checked)
-    setCompleted(event.target.checked)
   }
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -88,10 +87,16 @@ const AddCourseModal = ({
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Add course</DialogTitle>
       <DialogContent>
-        <DialogContentText>To add a event, please fill in the information below.</DialogContentText>
+        <DialogContentText>
+          To add a course, please fill in the information below.
+        </DialogContentText>
         <FormControlLabel
           control={
-            <Checkbox checked={completed} onChange={handleCheckBoxChange} inputProps={{ "aria-label": "controlled" }} />
+            <Checkbox
+              checked={completed}
+              onChange={handleCheckBoxChange}
+              inputProps={{ "aria-label": "controlled" }}
+            />
           }
           label="Course completed"
         />
@@ -146,7 +151,7 @@ const AddCourseModal = ({
               disablePortal
               id="combo-box-demo"
               options={skillsData}
-              sx={{ width: 450, marginRight: 3 }}
+              sx={{ width: 400, marginRight: 3 }}
               renderInput={(params) => <TextField {...params} label="Topics" />}
             />
             <Button onClick={addNewskill} style={{ fontSize: 20 }}>
@@ -166,7 +171,12 @@ const AddCourseModal = ({
                   component="ul"
                 >
                   {topicData.map((data) => (
-                    <Chip key={data.label} color="primary" label={data.label} onDelete={handleTopicDelete(data)} />
+                    <Chip
+                      key={data.label}
+                      color="primary"
+                      label={data.label}
+                      onDelete={handleTopicDelete(data)}
+                    />
                   ))}
                 </Paper>
               </Box>

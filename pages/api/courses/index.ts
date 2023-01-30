@@ -1,16 +1,11 @@
-import { X } from "chart.js/dist/chunks/helpers.core"
-import { WithId } from "mongodb"
 import { NextApiRequest, NextApiResponse } from "next"
 import nextConnect from "next-connect"
-import { string } from "yup/lib/locale"
 import { z } from "zod"
-import { Institution } from "../../../components/courses/Courses"
 import auths from "../../../lib/middlewares/auth"
-import logger from "../../../lib/middlewares/logger"
 import { getMongoDb } from "../../../lib/mongodb"
 import { deleteCourseById, getCoursesForUser, insertCourse } from "../../../lib/queries/course"
 import { handleAPIError, handleAPIResponse } from "../../../lib/utils"
-import { implementZod, schemaForType } from "../../../lib/zodUtils"
+
 import { ICourse } from "../../../models/Course"
 import { Response } from "../../../types/response"
 
