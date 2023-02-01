@@ -1,4 +1,4 @@
-import React from "react"
+import React, { ReactElement } from "react"
 import {
   Box,
   Button,
@@ -15,13 +15,21 @@ import { useTheme } from "@mui/material/styles"
 
 import { FaCog, FaHome, FaRegCalendarAlt, FaUser, FaUsers } from "react-icons/fa"
 import { ImBooks } from "react-icons/im"
+import { BsCollection } from "react-icons/bs"
 import { AiOutlineFundProjectionScreen } from "react-icons/ai"
 import NavItem from "./NavItem"
 import Link from "next/link"
 import { IUser } from "../../types/user"
 import { MdQuiz } from "react-icons/md"
+import { IconType } from "react-icons"
 
-const items = [
+interface SidbarNavItems {
+  href: string
+  icon: ReactElement<any, any>
+  title: string
+}
+
+const items: SidbarNavItems[] = [
   {
     href: "/home",
     icon: <FaHome fontSize="small" />,
@@ -52,6 +60,11 @@ const items = [
     href: "/profile",
     icon: <FaUser fontSize="small" />,
     title: "Profile",
+  },
+  {
+    href: "/resources",
+    icon: <BsCollection fontSize="small" />,
+    title: "Resources",
   },
 
   /*
@@ -110,7 +123,7 @@ const DashboardSidebar = ({ open, onClose, user }: IProps) => {
 
       <Box
         sx={{
-          marginTop: 5,
+          marginTop: 1,
           display: "flex",
           flexDirection: "column",
           height: "100%",

@@ -89,7 +89,16 @@ export const Projects = () => {
   }
 
   const deleteProject = async (id: string) => {
-    console.log("delete project", id)
+    const response = await fetcher1(`/api/projects?id=${id}`, {
+      method: "DELETE",
+    })
+
+    if (response?.error) {
+      toast.error(response.error)
+    } else {
+      mutate("/api/projects")
+      toast.success(response?.message)
+    }
   }
 
   return (

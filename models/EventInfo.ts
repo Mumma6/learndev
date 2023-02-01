@@ -8,7 +8,7 @@ export interface IEventInfo extends Event {
   description: string
 
   color?: string | null | undefined
-  userId?: null | string
+  userId?: null | string | ObjectId
   quizId?: null | string
   courseId?: null | string
   courseName?: null | string

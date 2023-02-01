@@ -16,6 +16,8 @@ interface IProps {
   project: IProjects
 }
 
+// Make the card abit higer and allow the shortDescription to use 2 rows and also increase the max value
+
 const ProjectCard = ({ project, deleteProject }: IProps) => {
   const router = useRouter()
   return (

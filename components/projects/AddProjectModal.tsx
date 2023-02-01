@@ -78,6 +78,7 @@ const AddProjectModal = ({
     setTopicData((topics) => topics.filter((topic) => topic.label !== topicToDelete.label))
   }
 
+  // Kolla så inte detta blir någon konstig re-render
   const addProject = (event: ClickEvent) => {
     setNewSkill(null)
     onAddProject(event)

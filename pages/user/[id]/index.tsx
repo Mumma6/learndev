@@ -43,6 +43,7 @@ const Profile = ({ user }: { user: IUser }) => {
     <>
       <h2>Profile page for: {user.name}</h2>
       <h1>Show cool stuff similar to the dashboard</h1>
+      <p>Download profile as PDF</p>
     </>
   )
 }
