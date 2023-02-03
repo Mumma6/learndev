@@ -44,12 +44,12 @@ const SERVICES_DATA = [
 
 const Services = () => {
   return (
-    <Box>
+    <Box mt={20} mb={20} pt={20} pb={20} style={{ backgroundColor: "#ededed" }}>
       <Container>
         <Box
           sx={{
             textAlign: "center",
-            mb: 5,
+            mb: 15,
           }}
         >
           <p
@@ -58,6 +58,7 @@ const Services = () => {
               fontSize: 30,
               fontWeight: 700,
               lineHeight: 1,
+              marginBottom: 30,
             }}
           >
             What the features of product

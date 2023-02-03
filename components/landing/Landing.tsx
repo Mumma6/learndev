@@ -6,13 +6,14 @@ import React from "react"
 import Features from "./features/Features"
 import LandingFooter from "./LandingFooter"
 import LandingHeader from "./LandingHeader"
+import Pricing from "./pricing/Pricing"
 import Services from "./services/Services"
 
 const Landing = () => {
   return (
     <>
       <LandingHeader />
-      <Container sx={{ width: 800, mt: 10 }}>
+      <Container sx={{ width: 900, mt: 20 }}>
         <Box
           sx={{
             textAlign: "center",
@@ -32,7 +33,7 @@ const Landing = () => {
           <p
             style={{
               marginTop: 80,
-              lineHeight: 1,
+              lineHeight: 1.25,
               fontSize: 20,
               color: "#858B91",
             }}
@@ -52,6 +53,7 @@ const Landing = () => {
           </p>
         </Box>
       </Container>
+
       <Container>
         <Grid container spacing={1}>
           <Grid item xs={6}>
@@ -61,10 +63,10 @@ const Landing = () => {
             <Image alt="pic" src="/assets/images/graphs.svg" width={500} height={500} />
           </Grid>
         </Grid>
-
-        <Services />
-        <Features />
       </Container>
+      <Services />
+      <Features />
+      <Pricing />
 
       <LandingFooter />
     </>
