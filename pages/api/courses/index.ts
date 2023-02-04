@@ -11,16 +11,13 @@ import { Response } from "../../../types/response"
 
 // this will trown an error in vercel deployment.
 
-/*
 interface ExtendedNextApiRequest extends NextApiRequest {
   body: Pick<ICourse, "content" | "completed" | "topics">
 }
 
-*/
-
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<ICourse[] | null>>>()
 
-handler.get(...auths, async (req, res) => {
+handler.get(...auths, async (req: ExtendedNextApiRequest, res) => {
   if (!req.user) {
     handleAPIResponse(res, [], "User auth")
     return
@@ -36,17 +33,20 @@ handler.get(...auths, async (req, res) => {
   }
 })
 
-handler.post(...auths, async (req, res) => {
+handler.post(...auths, async (req: ExtendedNextApiRequest, res) => {
   if (!req.user) {
     handleAPIResponse(res, null, "No user found")
   }
   try {
-    const createTags = (data: any) => []
-    const tags = createTags(req.body)
+    const createTags = (data: Pick<ICourse, "content" | "completed" | "topics">): string[] => [
+      data.content.title,
+      ...data.topics.map((t) => t.toString()),
+    ]
+
     const db = await getMongoDb()
 
     // Is it possible to make sure we dont add anything thats not in the ICourse
-    const CourseModelSchema = z.object({
+    const CourseModelSchema: z.ZodType<Partial<ICourse>> = z.object({
       completed: z.boolean(),
       content: z.object({
         title: z.string().min(1),
@@ -66,11 +66,14 @@ handler.post(...auths, async (req, res) => {
       return handleAPIError(res, { message: "Validatation error" })
     }
 
+    const tags = createTags(req.body)
+
     insertCourse(db, {
       content: req.body.content,
       userId: req.user?._id,
       completed: req.body.completed,
       topics: req.body.topics,
+      tags,
       createdAt: new Date(),
     })
 

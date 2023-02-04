@@ -7,8 +7,9 @@ const DATA = [
     id: 1,
     price: 0,
     isRecommended: false,
-    type: "Standard",
-    buttonText: "Create account",
+    type: "Free",
+    subTitle: "Start a free 30 day trial",
+    buttonText: "Start 30 day trial",
     features: [
       {
         id: 1,
@@ -39,10 +40,12 @@ const DATA = [
   },
   {
     id: 2,
-    price: 15,
+    price: 14.99,
+    specialOffer: 0,
     type: "Premium",
     isRecommended: true,
-    buttonText: "Comming soon",
+    buttonText: "Subscribe now",
+    subTitle: "Special offer",
     features: [
       {
         id: 1,

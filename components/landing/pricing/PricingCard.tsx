@@ -31,11 +31,13 @@ interface IProps {
     buttonText: string
     features: IFeatures[]
     type: string
+    subTitle: string
+    specialOffer?: number
   }
 }
 
 const PricingCard = ({ data }: IProps) => {
-  const { price, isRecommended, buttonText, features, type } = data
+  const { price, isRecommended, buttonText, features, type, subTitle, specialOffer } = data
   return (
     <Box
       padding={1}
@@ -43,7 +45,7 @@ const PricingCard = ({ data }: IProps) => {
         border: 4,
         borderRadius: "16px",
         borderColor: isRecommended ? "primary.main" : "#c7c7c7",
-        backgroundColor: isRecommended ? "#eeeeee" : null,
+        backgroundColor: !isRecommended ? "#eeeeee" : null,
       }}
     >
       <Box mt={4}>
@@ -55,8 +57,29 @@ const PricingCard = ({ data }: IProps) => {
           </Grid>
           {price !== 0 && (
             <Grid item>
-              <Typography color={"primary"} variant="h4" component="div">
-                {`${price}/mo`}
+              <Typography
+                style={{
+                  textDecoration: "line-through",
+                }}
+                color={"primary"}
+                variant="h4"
+                component="div"
+              >
+                {`$${price}/mo`}
+              </Typography>
+            </Grid>
+          )}
+        </Grid>
+        <Grid mb={5} container justifyContent={"space-around"}>
+          <Grid item>
+            <Typography variant="h4" component="div">
+              {subTitle}
+            </Typography>
+          </Grid>
+          {price !== 0 && (
+            <Grid item>
+              <Typography color={"success.main"} variant="h4" component="div">
+                {`$${specialOffer}/mo`}
               </Typography>
             </Grid>
           )}
@@ -76,11 +99,11 @@ const PricingCard = ({ data }: IProps) => {
           </List>
           <Divider />
           <Box mt={10} ml={3} mb={1}>
-            <Link style={{ textDecoration: "none" }} href="/sign-up" passHref>
-              <Button disabled={type === "Premium"} size="large" color="primary" variant="contained">
+            <Button disabled={type === "Free"} size="large" color="primary" variant="contained">
+              <Link style={{ textDecoration: "none", color: "white" }} href="/sign-up" passHref>
                 {buttonText}
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </Box>
         </Box>
       </Box>
