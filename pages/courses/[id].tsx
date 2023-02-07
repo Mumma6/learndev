@@ -4,14 +4,15 @@ import React from "react"
 import { DashboardLayout } from "../../components/dashboard/DashboardLayout"
 
 import { handleAuthGetServerSideProps } from "../../lib/utils"
-import { ICourse } from "../../models/Course"
+
 import Course from "../../components/courses/Course"
 import { findCoursebyId } from "../../lib/queries/course"
+import { CourseModelSchema, CourseModelSchemaType } from "../../schema/CourseSchema"
 
 export const getServerSideProps: GetServerSideProps = async (context) =>
-  handleAuthGetServerSideProps<ICourse>(context, findCoursebyId, "course")
+  handleAuthGetServerSideProps<CourseModelSchemaType>(context, findCoursebyId, "course", CourseModelSchema)
 
-const coursePage = ({ course }: { course: ICourse }) => {
+const coursePage = ({ course }: { course: CourseModelSchemaType }) => {
   return (
     <>
       <DashboardLayout>

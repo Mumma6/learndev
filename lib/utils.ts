@@ -4,6 +4,7 @@ import { getMongoDb } from "./mongodb"
 import { findUserBySession } from "./queries/user"
 import { ParsedUrlQuery } from "querystring"
 import { Db, ObjectId, WithId } from "mongodb"
+import { AnyZodObject } from "zod"
 
 /*
 Update to function to include a status code aswell
@@ -57,11 +58,14 @@ const convertMongoIdToString = <T>(obj: T): T => {
   return newObj
 }
 
+const serilizeObject = (obj: Object) => JSON.parse(JSON.stringify(obj))
+
 // This function will check if there is a valid session for the user in the database. It will check the "cookies" in the browser.
 export const handleAuthGetServerSideProps = async <ObjectType>(
   context: GetServerSidePropsContext,
-  findObjectById: (db: Db, id: string) => Promise<WithId<ObjectType> | null>,
-  objectName: string
+  findObjectById: (db: Db, id: string) => Promise<ObjectType | null>,
+  objectName: string,
+  schema?: AnyZodObject
 ) => {
   {
     const redirect = {
@@ -92,7 +96,7 @@ export const handleAuthGetServerSideProps = async <ObjectType>(
 
     return {
       props: {
-        [objectName]: { ...convertMongoIdToString(object) }, // nextjs cant serilize ObjectId, need to convert to Id
+        [objectName]: serilizeObject(object), // nextjs cant serilize ObjectId, need to convert to Id
       },
     }
   }

@@ -7,12 +7,12 @@ import Button from "@mui/material/Button"
 import Paper from "@mui/material/Paper"
 import Typography from "@mui/material/Typography"
 import { Divider } from "@mui/material"
-import { ICourse } from "../../models/Course"
 import { useRouter } from "next/router"
+import { CourseModelSchemaType } from "../../schema/CourseSchema"
 
 interface IProps {
   deleteCourse: (id: string) => void
-  course: ICourse
+  course: CourseModelSchemaType
 }
 
 const CourseCard = ({ course, deleteCourse }: IProps) => {

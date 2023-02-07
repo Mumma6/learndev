@@ -1,6 +1,5 @@
 import useSWR, { SWRResponse } from "swr"
 import useSWRImmutable from "swr/immutable"
-import { ICourse } from "../models/Course"
 import { IEventInfo } from "../models/EventInfo"
 import { IProjects } from "../models/Projects"
 import { IQuiz } from "../models/Quiz"

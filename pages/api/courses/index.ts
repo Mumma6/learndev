@@ -7,7 +7,6 @@ import { deleteCourseById, getCoursesForUser, insertCourse } from "../../../lib/
 import { handleAPIError, handleAPIResponse } from "../../../lib/utils"
 import { validateBody } from "../../../lib/zodUtils"
 
-import { ICourse } from "../../../models/Course"
 import { CourseModelformInputSchema, CourseModelSchema, CourseModelSchemaType } from "../../../schema/CourseSchema"
 import { Response } from "../../../types/response"
 
@@ -25,6 +24,7 @@ handler.get(...auths, async (req, res) => {
     const db = await getMongoDb()
     const courses = await getCoursesForUser(db, req.user?._id)
 
+    // Move this logic to the query instead?
     const parsedCourses = z.array(CourseModelSchema).safeParse(courses)
 
     if (!parsedCourses.success) {
@@ -56,7 +56,7 @@ handler.post(...auths, async (req, res) => {
     }
 
     const { data } = parsedFormInput
-    const createTags = (data: Pick<ICourse, "content" | "completed" | "topics">): string[] => [
+    const createTags = (data: Pick<CourseModelSchemaType, "content" | "completed" | "topics">): string[] => [
       data.content.title,
       ...data.topics.map((t) => t.label),
     ]

@@ -1,11 +1,10 @@
-import { Db, ObjectId } from "mongodb"
-import { ICourse } from "../../models/Course"
-import { CourseModelSchemaType } from "../../schema/CourseSchema"
+import { Db, ObjectId, WithId } from "mongodb"
+import { CourseModelContentInputSchemaType, CourseModelSchema, CourseModelSchemaType } from "../../schema/CourseSchema"
 
 export const insertCourse = async (db: Db, data: Omit<CourseModelSchemaType, "_id">) => {
   // Ska ta emot all kurs data här.
 
-  return await db.collection<ICourse>("courses").insertOne(data)
+  return await db.collection("courses").insertOne(data)
 }
 
 export const getCoursesForUser = async (db: Db, userId: string) => {
@@ -19,5 +18,12 @@ export const deleteCourseById = async (db: Db, id: string) => {
 }
 
 export const findCoursebyId = async (db: Db, _id: string) => {
-  return await db.collection<ICourse>("courses").findOne({ _id: new ObjectId(_id) })
+  const course = await db.collection("courses").findOne({ _id: new ObjectId(_id) })
+
+  const parsedCourse = CourseModelSchema.safeParse(course)
+
+  if (!parsedCourse.success) {
+    return null
+  }
+  return parsedCourse.data
 }

@@ -8,36 +8,20 @@ import CoursesToolbar from "./CoursesToolbar"
 import { toast } from "react-toastify"
 import { ClickEvent } from "../../types/generics"
 import { fetcher1 } from "../../lib/axiosFetcher"
-import { ICourse } from "../../models/Course"
-import { Skill } from "../../constants/skillsData"
-import { CourseModelformInputType } from "../../schema/CourseSchema"
+import { CourseModelContentInputSchemaType, CourseModelformInputType, InstitutionEnum } from "../../schema/CourseSchema"
+import { SkillSchemaType } from "../../schema/SharedSchema"
 
-export enum Institution {
-  Udemy = "Udemy",
-  Youtube = "Youtube",
-  Pluralsight = "Pluralsight",
-  Linkedin = "Linkedin",
-  Other = "Other",
-}
-
-export interface CourseFormData {
-  title: string
-  description: string
-  institution: Institution
-  url: string
-}
-
-export const initialCourseFormState: CourseFormData = {
+export const initialCourseFormState = {
   title: "",
   description: "",
-  institution: Institution.Other,
+  institution: InstitutionEnum.Enum.Other,
   url: "",
 }
 
 const Courses = () => {
   const [open, setOpen] = useState(false)
-  const [courseFormData, setCourseFormData] = useState<CourseFormData>(initialCourseFormState)
-  const [topicData, setTopicData] = useState<Skill[]>([])
+  const [courseFormData, setCourseFormData] = useState<CourseModelContentInputSchemaType>(initialCourseFormState)
+  const [topicData, setTopicData] = useState<SkillSchemaType[]>([])
   const [completed, setCompleted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -72,8 +56,6 @@ const Courses = () => {
           completed,
         },
       })
-
-      console.log(response)
 
       if (response?.error) {
         toast.error(response.error)
@@ -128,8 +110,8 @@ const Courses = () => {
                   {!isLoading &&
                     data?.payload
                       ?.filter((c) => !c.completed)
-                      .map((course: ICourse) => (
-                        <Grid item key={course._id?.toString()} lg={3} md={4} sm={4} xs={12}>
+                      .map((course) => (
+                        <Grid item key={course._id} lg={3} md={4} sm={4} xs={12}>
                           <CourseCard deleteCourse={deleteCourse} course={course} />
                         </Grid>
                       ))}
@@ -159,8 +141,8 @@ const Courses = () => {
                   {!isLoading &&
                     data?.payload
                       ?.filter((c) => c.completed)
-                      .map((course: ICourse) => (
-                        <Grid item key={course._id?.toString()} lg={3} md={4} sm={4} xs={12}>
+                      .map((course) => (
+                        <Grid item key={course._id} lg={3} md={4} sm={4} xs={12}>
                           <CourseCard deleteCourse={deleteCourse} course={course} />
                         </Grid>
                       ))}

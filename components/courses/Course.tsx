@@ -1,10 +1,10 @@
 import React from "react"
 import { Box, Paper, Card, CardContent, CardHeader, Divider, Container, Button } from "@mui/material"
-import { ICourse } from "../../models/Course"
 import NextLink from "next/link"
 import { FaArrowLeft } from "react-icons/fa"
+import { CourseModelSchemaType } from "../../schema/CourseSchema"
 interface IProps {
-  course: ICourse
+  course: CourseModelSchemaType
 }
 
 // single course

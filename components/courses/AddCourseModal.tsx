@@ -14,18 +14,20 @@ import FormControlLabel from "@mui/material/FormControlLabel"
 import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
 
-import { CourseFormData, initialCourseFormState, Institution } from "./Courses"
+import { initialCourseFormState } from "./Courses"
 import { ClickEventRet, SetState } from "../../types/generics"
-import { Skill, skillsData } from "../../constants/skillsData"
+import { skillsData } from "../../constants/skillsData"
 import { FaPlus } from "react-icons/fa"
+import { SkillSchemaType } from "../../schema/SharedSchema"
+import { CourseModelContentInputSchemaType, InstitutionEnum } from "../../schema/CourseSchema"
 
 interface IProps {
   open: boolean
   handleClose: SetState<void>
-  courseFormData: CourseFormData
-  topicData: Skill[]
-  setCourseFormData: SetState<CourseFormData>
-  setTopicData: SetState<Skill[]>
+  courseFormData: CourseModelContentInputSchemaType
+  topicData: SkillSchemaType[]
+  setCourseFormData: SetState<CourseModelContentInputSchemaType>
+  setTopicData: SetState<SkillSchemaType[]>
   setCompleted: SetState<boolean>
   completed: boolean
   onAddCourse: ClickEventRet<Promise<void>>
@@ -44,7 +46,7 @@ const AddCourseModal = ({
 }: IProps) => {
   const { title, description, institution, url } = courseFormData
 
-  const [newSkill, setNewSkill] = useState<Skill | null>()
+  const [newSkill, setNewSkill] = useState<SkillSchemaType | null>()
 
   const addNewskill = () => {
     if (newSkill) {
@@ -75,11 +77,11 @@ const AddCourseModal = ({
     handleClose()
   }
 
-  const handleSkillChange = (e: React.SyntheticEvent, value: Skill | null) => {
+  const handleSkillChange = (e: React.SyntheticEvent, value: SkillSchemaType | null) => {
     setNewSkill(value)
   }
 
-  const handleTopicDelete = (topicToDelete: Skill) => () => {
+  const handleTopicDelete = (topicToDelete: SkillSchemaType) => () => {
     setTopicData((topics) => topics.filter((topic) => topic.label !== topicToDelete.label))
   }
 
@@ -87,16 +89,10 @@ const AddCourseModal = ({
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Add course</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          To add a course, please fill in the information below.
-        </DialogContentText>
+        <DialogContentText>To add a course, please fill in the information below.</DialogContentText>
         <FormControlLabel
           control={
-            <Checkbox
-              checked={completed}
-              onChange={handleCheckBoxChange}
-              inputProps={{ "aria-label": "controlled" }}
-            />
+            <Checkbox checked={completed} onChange={handleCheckBoxChange} inputProps={{ "aria-label": "controlled" }} />
           }
           label="Course completed"
         />
@@ -171,12 +167,7 @@ const AddCourseModal = ({
                   component="ul"
                 >
                   {topicData.map((data) => (
-                    <Chip
-                      key={data.label}
-                      color="primary"
-                      label={data.label}
-                      onDelete={handleTopicDelete(data)}
-                    />
+                    <Chip key={data.label} color="primary" label={data.label} onDelete={handleTopicDelete(data)} />
                   ))}
                 </Paper>
               </Box>
@@ -193,11 +184,11 @@ const AddCourseModal = ({
               name="institution"
               onChange={handleSelectChange}
             >
-              <MenuItem value={Institution.Other}>Other</MenuItem>
-              <MenuItem value={Institution.Udemy}>Udemy</MenuItem>
-              <MenuItem value={Institution.Linkedin}>Linkedin</MenuItem>
-              <MenuItem value={Institution.Pluralsight}>Pluralsight</MenuItem>
-              <MenuItem value={Institution.Youtube}>Youtube</MenuItem>
+              <MenuItem value={InstitutionEnum.Enum.Other}>Other</MenuItem>
+              <MenuItem value={InstitutionEnum.Enum.Udemy}>Udemy</MenuItem>
+              <MenuItem value={InstitutionEnum.Enum.Linkedin}>Linkedin</MenuItem>
+              <MenuItem value={InstitutionEnum.Enum.Pluralsight}>Pluralsight</MenuItem>
+              <MenuItem value={InstitutionEnum.Enum.Youtube}>Youtube</MenuItem>
             </Select>
           </FormControl>
         </Box>

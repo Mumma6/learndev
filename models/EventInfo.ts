@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb"
 import { Event } from "react-big-calendar"
-import { ICourse } from "./Course"
+
 import { IQuiz } from "./Quiz"
 
 export interface IEventInfo extends Event {
