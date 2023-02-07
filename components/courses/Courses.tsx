@@ -11,7 +11,7 @@ import { fetcher1 } from "../../lib/axiosFetcher"
 import { CourseModelContentInputSchemaType, CourseModelformInputType, InstitutionEnum } from "../../schema/CourseSchema"
 import { SkillSchemaType } from "../../schema/SharedSchema"
 
-export const initialCourseFormState = {
+export const initialCourseFormState: CourseModelContentInputSchemaType = {
   title: "",
   description: "",
   institution: InstitutionEnum.Enum.Other,
