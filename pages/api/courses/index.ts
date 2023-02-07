@@ -5,19 +5,17 @@ import auths from "../../../lib/middlewares/auth"
 import { getMongoDb } from "../../../lib/mongodb"
 import { deleteCourseById, getCoursesForUser, insertCourse } from "../../../lib/queries/course"
 import { handleAPIError, handleAPIResponse } from "../../../lib/utils"
+import { validateBody } from "../../../lib/zodUtils"
 
 import { ICourse } from "../../../models/Course"
+import { CourseModelformInputSchema, CourseModelSchema, CourseModelSchemaType } from "../../../schema/CourseSchema"
 import { Response } from "../../../types/response"
 
 // this will trown an error in vercel deployment.
 
-interface ExtendedNextApiRequest extends NextApiRequest {
-  body: Pick<ICourse, "content" | "completed" | "topics">
-}
+const handler = nextConnect<NextApiRequest, NextApiResponse<Response<CourseModelSchemaType[] | null>>>()
 
-const handler = nextConnect<NextApiRequest, NextApiResponse<Response<ICourse[] | null>>>()
-
-handler.get(...auths, async (req: ExtendedNextApiRequest, res) => {
+handler.get(...auths, async (req, res) => {
   if (!req.user) {
     handleAPIResponse(res, [], "User auth")
     return
@@ -26,53 +24,50 @@ handler.get(...auths, async (req: ExtendedNextApiRequest, res) => {
   try {
     const db = await getMongoDb()
     const courses = await getCoursesForUser(db, req.user?._id)
-    handleAPIResponse(res, courses, `Courses for user: ${req.user?.name}`)
+
+    const parsedCourses = z.array(CourseModelSchema).safeParse(courses)
+
+    if (!parsedCourses.success) {
+      return handleAPIError(res, { message: "Validation error" })
+    }
+
+    const { data } = parsedCourses
+
+    handleAPIResponse(res, data, `Courses for user: ${req.user?.name}`)
   } catch (error) {
     console.log("Error when fethcing courses")
     handleAPIError(res, error)
   }
 })
 
-handler.post(...auths, async (req: ExtendedNextApiRequest, res) => {
+handler.post(...auths, async (req, res) => {
   if (!req.user) {
     handleAPIResponse(res, null, "No user found")
   }
+
   try {
+    const parsedFormInput = CourseModelformInputSchema.safeParse(req.body)
+
+    if (!parsedFormInput.success) {
+      console.log(parsedFormInput.error)
+
+      // gör en cool generic function som visar alla felen från valideringen
+      return handleAPIError(res, { message: "Validation error" })
+    }
+
+    const { data } = parsedFormInput
     const createTags = (data: Pick<ICourse, "content" | "completed" | "topics">): string[] => [
       data.content.title,
-      ...data.topics.map((t) => t.toString()),
+      ...data.topics.map((t) => t.label),
     ]
 
     const db = await getMongoDb()
 
-    // Is it possible to make sure we dont add anything thats not in the ICourse
-    const CourseModelSchema: z.ZodType<Partial<ICourse>> = z.object({
-      completed: z.boolean(),
-      content: z.object({
-        title: z.string().min(1),
-        description: z.string().min(1),
-        url: z.string().min(1),
-        institution: z.string().min(1),
-      }),
-      topics: z.array(
-        z.object({
-          label: z.string(),
-        })
-      ),
-    })
-
-    const result = CourseModelSchema.safeParse(req.body)
-    if (!result.success) {
-      return handleAPIError(res, { message: "Validatation error" })
-    }
-
-    const tags = createTags(req.body)
+    const tags = createTags(data)
 
     insertCourse(db, {
-      content: req.body.content,
+      ...data,
       userId: req.user?._id,
-      completed: req.body.completed,
-      topics: req.body.topics,
       tags,
       createdAt: new Date(),
     })

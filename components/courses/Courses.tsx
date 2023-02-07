@@ -1,14 +1,4 @@
-import {
-  Box,
-  Container,
-  Grid,
-  Pagination,
-  Card,
-  CardContent,
-  Typography,
-  Divider,
-  CardHeader,
-} from "@mui/material"
+import { Box, Container, Grid, Pagination, Card, CardContent, Typography, Divider, CardHeader } from "@mui/material"
 import { useEffect, useState } from "react"
 import { useCourses } from "../../lib/hooks"
 import { useSWRConfig } from "swr"
@@ -20,6 +10,7 @@ import { ClickEvent } from "../../types/generics"
 import { fetcher1 } from "../../lib/axiosFetcher"
 import { ICourse } from "../../models/Course"
 import { Skill } from "../../constants/skillsData"
+import { CourseModelformInputType } from "../../schema/CourseSchema"
 
 export enum Institution {
   Udemy = "Udemy",
@@ -52,7 +43,6 @@ const Courses = () => {
 
   const { data } = useCourses()
   const { mutate } = useSWRConfig()
-  console.log(data)
 
   const deleteCourse = async (id: string) => {
     console.log("deleing", id)
@@ -73,7 +63,7 @@ const Courses = () => {
     try {
       setIsLoading(true)
 
-      const response = await fetcher1<undefined, Partial<ICourse>>("/api/courses", {
+      const response = await fetcher1<undefined, CourseModelformInputType>("/api/courses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: {

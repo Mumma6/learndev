@@ -16,6 +16,13 @@ export const handleAPIResponse = <T>(
   message: string,
   statusCode = 200
 ): void => {
+  /*
+
+  The payload contains _id: Mongodb ID here. 
+  But will get converted to a string by JSON.
+  https://stackoverflow.com/questions/39598987/id-get-converted-from-objectid-to-string-in-mean-application
+
+  */
   res.statusCode = statusCode
   res.json({ payload, error: null, message })
 }

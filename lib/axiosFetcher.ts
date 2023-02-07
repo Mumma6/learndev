@@ -7,7 +7,7 @@ interface Options<T> {
   headers?: any
 }
 
-const handleResponse = <R>(response: AxiosResponse<R>): Response<R> => {
+const handleResponse = <R>(response: AxiosResponse<R>) => {
   if (response.status >= 200 && response.status < 300) {
     return response.data as Response<R>
   } else {

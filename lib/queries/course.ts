@@ -1,18 +1,17 @@
 import { Db, ObjectId } from "mongodb"
 import { ICourse } from "../../models/Course"
+import { CourseModelSchemaType } from "../../schema/CourseSchema"
 
-export const insertCourse = async (db: Db, data: ICourse) => {
+export const insertCourse = async (db: Db, data: Omit<CourseModelSchemaType, "_id">) => {
   // Ska ta emot all kurs data här.
 
   return await db.collection<ICourse>("courses").insertOne(data)
 }
 
 export const getCoursesForUser = async (db: Db, userId: string) => {
-  return await db
-    .collection<ICourse>("courses")
-    .find({ userId })
-    .sort({ createdAt: -1, title: 1 })
-    .toArray()
+  // Make sure the find works. Should it be string or ObjectID
+
+  return await db.collection("courses").find({ userId }).sort({ createdAt: -1, title: 1 }).toArray()
 }
 
 export const deleteCourseById = async (db: Db, id: string) => {

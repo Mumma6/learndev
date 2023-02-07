@@ -5,6 +5,7 @@ import { IEventInfo } from "../models/EventInfo"
 import { IProjects } from "../models/Projects"
 import { IQuiz } from "../models/Quiz"
 import { IQuizResult } from "../models/QuizResult"
+import { CourseModelSchemaType } from "../schema/CourseSchema"
 import { Response } from "../types/response"
 import { IUser } from "../types/user"
 import { fetcher1 } from "./axiosFetcher"
@@ -13,6 +14,8 @@ import { fetcher } from "./fetcher"
 // useSWR vs useSWRImmutable
 // https://swr.vercel.app/docs/revalidation#disable-automatic-revalidations
 // https://stackoverflow.com/questions/73309030/swr-not-pulling-from-cache
+
+// Zod will replace all Interfaces. Make sure the hooks still work with the infer type
 
 interface UserHookResponse {
   data?: Response<IUser | null> | undefined
@@ -28,7 +31,7 @@ export function useUser(id: string) {
 }
 
 export const useCourses = () => {
-  return useSWR("/api/courses", (url) => fetcher1<ICourse[], undefined>(url))
+  return useSWR("/api/courses", (url) => fetcher1<CourseModelSchemaType[], undefined>(url))
 }
 
 export const useProjects = () => {

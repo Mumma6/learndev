@@ -24,6 +24,7 @@ const AboutYou = ({ user, mutate }: { user: IUser; mutate: Mutate<IUser | null> 
       name: user.name,
       bio: user.bio,
     },
+    // validate(Schema),
     validationSchema: Yup.object({
       name: Yup.string().max(255).required("Name is required"),
       bio: Yup.string().max(255).required("Bio is required"),
