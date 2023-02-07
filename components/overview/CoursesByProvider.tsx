@@ -1,14 +1,14 @@
 import React from "react"
 import { Doughnut } from "react-chartjs-2"
 import { Box, Card, CardContent, CardHeader, Divider, Typography, useTheme } from "@mui/material"
-import { ICourse } from "../../models/Course"
+import { CourseModelSchemaType } from "../../schema/CourseSchema"
 
 type InstitutionCount = {
   [key: string]: number
 }
 
 interface IProps {
-  courses: ICourse[] | undefined
+  courses: CourseModelSchemaType[] | undefined
 }
 
 const colors = ["#3F51B5", "#e53935", "#FB8C00", "green"]
@@ -18,7 +18,7 @@ const CoursesByProvider = ({ courses }: IProps) => {
     if (!courses) {
       return []
     }
-    const total = courses.reduce((total: InstitutionCount, course: ICourse) => {
+    const total = courses.reduce((total: InstitutionCount, course: CourseModelSchemaType) => {
       total[course.content.institution] = total[course.content.institution] ? total[course.content.institution] + 1 : 1
       return total
     }, {})

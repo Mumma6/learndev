@@ -7,7 +7,6 @@ import Button from "@mui/material/Button"
 import Paper from "@mui/material/Paper"
 import Typography from "@mui/material/Typography"
 import { Divider } from "@mui/material"
-import { ICourse } from "../../models/Course"
 import { useRouter } from "next/router"
 import { IProjects } from "../../models/Projects"
 

@@ -1,17 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react"
 import * as _ from "lodash"
 
-import {
-  Box,
-  Container,
-  Typography,
-  Pagination,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Button,
-} from "@mui/material"
+import { Box, Container, Typography, Pagination, Card, CardContent, CardHeader, Divider, Button } from "@mui/material"
 
 import { Calendar, dateFnsLocalizer, Event, Views } from "react-big-calendar"
 
@@ -24,7 +14,7 @@ import addHours from "date-fns/addHours"
 import startOfHour from "date-fns/startOfHour"
 
 import "react-big-calendar/lib/css/react-big-calendar.css"
-import { ICourse } from "../../models/Course"
+
 import EventInfo from "./EventInfo"
 import { IEventInfo } from "../../models/EventInfo"
 import { IQuiz } from "../../models/Quiz"
@@ -99,9 +89,7 @@ const StudyCalendar = () => {
   const [editModalOpen, setEditModalOpen] = useState(false)
   const [eventFormData, setEventFormData] = useState<EventFormData>(initialEventFormState)
 
-  const [externEventFormData, setExternEventFormData] = useState<ExternEventFormData>(
-    initialExternEventFormState
-  )
+  const [externEventFormData, setExternEventFormData] = useState<ExternEventFormData>(initialExternEventFormState)
 
   const { data: eventsData } = useEvents()
 
@@ -207,9 +195,7 @@ const StudyCalendar = () => {
         data: {
           ...externEventFormData,
           start: setMinToZero(externEventFormData.start),
-          end: externEventFormData.allDay
-            ? addHours(externEventFormData.start, 12)
-            : setMinToZero(externEventFormData.end),
+          end: externEventFormData.allDay ? addHours(externEventFormData.start, 12) : setMinToZero(externEventFormData.end),
         },
       })
 
