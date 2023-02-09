@@ -11,6 +11,11 @@ import { fetcher1 } from "../../lib/axiosFetcher"
 import { CourseModelContentInputSchemaType, CourseModelformInputType, InstitutionEnum } from "../../schema/CourseSchema"
 import { SkillSchemaType } from "../../schema/SharedSchema"
 
+/*
+Should formik be here or in the modal
+
+*/
+
 export const initialCourseFormState: CourseModelContentInputSchemaType = {
   title: "",
   description: "",

@@ -1,9 +1,9 @@
-import { IUser } from "./user"
+import { UserModelSchemaType } from "../schema/UserSchema"
 
 declare module "next" {
   interface NextApiRequest {
     logIn: Function
-    user?: IUser
+    user?: UserModelSchemaType
     session?: any
     status: Function
     file: {
@@ -14,6 +14,6 @@ declare module "next" {
 
 declare global {
   namespace Express {
-    interface User extends IUser {}
+    interface User extends UserModelSchemaType {}
   }
 }

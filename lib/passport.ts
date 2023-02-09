@@ -1,7 +1,6 @@
 import passport from "passport"
 import { Strategy as LocalStrategy, Strategy } from "passport-local"
 import { NextApiRequest } from "next"
-import { IUser } from "../types/user"
 import { Request } from "express"
 import { getMongoDb } from "./mongodb"
 import { findUserForAuth, findUserWithEmailAndPassword } from "./queries/user"

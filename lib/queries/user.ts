@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs"
 import { Db, ObjectId } from "mongodb"
 import normalizeEmail from "validator/lib/normalizeEmail"
-import { IUser } from "../../types/user"
+import { UserModelSchema, UserModelSchemaType } from "../../schema/UserSchema"
 
 export function dbProjectionUsers(prefix = "") {
   return {
@@ -53,39 +53,32 @@ export async function findUserByEmail(db: Db, email: string) {
     .then((user) => user || null)
 }
 
-// test by adding a new default value "test"
-const defaultUserValues: Omit<IUser, "password"> = {
-  email: "",
-  bio: "",
-  name: "",
-  profilePicture: "",
-  skills: [],
-  workexperience: [],
-  completedQuizzes: [],
-  emailVerified: false,
-  userSettings: {},
-  socials: {
-    linkedin: "",
-    twitter: "",
-    youtube: "",
-    github: "",
-    blog: "",
-    personalWebsite: "",
-  },
-}
-
 // The idea is when something new is added to the IUser, all users will automaticaly get the default values. ex Socails.
-const setDefaultValues = async (data: Partial<IUser>, db: Db, id: string): Promise<Omit<IUser, "password">> => {
+const setDefaultValues = async (
+  data: Partial<UserModelSchemaType>,
+  db: Db,
+  id: string
+): Promise<Partial<Omit<UserModelSchemaType, "_id">>> => {
   const userDbValues = await findUserById(db, id)
 
+  // If something new is added to the userSchema. Add it here.
+  const defaultUserValues = UserModelSchema.omit({ _id: true }).safeParse(data)
+
+  if (!defaultUserValues.success) {
+    return {
+      ...(userDbValues && { ...userDbValues }),
+      ...data,
+    }
+  }
+
   return {
-    ...defaultUserValues,
+    ...(defaultUserValues && { ...defaultUserValues }),
     ...(userDbValues && { ...userDbValues }),
     ...data,
   }
 }
 
-export async function updateUserById(db: Db, id: string, data: Partial<IUser>) {
+export async function updateUserById(db: Db, id: string, data: Partial<UserModelSchemaType>) {
   return db
     .collection("users")
     .findOneAndUpdate(
@@ -96,9 +89,16 @@ export async function updateUserById(db: Db, id: string, data: Partial<IUser>) {
     .then(({ value }) => value)
 }
 
-export async function insertUser(db: Db, { email, password, name }: Pick<IUser, "email" | "password" | "name">) {
-  const user: IUser = {
-    ...defaultUserValues,
+export async function insertUser(db: Db, data: Pick<UserModelSchemaType, "email" | "password" | "name">) {
+  const parsedData = UserModelSchema.omit({ name: true, email: true, password: true, _id: true }).safeParse(data)
+
+  if (!parsedData.success) {
+    return null
+  }
+
+  const { email, password, name } = data
+  const user = {
+    ...parsedData.data,
     email,
     password,
     name,
@@ -106,8 +106,10 @@ export async function insertUser(db: Db, { email, password, name }: Pick<IUser, 
   const hashedPassword = await bcrypt.hash(user.password, 10)
 
   const { insertedId } = await db.collection("users").insertOne({ ...user, password: hashedPassword })
-  user._id = insertedId
-  return user
+
+  const userOutput = await db.collection("users").findOne({ _id: insertedId })
+
+  return userOutput
 }
 
 export async function updateUserPasswordByOldPassword(db: Db, id: string, oldPassword: string, newPassword: string) {

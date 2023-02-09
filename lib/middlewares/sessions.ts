@@ -4,7 +4,6 @@ import { promisifyStore } from "next-session/lib/compat"
 import { NextApiRequest, NextApiResponse } from "next"
 import { NextResponse } from "next/server"
 import { getMongoClient } from "../mongodb"
-import { IUser } from "../../types/user"
 
 /*
 In your code, you are using the connect-mongo library to store the session data in a MongoDB collection called "sessions".

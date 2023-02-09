@@ -1,6 +1,15 @@
 // can not use mongodb on the frontend. Anything that needs parsing on FE cant use objectId
 import { z } from "zod"
 import { SkillSchema } from "./SharedSchema"
+import { ObjectId } from "bson"
+
+/*
+
+Make a seperate type for the datebase stuff?
+
+extends the rest but with _id as objectID
+
+*/
 
 export const InstitutionEnum = z.enum(["Udemy", "Youtube", "Pluralsight", "Linkedin", "Other"])
 
@@ -24,8 +33,8 @@ export const CourseModelformInputSchema = z.object({
 // We transform the ObjectId to a string so the rest of the application can use it
 // Cant use ObjectId dirrectly on the FE, Have to use Object instead if we want to use the Type on the fe side.
 export const CourseModelSchema = CourseModelformInputSchema.extend({
-  userId: z.instanceof(Object).transform((id) => id.toString()),
-  _id: z.instanceof(Object).transform((id) => id.toString()),
+  userId: z.instanceof(ObjectId).transform((id) => id.toString()),
+  _id: z.instanceof(ObjectId).transform((id) => id.toString()),
   tags: z.array(z.string()),
   createdAt: z.date(),
 })
