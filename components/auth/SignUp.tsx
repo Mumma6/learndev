@@ -8,9 +8,8 @@ import { toast } from "react-toastify"
 import { useCurrentUser } from "../../lib/hooks"
 import SubmitButton from "../SubmitButton"
 import { fetcher1 } from "../../lib/axiosFetcher"
-import { IUser } from "../../types/user"
 import { FaArrowLeft } from "react-icons/fa"
-import { UserRegistrationSchema, UserRegistrationSchemaType } from "../../schema/UserSchema"
+import { UserModelSchemaType, UserRegistrationSchema, UserRegistrationSchemaType } from "../../schema/UserSchema"
 
 const initialState = {
   name: "",
@@ -37,7 +36,7 @@ const SignUp = () => {
 
   const onSubmit = async (formValues: UserRegistrationSchemaType) => {
     try {
-      const response = await fetcher1<IUser, UserRegistrationSchemaType>("/api/users", {
+      const response = await fetcher1<UserModelSchemaType, UserRegistrationSchemaType>("/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: formValues,

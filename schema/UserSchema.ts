@@ -35,7 +35,10 @@ export type UserWorkexperienceSchemaType = z.infer<typeof UserWorkexperienceSche
 export const UserModelSchema = UserRegistrationSchema.extend({
   _id: z.instanceof(ObjectId).transform((id) => id.toString()),
   completedQuizzes: z.array(z.string()).default([]),
-  bio: z.string().default(""),
+  about: z.string().default(""),
+  goals: z.string().default(""),
+  from: z.string().default(""),
+  lookingForWork: z.boolean().default(false),
   emailVerified: z.boolean().default(false), // Move this to userSettings
   socials: UserSocialsSchema.default({}),
   skills: z.array(SkillSchema).default([]),

@@ -6,15 +6,7 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import Button from "@mui/material/Button"
-import {
-  Box,
-  Divider,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from "@mui/material"
+import { Box, Divider, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material"
 import Checkbox from "@mui/material/Checkbox"
 
 // Ersätt dayjs med date-fns
@@ -41,13 +33,7 @@ interface CourseData {
   name: string
 }
 
-const AddEventModal = ({
-  open,
-  handleClose,
-  externEventFormData,
-  setExternEventFormData,
-  onAddExternEvent,
-}: IProps) => {
+const AddEventModal = ({ open, handleClose, externEventFormData, setExternEventFormData, onAddExternEvent }: IProps) => {
   // detta är en copy paste i båda modalerna, gör en customHook
   const [courses, setCourses] = useState<CourseData[]>([])
 
@@ -92,9 +78,7 @@ const AddEventModal = ({
     setExternEventFormData((prevState) => ({
       ...prevState,
       [event.target.name]: event.target.value,
-      courseName:
-        (courseData?.payload || []).find((c) => c._id?.toString() === event.target.value)?.content
-          .title || null,
+      courseName: (courseData?.payload || []).find((c) => c._id?.toString() === event.target.value)?.content.title || null,
     }))
   }
 
@@ -164,7 +148,7 @@ const AddEventModal = ({
             </Box>
 
             <Box>
-              <Typography variant="caption" color="text">
+              <Typography variant="caption" color="text" component={"span"}>
                 All day?
               </Typography>
               <Checkbox onChange={handleCheckboxChange} value={allDay} />

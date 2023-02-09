@@ -58,11 +58,12 @@ const setDefaultValues = async (
   data: Partial<UserModelSchemaType>,
   db: Db,
   id: string
-): Promise<Partial<Omit<UserModelSchemaType, "_id">>> => {
+): Promise<Partial<Omit<UserModelSchemaType, "_id" | "password">>> => {
   const userDbValues = await findUserById(db, id)
 
-  // If something new is added to the userSchema. Add it here.
-  const defaultUserValues = UserModelSchema.omit({ _id: true }).safeParse(data)
+  // If something new is added to the userSchema. Add it here. wont remove properties that we take away from the schema.
+  // Name is OK to change. Maybe not email?
+  const defaultUserValues = UserModelSchema.omit({ password: true, _id: true, email: true, name: true }).safeParse(data)
 
   if (!defaultUserValues.success) {
     return {
@@ -72,13 +73,13 @@ const setDefaultValues = async (
   }
 
   return {
-    ...(defaultUserValues && { ...defaultUserValues }),
+    ...(defaultUserValues.data && { ...defaultUserValues.data }),
     ...(userDbValues && { ...userDbValues }),
     ...data,
   }
 }
 
-export async function updateUserById(db: Db, id: string, data: Partial<UserModelSchemaType>) {
+export const updateUserById = async (db: Db, id: string, data: Partial<UserModelSchemaType>) => {
   return db
     .collection("users")
     .findOneAndUpdate(

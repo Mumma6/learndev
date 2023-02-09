@@ -5,6 +5,7 @@ import { IProjects } from "../models/Projects"
 import { IQuiz } from "../models/Quiz"
 import { IQuizResult } from "../models/QuizResult"
 import { CourseModelSchemaType } from "../schema/CourseSchema"
+import { UserModelSchemaType } from "../schema/UserSchema"
 import { Response } from "../types/response"
 import { IUser } from "../types/user"
 import { fetcher1 } from "./axiosFetcher"
@@ -22,7 +23,7 @@ interface UserHookResponse {
 }
 
 export function useCurrentUser() {
-  return useSWRImmutable("/api/user", (url) => fetcher1<IUser | null, undefined>(url))
+  return useSWRImmutable("/api/user", (url) => fetcher1<UserModelSchemaType | null, undefined>(url))
 }
 
 export function useUser(id: string) {

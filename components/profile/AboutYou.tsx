@@ -1,40 +1,38 @@
 import React, { ChangeEvent, useState } from "react"
-import { IUser } from "../../types/user"
 
-import { fetcher } from "../../lib/fetcher"
 import { toast } from "react-toastify"
 
 import { useFormik } from "formik"
-import * as Yup from "yup"
 
 import SubmitButton from "../SubmitButton"
-import { Box, Alert, Card, CardContent, CardHeader, Divider, TextField } from "@mui/material"
+import { Box, Alert, Card, CardContent, CardHeader, Divider, TextField, Typography } from "@mui/material"
 import { fetcher1 } from "../../lib/axiosFetcher"
-import { Mutate } from "../../types/generics"
+import { toFormikValidate } from "zod-formik-adapter"
+import { UserModelSchema, UserModelSchemaType } from "../../schema/UserSchema"
+import { useCurrentUser } from "../../lib/hooks"
+import { useSWRConfig } from "swr"
+import Checkbox from "@mui/material/Checkbox"
 
-interface FormData {
-  name: string
-  bio: string
-}
+const AboutYou = () => {
+  const { data } = useCurrentUser()
 
-const AboutYou = ({ user, mutate }: { user: IUser; mutate: Mutate<IUser | null> }) => {
+  const { mutate } = useSWRConfig()
+
   const [isLoading, setIsLoading] = useState(false)
   const formik = useFormik({
     initialValues: {
-      name: user.name,
-      bio: user.bio,
+      about: data?.payload?.about || "",
+      goals: data?.payload?.goals || "",
+      from: data?.payload?.from || "",
+      lookingForWork: !!data?.payload?.lookingForWork,
     },
-    // validate(Schema),
-    validationSchema: Yup.object({
-      name: Yup.string().max(255).required("Name is required"),
-      bio: Yup.string().max(255).required("Bio is required"),
-    }),
+    validate: toFormikValidate(UserModelSchema.pick({ about: true, goals: true })),
     onSubmit: (formValues) => {
       onSubmit(formValues)
     },
   })
 
-  const onSubmit = async (formValues: FormData) => {
+  const onSubmit = async (formValues: Pick<UserModelSchemaType, "about" | "goals" | "from" | "lookingForWork">) => {
     // this is to make it easier to update profile pic later.
     // https://dev.to/hoangvvo/how-i-build-a-full-fledged-app-with-next-js-and-mongodb-part-2-user-profile-and-profile-picture-hcp
     /*
@@ -50,18 +48,24 @@ const AboutYou = ({ user, mutate }: { user: IUser; mutate: Mutate<IUser | null> 
     */
     try {
       setIsLoading(true)
-      const response = await fetcher1<IUser, FormData>("/api/user", {
+      const response = await fetcher1<
+        UserModelSchemaType,
+        Pick<UserModelSchemaType, "about" | "goals" | "from" | "lookingForWork">
+      >("/api/user", {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
         data: formValues,
       })
+
       if (response.error) {
         toast.error(response.error)
-        formik.setFieldValue("name", user.name)
-        formik.setFieldValue("bio", user.bio)
+        formik.setFieldValue("goals", data?.payload?.goals || "")
+        formik.setFieldValue("about", data?.payload?.about || "")
+        formik.setFieldValue("from", data?.payload?.from || "")
+        formik.setFieldValue("lookingForWork", data?.payload?.lookingForWork || "")
         setIsLoading(false)
       } else {
-        mutate({ payload: response.payload }, false)
+        mutate("/api/user")
         toast.success("Your profile has been updated")
         setIsLoading(false)
       }
@@ -74,34 +78,61 @@ const AboutYou = ({ user, mutate }: { user: IUser; mutate: Mutate<IUser | null> 
     <>
       <form onSubmit={formik.handleSubmit}>
         <Card>
-          <CardHeader subheader="Update your info" title="Profile information" />
+          <CardHeader subheader="Update your info and tell us a about yourself" title="Profile information" />
           <Divider />
           <CardContent>
             <TextField
+              multiline
+              rows={3}
               fullWidth
-              label="Name"
+              label="About"
               margin="normal"
-              name="name"
+              name="about"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
+              value={formik.values.about}
               type="text"
-              value={formik.values.name}
               variant="outlined"
+              placeholder=""
             />
             <TextField
               multiline
               rows={3}
               fullWidth
-              label="Bio"
+              label="Goals"
               margin="normal"
-              name="bio"
+              name="goals"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
-              value={formik.values.bio}
+              value={formik.values.goals}
               type="text"
               variant="outlined"
               placeholder=""
             />
+            <TextField
+              fullWidth
+              label="Where are you from"
+              margin="normal"
+              name="from"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.from}
+              type="text"
+              variant="outlined"
+              placeholder=""
+            />
+            <Box sx={{ marginTop: 2 }}>
+              <Typography variant="h6" color="text" sx={{ display: "inline-block", marginRight: 2 }}>
+                Looking for work?
+              </Typography>
+              <Checkbox
+                sx={{ transform: "scale(1.3)" }}
+                name="lookingForWork"
+                onChange={formik.handleChange}
+                value={formik.values.lookingForWork}
+                checked={formik.values.lookingForWork}
+              />
+            </Box>
           </CardContent>
           <Divider />
           <Box
@@ -120,7 +151,12 @@ const AboutYou = ({ user, mutate }: { user: IUser; mutate: Mutate<IUser | null> 
               text="Update information"
               isLoading={isLoading}
               isDisabled={
-                !formik.isValid || !formik.dirty || (formik.values.bio === user.bio && formik.values.name === user.name)
+                !formik.isValid ||
+                !formik.dirty ||
+                (formik.values.about === data?.payload?.about &&
+                  formik.values.goals === data?.payload.goals &&
+                  formik.values.from === data?.payload.from &&
+                  formik.values.lookingForWork === data?.payload.lookingForWork)
               }
             />
           </Box>

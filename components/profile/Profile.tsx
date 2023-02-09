@@ -7,7 +7,6 @@ import Workexperience from "./Workexperience"
 import Socials from "./Socials"
 
 const Profile = () => {
-  const { data, mutate } = useCurrentUser()
   return (
     <>
       <Box
@@ -21,7 +20,7 @@ const Profile = () => {
           <Typography sx={{ mb: 3 }} variant="h4">
             Profile
           </Typography>
-          <AboutYou user={data?.payload!} mutate={mutate} />
+          <AboutYou />
           <Box sx={{ pt: 3 }}>
             <Skills />
           </Box>

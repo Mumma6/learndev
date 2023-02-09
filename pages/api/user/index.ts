@@ -12,7 +12,7 @@ import { handleAPIError, handleAPIResponse } from "../../../lib/utils"
 import { ObjectId } from "mongodb"
 import { UserModelSchema, UserModelSchemaType } from "../../../schema/UserSchema"
 
-const handler = nextConnect<NextApiRequest, NextApiResponse<Response<UserModelSchemaType | null>>>()
+const handler = nextConnect<NextApiRequest, NextApiResponse<Response<Omit<UserModelSchemaType, "password"> | null>>>()
 
 handler.use(...auths)
 
@@ -44,22 +44,15 @@ handler.patch(async (req, res) => {
   try {
     const db = await getMongoDb()
 
-    const parsedBody = UserModelSchema.safeParse(req.body)
+    const parsedBody = UserModelSchema.partial().safeParse(req.body)
 
     if (!parsedBody.success) {
-      return handleAPIError(res, { message: "Validation error when trying to update user" })
+      return handleAPIError(res, { message: "Validation error. User input" })
     }
 
-    if (parsedBody.data.email !== req.user?.email && (await findUserByEmail(db, parsedBody.data.email))) {
-      handleAPIResponse(res, null, "The email has already been taken.")
-    }
-
-    // Make sure that all the old propertes are also sent from the frontend because we overwrite it and dont want to lose the old data, ex completedQuizzes
-
-    // Should be partial? Just send the parsedData which can be any of these.
     const user = await updateUserById(db, req.user?._id, parsedBody.data)
 
-    const parsedUser = UserModelSchema.safeParse(user)
+    const parsedUser = UserModelSchema.omit({ password: true }).safeParse(user)
 
     if (!parsedUser.success) {
       return handleAPIError(res, { message: "Validation error when updating user" })
