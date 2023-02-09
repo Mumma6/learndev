@@ -57,6 +57,8 @@ const AboutYou = () => {
         data: formValues,
       })
 
+      console.log(response)
+
       if (response.error) {
         toast.error(response.error)
         formik.setFieldValue("goals", data?.payload?.goals || "")
