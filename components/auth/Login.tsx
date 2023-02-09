@@ -1,20 +1,15 @@
 import { ChangeEvent, useCallback, useEffect, useState } from "react"
 import { Box, Button, Container, Grid, Link, TextField, Typography } from "@mui/material"
 import { useFormik } from "formik"
-import * as Yup from "yup"
 import NextLink from "next/link"
 import { useRouter } from "next/router"
 import { toast } from "react-toastify"
 import { useCurrentUser } from "../../lib/hooks"
 import SubmitButton from "../SubmitButton"
 import { fetcher1 } from "../../lib/axiosFetcher"
-import { IUser } from "../../types/user"
 import { FaArrowLeft } from "react-icons/fa"
-
-interface FormData {
-  email: string
-  password: string
-}
+import { toFormikValidate } from "zod-formik-adapter"
+import { UserModelSchemaType, UserRegistrationSchema, UserRegistrationSchemaType } from "../../schema/UserSchema"
 
 const initialState = {
   email: "",
@@ -28,10 +23,7 @@ const Login = () => {
 
   const formik = useFormik({
     initialValues: initialState,
-    validationSchema: Yup.object({
-      email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
-      password: Yup.string().max(255).required("Password is required"),
-    }),
+    validate: toFormikValidate(UserRegistrationSchema.omit({ name: true })),
     onSubmit: (formValue) => {
       onSubmit(formValue)
     },
@@ -41,8 +33,8 @@ const Login = () => {
     if (data?.payload) router.replace("/home")
   }, [data?.payload, router])
 
-  const onSubmit = async (formValue: FormData) => {
-    const response = await fetcher1<IUser, FormData>("/api/auth", {
+  const onSubmit = async (formValue: Omit<UserRegistrationSchemaType, "name">) => {
+    const response = await fetcher1<UserModelSchemaType, Omit<UserRegistrationSchemaType, "name">>("/api/auth", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       data: formValue,
