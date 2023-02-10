@@ -9,11 +9,12 @@ import { CgWebsite } from "react-icons/cg"
 import SubmitButton from "../SubmitButton"
 import { useCurrentUser } from "../../lib/hooks"
 import { fetcher1 } from "../../lib/axiosFetcher"
-import { ISocials, IUser } from "../../types/user"
 import { toast } from "react-toastify"
-import { useOnChange } from "../customHooks/useOnChange"
+import { useFormik } from "formik"
+import { toFormikValidate } from "zod-formik-adapter"
+import { UserModelSchemaType, UserSocialsSchema, UserSocialsSchemaType } from "../../schema/UserSchema"
 
-const initialFormState: ISocials = {
+const initialFormState = {
   twitter: "",
   youtube: "",
   linkedin: "",
@@ -25,36 +26,31 @@ const initialFormState: ISocials = {
 const Socials = () => {
   const { data, mutate } = useCurrentUser()
   const [isLoading, setIsLoading] = useState(false)
-  const [formData, setFormData] = useState(initialFormState)
 
-  useEffect(() => {
-    if (data?.payload) {
-      setFormData({
-        ...data.payload.socials,
-      })
-    }
-  }, [data])
+  const formik = useFormik({
+    initialValues: {
+      ...(data?.payload?.socials ? data?.payload?.socials : initialFormState),
+    },
+    validate: toFormikValidate(UserSocialsSchema),
+    onSubmit: (formValue) => {
+      onSubmit(formValue)
+    },
+  })
 
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    useOnChange(event, setFormData)
-  }
-
-  const { twitter, linkedin, youtube, blog, personalWebsite, github } = formData
-
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-
+  const onSubmit = async (formValue: UserSocialsSchemaType) => {
+    console.log("submit")
     try {
       setIsLoading(true)
-      const socials = {
-        ...formData,
+
+      interface Input {
+        socials: UserSocialsSchemaType
       }
 
-      const response = await fetcher1<IUser, Pick<IUser, "socials">>("/api/user", {
+      const response = await fetcher1<UserModelSchemaType, Input>("/api/user", {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
         data: {
-          socials: socials,
+          socials: formValue,
         },
       })
       if (response.error) {
@@ -72,81 +68,101 @@ const Socials = () => {
   }
 
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={formik.handleSubmit}>
       <Card>
         <CardHeader title="Socials" subheader="Add your socials here" />
         <Divider />
         <CardContent>
           <Box>
             <Box sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}>
-              <FaGithub style={{ marginRight: 15, fontSize: 25 }} />
+              <FaGithub style={{ marginRight: 25, marginBottom: 30, fontSize: 25 }} />
+
               <TextField
-                value={github}
-                name="github"
                 label="Github"
+                name="github"
                 variant="standard"
-                onChange={onChange}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.github}
+                type="text"
+                helperText={(formik.touched.github && formik.errors.github) || " "}
+                error={Boolean(formik.touched.github && formik.errors.github)}
                 style={{ width: 500 }}
               />
             </Box>
             <Box sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}>
-              <FaTwitter style={{ marginRight: 15, fontSize: 25, color: "#00acee" }} />
+              <FaTwitter style={{ marginRight: 25, marginBottom: 30, fontSize: 25, color: "#00acee" }} />
               <TextField
-                value={twitter}
-                onChange={onChange}
-                name="twitter"
-                style={{ width: 500 }}
-                id="input-with-sx"
                 label="Twitter"
+                name="twitter"
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.twitter}
+                helperText={(formik.touched.twitter && formik.errors.twitter) || " "}
+                error={Boolean(formik.touched.twitter && formik.errors.twitter)}
+                type="text"
                 variant="standard"
+                style={{ width: 500 }}
               />
             </Box>
             <Box sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}>
-              <FaLinkedin style={{ marginRight: 15, fontSize: 25, color: "#0072b1" }} />
+              <FaLinkedin style={{ marginRight: 25, marginBottom: 30, fontSize: 25, color: "#0072b1" }} />
               <TextField
-                value={linkedin}
-                name="linkedin"
-                onChange={onChange}
-                style={{ width: 500 }}
-                id="input-with-sx"
                 label="Linkedin"
+                name="linkedin"
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.linkedin}
+                helperText={(formik.touched.linkedin && formik.errors.linkedin) || " "}
+                error={Boolean(formik.touched.linkedin && formik.errors.linkedin)}
+                type="text"
                 variant="standard"
+                style={{ width: 500 }}
               />
             </Box>
             <Box sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}>
-              <FaYoutube style={{ marginRight: 15, fontSize: 25, color: "#FF0000" }} />
+              <FaYoutube style={{ marginRight: 25, marginBottom: 30, fontSize: 25, color: "#FF0000" }} />
               <TextField
-                value={youtube}
-                name="youtube"
-                onChange={onChange}
-                style={{ width: 500 }}
-                id="input-with-sx"
                 label="Youtube"
+                name="youtube"
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.youtube}
+                helperText={(formik.touched.youtube && formik.errors.youtube) || " "}
+                error={Boolean(formik.touched.youtube && formik.errors.youtube)}
+                type="text"
                 variant="standard"
+                style={{ width: 500 }}
               />
             </Box>
             <Box sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}>
-              <CgWebsite style={{ marginRight: 15, fontSize: 25 }} />
+              <CgWebsite style={{ marginRight: 25, marginBottom: 30, fontSize: 25 }} />
               <TextField
-                onChange={onChange}
+                label="Personal website"
                 name="personalWebsite"
-                value={personalWebsite}
-                style={{ width: 500 }}
-                id="input-with-sx"
-                label="Personal site"
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.personalWebsite}
+                helperText={(formik.touched.personalWebsite && formik.errors.personalWebsite) || " "}
+                error={Boolean(formik.touched.personalWebsite && formik.errors.personalWebsite)}
+                type="text"
                 variant="standard"
+                style={{ width: 500 }}
               />
             </Box>
             <Box sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}>
-              <FaBlog style={{ marginRight: 15, fontSize: 25 }} />
+              <FaBlog style={{ marginRight: 25, marginBottom: 30, fontSize: 25 }} />
               <TextField
-                name="blog"
-                value={blog}
-                onChange={onChange}
-                style={{ width: 500 }}
-                id="input-with-sx"
                 label="Blog"
+                name="blog"
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                value={formik.values.blog}
+                helperText={(formik.touched.blog && formik.errors.blog) || " "}
+                error={Boolean(formik.touched.blog && formik.errors.blog)}
+                type="text"
                 variant="standard"
+                style={{ width: 500 }}
               />
             </Box>
           </Box>
@@ -166,7 +182,7 @@ const Socials = () => {
               size={"medium"}
               text="Update socials"
               isLoading={isLoading}
-              isDisabled={_.isEqual(formData, data?.payload?.socials)}
+              isDisabled={!formik.isValid || _.isEqual(formik.values, data?.payload?.socials)}
             />
           </Box>
         </CardContent>

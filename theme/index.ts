@@ -245,6 +245,7 @@ export const theme = createTheme({
       fontSize: "0.95rem",
       fontWeight: 400,
       lineHeight: 1.66,
+      wordWrap: "break-word",
     },
     h1: {
       fontWeight: 700,

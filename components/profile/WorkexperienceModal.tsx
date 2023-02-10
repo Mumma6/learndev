@@ -10,7 +10,7 @@ import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } fro
 import Checkbox from "@mui/material/Checkbox"
 
 import { ClickEventRet, SetState } from "../../types/generics"
-import { Workexperience } from "../../types/user"
+
 import { initialFormState } from "./Workexperience"
 
 // Ersätt dayjs med date-fns
@@ -19,52 +19,59 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import Typography from "@mui/material/Typography"
+import { UserWorkexperienceSchema, UserWorkexperienceSchemaType } from "../../schema/UserSchema"
+import { useFormik } from "formik"
+import { toFormikValidate } from "zod-formik-adapter"
+import { useZodFormValidation, ZodValidateFormErrors } from "../customHooks/useZodFormValidation"
+import { ZodError } from "zod"
 
 // ADD FORMIK HERE!!
 
 interface IProps {
   open: boolean
   handleClose: SetState<void>
-  workexperienceFormData: Workexperience
-  setWorkexperienceFormData: SetState<Workexperience>
-  onAddWorkexperience: ClickEventRet<void>
+  formValues: UserWorkexperienceSchemaType
+  setFieldValue: (key: keyof UserWorkexperienceSchemaType, value: unknown) => void
+  errors: ZodValidateFormErrors
+  onAddWorkexperience: () => void
 }
 
-const WorkexperienceModal = ({
-  open,
-  handleClose,
-  workexperienceFormData,
-  setWorkexperienceFormData,
-  onAddWorkexperience,
-}: IProps) => {
-  const { role, startDate, endDate, company, currentJob, description } = workexperienceFormData
+const WorkexperienceModal = ({ open, handleClose, formValues, setFieldValue, onAddWorkexperience, errors }: IProps) => {
+  const { role, startDate, endDate, company, currentJob, description } = formValues
+
+  /*
+
+  const formik = useFormik({
+    initialValues: {
+      ...formValues,
+    },
+    validate: toFormikValidate(UserWorkexperienceSchema),
+    onSubmit: (formValue) => {
+      // onAddWorkexperience(formValue)
+    },
+  })
+
+  */
+
+  const onAdd = () => {
+    onAddWorkexperience()
+  }
 
   const onClose = () => {
-    setWorkexperienceFormData(initialFormState)
     handleClose()
   }
 
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setWorkexperienceFormData((prevState) => ({
-      ...prevState,
-      [event.target.name]: event.target.value,
-    }))
-  }
-
-  const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setWorkexperienceFormData((prevState) => ({
-      ...prevState,
-      currentJob: event.target.checked,
-    }))
+  const onChange = (key: string, value: unknown) => {
+    setFieldValue(key as keyof UserWorkexperienceSchemaType, value)
   }
 
   const isDisabled = () => {
     const checkEndDate = () => {
-      if (currentJob !== true && endDate === null) {
+      if (currentJob !== true && endDate === "") {
         return true
       }
     }
-    if (role === "" || company === "" || description === "" || startDate === null || checkEndDate()) {
+    if (role === "" || company === "" || description === "" || startDate === "" || checkEndDate()) {
       return true
     }
     return false
@@ -79,6 +86,7 @@ const WorkexperienceModal = ({
           <TextField
             name="role"
             value={role}
+            onChange={(e) => onChange(e.target.name, e.target.value)}
             autoFocus
             margin="dense"
             id="name"
@@ -86,31 +94,37 @@ const WorkexperienceModal = ({
             type="text"
             fullWidth
             variant="standard"
-            onChange={onChange}
+            helperText={errors.role || " "}
+            error={Boolean(errors.role)}
           />
           <TextField
             name="company"
-            value={company}
             margin="dense"
             id="name"
             label="Company"
             type="text"
             fullWidth
             variant="standard"
-            onChange={onChange}
+            value={company}
+            //onBlur={formik.handleBlur}
+            onChange={(e) => onChange(e.target.name, e.target.value)}
+            helperText={errors.company || " "}
+            error={Boolean(errors.company)}
           />
           <TextField
             multiline
             rows={3}
             name="description"
-            value={description}
             margin="dense"
             id="description"
             label="Description"
             type="text"
             fullWidth
             variant="standard"
-            onChange={onChange}
+            value={description}
+            onChange={(e) => onChange(e.target.name, e.target.value)}
+            helperText={errors.description || " "}
+            error={Boolean(errors.description)}
           />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Box mb={2} mt={5}>
@@ -118,10 +132,7 @@ const WorkexperienceModal = ({
                 label="Start date"
                 value={startDate}
                 onChange={(newValue) => {
-                  setWorkexperienceFormData((prevState) => ({
-                    ...prevState,
-                    startDate: dayjs(newValue).format("YYYY-MM-DD"),
-                  }))
+                  onChange("startDate", dayjs(newValue).format("YYYY-MM-DD"))
                 }}
                 renderInput={(params) => <TextField {...params} />}
               />
@@ -131,7 +142,7 @@ const WorkexperienceModal = ({
               <Typography variant="caption" color="text">
                 Current job?
               </Typography>
-              <Checkbox onChange={handleCheckboxChange} value={currentJob} />
+              <Checkbox name="currentJob" onChange={(e) => onChange(e.target.name, e.target.checked)} value={currentJob} />
             </Box>
 
             <DatePicker
@@ -139,10 +150,7 @@ const WorkexperienceModal = ({
               disabled={currentJob}
               value={endDate}
               onChange={(newValue) => {
-                setWorkexperienceFormData((prevState) => ({
-                  ...prevState,
-                  endDate: dayjs(newValue).format("YYYY-MM-DD"),
-                }))
+                onChange("endDate", dayjs(newValue).format("YYYY-MM-DD"))
               }}
               renderInput={(params) => <TextField {...params} />}
             />
@@ -153,7 +161,7 @@ const WorkexperienceModal = ({
         <Button color="error" onClick={onClose}>
           Cancel
         </Button>
-        <Button disabled={isDisabled()} color="success" onClick={onAddWorkexperience}>
+        <Button disabled={isDisabled()} color="success" onClick={onAdd}>
           Add
         </Button>
       </DialogActions>

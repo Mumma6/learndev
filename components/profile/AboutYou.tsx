@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react"
+import React, { ChangeEvent, useEffect, useState } from "react"
 
 import { toast } from "react-toastify"
 
@@ -19,6 +19,8 @@ const AboutYou = () => {
   const { mutate } = useSWRConfig()
 
   const [isLoading, setIsLoading] = useState(false)
+
+  const [disabled, setDisabeld] = useState(false)
   const formik = useFormik({
     initialValues: {
       about: data?.payload?.about || "",
@@ -31,6 +33,19 @@ const AboutYou = () => {
       onSubmit(formValues)
     },
   })
+
+  const isDisabled = () => {
+    return (
+      formik.values.about === data?.payload?.about &&
+      formik.values.goals === data?.payload.goals &&
+      formik.values.from === data?.payload.from &&
+      !!formik.values.lookingForWork === !!data?.payload.lookingForWork
+    )
+  }
+
+  useEffect(() => {
+    setDisabeld(isDisabled())
+  }, [data?.payload, formik.values])
 
   const onSubmit = async (formValues: Pick<UserModelSchemaType, "about" | "goals" | "from" | "lookingForWork">) => {
     // this is to make it easier to update profile pic later.
@@ -152,14 +167,7 @@ const AboutYou = () => {
               size={"medium"}
               text="Update information"
               isLoading={isLoading}
-              isDisabled={
-                !formik.isValid ||
-                !formik.dirty ||
-                (formik.values.about === data?.payload?.about &&
-                  formik.values.goals === data?.payload.goals &&
-                  formik.values.from === data?.payload.from &&
-                  formik.values.lookingForWork === data?.payload.lookingForWork)
-              }
+              isDisabled={!formik.isValid || disabled}
             />
           </Box>
         </Card>

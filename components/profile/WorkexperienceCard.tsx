@@ -2,11 +2,11 @@ import React from "react"
 import { Box, Divider, Typography, Button } from "@mui/material"
 import Icon from "@mui/material/Icon"
 import { FaPen, FaTrash } from "react-icons/fa"
-import { Workexperience } from "../../types/user"
+import { UserWorkexperienceSchemaType } from "../../schema/UserSchema"
 
 interface IProps {
-  work: Workexperience
-  deleteWorkexperience: (work: Workexperience) => void
+  work: UserWorkexperienceSchemaType
+  deleteWorkexperience: (work: UserWorkexperienceSchemaType) => void
 }
 
 // en prop för delete function
@@ -74,6 +74,9 @@ const WorkexperienceCard = ({ work, deleteWorkexperience }: IProps) => {
           </Typography>
         </Typography>
 
+        <Typography variant="subtitle1" color="text">
+          description:
+        </Typography>
         <Typography variant="caption" color="text">
           {description}
         </Typography>

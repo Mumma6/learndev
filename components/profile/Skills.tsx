@@ -4,25 +4,27 @@ import SubmitButton from "../SubmitButton"
 import Chip from "@mui/material/Chip"
 import Paper from "@mui/material/Paper"
 import Autocomplete from "@mui/material/Autocomplete"
-import { Skill, skillsData } from "../../constants/skillsData"
+import { skillsData } from "../../constants/skillsData"
 import { FaPlus } from "react-icons/fa"
 import { fetcher1 } from "../../lib/axiosFetcher"
-import { IUser } from "../../types/user"
+
 import { toast } from "react-toastify"
 import { useCurrentUser } from "../../lib/hooks"
 import * as _ from "lodash"
+import { UserModelSchemaType } from "../../schema/UserSchema"
+import { SkillSchemaType } from "../../schema/SharedSchema"
 
 const Skills = () => {
   const { data, mutate } = useCurrentUser()
-  const [chipData, setChipData] = React.useState<Skill[]>(data?.payload?.skills || [])
+  const [chipData, setChipData] = React.useState<SkillSchemaType[]>(data?.payload?.skills || [])
 
-  const [newSkill, setNewSkill] = useState<Skill | null>()
+  const [newSkill, setNewSkill] = useState<SkillSchemaType | null>()
 
-  const handleDelete = (chipToDelete: Skill) => () => {
+  const handleDelete = (chipToDelete: SkillSchemaType) => () => {
     setChipData((chips) => chips.filter((chip) => chip.label !== chipToDelete.label))
   }
 
-  const handleChange = (e: React.SyntheticEvent, value: Skill | null) => {
+  const handleChange = (e: React.SyntheticEvent, value: SkillSchemaType | null) => {
     setNewSkill(value)
   }
 
@@ -52,7 +54,7 @@ const Skills = () => {
 
     try {
       setIsLoading(true)
-      const response = await fetcher1<IUser, Pick<IUser, "skills">>("/api/user", {
+      const response = await fetcher1<UserModelSchemaType, Pick<UserModelSchemaType, "skills">>("/api/user", {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
         data: {
@@ -85,6 +87,7 @@ const Skills = () => {
                 justifyContent: "start",
                 flexWrap: "wrap",
                 listStyle: "none",
+                paddingBottom: !chipData.length ? 5 : 0,
               }}
             >
               <Autocomplete
@@ -92,7 +95,7 @@ const Skills = () => {
                 disablePortal
                 id="combo-box-demo"
                 options={skillsData}
-                sx={{ width: 300, marginRight: 3 }}
+                sx={{ width: 400, marginRight: 2 }}
                 renderInput={(params) => <TextField {...params} label="Skill" />}
               />
               <Button onClick={addNewskill} style={{ fontSize: 20 }} disabled={isDisabled()}>

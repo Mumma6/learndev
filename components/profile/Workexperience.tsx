@@ -6,18 +6,19 @@ import WorkexperienceCard from "./WorkexperienceCard"
 import { FaPlus } from "react-icons/fa"
 import SubmitButton from "../SubmitButton"
 import { useCurrentUser } from "../../lib/hooks"
-import { IUser, Workexperience } from "../../types/user"
 import WorkexperienceModal from "./WorkexperienceModal"
 import { fetcher1 } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
 import * as _ from "lodash"
+import { UserModelSchemaType, UserWorkexperienceSchema, UserWorkexperienceSchemaType } from "../../schema/UserSchema"
+import { useZodFormValidation } from "../customHooks/useZodFormValidation"
 
 // Använd formink här istället.
-export const initialFormState: Workexperience = {
+export const initialFormState: UserWorkexperienceSchemaType = {
   role: "",
   company: "",
-  startDate: null,
-  endDate: null,
+  startDate: "",
+  endDate: "",
   currentJob: false,
   description: "",
 }
@@ -28,12 +29,19 @@ const Workexperience = () => {
   const [open, setOpen] = useState(false)
   const [workexperience, setWorkexperience] = useState(data?.payload?.workexperience || [])
 
-  const [workexperienceFormData, setWorkexperienceFormData] = useState<Workexperience>(initialFormState)
+  const { values, setValues, errors, setFieldValue } = useZodFormValidation<UserWorkexperienceSchemaType>(
+    UserWorkexperienceSchema,
+    initialFormState
+  )
+
+  /*
+  const [workexperienceFormData, setWorkexperienceFormData] = useState<UserWorkexperienceSchemaType>(initialFormState)
+  */
   const [isLoading, setIsLoading] = useState(false)
 
   const onAddWorkexperience = () => {
-    setWorkexperience((prev) => [...prev, workexperienceFormData])
-    setWorkexperienceFormData(initialFormState)
+    setWorkexperience((prev) => [...prev, values])
+    setValues(initialFormState)
     handleClose()
   }
 
@@ -42,17 +50,14 @@ const Workexperience = () => {
   }
 
   const handleClose = () => {
+    setValues(initialFormState)
     setOpen(false)
   }
 
-  const deleteWorkexperience = (workexperience: Workexperience) => {
-    if (workexperience._id) {
-      setWorkexperience((state) => state.filter((w) => w._id !== workexperience._id))
-    } else {
-      setWorkexperience((state) =>
-        state.filter((w) => w.company !== workexperience.company && w.description !== workexperience.description)
-      )
-    }
+  const deleteWorkexperience = (workexperience: UserWorkexperienceSchemaType) => {
+    setWorkexperience((state) =>
+      state.filter((w) => w.company !== workexperience.company && w.description !== workexperience.description)
+    )
   }
 
   const cardTitleNode = (
@@ -88,11 +93,11 @@ const Workexperience = () => {
 
     try {
       setIsLoading(true)
-      const response = await fetcher1<IUser, Pick<IUser, "workexperience">>("/api/user", {
+      const response = await fetcher1<UserModelSchemaType, Pick<UserModelSchemaType, "workexperience">>("/api/user", {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
         data: {
-          workexperience: workexperience,
+          workexperience,
         },
       })
       if (response.error) {
@@ -122,8 +127,9 @@ const Workexperience = () => {
         <WorkexperienceModal
           open={open}
           handleClose={handleClose}
-          workexperienceFormData={workexperienceFormData}
-          setWorkexperienceFormData={setWorkexperienceFormData}
+          formValues={values}
+          setFieldValue={setFieldValue}
+          errors={errors}
           onAddWorkexperience={onAddWorkexperience}
         />
         <Box pt={1} pb={2} px={2}>

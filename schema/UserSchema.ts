@@ -10,22 +10,24 @@ export const UserRegistrationSchema = z.object({
 
 export type UserRegistrationSchemaType = z.infer<typeof UserRegistrationSchema>
 
+const UrlString = z.union([z.literal(""), z.string().trim().url()]).default("")
+
 export const UserSocialsSchema = z.object({
-  linkedin: z.string().default(""),
-  twitter: z.string().default(""),
-  youtube: z.string().default(""),
-  github: z.string().default(""),
-  personalWebsite: z.string().default(""),
-  blog: z.string().default(""),
+  linkedin: UrlString,
+  twitter: UrlString,
+  youtube: UrlString,
+  github: UrlString,
+  personalWebsite: UrlString,
+  blog: UrlString,
 })
 
 export type UserSocialsSchemaType = z.infer<typeof UserSocialsSchema>
 
 export const UserWorkexperienceSchema = z.object({
-  role: z.string(),
-  startDate: z.string(), // borde detta vara Date?
-  endDate: z.string().optional(),
-  description: z.string().min(1),
+  role: z.string().min(1),
+  startDate: z.string().min(1),
+  endDate: z.union([z.literal(undefined), z.string()]).default(""),
+  description: z.string().min(1).max(200),
   company: z.string().min(1),
   currentJob: z.boolean().default(false),
 })
