@@ -29,19 +29,15 @@ const Workexperience = () => {
   const [open, setOpen] = useState(false)
   const [workexperience, setWorkexperience] = useState(data?.payload?.workexperience || [])
 
-  const { values, setValues, errors, setFieldValue } = useZodFormValidation<UserWorkexperienceSchemaType>(
-    UserWorkexperienceSchema,
-    initialFormState
-  )
+  const { values, setValues, errors, setFieldValue, onBlur, touched, reset } =
+    useZodFormValidation<UserWorkexperienceSchemaType>(UserWorkexperienceSchema, initialFormState)
 
-  /*
-  const [workexperienceFormData, setWorkexperienceFormData] = useState<UserWorkexperienceSchemaType>(initialFormState)
-  */
   const [isLoading, setIsLoading] = useState(false)
 
   const onAddWorkexperience = () => {
     setWorkexperience((prev) => [...prev, values])
     setValues(initialFormState)
+    reset()
     handleClose()
   }
 
@@ -51,6 +47,7 @@ const Workexperience = () => {
 
   const handleClose = () => {
     setValues(initialFormState)
+    reset()
     setOpen(false)
   }
 
@@ -131,6 +128,8 @@ const Workexperience = () => {
           setFieldValue={setFieldValue}
           errors={errors}
           onAddWorkexperience={onAddWorkexperience}
+          onBlur={onBlur}
+          touched={touched}
         />
         <Box pt={1} pb={2} px={2}>
           <Box component="ul" display="flex" flexDirection="column" p={0} m={0}>

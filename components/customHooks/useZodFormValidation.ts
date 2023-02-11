@@ -1,73 +1,144 @@
-import { SetStateAction, ChangeEvent, useState, useEffect } from "react"
-import { z, ZodError } from "zod"
+import { useState, useEffect, useCallback } from "react"
+import { z } from "zod"
 
 /*
-add methods similar to formik
-
-touched,
-dirty
-osv
-
-Ska inte visa felet förens man har blurat
-
- // onBlur={formik.handleBlur}
-  helperText={(formik.touched.github && formik.errors.github) || " "}
-
-  onBlur={() => setTouched(true)}
-
-  onblur sätter touched. Då kan man komma valideringen
-
-  https://codesandbox.io/embed/9l9p6mkvpo
-
-  därför som helper tecten kollar både touched och errors.
-
+create a is disable fn
 */
 
-export type ZodValidateFormErrors = { [key: string]: string | undefined }
+export type ErrorsType<T> = { [key in keyof T]: string | undefined }
+export type TouchedType<T> = { [key in keyof T]: boolean }
 
-export const useZodFormValidation = <FValues>(schema: z.Schema, formData: FValues) => {
-  const genereateErrorObject = (arr: z.ZodIssue[]) => {
-    const output = arr.reduce((acc, item) => {
-      acc[item.path[0]] = item.message
-      return acc
-    }, {} as { [key: string]: string })
+const cloneWithDefaultValues = <T extends object>(input: T, newVal: any) =>
+  Object.fromEntries(Object.keys(input).map((key) => [key, newVal])) as Record<keyof T, any>
 
-    return output as any
-  }
-
-  const genereateEmptyErrorObject = (values: FValues) => {
-    const newObj = {} as any
-    for (const key in values) {
-      newObj[key] = undefined
-    }
-    return newObj as { [key in keyof FValues]: undefined }
-  }
+export const useZodFormValidation = <FValues extends object>(schema: z.Schema, formData: FValues) => {
+  const generateErrorObject = (arr: z.ZodIssue[]) =>
+    Object.fromEntries(arr.map((item) => [item.path[0], item.message])) as ErrorsType<FValues>
 
   const [values, setValues] = useState<FValues>(formData)
-  const [errors, setErrors] = useState(genereateEmptyErrorObject(formData))
-  const [touched, setTouched] = useState(false)
+  const [errors, setErrors] = useState<ErrorsType<FValues>>(cloneWithDefaultValues(formData, undefined))
+  const [touched, setTouched] = useState<TouchedType<FValues>>(cloneWithDefaultValues(formData, false))
+
+  const validateValues = useCallback(
+    (input: FValues) => {
+      const parse = schema.safeParse(input)
+
+      setErrors(parse.success ? cloneWithDefaultValues(formData, undefined) : generateErrorObject(parse.error.issues))
+    },
+    [formData, schema]
+  )
 
   useEffect(() => {
-    const parse = schema.safeParse(values)
+    validateValues(values)
+  }, [values, validateValues])
 
-    console.log(parse)
+  const setFieldValue = useCallback((key: keyof FValues, value: unknown) => {
+    setValues((prevState) => ({ ...prevState, [key]: value }))
+  }, [])
 
-    if (!parse.success) {
-      setErrors(genereateErrorObject(parse.error.issues))
-    }
-  }, [values])
+  const onBlur = useCallback((key: keyof FValues) => {
+    setTouched((prevState) => ({ ...prevState, [key]: true }))
+  }, [])
 
-  const setFieldValue = (key: keyof FValues, value: unknown) => {
-    setValues((prevState) => ({
-      ...prevState,
-      [key]: value,
-    }))
-  }
+  const reset = useCallback(() => {
+    setTouched(cloneWithDefaultValues(formData, false))
+  }, [])
 
   return {
     values,
     setValues,
     errors,
     setFieldValue,
+    onBlur,
+    touched,
+    reset,
   }
 }
+
+/*
+Certainly! Here's an updated version of the useZodFormValidation hook with added validation of touched fields:
+
+typescript
+Copy code
+import { useState, useEffect, useCallback } from "react"
+import { z } from "zod"
+
+export type ErrorsType<T> = { [key in keyof T]: string | undefined }
+export type TouchedType<T> = { [key in keyof T]: boolean }
+
+const cloneWithDefaultValues = <T extends object>(input: T, newVal: any) =>
+  Object.fromEntries(Object.keys(input).map((key) => [key, newVal])) as Record<keyof T, any>
+
+export const useZodFormValidation = <FValues extends object>(schema: z.Schema, formData: FValues) => {
+  const generateErrorObject = (arr: z.ZodIssue[]) =>
+    Object.fromEntries(arr.map((item) => [item.path[0], item.message])) as ErrorsType<FValues>
+
+  const [values, setValues] = useState<FValues>(formData)
+  const [errors, setErrors] = useState<ErrorsType<FValues>>(cloneWithDefaultValues(formData, undefined))
+  const [touched, setTouched] = useState<TouchedType<FValues>>(cloneWithDefaultValues(formData, false))
+
+  const validateValues = useCallback(
+    (input: FValues) => {
+      const parse = schema.safeParse(input)
+      const newErrors = parse.success ? cloneWithDefaultValues(formData, undefined) : generateErrorObject(parse.error.issues)
+      setErrors(newErrors)
+      return newErrors
+    },
+    [formData, schema]
+  )
+
+  const validateTouched = useCallback(
+    () => {
+      const touchedErrors = Object.keys(touched).reduce((acc: ErrorsType<FValues>, key: keyof FValues) => {
+        if (touched[key]) {
+          const parse = schema.pick({ [key]: (schema as any)._def.props[key] }).safeParse({ [key]: values[key] })
+          if (!parse.success) {
+            acc[key] = parse.error.issues[0].message
+          }
+        }
+        return acc
+      }, cloneWithDefaultValues(formData, undefined))
+      setErrors((prevErrors) => ({ ...prevErrors, ...touchedErrors }))
+      return touchedErrors
+    },
+    [formData, schema, touched, values]
+  )
+
+  useEffect(() => {
+    validateValues(values)
+  }, [values, validateValues])
+
+  useEffect(() => {
+    validateTouched()
+  }, [validateTouched])
+
+  const setFieldValue = useCallback((key: keyof FValues, value: unknown) => {
+    setValues((prevState) => ({ ...prevState, [key]: value }))
+  }, [])
+
+  const onBlur = useCallback((key: keyof FValues) => {
+    setTouched((prevState) => ({ ...prevState, [key]: true }))
+  }, [])
+
+  const reset = useCallback(() => {
+    setValues(formData)
+    setTouched(cloneWithDefaultValues(formData, false))
+  }, [formData])
+
+  return {
+    values,
+    setValues,
+    errors,
+    setFieldValue,
+    onBlur,
+    touched,
+    reset,
+  }
+}
+The main changes include:
+
+A new validateTouched function that validates the fields that have been touched.
+An additional useEffect that calls validateTouched every time touched or values change.
+A change to the validateValues function to return the new errors object, so it can be used by validateTouched.
+A change to the reset function to reset both values and touched to their initial state
+*/

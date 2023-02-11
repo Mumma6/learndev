@@ -22,21 +22,29 @@ import Typography from "@mui/material/Typography"
 import { UserWorkexperienceSchema, UserWorkexperienceSchemaType } from "../../schema/UserSchema"
 import { useFormik } from "formik"
 import { toFormikValidate } from "zod-formik-adapter"
-import { useZodFormValidation, ZodValidateFormErrors } from "../customHooks/useZodFormValidation"
-import { ZodError } from "zod"
-
-// ADD FORMIK HERE!!
+import { ErrorsType, TouchedType, useZodFormValidation } from "../customHooks/useZodFormValidation"
 
 interface IProps {
   open: boolean
   handleClose: SetState<void>
   formValues: UserWorkexperienceSchemaType
   setFieldValue: (key: keyof UserWorkexperienceSchemaType, value: unknown) => void
-  errors: ZodValidateFormErrors
+  errors: ErrorsType<UserWorkexperienceSchemaType>
   onAddWorkexperience: () => void
+  onBlur: (key: keyof UserWorkexperienceSchemaType) => void
+  touched: TouchedType<UserWorkexperienceSchemaType>
 }
 
-const WorkexperienceModal = ({ open, handleClose, formValues, setFieldValue, onAddWorkexperience, errors }: IProps) => {
+const WorkexperienceModal = ({
+  open,
+  handleClose,
+  formValues,
+  setFieldValue,
+  onAddWorkexperience,
+  errors,
+  touched,
+  onBlur,
+}: IProps) => {
   const { role, startDate, endDate, company, currentJob, description } = formValues
 
   /*
@@ -94,8 +102,9 @@ const WorkexperienceModal = ({ open, handleClose, formValues, setFieldValue, onA
             type="text"
             fullWidth
             variant="standard"
-            helperText={errors.role || " "}
-            error={Boolean(errors.role)}
+            onBlur={() => onBlur("role")}
+            helperText={(touched.role && errors.role) || " "}
+            error={Boolean(touched.role && errors.role)}
           />
           <TextField
             name="company"
@@ -106,10 +115,10 @@ const WorkexperienceModal = ({ open, handleClose, formValues, setFieldValue, onA
             fullWidth
             variant="standard"
             value={company}
-            //onBlur={formik.handleBlur}
+            onBlur={() => onBlur("company")}
             onChange={(e) => onChange(e.target.name, e.target.value)}
-            helperText={errors.company || " "}
-            error={Boolean(errors.company)}
+            helperText={(touched.company && errors.company) || " "}
+            error={Boolean(touched.company && errors.company)}
           />
           <TextField
             multiline
@@ -122,9 +131,10 @@ const WorkexperienceModal = ({ open, handleClose, formValues, setFieldValue, onA
             fullWidth
             variant="standard"
             value={description}
+            onBlur={() => onBlur("description")}
             onChange={(e) => onChange(e.target.name, e.target.value)}
-            helperText={errors.description || " "}
-            error={Boolean(errors.description)}
+            helperText={(touched.description && errors.description) || " "}
+            error={Boolean(touched.description && errors.description)}
           />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Box mb={2} mt={5}>
@@ -148,7 +158,7 @@ const WorkexperienceModal = ({ open, handleClose, formValues, setFieldValue, onA
             <DatePicker
               label="End date"
               disabled={currentJob}
-              value={endDate}
+              value={endDate || null}
               onChange={(newValue) => {
                 onChange("endDate", dayjs(newValue).format("YYYY-MM-DD"))
               }}
