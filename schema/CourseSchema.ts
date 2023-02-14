@@ -16,26 +16,28 @@ export const InstitutionEnum = z.enum(["Udemy", "Youtube", "Pluralsight", "Linke
 export type InstitutionEnumType = z.infer<typeof InstitutionEnum>
 
 export const CourseModelContentInputSchema = z.object({
-  title: z.string().min(1),
-  description: z.string().min(1),
-  url: z.string(), //.url(),
+  title: z.string().min(1).max(100),
+  description: z.string().min(1).max(500),
+  url: z.string().url(),
+  certificateUrl: z.union([z.literal(""), z.string().trim().url()]).default(""),
   institution: InstitutionEnum,
 })
 
 export type CourseModelContentInputSchemaType = z.infer<typeof CourseModelContentInputSchema>
 
 export const CourseModelformInputSchema = z.object({
-  completed: z.boolean(),
+  completed: z.boolean().default(false),
   content: CourseModelContentInputSchema,
   topics: z.array(SkillSchema),
 })
 
 // We transform the ObjectId to a string so the rest of the application can use it
 // Cant use ObjectId dirrectly on the FE, Have to use Object instead if we want to use the Type on the fe side.
+
 export const CourseModelSchema = CourseModelformInputSchema.extend({
   userId: z.instanceof(ObjectId).transform((id) => id.toString()),
   _id: z.instanceof(ObjectId).transform((id) => id.toString()),
-  tags: z.array(z.string()),
+  tags: z.string(),
   createdAt: z.date(),
 })
 

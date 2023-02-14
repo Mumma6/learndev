@@ -20,8 +20,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import Typography from "@mui/material/Typography"
 import { UserWorkexperienceSchema, UserWorkexperienceSchemaType } from "../../schema/UserSchema"
-import { useFormik } from "formik"
-import { toFormikValidate } from "zod-formik-adapter"
 import { ErrorsType, TouchedType, useZodFormValidation } from "../customHooks/useZodFormValidation"
 
 interface IProps {

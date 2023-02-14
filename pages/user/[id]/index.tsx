@@ -5,7 +5,7 @@ import { getMongoDb } from "../../../lib/mongodb"
 import { findUserById } from "../../../lib/queries/user"
 import { ParsedUrlQuery } from "querystring"
 import { WithId } from "mongodb"
-import { IUser } from "../../../types/user"
+import { UserModelSchemaType } from "../../../schema/UserSchema"
 
 interface IParams extends ParsedUrlQuery {
   id: string
@@ -14,6 +14,8 @@ interface IParams extends ParsedUrlQuery {
 // Detta är en public route som alla kommer åt. Vem som helst kan se användaren.
 
 // Visa en sida likt dashboard här. En överblick över personen.
+// en tabell med alla kurser, med länkar osv. Ska se ut som devias saken
+// en tabell med alla quizzes + resultat
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const db = await getMongoDb()
@@ -38,7 +40,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 }
 
 // User type?
-const Profile = ({ user }: { user: IUser }) => {
+const Profile = ({ user }: { user: UserModelSchemaType }) => {
   return (
     <>
       <h2>Profile page for: {user.name}</h2>

@@ -11,7 +11,7 @@ import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import Button from "@mui/material/Button"
 import FormControlLabel from "@mui/material/FormControlLabel"
-import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material"
+import { Box, Divider, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
 
 import { initialCourseFormState } from "./Courses"
@@ -20,31 +20,40 @@ import { skillsData } from "../../constants/skillsData"
 import { FaPlus } from "react-icons/fa"
 import { SkillSchemaType } from "../../schema/SharedSchema"
 import { CourseModelContentInputSchemaType, InstitutionEnum } from "../../schema/CourseSchema"
+import { ErrorsType, TouchedType } from "../customHooks/useZodFormValidation"
 
 interface IProps {
   open: boolean
   handleClose: SetState<void>
-  courseFormData: CourseModelContentInputSchemaType
+  formValues: CourseModelContentInputSchemaType
   topicData: SkillSchemaType[]
-  setCourseFormData: SetState<CourseModelContentInputSchemaType>
   setTopicData: SetState<SkillSchemaType[]>
   setCompleted: SetState<boolean>
   completed: boolean
   onAddCourse: ClickEventRet<Promise<void>>
+
+  setFieldValue: (key: keyof CourseModelContentInputSchemaType, value: unknown) => void
+  errors: ErrorsType<CourseModelContentInputSchemaType>
+
+  onBlur: (key: keyof CourseModelContentInputSchemaType) => void
+  touched: TouchedType<CourseModelContentInputSchemaType>
 }
 
 const AddCourseModal = ({
   open,
   handleClose,
-  courseFormData,
-  setCourseFormData,
+  formValues,
   onAddCourse,
   setCompleted,
   completed,
   setTopicData,
   topicData,
+  setFieldValue,
+  onBlur,
+  touched,
+  errors,
 }: IProps) => {
-  const { title, description, institution, url } = courseFormData
+  const { title, description, institution, url, certificateUrl } = formValues
 
   const [newSkill, setNewSkill] = useState<SkillSchemaType | null>()
 
@@ -58,22 +67,11 @@ const AddCourseModal = ({
     setCompleted(event.target.checked)
   }
 
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setCourseFormData((prevState) => ({
-      ...prevState,
-      [event.target.name]: event.target.value,
-    }))
-  }
-
-  const handleSelectChange = (event: SelectChangeEvent) => {
-    setCourseFormData((prevState) => ({
-      ...prevState,
-      [event.target.name]: event.target.value,
-    }))
+  const onChange = (key: string, value: unknown) => {
+    setFieldValue(key as keyof CourseModelContentInputSchemaType, value)
   }
 
   const onClose = () => {
-    setCourseFormData(initialCourseFormState)
     handleClose()
   }
 
@@ -85,18 +83,23 @@ const AddCourseModal = ({
     setTopicData((topics) => topics.filter((topic) => topic.label !== topicToDelete.label))
   }
 
+  const isDisabled = () => {
+    const formErrors = Object.values(errors).some((error) => error)
+
+    if (formErrors || !topicData.length) {
+      return true
+    }
+
+    return false
+  }
+
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Add course</DialogTitle>
       <DialogContent>
         <DialogContentText>To add a course, please fill in the information below.</DialogContentText>
-        <FormControlLabel
-          control={
-            <Checkbox checked={completed} onChange={handleCheckBoxChange} inputProps={{ "aria-label": "controlled" }} />
-          }
-          label="Course completed"
-        />
-        <Box component="form">
+
+        <Box component="form" mt={4}>
           <TextField
             name="title"
             value={title}
@@ -107,19 +110,27 @@ const AddCourseModal = ({
             type="text"
             fullWidth
             variant="standard"
-            onChange={onChange}
             sx={{ mb: 2 }}
+            onChange={(e) => onChange(e.target.name, e.target.value)}
+            onBlur={() => onBlur("title")}
+            helperText={(touched.title && errors.title) || " "}
+            error={Boolean(touched.title && errors.title)}
           />
           <TextField
             name="description"
             value={description}
+            multiline
+            rows={3}
             margin="dense"
             id="description"
             label="Description"
             type="text"
             fullWidth
             variant="standard"
-            onChange={onChange}
+            onChange={(e) => onChange(e.target.name, e.target.value)}
+            onBlur={() => onBlur("description")}
+            helperText={(touched.description && errors.description) || " "}
+            error={Boolean(touched.description && errors.description)}
             sx={{ mb: 2 }}
           />
           <TextField
@@ -127,12 +138,36 @@ const AddCourseModal = ({
             value={url}
             margin="dense"
             id="url"
-            label="Url"
+            label="Url to course"
             type="text"
             fullWidth
             variant="standard"
-            onChange={onChange}
+            onChange={(e) => onChange(e.target.name, e.target.value)}
+            onBlur={() => onBlur("url")}
+            helperText={(touched.url && errors.url) || " "}
+            error={Boolean(touched.url && errors.url)}
             sx={{ mb: 2 }}
+          />
+          <TextField
+            name="certificateUrl"
+            value={certificateUrl}
+            margin="dense"
+            id="certificateUrl"
+            label="Url to certificate"
+            type="text"
+            fullWidth
+            variant="standard"
+            onChange={(e) => onChange(e.target.name, e.target.value)}
+            onBlur={() => onBlur("certificateUrl")}
+            helperText={(touched.certificateUrl && errors.certificateUrl) || " "}
+            error={Boolean(touched.certificateUrl && errors.certificateUrl)}
+            sx={{ mb: 2 }}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox checked={completed} onChange={handleCheckBoxChange} inputProps={{ "aria-label": "controlled" }} />
+            }
+            label="Course completed"
           />
           <Box
             sx={{
@@ -140,17 +175,24 @@ const AddCourseModal = ({
               justifyContent: "start",
               flexWrap: "wrap",
               listStyle: "none",
+              marginTop: 5,
+              paddingBottom: !topicData.length ? 11 : 0,
             }}
           >
             <Autocomplete
               onChange={handleSkillChange}
               disablePortal
               id="combo-box-demo"
+              ListboxProps={{
+                style: {
+                  maxHeight: 200,
+                },
+              }}
               options={skillsData}
-              sx={{ width: 400, marginRight: 3 }}
+              sx={{ width: 470, marginRight: 2 }}
               renderInput={(params) => <TextField {...params} label="Topics" />}
             />
-            <Button onClick={addNewskill} style={{ fontSize: 20 }}>
+            <Button disabled={!newSkill} onClick={addNewskill} style={{ fontSize: 20 }}>
               <FaPlus />
             </Button>
             {!!topicData.length && (
@@ -162,7 +204,7 @@ const AddCourseModal = ({
                     flexWrap: "wrap",
                     listStyle: "none",
                     p: 1.5,
-                    mt: 3,
+                    mt: 2,
                   }}
                   component="ul"
                 >
@@ -174,15 +216,17 @@ const AddCourseModal = ({
             )}
           </Box>
 
-          <FormControl fullWidth style={{ marginTop: 20 }}>
+          <FormControl fullWidth style={{ marginTop: 20, marginBottom: 20 }}>
             <InputLabel id="demo-simple-select-label">institution</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={institution}
-              label="institution"
+              label="Institution"
               name="institution"
-              onChange={handleSelectChange}
+              onChange={(e) => onChange(e.target.name, e.target.value)}
+              onBlur={() => onBlur("institution")}
+              error={Boolean(touched.institution && errors.institution)}
             >
               <MenuItem value={InstitutionEnum.Enum.Other}>Other</MenuItem>
               <MenuItem value={InstitutionEnum.Enum.Udemy}>Udemy</MenuItem>
@@ -193,11 +237,12 @@ const AddCourseModal = ({
           </FormControl>
         </Box>
       </DialogContent>
+      <Divider sx={{ marginBottom: 2 }} />
       <DialogActions>
         <Button color="error" onClick={onClose}>
           Cancel
         </Button>
-        <Button color="success" onClick={onAddCourse}>
+        <Button color="success" onClick={onAddCourse} disabled={isDisabled()}>
           Add
         </Button>
       </DialogActions>

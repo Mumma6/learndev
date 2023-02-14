@@ -257,6 +257,9 @@ const StudyCalendar = () => {
             <Button onClick={() => setOpenExternModal(true)} size="large" variant="contained">
               Add event
             </Button>
+            <Button sx={{ marginLeft: 4 }} onClick={() => setOpenExternModal(true)} size="large" variant="contained">
+              Create label
+            </Button>
             <Divider style={{ margin: 10 }} />
             <AddEventModal
               open={openExternModal}
@@ -309,3 +312,17 @@ const StudyCalendar = () => {
 }
 
 export default StudyCalendar
+
+/*
+
+------------------
+This is the last thing that needs to be done for the MVP on the calendar. + the new backend validation stuff.
+-------------------
+
+Skapa labels. Ska vara färgkodade kategorier. Sparas i userSettings objektet
+
+Kunna länka material. Kurs, quizz eller project. 1 per event. En select lista med "Projects in progress", "courses in progress", "quizzes not taken". 
+En mui autocomplete grouped. 
+
+
+*/

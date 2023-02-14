@@ -12,7 +12,7 @@ import ServiceCard from "./ServiceCard"
 const SERVICES_DATA = [
   {
     image: serviceImage1,
-    text: "Plan your studies and work from the calendar. Add events and connect them to a specific course or project.",
+    text: "Plan your studies and work from the calendar. Add events and connect them to a specific course or project. Research shows that students who make learning a habit are more likely to retain information and reach their goals. Set time aside to learn and get reminders using your learning event scheduler.",
     heading: "Calendar",
   },
   {

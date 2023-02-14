@@ -35,7 +35,17 @@ const Course = ({ course }: IProps) => {
               </Button>
             </NextLink>
           </Box>
-          <CardHeader subheader={course.content.description} title={course.content.title} />
+          <CardHeader title={course.content.title} />
+          <Box m={2}>
+            <NextLink style={{ textDecoration: "none" }} target="_blank" href={course.content.url} passHref>
+              <Button component="a">Go to course</Button>
+            </NextLink>
+            {!!course.content.certificateUrl && (
+              <NextLink style={{ textDecoration: "none" }} target="_blank" href={course.content.url} passHref>
+                <Button component="a">View certificate</Button>
+              </NextLink>
+            )}
+          </Box>
           <Divider />
           <CardContent>{course.content.description}</CardContent>
           <Divider />

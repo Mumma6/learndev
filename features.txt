@@ -36,3 +36,10 @@ settings.jsx and api/user
 
 
 landing som denna https://startup-agency-minimal.vercel.app/
+
+https://github.com/creativetimofficial/material-dashboard-react
+https://demos.creative-tim.com/material-dashboard-react/?_ga=2.158538930.901965981.1676202634-1525434073.1668522060#/dashboard
+
+
+https://github.com/devias-io/material-kit-react
+https://material-kit-react.devias.io/

@@ -2,10 +2,10 @@ import React, { useState } from "react"
 import { Alert, Button } from "react-bootstrap"
 import { toast } from "react-toastify"
 import { fetcher1 } from "../../lib/axiosFetcher"
+import { UserModelSchemaType } from "../../schema/UserSchema"
 import { Status } from "../../types/status"
-import { IUser } from "../../types/user"
 
-const EmailVerify = ({ user }: { user: IUser }) => {
+const EmailVerify = ({ user }: { user: UserModelSchemaType }) => {
   const [status, setStatus] = useState<Status>("idle")
 
   const onSubmit = async (event: any) => {

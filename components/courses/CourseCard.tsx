@@ -28,13 +28,10 @@ const CourseCard = ({ course, deleteCourse }: IProps) => {
             <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
               {course.content.institution}
             </Typography>
-
-            <Typography variant="body2">{course.content.description}</Typography>
           </CardContent>
         </Button>
         <Divider />
-        <CardActions>
-          <Button size="small">Go to course (link)</Button>
+        <CardActions sx={{ float: "right" }}>
           <Button onClick={() => deleteCourse(course._id as string)} color="error" size="small">
             Delete
           </Button>

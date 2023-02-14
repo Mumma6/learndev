@@ -42,7 +42,7 @@ handler.get(...auths, async (req, res) => {
 
 handler.post(...auths, async (req, res) => {
   if (!req.user) {
-    handleAPIResponse(res, null, "No user found")
+    return handleAPIResponse(res, null, "No user found")
   }
 
   try {
@@ -56,10 +56,10 @@ handler.post(...auths, async (req, res) => {
     }
 
     const { data } = parsedFormInput
-    const createTags = (data: Pick<CourseModelSchemaType, "content" | "completed" | "topics">): string[] => [
-      data.content.title,
-      ...data.topics.map((t) => t.label),
-    ]
+    const createTags = (data: Pick<CourseModelSchemaType, "content" | "topics">) =>
+      [data.content.title, data.content.institution, ...data.topics.map((t) => t.label)]
+        .map((tag) => tag.toLowerCase())
+        .join(" ,")
 
     const db = await getMongoDb()
 
@@ -67,7 +67,7 @@ handler.post(...auths, async (req, res) => {
 
     insertCourse(db, {
       ...data,
-      userId: req.user?._id,
+      userId: req.user._id,
       tags,
       createdAt: new Date(),
     })

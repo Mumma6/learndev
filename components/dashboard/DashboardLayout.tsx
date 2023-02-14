@@ -49,17 +49,15 @@ export const DashboardLayout = ({ children }: IProps) => {
             flex: "1 1 auto",
             flexDirection: "column",
             width: "100%",
+            paddingLeft: 2,
+            paddingRight: 2,
           }}
         >
           {children}
         </Box>
       </DashboardLayoutRoot>
       <DashboardNavbar onSidebarOpen={() => setSidebarOpen(true)} />
-      <DashboardSidebar
-        user={data.payload}
-        onClose={() => setSidebarOpen(false)}
-        open={isSidebarOpen}
-      />
+      <DashboardSidebar user={data.payload} onClose={() => setSidebarOpen(false)} open={isSidebarOpen} />
     </>
   )
 }

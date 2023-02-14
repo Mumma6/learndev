@@ -8,8 +8,15 @@ import CoursesToolbar from "./CoursesToolbar"
 import { toast } from "react-toastify"
 import { ClickEvent } from "../../types/generics"
 import { fetcher1 } from "../../lib/axiosFetcher"
-import { CourseModelContentInputSchemaType, CourseModelformInputType, InstitutionEnum } from "../../schema/CourseSchema"
+import {
+  CourseModelContentInputSchema,
+  CourseModelContentInputSchemaType,
+  CourseModelformInputSchema,
+  CourseModelformInputType,
+  InstitutionEnum,
+} from "../../schema/CourseSchema"
 import { SkillSchemaType } from "../../schema/SharedSchema"
+import { useZodFormValidation } from "../customHooks/useZodFormValidation"
 
 /*
 Should formik be here or in the modal
@@ -21,14 +28,17 @@ export const initialCourseFormState: CourseModelContentInputSchemaType = {
   description: "",
   institution: InstitutionEnum.Enum.Other,
   url: "",
+  certificateUrl: "",
 }
 
 const Courses = () => {
   const [open, setOpen] = useState(false)
-  const [courseFormData, setCourseFormData] = useState<CourseModelContentInputSchemaType>(initialCourseFormState)
   const [topicData, setTopicData] = useState<SkillSchemaType[]>([])
   const [completed, setCompleted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+
+  const { values, setValues, errors, setFieldValue, onBlur, touched, reset } =
+    useZodFormValidation<CourseModelContentInputSchemaType>(CourseModelContentInputSchema, initialCourseFormState)
 
   const { data } = useCourses()
   const { mutate } = useSWRConfig()
@@ -56,7 +66,7 @@ const Courses = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: {
-          content: courseFormData,
+          content: values,
           topics: topicData,
           completed,
         },
@@ -71,7 +81,7 @@ const Courses = () => {
     } catch (e: any) {
       console.log(e)
     } finally {
-      setCourseFormData(initialCourseFormState)
+      setValues(initialCourseFormState)
       setIsLoading(false)
       handleClose()
     }
@@ -82,6 +92,9 @@ const Courses = () => {
   }
 
   const handleClose = () => {
+    setValues(initialCourseFormState)
+    setTopicData([])
+    reset()
     setOpen(false)
   }
   return (
@@ -95,13 +108,16 @@ const Courses = () => {
       <AddCourseModal
         open={open}
         handleClose={handleClose}
-        courseFormData={courseFormData}
-        setCourseFormData={setCourseFormData}
+        formValues={values}
         onAddCourse={onAddCourse}
         setCompleted={setCompleted}
         setTopicData={setTopicData}
         topicData={topicData}
         completed={completed}
+        onBlur={onBlur}
+        touched={touched}
+        setFieldValue={setFieldValue}
+        errors={errors}
       />
       <Container maxWidth={false}>
         <CoursesToolbar handleClickOpen={handleClickOpen} />
@@ -132,7 +148,7 @@ const Courses = () => {
             pt: 3,
           }}
         >
-          <Pagination color="primary" count={3} size="small" />
+          {false && <Pagination color="primary" count={3} size="small" />}
         </Box>
       </Container>
       <Container maxWidth={false}>
@@ -163,7 +179,7 @@ const Courses = () => {
             pt: 3,
           }}
         >
-          <Pagination color="primary" count={3} size="small" />
+          {false && <Pagination color="primary" count={3} size="small" />}
         </Box>
       </Container>
     </Box>
