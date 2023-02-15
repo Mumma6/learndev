@@ -6,7 +6,7 @@ import auths from "../../../lib/middlewares/auth"
 import { getMongoDb } from "../../../lib/mongodb"
 import { deleteUser, findUserByEmail, updateUserById } from "../../../lib/queries/user"
 import { NextApiRequest, NextApiResponse } from "next"
-import { IUser } from "../../../types/user"
+
 import { Response } from "../../../types/response"
 import { handleAPIError, handleAPIResponse } from "../../../lib/utils"
 import { ObjectId } from "mongodb"

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, Dispatch, SetStateAction } from "react"
 import { z } from "zod"
 
 /*
@@ -8,13 +8,26 @@ create a is disable fn
 export type ErrorsType<T> = { [key in keyof T]: string | undefined }
 export type TouchedType<T> = { [key in keyof T]: boolean }
 
+export interface IZodFormValidation<FValues> {
+  values: FValues
+  setValues: Dispatch<SetStateAction<FValues>>
+  errors: ErrorsType<FValues>
+  setFieldValue: (key: keyof FValues, value: unknown) => void
+  onBlur: (key: keyof FValues) => void
+  touched: TouchedType<FValues>
+  reset: () => void
+  isDisabled: (validator?: () => boolean) => boolean
+}
+
+// export interface for the whole thing. So we can pass an object as props and not all the destro props.
+
 const cloneWithDefaultValues = <T extends object>(input: T, newVal: any) =>
   Object.fromEntries(Object.keys(input).map((key) => [key, newVal])) as Record<keyof T, any>
 
-export const useZodFormValidation = <FValues extends object>(schema: z.Schema, formData: FValues) => {
-  const generateErrorObject = (arr: z.ZodIssue[]) =>
-    Object.fromEntries(arr.map((item) => [item.path[0], item.message])) as ErrorsType<FValues>
+const generateErrorObject = <T>(arr: z.ZodIssue[]) =>
+  Object.fromEntries(arr.map((item) => [item.path[0], item.message])) as ErrorsType<T>
 
+export const useZodFormValidation = <FValues extends object>(schema: z.Schema, formData: FValues) => {
   const [values, setValues] = useState<FValues>(formData)
   const [errors, setErrors] = useState<ErrorsType<FValues>>(cloneWithDefaultValues(formData, undefined))
   const [touched, setTouched] = useState<TouchedType<FValues>>(cloneWithDefaultValues(formData, false))
@@ -23,9 +36,11 @@ export const useZodFormValidation = <FValues extends object>(schema: z.Schema, f
     (input: FValues) => {
       const parse = schema.safeParse(input)
 
-      setErrors(parse.success ? cloneWithDefaultValues(formData, undefined) : generateErrorObject(parse.error.issues))
+      setErrors(
+        parse.success ? cloneWithDefaultValues(formData, undefined) : generateErrorObject<FValues>(parse.error.issues)
+      )
     },
-    [formData, schema]
+    [formData]
   )
 
   useEffect(() => {
@@ -33,22 +48,28 @@ export const useZodFormValidation = <FValues extends object>(schema: z.Schema, f
   }, [values, validateValues])
 
   const setFieldValue = useCallback((key: keyof FValues, value: unknown) => {
+    console.log("setFieldValue")
     setValues((prevState) => ({ ...prevState, [key]: value }))
   }, [])
 
   const onBlur = useCallback((key: keyof FValues) => {
+    console.log("onBlur")
     setTouched((prevState) => ({ ...prevState, [key]: true }))
   }, [])
 
   const reset = useCallback(() => {
+    console.log("reset")
     setTouched(cloneWithDefaultValues(formData, false))
   }, [])
 
-  const isDisabled = useCallback((validator?: () => boolean) => {
-    const formErrors = Object.values(errors).some((error) => error)
+  const isDisabled = useCallback(
+    (validator?: () => boolean) => {
+      const formErrors = Object.values(errors).some((error) => error)
 
-    return validator ? validator() && formErrors : formErrors
-  }, [])
+      return validator ? validator() || formErrors : formErrors
+    },
+    [errors]
+  )
 
   return {
     values,

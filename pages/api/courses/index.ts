@@ -10,8 +10,6 @@ import { validateBody } from "../../../lib/zodUtils"
 import { CourseModelformInputSchema, CourseModelSchema, CourseModelSchemaType } from "../../../schema/CourseSchema"
 import { Response } from "../../../types/response"
 
-// this will trown an error in vercel deployment.
-
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<CourseModelSchemaType[] | null>>>()
 
 handler.get(...auths, async (req, res) => {

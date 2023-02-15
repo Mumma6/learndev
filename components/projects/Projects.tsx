@@ -1,15 +1,5 @@
 import React, { useState } from "react"
-import {
-  Box,
-  Container,
-  Grid,
-  Pagination,
-  Card,
-  CardContent,
-  Typography,
-  Divider,
-  CardHeader,
-} from "@mui/material"
+import { Box, Container, Grid, Pagination, Card, CardContent, Typography, Divider, CardHeader } from "@mui/material"
 import { toast } from "react-toastify"
 import { ClickEvent } from "../../types/generics"
 import { fetcher1 } from "../../lib/axiosFetcher"
@@ -17,21 +7,13 @@ import { Skill } from "../../constants/skillsData"
 import { useProjects } from "../../lib/hooks"
 import { useSWRConfig } from "swr"
 import ProjectsToolbar from "./ProjectsToolbar"
-import { IProjects } from "../../models/Projects"
 import ProjectCard from "./ProjectCard"
 import AddProjectModal from "./AddProjectModal"
+import { ProjectModelFormInputSchema, ProjectModelFromInputType } from "../../schema/ProjectSchema"
+import { useZodFormValidation } from "../customHooks/useZodFormValidation"
 
-export interface ProjectsFormData {
-  title: string
-  shortDescription: string
-  sourceCodeUrl: string
-  deployedUrl: string
-  description: string
-}
-
-export const initialProjectsFormData: ProjectsFormData = {
+export const initialProjectsFormData: Omit<ProjectModelFromInputType, "techStack" | "completed"> = {
   title: "",
-  shortDescription: "",
   description: "",
   sourceCodeUrl: "",
   deployedUrl: "",
@@ -39,7 +21,7 @@ export const initialProjectsFormData: ProjectsFormData = {
 
 export const Projects = () => {
   const [open, setOpen] = useState(false)
-  const [projectFormData, setProjectFormData] = useState<ProjectsFormData>(initialProjectsFormData)
+
   const [topicData, setTopicData] = useState<Skill[]>([])
   const [completed, setCompleted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -47,11 +29,19 @@ export const Projects = () => {
   const { data } = useProjects()
   const { mutate } = useSWRConfig()
 
+  const zodForm = useZodFormValidation<Omit<ProjectModelFromInputType, "techStack" | "completed">>(
+    ProjectModelFormInputSchema.omit({ techStack: true, completed: true }),
+    initialProjectsFormData
+  )
+
   const handleClickOpen = () => {
     setOpen(true)
   }
 
   const handleClose = () => {
+    zodForm.setValues(initialProjectsFormData)
+    setTopicData([])
+    zodForm.reset()
     setOpen(false)
   }
 
@@ -60,11 +50,11 @@ export const Projects = () => {
     try {
       setIsLoading(true)
 
-      const response = await fetcher1<undefined, Partial<IProjects>>("/api/projects", {
+      const response = await fetcher1<undefined, ProjectModelFromInputType>("/api/projects", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: {
-          ...projectFormData,
+          ...zodForm.values,
           techStack: topicData,
           completed,
         },
@@ -81,7 +71,7 @@ export const Projects = () => {
     } catch (e: any) {
       console.log(e)
     } finally {
-      setProjectFormData(initialProjectsFormData)
+      zodForm.setValues(initialProjectsFormData)
       setTopicData([])
       setIsLoading(false)
       handleClose()
@@ -113,13 +103,12 @@ export const Projects = () => {
         <AddProjectModal
           open={open}
           handleClose={handleClose}
-          projectFormData={projectFormData}
-          setProjectFormData={setProjectFormData}
           onAddProject={onAddProject}
           setCompleted={setCompleted}
           setTopicData={setTopicData}
           topicData={topicData}
           completed={completed}
+          zodForm={zodForm}
         />
         <Container maxWidth={false}>
           <ProjectsToolbar handleClickOpen={handleClickOpen} />
@@ -133,7 +122,7 @@ export const Projects = () => {
                     {!isLoading &&
                       data?.payload
                         ?.filter((c) => !c.completed)
-                        .map((project: IProjects) => (
+                        .map((project) => (
                           <Grid item key={project._id?.toString()} lg={4} md={4} sm={4} xs={12}>
                             <ProjectCard deleteProject={deleteProject} project={project} />
                           </Grid>
@@ -149,9 +138,7 @@ export const Projects = () => {
               justifyContent: "center",
               pt: 3,
             }}
-          >
-            <Pagination color="primary" count={3} size="small" />
-          </Box>
+          ></Box>
         </Container>
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
@@ -164,7 +151,7 @@ export const Projects = () => {
                     {!isLoading &&
                       data?.payload
                         ?.filter((c) => c.completed)
-                        .map((project: IProjects) => (
+                        .map((project) => (
                           <Grid item key={project._id?.toString()} lg={4} md={4} sm={4} xs={12}>
                             <ProjectCard deleteProject={deleteProject} project={project} />
                           </Grid>
@@ -180,9 +167,7 @@ export const Projects = () => {
               justifyContent: "center",
               pt: 3,
             }}
-          >
-            <Pagination color="primary" count={3} size="small" />
-          </Box>
+          ></Box>
         </Container>
       </Box>
     </>

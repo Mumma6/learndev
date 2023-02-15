@@ -85,6 +85,7 @@ const AddCourseModal = ({
 
   const isDisabled = () => {
     const formErrors = Object.values(errors).some((error) => error)
+    console.log(formErrors)
 
     if (formErrors || !topicData.length) {
       return true

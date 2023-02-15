@@ -1,14 +1,5 @@
 import React from "react"
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  TextField,
-  InputAdornment,
-  SvgIcon,
-  Typography,
-} from "@mui/material"
+import { Box, Button, Card, CardContent, TextField, InputAdornment, SvgIcon, Typography } from "@mui/material"
 import { FaSearch } from "react-icons/fa"
 
 interface IProps {
@@ -29,7 +20,7 @@ const ProjectsToolbar = ({ handleClickOpen }: IProps) => {
         }}
       >
         <Typography sx={{ m: 1 }} variant="h4">
-          Courses
+          Projects
         </Typography>
         <Box sx={{ m: 1 }}>
           <Button color="primary" variant="contained" onClick={handleClickOpen}>

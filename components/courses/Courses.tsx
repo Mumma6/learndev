@@ -18,11 +18,6 @@ import {
 import { SkillSchemaType } from "../../schema/SharedSchema"
 import { useZodFormValidation } from "../customHooks/useZodFormValidation"
 
-/*
-Should formik be here or in the modal
-
-*/
-
 export const initialCourseFormState: CourseModelContentInputSchemaType = {
   title: "",
   description: "",

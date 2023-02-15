@@ -17,32 +17,32 @@ import Autocomplete from "@mui/material/Autocomplete"
 import { ClickEvent, ClickEventRet, SetState } from "../../types/generics"
 import { Skill, skillsData } from "../../constants/skillsData"
 import { FaPlus } from "react-icons/fa"
-import { initialProjectsFormData, ProjectsFormData } from "./Projects"
+import { initialProjectsFormData } from "./Projects"
+import { ProjectModelFromInputType } from "../../schema/ProjectSchema"
+import { IZodFormValidation } from "../customHooks/useZodFormValidation"
 
 interface IProps {
   open: boolean
   handleClose: SetState<void>
-  projectFormData: ProjectsFormData
   topicData: Skill[]
-  setProjectFormData: SetState<ProjectsFormData>
   setTopicData: SetState<Skill[]>
   setCompleted: SetState<boolean>
   completed: boolean
   onAddProject: ClickEventRet<Promise<void>>
+  zodForm: IZodFormValidation<Omit<ProjectModelFromInputType, "techStack" | "completed">>
 }
 
 const AddProjectModal = ({
   open,
   handleClose,
-  projectFormData,
   setCompleted,
-  setProjectFormData,
   setTopicData,
   topicData,
   onAddProject,
   completed,
+  zodForm,
 }: IProps) => {
-  const { title, shortDescription, deployedUrl, sourceCodeUrl, description } = projectFormData
+  const { title, deployedUrl, sourceCodeUrl, description } = zodForm.values
 
   // gör till en customHook, samma sak i AddCourseModal
   const [newSkill, setNewSkill] = useState<Skill | null>(null)
@@ -58,15 +58,11 @@ const AddProjectModal = ({
     setCompleted(event.target.checked)
   }
 
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setProjectFormData((prevState) => ({
-      ...prevState,
-      [event.target.name]: event.target.value,
-    }))
+  const onChange = (key: string, value: unknown) => {
+    zodForm.setFieldValue(key as keyof Omit<ProjectModelFromInputType, "techStack" | "completed">, value)
   }
 
   const onClose = () => {
-    setProjectFormData(initialProjectsFormData)
     handleClose()
   }
 
@@ -84,21 +80,22 @@ const AddProjectModal = ({
     onAddProject(event)
   }
 
+  const isDisabled = () => {
+    const hasTopics = () => !topicData.length
+
+    return zodForm.isDisabled(hasTopics)
+  }
+
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Add project</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          To add a project, please fill in the information below. More information can be added
-          later.
+          To add a project, please fill in the information below. More information can be added later.
         </DialogContentText>
         <FormControlLabel
           control={
-            <Checkbox
-              checked={completed}
-              onChange={handleCheckBoxChange}
-              inputProps={{ "aria-label": "controlled" }}
-            />
+            <Checkbox checked={completed} onChange={handleCheckBoxChange} inputProps={{ "aria-label": "controlled" }} />
           }
           label="Project completed"
         />
@@ -113,26 +110,12 @@ const AddProjectModal = ({
             type="text"
             fullWidth
             variant="standard"
-            onChange={onChange}
+            onChange={(e) => onChange(e.target.name, e.target.value)}
+            onBlur={() => zodForm.onBlur("title")}
+            helperText={(zodForm.touched.title && zodForm.errors.title) || " "}
+            error={Boolean(zodForm.touched.title && zodForm.errors.title)}
             sx={{ mb: 2 }}
             required
-          />
-          <TextField
-            name="shortDescription"
-            required
-            value={shortDescription}
-            margin="dense"
-            id="description"
-            label="Short description"
-            type="text"
-            fullWidth
-            variant="standard"
-            onChange={onChange}
-            helperText={`${shortDescription.length}/${30}`}
-            sx={{ mb: 2 }}
-            inputProps={{
-              maxlength: 30,
-            }}
           />
           <TextField
             name="description"
@@ -146,7 +129,10 @@ const AddProjectModal = ({
             type="text"
             fullWidth
             variant="standard"
-            onChange={onChange}
+            onChange={(e) => onChange(e.target.name, e.target.value)}
+            onBlur={() => zodForm.onBlur("description")}
+            helperText={(zodForm.touched.description && zodForm.errors.description) || " "}
+            error={Boolean(zodForm.touched.description && zodForm.errors.description)}
             sx={{ mb: 2 }}
           />
           <TextField
@@ -158,7 +144,10 @@ const AddProjectModal = ({
             type="text"
             fullWidth
             variant="standard"
-            onChange={onChange}
+            onChange={(e) => onChange(e.target.name, e.target.value)}
+            onBlur={() => zodForm.onBlur("deployedUrl")}
+            helperText={(zodForm.touched.deployedUrl && zodForm.errors.deployedUrl) || " "}
+            error={Boolean(zodForm.touched.deployedUrl && zodForm.errors.deployedUrl)}
             sx={{ mb: 2 }}
           />
           <TextField
@@ -170,7 +159,10 @@ const AddProjectModal = ({
             type="text"
             fullWidth
             variant="standard"
-            onChange={onChange}
+            onChange={(e) => onChange(e.target.name, e.target.value)}
+            onBlur={() => zodForm.onBlur("sourceCodeUrl")}
+            helperText={(zodForm.touched.sourceCodeUrl && zodForm.errors.sourceCodeUrl) || " "}
+            error={Boolean(zodForm.touched.sourceCodeUrl && zodForm.errors.sourceCodeUrl)}
             sx={{ mb: 2 }}
           />
           <Box
@@ -189,7 +181,7 @@ const AddProjectModal = ({
               sx={{ width: 400, marginRight: 3 }}
               renderInput={(params) => <TextField {...params} label="Tech stack" />}
             />
-            <Button onClick={addNewskill} style={{ fontSize: 20 }}>
+            <Button disabled={!newSkill} onClick={addNewskill} style={{ fontSize: 20 }}>
               <FaPlus />
             </Button>
             {!!topicData.length && (
@@ -206,12 +198,7 @@ const AddProjectModal = ({
                   component="ul"
                 >
                   {topicData.map((data) => (
-                    <Chip
-                      key={data.label}
-                      color="primary"
-                      label={data.label}
-                      onDelete={handleTopicDelete(data)}
-                    />
+                    <Chip key={data.label} color="primary" label={data.label} onDelete={handleTopicDelete(data)} />
                   ))}
                 </Paper>
               </Box>
@@ -223,7 +210,7 @@ const AddProjectModal = ({
         <Button color="error" onClick={onClose}>
           Cancel
         </Button>
-        <Button color="success" onClick={addProject}>
+        <Button disabled={isDisabled()} color="success" onClick={addProject}>
           Add
         </Button>
       </DialogActions>

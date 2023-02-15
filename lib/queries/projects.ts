@@ -1,16 +1,12 @@
 import { Db, ObjectId } from "mongodb"
-import { IProjects } from "../../models/Projects"
+import { ProjectModelType } from "../../schema/ProjectSchema"
 
 export const getProjectsForUser = async (db: Db, userId: string) => {
-  return await db
-    .collection<IProjects>("projects")
-    .find({ userId })
-    .sort({ createdAd: -1 })
-    .toArray()
+  return await db.collection("projects").find({ userId }).sort({ createdAd: -1 }).toArray()
 }
 
-export const insertProject = async (db: Db, data: IProjects) => {
-  return await db.collection<IProjects>("projects").insertOne(data)
+export const insertProject = async (db: Db, data: Omit<ProjectModelType, "_id">) => {
+  return await db.collection("projects").insertOne(data)
 }
 
 export const deleteProjectById = async (db: Db, id: string) => {
@@ -18,5 +14,5 @@ export const deleteProjectById = async (db: Db, id: string) => {
 }
 
 export const findProjectById = async (db: Db, _id: string) => {
-  return await db.collection<IProjects>("projects").findOne({ _id: new ObjectId(_id) })
+  return await db.collection("projects").findOne({ _id: new ObjectId(_id) })
 }

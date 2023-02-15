@@ -88,6 +88,7 @@ const setDefaultValues = async (
   }
 }
 
+// detta görs med en patch
 export const updateUserById = async (db: Db, id: string, data: Partial<UserModelSchemaType>) => {
   return db
     .collection("users")

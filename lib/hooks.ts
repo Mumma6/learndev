@@ -1,13 +1,12 @@
 import useSWR, { SWRResponse } from "swr"
 import useSWRImmutable from "swr/immutable"
 import { IEventInfo } from "../models/EventInfo"
-import { IProjects } from "../models/Projects"
 import { IQuiz } from "../models/Quiz"
 import { IQuizResult } from "../models/QuizResult"
 import { CourseModelSchemaType } from "../schema/CourseSchema"
+import { ProjectModelType } from "../schema/ProjectSchema"
 import { UserModelSchemaType } from "../schema/UserSchema"
 import { Response } from "../types/response"
-import { IUser } from "../types/user"
 import { fetcher1 } from "./axiosFetcher"
 import { fetcher } from "./fetcher"
 
@@ -16,11 +15,6 @@ import { fetcher } from "./fetcher"
 // https://stackoverflow.com/questions/73309030/swr-not-pulling-from-cache
 
 // Zod will replace all Interfaces. Make sure the hooks still work with the infer type
-
-interface UserHookResponse {
-  data?: Response<IUser | null> | undefined
-  mutate: (newData: Response<IUser | null>, b?: boolean) => void
-}
 
 export function useCurrentUser() {
   return useSWRImmutable("/api/user", (url) => fetcher1<UserModelSchemaType | null, undefined>(url))
@@ -35,7 +29,7 @@ export const useCourses = () => {
 }
 
 export const useProjects = () => {
-  return useSWR("/api/projects", (url) => fetcher1<IProjects[], undefined>(url))
+  return useSWR("/api/projects", (url) => fetcher1<ProjectModelType[], undefined>(url))
 }
 
 export const useEvents = () => {
