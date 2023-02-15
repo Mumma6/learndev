@@ -1,13 +1,90 @@
 import React from "react"
-import { IProjects } from "../../models/Projects"
+import { Box, Paper, Card, CardContent, CardHeader, Divider, Container, Button, Chip, Typography } from "@mui/material"
+import NextLink from "next/link"
+import { FaArrowLeft, FaPen, FaPenAlt } from "react-icons/fa"
+import { ProjectModelType } from "../../schema/ProjectSchema"
 
 interface IProps {
-  project: IProjects
+  project: ProjectModelType
 }
+
+/*
+
+Edit ska öppna en EditModal. fälten ska populeras från project propen. 
+Ska skicka en patch med nya datan (samma som när man skapar, samma schema osv).
+
+Kolla hur User gör med sin patch. Behöver vi ett lika avancerat defaultValues() här?
+
+*/
 
 const Project = ({ project }: IProps) => {
   console.log(project)
-  return <div>Project</div>
+  return (
+    <Box
+      component="main"
+      sx={{
+        flexGrow: 1,
+        py: 8,
+      }}
+    >
+      <Container maxWidth="lg">
+        <Card>
+          <Box m={2}>
+            <NextLink style={{ textDecoration: "none" }} href="/project" passHref>
+              <Button component="a" startIcon={<FaArrowLeft />}>
+                Back
+              </Button>
+            </NextLink>
+            <Button sx={{ float: "right" }} variant="contained" startIcon={<FaPen />}>
+              Edit
+            </Button>
+          </Box>
+          <CardHeader title={project.title} />
+          <Box m={2}>
+            {!!project.deployedUrl && (
+              <NextLink style={{ textDecoration: "none" }} target="_blank" href={project.deployedUrl} passHref>
+                <Button component="a">View demo</Button>
+              </NextLink>
+            )}
+            {!!project.sourceCodeUrl && (
+              <NextLink style={{ textDecoration: "none" }} target="_blank" href={project.sourceCodeUrl} passHref>
+                <Button component="a">View source code</Button>
+              </NextLink>
+            )}
+          </Box>
+          <Divider />
+          <CardContent>{project.description}</CardContent>
+          <Divider />
+          <Box sx={{ marginTop: 3 }}>
+            <Typography sx={{ marginLeft: 2.5 }} color="textPrimary" variant="h6">
+              Tech stack
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "start",
+                flexWrap: "wrap",
+                listStyle: "none",
+                p: 1.5,
+                mt: 3,
+              }}
+              component="ul"
+            >
+              {project.techStack.map((data) => (
+                <Chip key={data.label} color="primary" label={data.label} sx={{ marginRight: 1 }} />
+              ))}
+            </Box>
+          </Box>
+        </Card>
+      </Container>
+    </Box>
+  )
 }
 
 export default Project
+
+/*
+Visa bilder i framtiden
+tags?
+
+*/

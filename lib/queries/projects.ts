@@ -1,5 +1,5 @@
 import { Db, ObjectId } from "mongodb"
-import { ProjectModelType } from "../../schema/ProjectSchema"
+import { ProjectModelSchema, ProjectModelType } from "../../schema/ProjectSchema"
 
 export const getProjectsForUser = async (db: Db, userId: string) => {
   return await db.collection("projects").find({ userId }).sort({ createdAd: -1 }).toArray()
@@ -14,5 +14,12 @@ export const deleteProjectById = async (db: Db, id: string) => {
 }
 
 export const findProjectById = async (db: Db, _id: string) => {
-  return await db.collection("projects").findOne({ _id: new ObjectId(_id) })
+  const project = await db.collection("projects").findOne({ _id: new ObjectId(_id) })
+
+  const parsedProject = ProjectModelSchema.safeParse(project)
+
+  if (!parsedProject.success) {
+    return null
+  }
+  return parsedProject.data
 }

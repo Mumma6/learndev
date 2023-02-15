@@ -43,7 +43,7 @@ const ProjectsToolbar = ({ handleClickOpen }: IProps) => {
                     </InputAdornment>
                   ),
                 }}
-                placeholder="Search course"
+                placeholder="Search project"
                 variant="outlined"
               />
             </Box>

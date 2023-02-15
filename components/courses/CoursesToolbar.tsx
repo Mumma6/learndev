@@ -23,7 +23,7 @@ const CoursesToolbar = ({ handleClickOpen }: IProps) => {
         </Typography>
         <Box sx={{ m: 1 }}>
           <Button color="primary" variant="contained" onClick={handleClickOpen}>
-            Add course (modal)
+            Add course
           </Button>
         </Box>
       </Box>

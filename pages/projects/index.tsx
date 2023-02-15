@@ -8,7 +8,7 @@ const project = () => {
     <>
       <DashboardLayout>
         <Head>
-          <title>Courses</title>
+          <title>Projects</title>
         </Head>
         <Projects />
       </DashboardLayout>

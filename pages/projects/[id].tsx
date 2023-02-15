@@ -6,13 +6,13 @@ import { DashboardLayout } from "../../components/dashboard/DashboardLayout"
 import { handleAuthGetServerSideProps } from "../../lib/utils"
 
 import { findProjectById } from "../../lib/queries/projects"
-import { IProjects } from "../../models/Projects"
 import Project from "../../components/projects/Project"
+import { ProjectModelSchema, ProjectModelType } from "../../schema/ProjectSchema"
 
 export const getServerSideProps: GetServerSideProps = async (context) =>
-  handleAuthGetServerSideProps<IProjects>(context, findProjectById, "project")
+  handleAuthGetServerSideProps<ProjectModelType>(context, findProjectById, "project", ProjectModelSchema)
 
-const projectPage = ({ project }: { project: IProjects }) => {
+const projectPage = ({ project }: { project: ProjectModelType }) => {
   return (
     <>
       <DashboardLayout>
