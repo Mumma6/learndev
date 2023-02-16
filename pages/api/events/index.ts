@@ -12,6 +12,9 @@ import { Response } from "../../../types/response"
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<IEventInfo[] | null>>>()
 
 handler.get(...auths, async (req, res) => {
+  if (!req.user) {
+    return handleAPIResponse(res, null, "No user found")
+  }
   try {
     const db = await getMongoDb()
     const events = await getEventsForUser(db, req.user?._id)
@@ -24,6 +27,9 @@ handler.get(...auths, async (req, res) => {
 })
 
 handler.post(...auths, async (req, res) => {
+  if (!req.user) {
+    return handleAPIResponse(res, null, "No user found")
+  }
   try {
     const db = await getMongoDb()
     addEventForUser(db, req.body, req.user?._id)
