@@ -22,14 +22,3 @@ export const ProjectModelSchema = ProjectModelFormInputSchema.extend({
 })
 
 export type ProjectModelType = z.infer<typeof ProjectModelSchema>
-
-/*
-export interface IProjects {
-  _id?: string | ObjectId
-  userId: string
-
-  createdAt: string | Date
-}
-
-
-*/

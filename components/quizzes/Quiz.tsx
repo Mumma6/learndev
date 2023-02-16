@@ -7,8 +7,8 @@ import NextLink from "next/link"
 import Question from "./Question"
 import { useCurrentUser } from "../../lib/hooks"
 import { fetcher1 } from "../../lib/axiosFetcher"
-import { IUser } from "../../types/user"
 import { toast } from "react-toastify"
+import { UserModelSchemaType } from "../../schema/UserSchema"
 
 interface IProps {
   quiz: IQuiz
@@ -62,7 +62,7 @@ const Quiz = ({ quiz }: IProps) => {
       },
     })
 
-    const userResponse = await fetcher1<IUser, Pick<IUser, "completedQuizzes">>("/api/user", {
+    const userResponse = await fetcher1<UserModelSchemaType, Pick<UserModelSchemaType, "completedQuizzes">>("/api/user", {
       headers: { "Content-Type": "application/json" },
       method: "PATCH",
       data: {

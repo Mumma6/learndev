@@ -6,7 +6,6 @@ import { createToken, findAndDeleteTokenByIdAndType } from "../../../../lib/quer
 import { findUserByEmail, findUserById, UNSAFE_updateUserPassword } from "../../../../lib/queries/user"
 import { handleAPIError, handleAPIResponse } from "../../../../lib/utils"
 import { Response } from "../../../../types/response"
-import { IUser } from "../../../../types/user"
 
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<null>>>()
 

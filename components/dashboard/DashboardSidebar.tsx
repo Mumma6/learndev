@@ -19,9 +19,9 @@ import { BsCollection } from "react-icons/bs"
 import { AiOutlineFundProjectionScreen } from "react-icons/ai"
 import NavItem from "./NavItem"
 import Link from "next/link"
-import { IUser } from "../../types/user"
 import { MdQuiz } from "react-icons/md"
 import { IconType } from "react-icons"
+import { UserModelSchemaType } from "../../schema/UserSchema"
 
 interface SidbarNavItems {
   href: string
@@ -92,7 +92,7 @@ const items: SidbarNavItems[] = [
 interface IProps {
   open: boolean
   onClose: () => void
-  user: IUser
+  user: UserModelSchemaType
 }
 
 const DashboardSidebar = ({ open, onClose, user }: IProps) => {

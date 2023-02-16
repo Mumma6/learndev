@@ -1,5 +1,4 @@
 import React from "react"
-import { IUser } from "../../types/user"
 import { Box, Button, Container, Grid, Typography } from "@mui/material"
 import TotalCourses from "./TotalCourses"
 import LearningProgress from "./LearningProgress"
@@ -9,9 +8,10 @@ import TotalProjects from "./TotalProjects"
 import { useCourses, useQuizResults } from "../../lib/hooks"
 import LatestQuizResults from "./LatestQuizResults"
 import UserSkillProfile from "./UserSkillProfile"
+import { UserModelSchemaType } from "../../schema/UserSchema"
 
 interface IProps {
-  user: IUser
+  user: UserModelSchemaType
 }
 
 // döp om denna fil till Home.tsx och lägg under Overview

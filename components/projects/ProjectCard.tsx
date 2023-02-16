@@ -8,11 +8,11 @@ import Paper from "@mui/material/Paper"
 import Typography from "@mui/material/Typography"
 import { Divider } from "@mui/material"
 import { useRouter } from "next/router"
-import { IProjects } from "../../models/Projects"
+import { ProjectModelType } from "../../schema/ProjectSchema"
 
 interface IProps {
   deleteProject: (id: string) => void
-  project: IProjects
+  project: ProjectModelType
 }
 
 // Make the card abit higer and allow the shortDescription to use 2 rows and also increase the max value
@@ -27,8 +27,6 @@ const ProjectCard = ({ project, deleteProject }: IProps) => {
             <Typography variant="h5" component="div">
               {project.title}
             </Typography>
-
-            <Typography variant="body2">{project.shortDescription}</Typography>
           </CardContent>
         </Button>
         <Divider />

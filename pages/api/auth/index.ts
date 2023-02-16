@@ -2,11 +2,11 @@ import nextConnect from "next-connect"
 import auths from "../../../lib/middlewares/auth"
 import passport from "../../../lib/passport"
 import { NextApiRequest, NextApiResponse } from "next"
-import { IUser } from "../../../types/user"
 import { handleAPIResponse } from "../../../lib/utils"
 import { Response } from "../../../types/response"
+import { UserModelSchemaType } from "../../../schema/UserSchema"
 
-const handler = nextConnect<NextApiRequest, NextApiResponse<Response<IUser | null>>>()
+const handler = nextConnect<NextApiRequest, NextApiResponse<Response<UserModelSchemaType | null>>>()
 
 handler.use(...auths)
 
