@@ -1,8 +1,11 @@
-import React from "react"
+import React, { useState } from "react"
 import { Box, Paper, Card, CardContent, CardHeader, Divider, Container, Button, Chip, Typography } from "@mui/material"
 import NextLink from "next/link"
 import { FaArrowLeft, FaPen, FaPenAlt } from "react-icons/fa"
-import { ProjectModelType } from "../../schema/ProjectSchema"
+import { ProjectModelType, ProjectModelFromInputType } from "../../schema/ProjectSchema"
+import EditProjectModal from "./EditProjectModal"
+import { fetcher1 } from "../../lib/axiosFetcher"
+import { ClickEvent } from "../../types/generics"
 
 interface IProps {
   project: ProjectModelType
@@ -18,7 +21,12 @@ Kolla hur User gör med sin patch. Behöver vi ett lika avancerat defaultValues(
 */
 
 const Project = ({ project }: IProps) => {
-  console.log(project)
+  const [open, setOpen] = useState(false)
+
+  const handleClose = () => {
+    setOpen(false)
+    // restet stuff
+  }
   return (
     <Box
       component="main"
@@ -27,15 +35,16 @@ const Project = ({ project }: IProps) => {
         py: 8,
       }}
     >
+      <EditProjectModal open={open} handleClose={handleClose} project={project} />
       <Container maxWidth="lg">
         <Card>
           <Box m={2}>
-            <NextLink style={{ textDecoration: "none" }} href="/project" passHref>
+            <NextLink style={{ textDecoration: "none" }} href="/projects" passHref>
               <Button component="a" startIcon={<FaArrowLeft />}>
                 Back
               </Button>
             </NextLink>
-            <Button sx={{ float: "right" }} variant="contained" startIcon={<FaPen />}>
+            <Button onClick={() => setOpen(true)} sx={{ float: "right" }} variant="contained" startIcon={<FaPen />}>
               Edit
             </Button>
           </Box>

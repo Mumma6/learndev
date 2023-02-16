@@ -94,6 +94,12 @@ handler.delete(...auths, async (req, res) => {
   }
 })
 
+handler.patch(...auths, async (req, res) => {
+  if (!req.user) {
+    handleAPIResponse(res, null, "No user found")
+  }
+})
+
 // add post here
 
 export default handler

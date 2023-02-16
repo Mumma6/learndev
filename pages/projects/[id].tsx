@@ -17,7 +17,7 @@ const projectPage = ({ project }: { project: ProjectModelType }) => {
     <>
       <DashboardLayout>
         <Head>
-          <title>Course | {project.title}</title>
+          <title>Project | {project.title}</title>
         </Head>
         <Project project={project} />
       </DashboardLayout>
