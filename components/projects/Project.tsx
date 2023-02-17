@@ -6,6 +6,7 @@ import { ProjectModelType, ProjectModelFromInputType } from "../../schema/Projec
 import EditProjectModal from "./EditProjectModal"
 import { fetcher1 } from "../../lib/axiosFetcher"
 import { ClickEvent } from "../../types/generics"
+import { useSWRConfig } from "swr"
 
 interface IProps {
   project: ProjectModelType
@@ -21,12 +22,16 @@ Kolla hur User gör med sin patch. Behöver vi ett lika avancerat defaultValues(
 */
 
 const Project = ({ project }: IProps) => {
+  console.log(project)
   const [open, setOpen] = useState(false)
+
+  const { mutate } = useSWRConfig()
 
   const handleClose = () => {
     setOpen(false)
     // restet stuff
   }
+
   return (
     <Box
       component="main"

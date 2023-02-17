@@ -16,7 +16,7 @@ export type ProjectModelFromInputType = z.infer<typeof ProjectModelFormInputSche
 
 export const ProjectModelSchema = ProjectModelFormInputSchema.extend({
   userId: z.instanceof(ObjectId).transform((id) => id.toString()),
-  _id: z.instanceof(ObjectId).transform((id) => id.toString()),
+  _id: z.union([z.string(), z.instanceof(ObjectId).transform((id) => id.toString())]),
   tags: z.string(),
   createdAt: z.date(),
 })

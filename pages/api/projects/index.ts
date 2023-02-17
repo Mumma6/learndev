@@ -3,7 +3,7 @@ import nextConnect from "next-connect"
 import { z } from "zod"
 import auths from "../../../lib/middlewares/auth"
 import { getMongoDb } from "../../../lib/mongodb"
-import { deleteProjectById, getProjectsForUser, insertProject } from "../../../lib/queries/projects"
+import { deleteProjectById, getProjectsForUser, insertProject, updateProjectById } from "../../../lib/queries/projects"
 
 import { handleAPIError, handleAPIResponse } from "../../../lib/utils"
 import { ProjectModelFormInputSchema, ProjectModelSchema, ProjectModelType } from "../../../schema/ProjectSchema"
@@ -29,8 +29,6 @@ handler.get(...auths, async (req, res) => {
     }
 
     const { data } = parsedProjecs
-
-    console.log(data)
 
     handleAPIResponse(res, data, `projects for user: ${req.user?.name}`)
   } catch (error) {
@@ -59,7 +57,7 @@ handler.post(...auths, async (req, res) => {
     const { data } = parsedFormInput
 
     const createTags = (data: Pick<ProjectModelType, "techStack" | "title">) =>
-      [data.title, ...data.techStack.map((t) => t.label)].map((tag) => tag.toLowerCase()).join(" ,")
+      [data.title, ...data.techStack.map((t) => t.label)].map((tag) => tag.toLowerCase()).join(", ")
 
     const tags = createTags(data)
 
@@ -98,6 +96,35 @@ handler.patch(...auths, async (req, res) => {
   if (!req.user) {
     handleAPIResponse(res, null, "No user found")
   }
+
+  try {
+    const db = await getMongoDb()
+
+    const parsedBody = ProjectModelSchema.partial().safeParse(req.body)
+
+    if (!parsedBody.success) {
+      return handleAPIError(res, { message: "Validation error. User input" })
+    }
+
+    const updatedProject = await updateProjectById(db, parsedBody.data)
+
+    console.log(updatedProject)
+
+    const parsedProject = ProjectModelSchema.safeParse(updatedProject)
+
+    if (!parsedProject.success) {
+      return handleAPIError(res, { message: "Validation error when updating project" })
+    }
+
+    handleAPIResponse(res, parsedProject.data, "Project updated successfully")
+  } catch (error) {
+    console.log("Error when updating project")
+    handleAPIError(res, error)
+  }
+
+  // gör en parse för att validtera + att få nya default värden
+
+  // findAndReplace med det parsade värdet. Borde bara uppdatera req.body data + lägga till eventuella nya fält?
 })
 
 // add post here

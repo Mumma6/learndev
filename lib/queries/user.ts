@@ -67,6 +67,7 @@ const setDefaultValues = async (
   db: Db,
   id: string
 ): Promise<Partial<Omit<UserModelSchemaType, "_id" | "password">>> => {
+  // Behövs verkligen userDbValues? Objektet behöver kanske inte vara komplett i findAndUpdate
   const userDbValues = await findUserById(db, id)
 
   const defaultUserValues = UserModelSchema.omit({ password: true, _id: true, email: true, name: true }).safeParse(data)
@@ -89,6 +90,7 @@ const setDefaultValues = async (
 }
 
 // detta görs med en patch
+/*
 export const updateUserById = async (db: Db, id: string, data: Partial<UserModelSchemaType>) => {
   return db
     .collection("users")
@@ -98,6 +100,22 @@ export const updateUserById = async (db: Db, id: string, data: Partial<UserModel
       { returnDocument: "after", projection: { password: 0 } }
     )
     .then(({ value }) => value)
+}
+*/
+
+export const updateUserById = async (db: Db, id: string, data: Partial<UserModelSchemaType>) => {
+  try {
+    const updatedUser = await db
+      .collection("users")
+      .findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        { $set: await setDefaultValues(data, db, id) },
+        { returnDocument: "after", projection: { password: 0 } }
+      )
+    return updatedUser.value
+  } catch (err) {
+    // handle error
+  }
 }
 
 export async function insertUser(db: Db, data: Pick<UserModelSchemaType, "email" | "password" | "name">) {
