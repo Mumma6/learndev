@@ -22,14 +22,10 @@ Kolla hur User gör med sin patch. Behöver vi ett lika avancerat defaultValues(
 */
 
 const Project = ({ project }: IProps) => {
-  console.log(project)
   const [open, setOpen] = useState(false)
-
-  const { mutate } = useSWRConfig()
 
   const handleClose = () => {
     setOpen(false)
-    // restet stuff
   }
 
   return (

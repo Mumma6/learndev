@@ -27,3 +27,28 @@ export const findCoursebyId = async (db: Db, _id: string) => {
   }
   return parsedCourse.data
 }
+
+export const updateCourseById = async (db: Db, data: Partial<CourseModelSchemaType>) => {
+  /*
+  const createTags = (data: Pick<ProjectModelType, "techStack" | "title">) =>
+    [data.title, ...data.techStack.map((t) => t.label)].map((tag) => tag.toLowerCase()).join(", ")
+
+  const tags = createTags(data)
+  */
+
+  const dataToUpdate = { ...data }
+
+  delete dataToUpdate._id
+
+  try {
+    const updatedCourse = await db
+      .collection("courses")
+      .findOneAndUpdate({ _id: new ObjectId(data._id) }, { $set: dataToUpdate }, { returnDocument: "after" })
+
+    console.log(updatedCourse)
+
+    return updatedCourse.value
+  } catch (error) {
+    console.log(error)
+  }
+}

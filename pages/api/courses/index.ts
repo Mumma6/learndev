@@ -3,7 +3,7 @@ import nextConnect from "next-connect"
 import { z } from "zod"
 import auths from "../../../lib/middlewares/auth"
 import { getMongoDb } from "../../../lib/mongodb"
-import { deleteCourseById, getCoursesForUser, insertCourse } from "../../../lib/queries/course"
+import { deleteCourseById, getCoursesForUser, insertCourse, updateCourseById } from "../../../lib/queries/course"
 import { handleAPIError, handleAPIResponse } from "../../../lib/utils"
 import { validateBody } from "../../../lib/zodUtils"
 
@@ -93,6 +93,38 @@ handler.delete(...auths, async (req, res) => {
     handleAPIResponse(res, null, `Course with id: ${req.query.id} was deleted successfully`)
   } catch (error) {
     console.log("Error when deleting course")
+    handleAPIError(res, error)
+  }
+})
+
+handler.patch(...auths, async (req, res) => {
+  if (!req.user) {
+    return handleAPIResponse(res, null, "No user found")
+  }
+
+  try {
+    const db = await getMongoDb()
+
+    const parsedBody = CourseModelSchema.partial().safeParse(req.body)
+
+    if (!parsedBody.success) {
+      console.log(parsedBody.error)
+      return handleAPIError(res, { message: "Validation error. User input" })
+    }
+
+    const updatedCourse = await updateCourseById(db, parsedBody.data)
+
+    console.log(updatedCourse)
+
+    const parsedProject = CourseModelSchema.safeParse(updatedCourse)
+
+    if (!parsedProject.success) {
+      return handleAPIError(res, { message: "Validation error when updating Course" })
+    }
+
+    handleAPIResponse(res, parsedProject.data, "Course updated successfully")
+  } catch (error) {
+    console.log("Error when updating course")
     handleAPIError(res, error)
   }
 })

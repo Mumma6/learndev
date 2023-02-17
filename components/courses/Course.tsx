@@ -1,8 +1,9 @@
-import React from "react"
+import React, { useState } from "react"
 import { Box, Paper, Card, CardContent, CardHeader, Divider, Container, Button, Typography, Chip } from "@mui/material"
 import NextLink from "next/link"
 import { FaArrowLeft, FaPen } from "react-icons/fa"
 import { CourseModelSchemaType } from "../../schema/CourseSchema"
+import EditCourseModal from "./EditCourseModal"
 interface IProps {
   course: CourseModelSchemaType
 }
@@ -18,6 +19,11 @@ Feedback aswell.
 
 */
 const Course = ({ course }: IProps) => {
+  const [open, setOpen] = useState(false)
+
+  const handleClose = () => {
+    setOpen(false)
+  }
   return (
     <Box
       component="main"
@@ -26,6 +32,7 @@ const Course = ({ course }: IProps) => {
         py: 8,
       }}
     >
+      <EditCourseModal open={open} handleClose={handleClose} course={course} />
       <Container maxWidth="lg">
         <Card>
           <Box m={2}>
@@ -33,10 +40,10 @@ const Course = ({ course }: IProps) => {
               <Button component="a" startIcon={<FaArrowLeft />}>
                 Back
               </Button>
-              <Button sx={{ float: "right" }} variant="contained" startIcon={<FaPen />}>
-                Edit
-              </Button>
             </NextLink>
+            <Button onClick={() => setOpen(true)} sx={{ float: "right" }} variant="contained" startIcon={<FaPen />}>
+              Edit
+            </Button>
           </Box>
           <CardHeader title={course.content.title} />
           <Box m={2}>
