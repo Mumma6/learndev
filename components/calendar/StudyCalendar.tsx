@@ -26,6 +26,7 @@ import { toast } from "react-toastify"
 import { useSWRConfig } from "swr"
 import EditEventInfoModal from "./EditEventInfoModal"
 import AddEventModal from "./AddEventModal"
+import AddLabelModal from "./AddLabelModal"
 
 const locales = {
   "en-US": enUS,
@@ -87,6 +88,7 @@ const StudyCalendar = () => {
   const [open, setOpen] = useState(false)
   const [openExternModal, setOpenExternModal] = useState(false)
   const [editModalOpen, setEditModalOpen] = useState(false)
+  const [openLabelModal, setOpenLabelModal] = useState(false)
   const [eventFormData, setEventFormData] = useState<EventFormData>(initialEventFormState)
 
   const [externEventFormData, setExternEventFormData] = useState<ExternEventFormData>(initialExternEventFormState)
@@ -249,6 +251,7 @@ const StudyCalendar = () => {
         py: 8,
       }}
     >
+      <AddLabelModal open={openLabelModal} handleClose={() => setOpenLabelModal(false)} />
       <Container maxWidth={false}>
         <Card>
           <CardHeader title="Calendar" subheader="Use for planning" />
@@ -257,7 +260,7 @@ const StudyCalendar = () => {
             <Button onClick={() => setOpenExternModal(true)} size="large" variant="contained">
               Add event
             </Button>
-            <Button sx={{ marginLeft: 4 }} onClick={() => setOpenExternModal(true)} size="large" variant="contained">
+            <Button sx={{ marginLeft: 4 }} onClick={() => setOpenLabelModal(true)} size="large" variant="contained">
               Create label
             </Button>
             <Divider style={{ margin: 10 }} />

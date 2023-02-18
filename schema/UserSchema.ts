@@ -34,6 +34,17 @@ export const UserWorkexperienceSchema = z.object({
 
 export type UserWorkexperienceSchemaType = z.infer<typeof UserWorkexperienceSchema>
 
+export const UserSettingsLabelSchema = z.object({
+  name: z.string().min(1).default(""),
+  color: z.string().min(1).default(""),
+})
+
+export const UserSettingsModelSchema = z.object({
+  labels: z.array(UserSettingsLabelSchema).default([]),
+})
+
+export type UserSettingsType = z.infer<typeof UserSettingsModelSchema>
+
 // Any field added to the schema will get added in the database aswell. This is a one way only. If we add the ability to remove fields via the schema aswell we open up for alot of bugs. IF we want to there is a code snippet in quieris/users we can use. BE AWERE THO!
 
 export const UserModelSchema = UserRegistrationSchema.extend({
@@ -47,6 +58,7 @@ export const UserModelSchema = UserRegistrationSchema.extend({
   socials: UserSocialsSchema.default({}),
   skills: z.array(SkillSchema).default([]),
   workexperience: z.array(UserWorkexperienceSchema).default([]),
+  userSettings: UserSettingsModelSchema.default({}),
 })
 
 export type UserModelSchemaType = z.infer<typeof UserModelSchema>
