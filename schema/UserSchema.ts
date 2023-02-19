@@ -39,6 +39,8 @@ export const UserSettingsLabelSchema = z.object({
   color: z.string().min(1).default(""),
 })
 
+export type UserSettingsLabelType = z.infer<typeof UserSettingsLabelSchema>
+
 export const UserSettingsModelSchema = z.object({
   labels: z.array(UserSettingsLabelSchema).default([]),
 })

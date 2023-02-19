@@ -27,6 +27,7 @@ import { useSWRConfig } from "swr"
 import EditEventInfoModal from "./EditEventInfoModal"
 import AddEventModal from "./AddEventModal"
 import AddLabelModal from "./AddLabelModal"
+import { UserSettingsLabelType } from "../../schema/UserSchema"
 
 const locales = {
   "en-US": enUS,
@@ -91,9 +92,18 @@ const StudyCalendar = () => {
   const [openLabelModal, setOpenLabelModal] = useState(false)
   const [eventFormData, setEventFormData] = useState<EventFormData>(initialEventFormState)
 
+  // skicka labels till addModalerna. Uppdatera eventInfo med "label"
+  const [labels, setLabels] = useState<UserSettingsLabelType[]>([])
+  const [selectedLabel, setSelectedLabel] = useState<UserSettingsLabelType | undefined>(undefined)
+
   const [externEventFormData, setExternEventFormData] = useState<ExternEventFormData>(initialExternEventFormState)
 
   const { data: eventsData } = useEvents()
+  const { data: userData } = useCurrentUser()
+
+  useEffect(() => {
+    setLabels([...(userData?.payload?.userSettings.labels || [])])
+  }, [userData?.payload])
 
   useEffect(() => {
     console.log("effect")
