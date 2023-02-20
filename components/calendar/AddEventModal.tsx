@@ -6,7 +6,16 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import Button from "@mui/material/Button"
-import { Box, Divider, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material"
+import {
+  Autocomplete,
+  Box,
+  AutocompleteRenderGroupParams,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from "@mui/material"
 import Checkbox from "@mui/material/Checkbox"
 
 // Ersätt dayjs med date-fns
@@ -18,7 +27,12 @@ import Typography from "@mui/material/Typography"
 import { ClickEventRet, SetState } from "../../types/generics"
 import { ExternEventFormData } from "./StudyCalendar"
 import { DateTimePicker } from "@mui/x-date-pickers"
-import { useCourses } from "../../lib/hooks"
+import { useCourses, useCurrentUser, useProjects, useQuizzes } from "../../lib/hooks"
+import { CourseModelSchemaType } from "../../schema/CourseSchema"
+import { ProjectModelType } from "../../schema/ProjectSchema"
+import { IQuiz } from "../../models/Quiz"
+import { UserSettingsLabelType } from "../../schema/UserSchema"
+import { ActivitesData, getCourses, getProjects, getQuizzes } from "./calendarUtils"
 
 interface IProps {
   open: boolean
@@ -26,35 +40,38 @@ interface IProps {
   externEventFormData: ExternEventFormData
   setExternEventFormData: SetState<ExternEventFormData>
   onAddExternEvent: ClickEventRet<void>
+  labels: UserSettingsLabelType[]
 }
 
-interface CourseData {
-  id: string | undefined
-  name: string
-}
-
-const AddEventModal = ({ open, handleClose, externEventFormData, setExternEventFormData, onAddExternEvent }: IProps) => {
+const AddEventModal = ({
+  open,
+  handleClose,
+  externEventFormData,
+  setExternEventFormData,
+  onAddExternEvent,
+  labels,
+}: IProps) => {
   // detta är en copy paste i båda modalerna, gör en customHook
-  const [courses, setCourses] = useState<CourseData[]>([])
+  const [activites, setActivites] = useState<ActivitesData[]>([])
 
   const { data: courseData } = useCourses()
+  const { data: projectData } = useProjects()
+  const { data: quizzData } = useQuizzes()
+  const { data: userData } = useCurrentUser()
 
   useEffect(() => {
-    if (courseData?.payload) {
-      setCourses([
-        ...(courseData?.payload || [])
-          .filter((c) => !c.completed)
-          .map((course) => ({
-            id: course._id?.toString(),
-            name: course.content.title.toString(),
-          })),
+    if (courseData?.payload && projectData?.payload && quizzData?.payload) {
+      setActivites([
+        ...getCourses(courseData.payload),
+        ...getProjects(projectData.payload),
+        ...getQuizzes(quizzData.payload, userData?.payload?.completedQuizzes as string[]),
       ])
     }
-  }, [courseData?.payload])
+  }, [courseData?.payload, projectData?.payload, quizzData?.payload])
 
   // ---------------------------
 
-  const { title, description, start, end, allDay, color, courseId } = externEventFormData
+  const { title, description, start, end, allDay } = externEventFormData
 
   const onClose = () => {
     handleClose()
@@ -86,6 +103,23 @@ const AddEventModal = ({ open, handleClose, externEventFormData, setExternEventF
     setExternEventFormData((prevState) => ({
       ...prevState,
       allDay: event.target.checked,
+    }))
+  }
+
+  const handleActivityChange = (e: React.SyntheticEvent, value: ActivitesData | null) => {
+    setExternEventFormData((prevState) => ({
+      ...prevState,
+      activityName: value?.name,
+      activityId: value?.id,
+      activityGroup: value?.group,
+    }))
+  }
+
+  const handleLabelChange = (e: React.SyntheticEvent, value: UserSettingsLabelType | null) => {
+    setExternEventFormData((prevState) => ({
+      ...prevState,
+      labelColor: value?.color,
+      labelName: value?.name,
     }))
   }
 
@@ -157,6 +191,7 @@ const AddEventModal = ({ open, handleClose, externEventFormData, setExternEventF
             <DateTimePicker
               label="End date"
               disabled={allDay}
+              minDate={start}
               minutesStep={30}
               ampm={true}
               value={allDay ? null : end}
@@ -169,44 +204,24 @@ const AddEventModal = ({ open, handleClose, externEventFormData, setExternEventF
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
-          <FormControl fullWidth style={{ marginTop: 10 }}>
-            <InputLabel id="demo-simple-select-label">Color</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={color}
-              label="Color"
-              onChange={handleSelectChange}
-              name="color"
-            >
-              <MenuItem style={{ color: "white", backgroundColor: "red" }} value={"red"}>
-                red
-              </MenuItem>
-              <MenuItem style={{ color: "white", backgroundColor: "green" }} value={"green"}>
-                green
-              </MenuItem>
-              <MenuItem style={{ color: "white", backgroundColor: "blue" }} value={"blue"}>
-                blue
-              </MenuItem>
-            </Select>
-          </FormControl>
-          {!!courses.length && (
-            <FormControl fullWidth style={{ marginTop: 15 }}>
-              <InputLabel id="demo-simple-select-label">Link course</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={courseId || undefined}
-                label="Course"
-                onChange={handleSelectCourseChange}
-                name="courseId"
-              >
-                {courses.map((course) => (
-                  <MenuItem value={course.id}>{course.name}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )}
+          <Autocomplete
+            onChange={handleLabelChange}
+            disablePortal
+            id="combo-box-demo"
+            options={labels}
+            sx={{ marginTop: 4 }}
+            getOptionLabel={(option) => option.name}
+            renderInput={(params) => <TextField {...params} label="Label" />}
+          />
+          <Autocomplete
+            id="grouped-demo"
+            options={activites}
+            onChange={handleActivityChange}
+            groupBy={(option) => option.group}
+            getOptionLabel={(option) => option.name}
+            sx={{ marginTop: 4 }}
+            renderInput={(params) => <TextField {...params} label="Activity" />}
+          />
         </Box>
       </DialogContent>
       <DialogActions>

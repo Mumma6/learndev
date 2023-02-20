@@ -7,9 +7,13 @@ export interface IEventInfo extends Event {
   _id?: string
   description: string
 
-  color?: string | null | undefined
+  labelColor?: string | null | undefined
+
+  labelName?: string | null | undefined
   userId?: null | string | ObjectId
-  quizId?: null | string
-  courseId?: null | string
-  courseName?: null | string
+
+  activityName?: string | null | undefined
+
+  activityId?: string | null | undefined
+  activityGroup?: string | null | undefined
 }

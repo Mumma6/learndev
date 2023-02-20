@@ -7,15 +7,7 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import Button from "@mui/material/Button"
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Typography,
-} from "@mui/material"
+import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material"
 import { ClickEventRet, SetState } from "../../types/generics"
 import { useRouter } from "next/router"
 import { IEventInfo } from "../../models/EventInfo"
@@ -42,19 +34,20 @@ const EditEventInfoModal = ({ open, handleClose, onDeleteEvent, currentEvent }: 
       <DialogTitle>Event Info</DialogTitle>
 
       <DialogContent>
-        {currentEvent?.courseId && (
+        {currentEvent?.activityId && (
           <Button
-            sx={{ width: "100%" }}
-            onClick={() => router.push(`/courses/${currentEvent?.courseId}`)}
+            variant="outlined"
+            sx={{ width: "100%", marginBottom: 2, marginTop: 2 }}
+            onClick={() => router.push(`/${currentEvent.activityGroup?.toLocaleLowerCase()}/${currentEvent?.activityId}`)}
           >
-            <Typography variant="body2">Go to: {currentEvent.courseName}</Typography>
+            <Typography variant="body2">Go to: {currentEvent.activityName}</Typography>
           </Button>
         )}
         <DialogContentText>
-          <Typography variant="h5" component="div">
+          <Typography variant="h4" component="div">
             {currentEvent?.title}
           </Typography>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+          <Typography sx={{ fontSize: 14, marginTop: 3 }} color="text.secondary" gutterBottom>
             {currentEvent?.description}
           </Typography>
         </DialogContentText>

@@ -44,19 +44,21 @@ const localizer = dateFnsLocalizer({
 export interface EventFormData {
   title: string
   description: string
-  quiz: IQuiz | null
-  courseId: string | null
-  courseName: string | null
-  color: undefined | string
+  activityName: string | undefined
+  activityId: string | undefined
+  activityGroup: string | undefined
+  labelName: string | undefined
+  labelColor: string | undefined
 }
 
 export const initialEventFormState: EventFormData = {
   title: "",
   description: "",
-  quiz: null,
-  courseId: null,
-  courseName: null,
-  color: undefined,
+  activityName: undefined,
+  activityId: undefined,
+  labelName: undefined,
+  labelColor: undefined,
+  activityGroup: undefined,
 }
 
 export interface ExternEventFormData {
@@ -65,10 +67,11 @@ export interface ExternEventFormData {
   start: Date | undefined
   end: Date | undefined
   allDay: boolean
-  quizId: string | null
-  courseId: string | null
-  courseName: string | null
-  color: undefined | string
+  activityName: string | undefined
+  activityId: string | undefined
+  activityGroup: string | undefined
+  labelName: string | undefined
+  labelColor: string | undefined
 }
 
 export const initialExternEventFormState: ExternEventFormData = {
@@ -77,10 +80,11 @@ export const initialExternEventFormState: ExternEventFormData = {
   start: undefined,
   end: undefined,
   allDay: false,
-  quizId: null,
-  courseId: null,
-  courseName: null,
-  color: undefined,
+  activityName: undefined,
+  activityId: undefined,
+  labelName: undefined,
+  labelColor: undefined,
+  activityGroup: undefined,
 }
 
 const StudyCalendar = () => {
@@ -92,9 +96,7 @@ const StudyCalendar = () => {
   const [openLabelModal, setOpenLabelModal] = useState(false)
   const [eventFormData, setEventFormData] = useState<EventFormData>(initialEventFormState)
 
-  // skicka labels till addModalerna. Uppdatera eventInfo med "label"
   const [labels, setLabels] = useState<UserSettingsLabelType[]>([])
-  const [selectedLabel, setSelectedLabel] = useState<UserSettingsLabelType | undefined>(undefined)
 
   const [externEventFormData, setExternEventFormData] = useState<ExternEventFormData>(initialExternEventFormState)
 
@@ -182,10 +184,6 @@ const StudyCalendar = () => {
   }
 
   const onAddExternEvent = async (e: ClickEvent) => {
-    console.log(externEventFormData)
-
-    console.log("lägg till via extern")
-
     e.preventDefault()
 
     function addHours(date: any, hours: number) {
@@ -280,6 +278,7 @@ const StudyCalendar = () => {
               externEventFormData={externEventFormData}
               setExternEventFormData={setExternEventFormData}
               onAddExternEvent={onAddExternEvent}
+              labels={labels}
             />
             <EditEventInfoModal
               open={editModalOpen}
@@ -294,6 +293,7 @@ const StudyCalendar = () => {
               setEventFormData={setEventFormData}
               onAddEvent={onAddEvent}
               currentEvent={currentEvent}
+              labels={labels}
             />
             <Calendar
               localizer={localizer}
@@ -308,8 +308,8 @@ const StudyCalendar = () => {
               eventPropGetter={(event) => {
                 return {
                   style: {
-                    backgroundColor: event.color || "#b64fc8",
-                    borderColor: event.color || "#b64fc8",
+                    backgroundColor: event.labelColor || "#b64fc8",
+                    borderColor: event.labelColor || "#b64fc8",
                   },
                 }
               }}
@@ -329,13 +329,10 @@ export default StudyCalendar
 /*
 
 ------------------
-This is the last thing that needs to be done for the MVP on the calendar. + the new backend validation stuff.
+Schema validation needs to be done sometime
 -------------------
 
-Skapa labels. Ska vara färgkodade kategorier. Sparas i userSettings objektet
 
-Kunna länka material. Kurs, quizz eller project. 1 per event. En select lista med "Projects in progress", "courses in progress", "quizzes not taken". 
-En mui autocomplete grouped. 
 
 
 */
