@@ -34,7 +34,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
-import { FormControl } from "react-bootstrap"
 import { z } from "zod"
 
 interface IProps {
@@ -83,7 +82,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
   }, [course])
 
   const validateSchema = CourseModelformInputSchema.omit({ content: true, topics: true }).merge(
-    CourseModelContentInputSchema
+    CourseModelContentInputSchema.omit({ institution: true })
   )
 
   type validateSchemaType = z.infer<typeof validateSchema>
@@ -94,7 +93,6 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
       description,
       url,
       certificateUrl,
-      institution,
       completed,
     },
     validate: toFormikValidate(validateSchema),
@@ -137,7 +135,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
             description: formValues.description,
             url: formValues.url,
             certificateUrl: formValues.certificateUrl,
-            institution: formValues.institution,
+            institution: course.content.institution,
           },
           completed,
           topics: topicsData,
