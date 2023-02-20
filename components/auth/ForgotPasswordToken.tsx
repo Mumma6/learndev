@@ -1,10 +1,11 @@
 import React, { useState, ChangeEvent } from "react"
-import { Alert, Form } from "react-bootstrap"
-import { fetcher } from "../../lib/fetcher"
+import { Box, Button, Container, Grid, Link, TextField, Typography } from "@mui/material"
 import SubmitButton from "../SubmitButton"
 import { toast } from "react-toastify"
-import Link from "next/link"
+import { FaArrowLeft } from "react-icons/fa"
+import NextLink from "next/link"
 import useRedirect from "../customHooks/useRedirect"
+import { fetcher1 } from "../../lib/axiosFetcher"
 
 type Status = "success" | "loading" | "idle" | "error"
 
@@ -18,13 +19,13 @@ const ForgotPasswordToken = ({ valid, token }: { valid: boolean; token: any }) =
     e.preventDefault()
     try {
       setStatus("loading")
-      const response = await fetcher("/api/user/password/reset", {
+      const response = await fetcher1("/api/user/password/reset", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        data: {
           token,
           password: newPassword,
-        }),
+        },
       })
       console.log(response)
       if (response.error) {
@@ -47,37 +48,65 @@ const ForgotPasswordToken = ({ valid, token }: { valid: boolean; token: any }) =
 
   return (
     <>
-      {!valid ? (
-        <>
-          <h1>Invalid link</h1>
-          <p>Looks like you have cliked on an invalid link. Please close this window and try again</p>
-          <Link href="/login" passHref>
-            Return to login
-          </Link>
-        </>
-      ) : (
-        <>
-          <h1>Reset password</h1>
-          <Form onSubmit={onSubmit}>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Label>Enter a new password for your account</Form.Label>
-              <Form.Control
+      <Box
+        component="main"
+        sx={{
+          alignItems: "center",
+          display: "flex",
+          flexGrow: 1,
+          minHeight: "100%",
+          marginTop: 20,
+        }}
+      >
+        {!valid ? (
+          <Container maxWidth="sm">
+            <Typography color="textPrimary" variant="h4">
+              Invalid link
+            </Typography>
+            <Typography color="textPrimary" variant="h5">
+              This is an invalid link. Please close this window and try again
+            </Typography>
+            <NextLink href="/login" passHref>
+              <Button component="a" startIcon={<FaArrowLeft />}>
+                Return to login
+              </Button>
+            </NextLink>
+          </Container>
+        ) : (
+          <Container maxWidth="sm">
+            <form onSubmit={onSubmit}>
+              <Box sx={{ my: 3 }}>
+                <Typography color="textPrimary" variant="h4">
+                  Reset password
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  pb: 1,
+                  pt: 1,
+                }}
+              >
+                <Typography align="center" color="textSecondary" variant="body1">
+                  Enter a new password for your account
+                </Typography>
+              </Box>
+              <TextField
+                fullWidth
+                label="Password"
+                margin="normal"
+                name="password"
                 onChange={(event: ChangeEvent<HTMLInputElement>) => setNewPassword(event.target.value)}
                 value={newPassword}
                 type="password"
-                placeholder=""
+                variant="outlined"
               />
-            </Form.Group>
-
-            <div className="d-grid gap-2">
-              <SubmitButton text="Submit" isLoading={status === "loading"} isDisabled={newPassword === "" || status === "success"} />
-            </div>
-            <Link href="/login" passHref>
-              Return to login
-            </Link>
-          </Form>
-        </>
-      )}
+              <Box sx={{ py: 2 }}>
+                <SubmitButton text="Submit" isLoading={status === "loading"} isDisabled={status === "error"} />
+              </Box>
+            </form>
+          </Container>
+        )}
+      </Box>
     </>
   )
 }

@@ -14,7 +14,7 @@ const config = {
   secure: true, // use SSL
   auth: {
     user: "learndev.io@gmail.com",
-    pass: "vrqfktwhgirfewky",
+    pass: "wcztmbihpzubjwgo",
   },
 }
 

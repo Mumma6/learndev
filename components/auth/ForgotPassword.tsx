@@ -1,6 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from "react"
-import { Alert, Form } from "react-bootstrap"
-import { fetcher } from "../../lib/fetcher"
+
 import SubmitButton from "../SubmitButton"
 import { toast } from "react-toastify"
 import useRedirect from "../customHooks/useRedirect"
@@ -81,9 +80,9 @@ const ForgotPassword = () => {
           </Box>
           <TextField
             fullWidth
-            label="Password"
+            label="Email"
             margin="normal"
-            name="password"
+            name="email"
             onChange={(event: ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}
             value={email}
             type="text"

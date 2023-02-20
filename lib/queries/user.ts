@@ -54,10 +54,9 @@ export async function findCompleteUserById(db: Db, userId: string) {
 }
 
 export async function findUserByEmail(db: Db, email: string) {
-  const normalizedEmail = normalizeEmail(email)
   return db
     .collection("users")
-    .findOne({ email: normalizedEmail }, { projection: dbProjectionUsers() })
+    .findOne({ email }, { projection: dbProjectionUsers() })
     .then((user) => user || null)
 }
 

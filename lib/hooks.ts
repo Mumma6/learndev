@@ -6,9 +6,8 @@ import { IQuizResult } from "../models/QuizResult"
 import { CourseModelSchemaType } from "../schema/CourseSchema"
 import { ProjectModelType } from "../schema/ProjectSchema"
 import { UserModelSchemaType } from "../schema/UserSchema"
-import { Response } from "../types/response"
+
 import { fetcher1 } from "./axiosFetcher"
-import { fetcher } from "./fetcher"
 
 // useSWR vs useSWRImmutable
 // https://swr.vercel.app/docs/revalidation#disable-automatic-revalidations
@@ -18,10 +17,6 @@ import { fetcher } from "./fetcher"
 
 export function useCurrentUser() {
   return useSWRImmutable("/api/user", (url) => fetcher1<UserModelSchemaType | null, undefined>(url))
-}
-
-export function useUser(id: string) {
-  return useSWR(`/api/users/${id}`, fetcher)
 }
 
 export const useCourses = () => {

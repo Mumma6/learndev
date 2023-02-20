@@ -1,6 +1,5 @@
 import React from "react"
-import { Spinner } from "react-bootstrap"
-import { Button } from "@mui/material"
+import { Button, CircularProgress } from "@mui/material"
 
 interface IProps {
   isLoading: boolean
@@ -32,8 +31,8 @@ const SubmitButton = ({
       type="submit"
       variant="contained"
     >
-      <Spinner style={{ marginRight: 5 }} animation="border" as="span" size="sm" role="status" aria-hidden="true" />
       Loading...
+      <CircularProgress style={{ marginRight: 5 }} size="sm" role="status" aria-hidden="true" />
     </Button>
   ) : (
     <Button

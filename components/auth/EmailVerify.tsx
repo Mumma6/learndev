@@ -1,5 +1,5 @@
+import { Alert, Button } from "@mui/material"
 import React, { useState } from "react"
-import { Alert, Button } from "react-bootstrap"
 import { toast } from "react-toastify"
 import { fetcher1 } from "../../lib/axiosFetcher"
 import { UserModelSchemaType } from "../../schema/UserSchema"
@@ -39,11 +39,20 @@ const EmailVerify = ({ user }: { user: UserModelSchemaType }) => {
   const note = status === "success" ? "An email has been sent to your inbox" : `Your email ${user.email} is not verified`
   return (
     <>
-      <Alert variant="info" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <Alert
+        severity="info"
+        action={
+          <Button
+            disabled={status === "success" || status === "loading"}
+            onClick={(event) => onSubmit(event)}
+            variant="contained"
+            sx={{ margin: 1 }}
+          >
+            Verify
+          </Button>
+        }
+      >
         {`Note: ${note}`}
-        <Button disabled={status === "success" || status === "loading"} onClick={(event) => onSubmit(event)} variant="info">
-          Verify
-        </Button>
       </Alert>
     </>
   )

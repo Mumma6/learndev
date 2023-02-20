@@ -30,3 +30,42 @@ export const fetcher1 = <R, T>(url?: string, options?: Options<T>): Promise<Resp
     .then(handleResponse)
     .catch((error) => handleError<R>(error))
 }
+
+/*
+Old fetcher
+
+
+interface Response {
+  error: {
+    message: string
+  }
+  payload: any
+}
+
+// Replace this with a generic fetcher function using Axios.
+
+export const fetcher = (...args: [string, Object]) => {
+  return fetch(...args)
+    .then(async (res) => {
+      let payload
+      try {
+        if (res.status === 204) return null // 204 does not have body
+        payload = await res.json()
+      } catch (e) {
+      }
+      if (res.status === 401) {
+        console.log(payload)
+        return { error: payload?.error || "Email or password is incorrect" }
+      }
+      if (res.ok) {
+        return payload
+      } else {
+        return { error: payload?.error || payload?.message } || new Error("Something went wrong")
+      }
+    })
+    .catch((e) => {
+      console.log(e, " error catch")
+    })
+}
+
+*/

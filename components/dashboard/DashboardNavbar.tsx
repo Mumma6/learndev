@@ -4,9 +4,9 @@ import { AppBar, Avatar, Badge, Box, IconButton, Toolbar, Tooltip } from "@mui/m
 import { RiMenuUnfoldFill } from "react-icons/ri"
 import { FaBell, FaSignOutAlt, FaUser, FaUserCircle, FaUsers } from "react-icons/fa"
 import { useCurrentUser } from "../../lib/hooks"
-import { fetcher } from "../../lib/fetcher"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
+import { fetcher1 } from "../../lib/axiosFetcher"
 
 const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -24,7 +24,7 @@ export const DashboardNavbar = ({ onSidebarOpen }: IProps) => {
 
   const onSignOut = useCallback(async () => {
     try {
-      await fetcher("/api/auth", {
+      await fetcher1("/api/auth", {
         method: "DELETE",
       })
       toast.success("You have been signed out")
