@@ -8,12 +8,17 @@ import LandingFooter from "./LandingFooter"
 import LandingHeader from "./LandingHeader"
 import Pricing from "./pricing/Pricing"
 import Services from "./services/Services"
+import { styled } from "@mui/material/styles"
 
 const Landing = () => {
   return (
-    <>
+    <Box
+      sx={{
+        width: "100%",
+      }}
+    >
       <LandingHeader />
-      <Container sx={{ width: 900, mt: 20 }}>
+      <Container sx={{ mt: 20 }}>
         <Box
           sx={{
             textAlign: "center",
@@ -69,30 +74,8 @@ const Landing = () => {
       <Pricing />
 
       <LandingFooter />
-    </>
+    </Box>
   )
 }
 
 export default Landing
-
-/*
- <Grid item xs={6}>
-            <Image alt="pic" src="/assets/images/product-launch.svg" width={500} height={800} />
-          </Grid>
-
-
-          <div>
-              <Typography variant="h1" gutterBottom>
-                Keep track of your progress.
-              </Typography>
-              <Typography variant="h6" gutterBottom>
-                There are many sites that teach you how to program. This page ties them all together. As well as getting
-                ready for a job
-              </Typography>
-              <Typography variant="h6" gutterBottom>
-                One course is rarely enough. It takes several. Show recruiters that you had a thought and plan with your
-                courses.
-              </Typography>
-            </div>
-
-*/

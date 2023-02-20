@@ -1,14 +1,5 @@
 import React, { ReactElement } from "react"
-import {
-  Box,
-  Button,
-  Divider,
-  Drawer,
-  IconButton,
-  Tooltip,
-  Typography,
-  useMediaQuery,
-} from "@mui/material"
+import { Box, Button, Divider, Drawer, IconButton, Tooltip, Typography, useMediaQuery } from "@mui/material"
 import NextLink from "next/link"
 import { useRouter } from "next/router"
 import { useTheme } from "@mui/material/styles"
@@ -61,13 +52,14 @@ const items: SidbarNavItems[] = [
     icon: <FaUser fontSize="small" />,
     title: "Profile",
   },
+
+  /*
+
   {
     href: "/resources",
     icon: <BsCollection fontSize="small" />,
     title: "Resources",
   },
-
-  /*
   
   {
     href: "/learning-path",
@@ -109,12 +101,7 @@ const DashboardSidebar = ({ open, onClose, user }: IProps) => {
         </Link>
       </Box>
       <Box sx={{ margin: 2 }}>
-        <Link
-          style={{ textDecoration: "none" }}
-          href={`/user/${user._id}`}
-          target="_blank"
-          passHref
-        >
+        <Link style={{ textDecoration: "none" }} href={`/user/${user._id}`} target="_blank" passHref>
           <Button size="large" color="primary" variant="outlined">
             Share profile
           </Button>

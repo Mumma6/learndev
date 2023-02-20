@@ -9,6 +9,7 @@ import { useCourses, useQuizResults } from "../../lib/hooks"
 import LatestQuizResults from "./LatestQuizResults"
 import UserSkillProfile from "./UserSkillProfile"
 import { UserModelSchemaType } from "../../schema/UserSchema"
+import UpcomingEvents from "./UpcomingEvents"
 
 interface IProps {
   user: UserModelSchemaType
@@ -17,10 +18,6 @@ interface IProps {
 // döp om denna fil till Home.tsx och lägg under Overview
 /*
 
-display:
-  - latest projects
-  - latest quizzes
-  - ...other stuff?
 
   Ska man kunna välja själv vilka grafer osv man vill se? Premium tjänst kanske?
 
@@ -67,6 +64,9 @@ const Home = ({ user }: IProps) => {
             </Grid>
             <Grid item lg={6} md={6} xl={3} xs={12}>
               <UserSkillProfile />
+            </Grid>
+            <Grid item lg={6} md={6} xl={3} xs={12}>
+              <UpcomingEvents />
             </Grid>
           </Grid>
         </Container>
