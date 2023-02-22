@@ -67,28 +67,33 @@ export const DashboardNavbar = ({ onSidebarOpen }: IProps) => {
           </IconButton>
 
           <Box sx={{ flexGrow: 1 }} />
-          <Tooltip title="Share profile">
-            <IconButton sx={{ ml: 1 }}>
-              <FaUsers />
+
+          <Tooltip title="Sign out">
+            <IconButton onClick={onSignOut} sx={{ ml: 1 }}>
+              <FaSignOutAlt />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Notifications">
+        </Toolbar>
+      </DashboardNavbarRoot>
+    </>
+  )
+}
+
+/*
+ <Tooltip title="Notifications">
             <IconButton sx={{ ml: 1 }}>
               <Badge badgeContent={4} color="primary" variant="dot">
                 <FaBell />
               </Badge>
             </IconButton>
           </Tooltip>
-          <Tooltip title="Sign out">
-            <IconButton onClick={onSignOut} sx={{ ml: 1 }}>
-              <FaSignOutAlt />
+ <Tooltip title="Share profile">
+            <IconButton sx={{ ml: 1 }}>
+              <FaUsers />
             </IconButton>
           </Tooltip>
-          <Avatar style={{ marginLeft: 10 }} src="/static/images/avatars/avatar_1.png">
+<Avatar style={{ marginLeft: 10 }} src="/static/images/avatars/avatar_1.png">
             <FaUserCircle />
           </Avatar>
-        </Toolbar>
-      </DashboardNavbarRoot>
-    </>
-  )
-}
+
+*/

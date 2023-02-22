@@ -11,7 +11,7 @@ export default function Home(): React.ReactElement {
   return (
     <>
       <Head>
-        <title>Dev learner</title>
+        <title>Studify</title>
       </Head>
       <Landing />
     </>

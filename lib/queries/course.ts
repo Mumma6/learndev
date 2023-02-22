@@ -10,7 +10,11 @@ export const insertCourse = async (db: Db, data: Omit<CourseModelSchemaType, "_i
 export const getCoursesForUser = async (db: Db, userId: string) => {
   // Make sure the find works. Should it be string or ObjectID
 
-  return await db.collection("courses").find({ userId }).sort({ createdAt: -1, title: 1 }).toArray()
+  return await db
+    .collection("courses")
+    .find({ userId: new ObjectId(userId) })
+    .sort({ createdAt: -1, title: 1 })
+    .toArray()
 }
 
 export const deleteCourseById = async (db: Db, id: string) => {

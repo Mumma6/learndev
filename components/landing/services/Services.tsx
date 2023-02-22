@@ -12,39 +12,39 @@ import ServiceCard from "./ServiceCard"
 const SERVICES_DATA = [
   {
     image: serviceImage1,
-    text: "Plan your studies and work from the calendar. Add events and connect them to a specific course or project. Research shows that students who make learning a habit are more likely to retain information and reach their goals. Set time aside to learn and get reminders using your learning event scheduler.",
+    text: "Get organized and take control of your study schedule with our powerful calendar tool. Plan your sessions, set deadlines, and stay on track to achieve your goals",
     heading: "Calendar",
   },
   {
     image: serviceImage2,
-    text: "Get a overview of all your courses, both completed and in progress. Helps you keep track of your studying.",
+    text: "Take control of your learning with Studify's course management system. Easily plan your studies and stay on track towards your goals",
     heading: "Courses",
   },
   {
     image: serviceImage3,
-    text: "Get a complete overview of all your courses, projects, quizzes, upcoming events and much more.",
+    text: "Take control of your coding education with Studify's powerful dashboard. Analyze your progress and make data-driven decisions to improve your skills",
     heading: "Personal overview",
   },
   {
     image: serviceImage4,
-    text: "Get a overview of all your projects, both completed and in progress. Helps you keep track of all your projects.",
+    text: "Manage your coding projects with ease using Studify. Keep all your code, notes, and progress in one place",
     heading: "Projects",
   },
   {
     image: serviceImage5,
-    text: "Test your skill and increase your profile with code quizzes.",
+    text: "Test your skills and knowledge with Studify's built-in quizzes and assessments",
     heading: "Quizzes",
   },
   {
     image: serviceImage6,
-    text: "Create your own profile and share with recruiters. Show of all your work here.",
+    text: "Elevate your profile and share it with recruiters using Studify's integrated job search tools",
     heading: "Profile",
   },
 ]
 
 const Services = () => {
   return (
-    <Box mt={20} mb={20} pt={20} pb={20} style={{ backgroundColor: "#ededed" }}>
+    <Box mt={20} mb={20} pt={10} pb={20} style={{ backgroundColor: "#ededed" }}>
       <Container>
         <Box
           sx={{

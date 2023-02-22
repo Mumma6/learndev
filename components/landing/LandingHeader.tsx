@@ -41,14 +41,14 @@ function LandingHeader() {
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
-
+              fontSize: 30,
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
               textDecoration: "none",
             }}
           >
-            LOGO
+            Studify
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -103,7 +103,7 @@ function LandingHeader() {
               textDecoration: "none",
             }}
           >
-            LOGO
+            Studify
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (

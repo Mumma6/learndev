@@ -15,7 +15,6 @@ interface IProps {
   user: UserModelSchemaType
 }
 
-// döp om denna fil till Home.tsx och lägg under Overview
 /*
 
 

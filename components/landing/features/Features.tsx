@@ -95,10 +95,46 @@ const Features = () => {
         </Grid>
         <Divider sx={{ margin: 2 }} />
         <Box mb={10}>
-          {selected === "Profile overview" && <Image alt="core" src={overviewImg} />}
-          {selected === "Calendar" && <Image alt="core" src={calendarImg} />}
-          {selected === "Courses & Projects" && <Image alt="core" src={overviewImg} />}
-          {selected === "Quizzes" && <Image alt="core" src={overviewImg} />}
+          {selected === "Profile overview" && (
+            <img
+              style={{
+                maxWidth: "100%",
+                maxHeight: "100%",
+              }}
+              alt="core"
+              src="/assets/images/calendar.png"
+            />
+          )}
+          {selected === "Calendar" && (
+            <img
+              style={{
+                maxWidth: "100%",
+                maxHeight: "100%",
+              }}
+              alt="core"
+              src="/assets/images/calendar.png"
+            />
+          )}
+          {selected === "Courses & Projects" && (
+            <img
+              style={{
+                maxWidth: "100%",
+                maxHeight: "100%",
+              }}
+              alt="core"
+              src="/assets/images/calendar.png"
+            />
+          )}
+          {selected === "Quizzes" && (
+            <img
+              style={{
+                maxWidth: "100%",
+                maxHeight: "100%",
+              }}
+              alt="core"
+              src="/assets/images/calendar.png"
+            />
+          )}
         </Box>
       </Container>
     </Box>

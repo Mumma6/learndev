@@ -1,4 +1,4 @@
-import { Container, Grid, Typography } from "@mui/material"
+import { Button, Container, Grid, Typography } from "@mui/material"
 import { Box } from "@mui/material"
 import Image from "next/image"
 import Link from "next/link"
@@ -12,69 +12,81 @@ import { styled } from "@mui/material/styles"
 
 const Landing = () => {
   return (
-    <Box
-      sx={{
-        width: "100%",
-      }}
-    >
+    <div style={{}}>
       <LandingHeader />
-      <Container sx={{ mt: 20 }}>
+      <Container sx={{ paddingTop: 20 }}>
         <Box
           sx={{
             textAlign: "center",
             mb: 5,
           }}
         >
-          <p
-            style={{
-              color: "#0F2137",
-              fontSize: 64,
-              fontWeight: 700,
-              lineHeight: 1.25,
-            }}
-          >
-            The number one tool for self-taught developers.
-          </p>
-          <p
-            style={{
-              marginTop: 80,
-              lineHeight: 1.25,
-              fontSize: 20,
-              color: "#858B91",
-            }}
-          >
-            The way we learn is changing. In a online world with endless resources it can be overwhelming and hard to keep
-            track. We help to bring your vision to life.
-          </p>
-          <p
-            style={{
-              lineHeight: 1,
-              fontSize: 20,
-              color: "#858B91",
-            }}
-          >
-            There are many sites that teach you how to program. This page ties them all together. As well as getting ready
-            for a job
-          </p>
+          <Typography color="textPrimary" variant="h4" sx={{ fontSize: 64 }}>
+            Simplify Your Learning Journey with <span style={{ color: "#7c4dff" }}>Studify</span>
+          </Typography>
+          <Grid sx={{ marginTop: 10 }} container spacing={2}>
+            <Grid item xs={12} sm={12} md={6} sx={{ marginTop: "auto", marginBottom: "auto" }}>
+              <Typography color="textPrimary" variant="h4" sx={{ fontSize: 34, marginBottom: 10 }}>
+                Take control of your learning with Studify: the all-in-one platform for self-taught developers
+              </Typography>
+              <Box>
+                <Link style={{ textDecoration: "none" }} href="/sign-up" passHref>
+                  <Button
+                    sx={{
+                      fontSize: 30,
+                    }}
+                    size="large"
+                    color="primary"
+                    variant="contained"
+                  >
+                    Get started
+                  </Button>
+                </Link>
+              </Box>
+            </Grid>
+            <Grid sx={{ marginTop: 5 }} item xs={12} sm={12} md={6}>
+              <img
+                alt="pic"
+                src="/assets/images/details-4.png"
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  height: 500,
+                }}
+              />
+            </Grid>
+            <Grid sx={{ marginTop: 5 }} item xs={12} sm={12} md={6}>
+              <img
+                alt="pic"
+                src="/assets/images/details-1.png"
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  height: 500,
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} sx={{ display: "flex", alignItems: "center" }}>
+              <Typography color="textPrimary" variant="h4" sx={{ fontSize: 34 }}>
+                The way we learn is changing. In a online world with endless resources it can be overwhelming and hard to
+                keep track. We help to bring your vision to life
+              </Typography>
+            </Grid>
+          </Grid>
         </Box>
-      </Container>
-
-      <Container>
-        <Grid container spacing={1}>
-          <Grid item xs={6}>
-            <Image alt="pic" src="/assets/images/developer.svg" width={500} height={500} />
-          </Grid>
-          <Grid item xs={6}>
-            <Image alt="pic" src="/assets/images/graphs.svg" width={500} height={500} />
-          </Grid>
-        </Grid>
       </Container>
       <Services />
       <Features />
+
+      {/*
+        
+  
+      
       <Pricing />
+          */}
 
       <LandingFooter />
-    </Box>
+    </div>
   )
 }
 

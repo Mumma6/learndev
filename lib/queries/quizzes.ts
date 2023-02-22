@@ -18,3 +18,9 @@ export const addQuizResult = async (db: Db, data: Omit<IQuizResult, "_id">) => {
 export const getAllQuizResults = async (db: Db) => {
   return await db.collection("quizresults").find({}).toArray()
 }
+
+export const getQuizResultsForUser = async (db: Db, userId: string) => {
+  // Make sure the find works. Should it be string or ObjectID
+
+  return await db.collection("quizresults").find({ user_id: userId }).toArray()
+}

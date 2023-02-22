@@ -58,7 +58,7 @@ const convertMongoIdToString = <T>(obj: T): T => {
   return newObj
 }
 
-const serilizeObject = (obj: Object) => JSON.parse(JSON.stringify(obj))
+export const serilizeObject = (obj: Object) => JSON.parse(JSON.stringify(obj))
 
 // This function will check if there is a valid session for the user in the database. It will check the "cookies" in the browser.
 export const handleAuthGetServerSideProps = async <ObjectType>(

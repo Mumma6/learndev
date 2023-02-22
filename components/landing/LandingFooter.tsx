@@ -61,7 +61,7 @@ const LandingFooter = () => {
           </Grid>
         </Grid>
         <Divider sx={{ borderBottomWidth: 3 }} />
-        <h1>Logo</h1>
+        <h1>Studify</h1>
       </Container>
     </div>
   )

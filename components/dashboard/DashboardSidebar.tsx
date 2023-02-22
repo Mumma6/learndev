@@ -13,6 +13,7 @@ import Link from "next/link"
 import { MdQuiz } from "react-icons/md"
 import { IconType } from "react-icons"
 import { UserModelSchemaType } from "../../schema/UserSchema"
+import { RiMenuFoldFill } from "react-icons/ri"
 
 interface SidbarNavItems {
   href: string
@@ -93,10 +94,25 @@ const DashboardSidebar = ({ open, onClose, user }: IProps) => {
 
   const content = (
     <>
+      <Box>
+        {!lgUp && (
+          <IconButton
+            onClick={onClose}
+            sx={{
+              color: "white",
+              float: "right",
+              marginTop: 1.5,
+            }}
+          >
+            <RiMenuFoldFill />
+          </IconButton>
+        )}
+      </Box>
+
       <Box sx={{ margin: 2 }}>
         <Link style={{ textDecoration: "none" }} href="/" passHref>
           <Button size="large" color="primary" variant="contained">
-            LOGO
+            studify
           </Button>
         </Link>
       </Box>

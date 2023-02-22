@@ -2,7 +2,11 @@ import { Db, ObjectId } from "mongodb"
 import { ProjectModelSchema, ProjectModelType } from "../../schema/ProjectSchema"
 
 export const getProjectsForUser = async (db: Db, userId: string) => {
-  return await db.collection("projects").find({ userId }).sort({ createdAd: -1 }).toArray()
+  return await db
+    .collection("projects")
+    .find({ userId: new ObjectId(userId) })
+    .sort({ createdAt: -1 })
+    .toArray()
 }
 
 export const insertProject = async (db: Db, data: Omit<ProjectModelType, "_id">) => {

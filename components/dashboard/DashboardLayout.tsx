@@ -21,7 +21,7 @@ interface IProps {
 }
 
 export const DashboardLayout = ({ children }: IProps) => {
-  const [isSidebarOpen, setSidebarOpen] = useState(true)
+  const [isSidebarOpen, setSidebarOpen] = useState(false)
 
   const { data } = useCurrentUser()
 
