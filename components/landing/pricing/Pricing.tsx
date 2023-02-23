@@ -1,5 +1,5 @@
 import React from "react"
-import { Container, Grid, Typography, Box } from "@mui/material"
+import { Container, Grid, Typography, Box, Divider } from "@mui/material"
 import PricingCard from "./PricingCard"
 
 const DATA = [
@@ -14,17 +14,17 @@ const DATA = [
       {
         id: 1,
         isAvailable: true,
-        title: "Ultimate access to all course, exercises and assessments",
+        title: "Get organized and take control of your study schedule with our powerful calendar tool",
       },
       {
         id: 2,
         isAvailable: true,
-        title: `Free access for all kind of exercise corrections with downloads.`,
+        title: "Take control of your coding education with Studify's powerful dashboard",
       },
       {
         id: 3,
         isAvailable: true,
-        title: `Total assessment corrections with free download access system`,
+        title: "Take control of your learning with Studify's course and projects management system",
       },
       {
         id: 4,
@@ -50,17 +50,17 @@ const DATA = [
       {
         id: 1,
         isAvailable: true,
-        title: "Ultimate access to all course, exercises and assessments",
+        title: "Get organized and take control of your study schedule with our powerful calendar tool",
       },
       {
         id: 2,
         isAvailable: true,
-        title: `Free access for all kind of exercise corrections with downloads.`,
+        title: "Take control of your coding education with Studify's powerful dashboard",
       },
       {
         id: 3,
         isAvailable: true,
-        title: `Total assessment corrections with free download access system`,
+        title: "Take control of your learning with Studify's course and projects management system",
       },
       {
         id: 4,
@@ -79,6 +79,7 @@ const DATA = [
 const Pricing = () => {
   return (
     <Box mb={10}>
+      <Divider />
       <Container>
         <Box
           sx={{
@@ -109,7 +110,7 @@ const Pricing = () => {
         </Box>
         <Grid container spacing={3}>
           {DATA.map((data) => (
-            <Grid item xs={2} sm={6} md={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <PricingCard data={data} />
             </Grid>
           ))}

@@ -13,8 +13,9 @@ import MenuItem from "@mui/material/MenuItem"
 import { FiMenu } from "react-icons/fi"
 import Link from "next/link"
 import { useCurrentUser } from "../../lib/hooks"
+import { Link as ScrollLink } from "react-scroll"
 
-const pages = ["Home", "Featuers", "Testimonials", "Contact us"]
+const pages = ["Services", "Features", "Pricing"]
 
 function LandingHeader() {
   const { data } = useCurrentUser()
@@ -81,9 +82,11 @@ function LandingHeader() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
+                <ScrollLink smooth={true} to={page.toLowerCase()}>
+                  <MenuItem key={page} onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>
+                </ScrollLink>
               ))}
             </Menu>
           </Box>
@@ -107,9 +110,11 @@ function LandingHeader() {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
-              <Button key={page} onClick={handleCloseNavMenu} sx={{ my: 2, color: "black", display: "block" }}>
-                {page}
-              </Button>
+              <ScrollLink smooth={true} to={page.toLowerCase()}>
+                <Button key={page} sx={{ my: 2, color: "black", display: "block" }}>
+                  {page}
+                </Button>
+              </ScrollLink>
             ))}
           </Box>
 

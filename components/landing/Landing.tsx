@@ -9,8 +9,11 @@ import LandingHeader from "./LandingHeader"
 import Pricing from "./pricing/Pricing"
 import Services from "./services/Services"
 import { styled } from "@mui/material/styles"
+import Scroll, { Link as ScrollLink } from "react-scroll"
 
 const Landing = () => {
+  const Element = Scroll.Element
+
   return (
     <div style={{}}>
       <LandingHeader />
@@ -30,18 +33,18 @@ const Landing = () => {
                 Take control of your learning with Studify: the all-in-one platform for self-taught developers
               </Typography>
               <Box>
-                <Link style={{ textDecoration: "none" }} href="/sign-up" passHref>
+                <ScrollLink smooth to="pricing">
                   <Button
                     sx={{
                       fontSize: 30,
                     }}
                     size="large"
-                    color="primary"
+                    color="secondary" // primary
                     variant="contained"
                   >
                     Get started
                   </Button>
-                </Link>
+                </ScrollLink>
               </Box>
             </Grid>
             <Grid sx={{ marginTop: 5 }} item xs={12} sm={12} md={6}>
@@ -75,15 +78,15 @@ const Landing = () => {
           </Grid>
         </Box>
       </Container>
-      <Services />
-      <Features />
-
-      {/*
-        
-  
-      
-      <Pricing />
-          */}
+      <Element name="services">
+        <Services />
+      </Element>
+      <Element name="features">
+        <Features />
+      </Element>
+      <Element name="pricing">
+        <Pricing />
+      </Element>
 
       <LandingFooter />
     </div>

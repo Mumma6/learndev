@@ -40,11 +40,11 @@ const WorkexperienceCard = ({ work, deleteWorkexperience }: IProps) => {
           </Typography>
 
           <Box display="flex" alignItems="center" mt={{ xs: 2, sm: 0 }} ml={{ xs: -1.5, sm: 0 }}>
-            <Box mr={1}>
+            {/*<Box mr={1}>
               <Button variant="text" color="info">
                 <FaPen style={{ marginRight: 5 }} /> edit
               </Button>
-            </Box>
+    </Box>*/}
             <Button onClick={() => deleteWorkexperience(work)} variant="text" color="error">
               <FaTrash style={{ marginRight: 5 }} /> delete
             </Button>

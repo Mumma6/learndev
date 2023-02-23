@@ -7,6 +7,9 @@ interface IProps {
   amount: number
 }
 
+// visa completed courses x och courses inprogress x
+// två rader
+
 const TotalCourses = ({ amount }: IProps) => {
   return (
     <Card sx={{ height: "100%" }}>

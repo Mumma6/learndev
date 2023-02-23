@@ -42,7 +42,8 @@ const PricingCard = ({ data }: IProps) => {
     <Box
       padding={1}
       sx={{
-        border: 4,
+        border: 2,
+        marginTop: 2,
         borderRadius: "16px",
         borderColor: isRecommended ? "primary.main" : "#c7c7c7",
         backgroundColor: !isRecommended ? "#eeeeee" : null,
@@ -98,8 +99,8 @@ const PricingCard = ({ data }: IProps) => {
             ))}
           </List>
           <Divider />
-          <Box mt={10} ml={3} mb={1}>
-            <Button disabled={type === "Free"} size="large" color="primary" variant="contained">
+          <Box sx={{ display: "flex", justifyContent: "end" }} mt={10} mr={3} mb={1}>
+            <Button sx={{}} disabled={type === "Free"} size="large" color="primary" variant="contained">
               <Link style={{ textDecoration: "none", color: "white" }} href="/sign-up" passHref>
                 {buttonText}
               </Link>
