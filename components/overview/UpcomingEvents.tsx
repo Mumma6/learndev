@@ -8,7 +8,7 @@ import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
 import Paper from "@mui/material/Paper"
 import { useEvents } from "../../lib/hooks"
-import { format } from "date-fns"
+import { format, isAfter, startOfDay, startOfToday } from "date-fns"
 import { IEventInfo } from "../../models/EventInfo"
 import _ from "lodash"
 
@@ -46,7 +46,10 @@ const UpcomingEvents = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {_.sortBy(data?.payload, ["start", "title"])
+              {_.sortBy(
+                data?.payload?.filter((e) => isAfter(new Date(e.start!), startOfToday())),
+                ["start", "title"]
+              )
                 .slice(0, 6)
                 .map((event) => createRow(event))}
             </TableBody>

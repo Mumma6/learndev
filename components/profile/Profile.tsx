@@ -16,10 +16,12 @@ const Profile = () => {
           py: 8,
         }}
       >
-        <Container maxWidth="lg">
-          <Typography sx={{ mb: 3 }} variant="h4">
-            Profile
-          </Typography>
+        <Container maxWidth={false}>
+          <Box mt={2} mb={2}>
+            <Typography color="textPrimary" variant="h4">
+              Profile
+            </Typography>
+          </Box>
           <AboutYou />
           <Box sx={{ pt: 3 }}>
             <Skills />

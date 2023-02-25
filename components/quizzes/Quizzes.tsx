@@ -26,20 +26,13 @@ const Quizzes = () => {
         sx={{
           flexGrow: 1,
           py: 8,
+          pb: 50,
         }}
       >
         <Container maxWidth={false}>
           <Box>
-            <Box
-              sx={{
-                alignItems: "center",
-                display: "flex",
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-                m: -1,
-              }}
-            >
-              <Typography sx={{ m: 1 }} variant="h4">
+            <Box mt={2} mb={2}>
+              <Typography color="textPrimary" variant="h4">
                 Quizzes
               </Typography>
             </Box>

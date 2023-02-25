@@ -253,6 +253,8 @@ const StudyCalendar = () => {
 
   return (
     <Box
+      mt={2}
+      mb={2}
       component="main"
       sx={{
         flexGrow: 1,
@@ -265,12 +267,17 @@ const StudyCalendar = () => {
           <CardHeader title="Calendar" subheader="Use for planning" />
           <Divider />
           <CardContent>
-            <Button onClick={() => setOpenExternModal(true)} size="large" variant="contained">
-              Add event
-            </Button>
-            <Button sx={{ marginLeft: 4 }} onClick={() => setOpenLabelModal(true)} size="large" variant="contained">
-              Create label
-            </Button>
+            <Box>
+              <Button onClick={() => setOpenExternModal(true)} size="small" variant="contained">
+                Add event
+              </Button>
+            </Box>
+            <Box mt={2}>
+              <Button onClick={() => setOpenLabelModal(true)} size="small" variant="contained">
+                Create activites
+              </Button>
+            </Box>
+
             <Divider style={{ margin: 10 }} />
             <AddEventModal
               open={openExternModal}

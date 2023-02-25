@@ -159,6 +159,8 @@ export async function UNSAFE_updateUserPassword(db: Db, id: string, newPassword:
 export const deleteUser = async (db: Db, id: string) => {
   await db.collection("users").deleteOne({ _id: new ObjectId(id) })
   await db.collection("courses").deleteMany({ userId: new ObjectId(id) })
+  await db.collection("projects").deleteMany({ userId: new ObjectId(id) })
+  await db.collection("events").deleteMany({ userId: new ObjectId(id) })
 }
 
 export const findUserBySession = async (db: Db, sessionId: string) => {

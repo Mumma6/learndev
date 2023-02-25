@@ -44,7 +44,7 @@ const LatestQuizResults = () => {
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>Course name</TableCell>
+                <TableCell>Quiz name</TableCell>
                 <TableCell align="right">Score</TableCell>
               </TableRow>
             </TableHead>

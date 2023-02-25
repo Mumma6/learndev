@@ -116,17 +116,10 @@ const DashboardSidebar = ({ open, onClose, user }: IProps) => {
           </Button>
         </Link>
       </Box>
-      <Box sx={{ margin: 2 }}>
-        <Link style={{ textDecoration: "none" }} href={`/user/${user._id}`} target="_blank" passHref>
-          <Button size="large" color="primary" variant="outlined">
-            Share profile
-          </Button>
-        </Link>
-      </Box>
 
       <Box
         sx={{
-          marginTop: 1,
+          marginTop: 10,
           display: "flex",
           flexDirection: "column",
           height: "100%",

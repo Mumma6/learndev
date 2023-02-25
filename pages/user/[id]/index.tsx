@@ -52,9 +52,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: {
-      user: parsedUser.data,
-      courses: userCourses.data,
-      projects: userProjects.data,
+      user: serilizeObject(parsedUser.data),
+      courses: serilizeObject(userCourses.data),
+      projects: serilizeObject(userProjects.data),
       quizResults: userQuizResults,
       quizzes: userQuizzes,
     },

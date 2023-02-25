@@ -9,7 +9,7 @@ interface IProps {
 // create a generic component instead, this is copy paste from CoursesToolBar.
 const ProjectsToolbar = ({ handleClickOpen }: IProps) => {
   return (
-    <Box>
+    <Box mt={2} mb={2}>
       <Box
         sx={{
           alignItems: "center",

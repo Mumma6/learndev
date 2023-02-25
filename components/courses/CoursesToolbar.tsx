@@ -8,7 +8,7 @@ interface IProps {
 
 const CoursesToolbar = ({ handleClickOpen }: IProps) => {
   return (
-    <Box>
+    <Box mt={2} mb={2}>
       <Box
         sx={{
           alignItems: "center",

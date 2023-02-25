@@ -1,19 +1,31 @@
-import { Avatar, Card, CardContent, Grid, Typography } from "@mui/material"
+import { Avatar, Box, Card, CardContent, Grid, Typography } from "@mui/material"
 import React from "react"
 import { BsCollection } from "react-icons/bs"
 
-const TotalProjects = () => {
+interface IProps {
+  completedAmount: number
+  inProgressAmount: number
+}
+
+const TotalProjects = ({ completedAmount, inProgressAmount }: IProps) => {
   return (
     <Card sx={{ height: "100%" }}>
       <CardContent>
         <Grid container spacing={3} sx={{ justifyContent: "space-between" }}>
           <Grid item>
             <Typography color="textSecondary" gutterBottom variant="overline">
-              TOTAL PROJECTS
+              Projects
             </Typography>
-            <Typography color="textPrimary" variant="h4">
-              10
-            </Typography>
+            <Box mt={1}>
+              <Typography sx={{ fontSize: 18 }} color="textPrimary" variant="overline">
+                Completed: {completedAmount}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography sx={{ fontSize: 18 }} color="textPrimary" variant="overline">
+                In progress: {inProgressAmount}
+              </Typography>
+            </Box>
           </Grid>
           <Grid item>
             <Avatar

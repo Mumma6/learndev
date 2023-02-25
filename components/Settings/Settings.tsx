@@ -23,10 +23,12 @@ const Settings = () => {
           py: 8,
         }}
       >
-        <Container maxWidth="lg">
-          <Typography sx={{ mb: 3 }} variant="h4">
-            Settings
-          </Typography>
+        <Container maxWidth={false}>
+          <Box mt={2} mb={2}>
+            <Typography color="textPrimary" variant="h4">
+              Settings
+            </Typography>
+          </Box>
           <EmailVerify user={data?.payload!} />
 
           <Box sx={{ pt: 3 }}>

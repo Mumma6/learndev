@@ -5,7 +5,7 @@ import LearningProgress from "./LearningProgress"
 import CoursesByProvider from "./CoursesByProvider"
 import TotalQuizzes from "./TotalQuizzes"
 import TotalProjects from "./TotalProjects"
-import { useCourses, useQuizResults } from "../../lib/hooks"
+import { useCourses, useProjects, useQuizResults } from "../../lib/hooks"
 import LatestQuizResults from "./LatestQuizResults"
 import UserSkillProfile from "./UserSkillProfile"
 import { UserModelSchemaType } from "../../schema/UserSchema"
@@ -24,6 +24,7 @@ interface IProps {
 
 const Home = ({ user }: IProps) => {
   const { data } = useCourses()
+  const { data: projectsData } = useProjects()
   const { data: quizResultsData } = useQuizResults()
   const userQuizResult = quizResultsData?.payload?.filter((p) => p.user_id === user._id).filter((x) => x.approved)
   return (
@@ -36,7 +37,7 @@ const Home = ({ user }: IProps) => {
         }}
       >
         <Container maxWidth={false}>
-          <Box>
+          <Box mt={2} mb={2}>
             <Typography color="textPrimary" variant="h4">
               Welcome {user.name}
             </Typography>
@@ -44,10 +45,16 @@ const Home = ({ user }: IProps) => {
 
           <Grid container spacing={3}>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
-              <TotalCourses amount={data?.payload?.filter((c) => c.completed).length || 0} />
+              <TotalCourses
+                completedAmount={data?.payload?.filter((c) => c.completed).length || 0}
+                inProgressAmount={data?.payload?.filter((c) => !c.completed).length || 0}
+              />
             </Grid>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
-              <TotalProjects />
+              <TotalProjects
+                completedAmount={projectsData?.payload?.filter((c) => c.completed).length || 0}
+                inProgressAmount={projectsData?.payload?.filter((c) => !c.completed).length || 0}
+              />
             </Grid>
             <Grid item xl={3} lg={3} sm={6} xs={12}>
               <LearningProgress />
