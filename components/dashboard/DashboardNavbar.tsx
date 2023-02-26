@@ -68,7 +68,7 @@ export const DashboardNavbar = ({ onSidebarOpen }: IProps) => {
           </IconButton>
           <Box sx={{ margin: 2, float: "left" }}>
             <Link style={{ textDecoration: "none" }} href={`/user/${data?.payload?._id}`} target="_blank" passHref>
-              <Button size="large" color="primary" variant="outlined">
+              <Button endIcon={<FaUser />} size="large" color="primary" variant="outlined">
                 Share profile
               </Button>
             </Link>

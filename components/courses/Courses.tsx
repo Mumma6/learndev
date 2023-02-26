@@ -98,7 +98,6 @@ const Courses = () => {
       component="main"
       sx={{
         paddingTop: 10,
-        paddingBottom: 18,
       }}
     >
       <AddCourseModal

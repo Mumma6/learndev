@@ -98,7 +98,6 @@ export const Projects = () => {
         component="main"
         sx={{
           paddingTop: 10,
-          paddingBottom: 18,
         }}
       >
         <AddProjectModal

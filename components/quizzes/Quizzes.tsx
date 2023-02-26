@@ -26,7 +26,6 @@ const Quizzes = () => {
         sx={{
           flexGrow: 1,
           py: 8,
-          pb: 50,
           marginTop: 5,
         }}
       >

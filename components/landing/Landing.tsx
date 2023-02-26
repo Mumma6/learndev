@@ -15,7 +15,7 @@ const Landing = () => {
   const Element = Scroll.Element
 
   return (
-    <div style={{}}>
+    <div style={{ backgroundColor: "#ffffff" }}>
       <LandingHeader />
       <Container sx={{ paddingTop: 20 }}>
         <Box
