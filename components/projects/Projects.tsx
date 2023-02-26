@@ -41,6 +41,7 @@ export const Projects = () => {
   const handleClose = () => {
     zodForm.setValues(initialProjectsFormData)
     setTopicData([])
+    setCompleted(false)
     zodForm.reset()
     setOpen(false)
   }
@@ -96,8 +97,8 @@ export const Projects = () => {
       <Box
         component="main"
         sx={{
-          flexGrow: 1,
-          py: 8,
+          paddingTop: 10,
+          paddingBottom: 18,
         }}
       >
         <AddProjectModal
@@ -113,17 +114,17 @@ export const Projects = () => {
         <Container maxWidth={false}>
           <ProjectsToolbar handleClickOpen={handleClickOpen} />
           <Box sx={{ pt: 3 }}>
-            <Box sx={{ mt: 3, mb: 3 }}>
+            <Box sx={{ mt: 1, mb: 1 }}>
               <Card>
                 <CardHeader subheader="Projects in progress" title="Projects" />
                 <Divider />
-                <CardContent style={{ padding: 13 }}>
+                <CardContent>
                   <Grid mb={4} mt={2} container spacing={2}>
                     {!isLoading &&
                       data?.payload
                         ?.filter((c) => !c.completed)
                         .map((project) => (
-                          <Grid item key={project._id?.toString()} lg={4} md={4} sm={4} xs={12}>
+                          <Grid item key={project._id?.toString()} xl={3} lg={4} md={4} sm={6} xs={12}>
                             <ProjectCard deleteProject={deleteProject} project={project} />
                           </Grid>
                         ))}
@@ -141,7 +142,7 @@ export const Projects = () => {
           ></Box>
         </Container>
         <Container maxWidth={false}>
-          <Box sx={{ pt: 3 }}>
+          <Box sx={{ pt: 1 }}>
             <Box sx={{ mt: 3, mb: 3 }}>
               <Card>
                 <CardHeader subheader="Completed Projects" title="Projects" />
@@ -152,7 +153,7 @@ export const Projects = () => {
                       data?.payload
                         ?.filter((c) => c.completed)
                         .map((project) => (
-                          <Grid item key={project._id?.toString()} lg={4} md={4} sm={4} xs={12}>
+                          <Grid item key={project._id?.toString()} xl={3} lg={4} md={4} sm={6} xs={12}>
                             <ProjectCard deleteProject={deleteProject} project={project} />
                           </Grid>
                         ))}

@@ -274,7 +274,7 @@ const StudyCalendar = () => {
             </Box>
             <Box mt={2}>
               <Button onClick={() => setOpenLabelModal(true)} size="small" variant="contained">
-                Create activites
+                Create label
               </Button>
             </Box>
 

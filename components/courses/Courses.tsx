@@ -89,6 +89,7 @@ const Courses = () => {
   const handleClose = () => {
     setValues(initialCourseFormState)
     setTopicData([])
+    setCompleted(false)
     reset()
     setOpen(false)
   }
@@ -96,8 +97,8 @@ const Courses = () => {
     <Box
       component="main"
       sx={{
-        flexGrow: 1,
-        py: 8,
+        paddingTop: 10,
+        paddingBottom: 18,
       }}
     >
       <AddCourseModal
@@ -117,17 +118,17 @@ const Courses = () => {
       <Container maxWidth={false}>
         <CoursesToolbar handleClickOpen={handleClickOpen} />
         <Box sx={{ pt: 3 }}>
-          <Box sx={{ mt: 3, mb: 3 }}>
+          <Box sx={{ mt: 1, mb: 1 }}>
             <Card>
               <CardHeader subheader="Upcoming and courses in progress" title="Courses" />
               <Divider />
-              <CardContent style={{ padding: 13 }}>
+              <CardContent>
                 <Grid mb={4} mt={2} container spacing={2}>
                   {!isLoading &&
                     data?.payload
                       ?.filter((c) => !c.completed)
                       .map((course) => (
-                        <Grid item key={course._id} lg={3} md={4} sm={4} xs={12}>
+                        <Grid item key={course._id} xl={3} lg={4} md={4} sm={6} xs={12}>
                           <CourseCard deleteCourse={deleteCourse} course={course} />
                         </Grid>
                       ))}
@@ -147,7 +148,7 @@ const Courses = () => {
         </Box>
       </Container>
       <Container maxWidth={false}>
-        <Box sx={{ pt: 3 }}>
+        <Box sx={{ pt: 1 }}>
           <Box sx={{ mt: 3, mb: 3 }}>
             <Card>
               <CardHeader subheader="Archive of completed courses" title="Completed courses" />
@@ -158,7 +159,7 @@ const Courses = () => {
                     data?.payload
                       ?.filter((c) => c.completed)
                       .map((course) => (
-                        <Grid item key={course._id} lg={3} md={4} sm={4} xs={12}>
+                        <Grid item key={course._id} xl={3} lg={4} md={4} sm={6} xs={12}>
                           <CourseCard deleteCourse={deleteCourse} course={course} />
                         </Grid>
                       ))}

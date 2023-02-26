@@ -135,7 +135,7 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
         <DialogTitle>{`Edit project ${project.title}`}</DialogTitle>
         <DialogContent>
           <DialogContentText>Edit your project here.</DialogContentText>
-          <Box>
+          <Box mt={2}>
             <TextField
               name="title"
               autoFocus
@@ -144,9 +144,6 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
               label="Title"
               type="text"
               fullWidth
-              sx={{ mb: 2 }}
-              required
-              variant="standard"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.title}
@@ -155,7 +152,6 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
             />
             <TextField
               name="description"
-              required
               multiline
               rows={3}
               margin="dense"
@@ -163,13 +159,11 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
               label="Description"
               type="text"
               fullWidth
-              variant="standard"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.description}
               helperText={(formik.touched.description && formik.errors.description) || " "}
               error={Boolean(formik.touched.description && formik.errors.description)}
-              sx={{ mb: 2 }}
             />
             <TextField
               name="deployedUrl"
@@ -179,12 +173,10 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
               label="Link to site"
               type="text"
               fullWidth
-              variant="standard"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               helperText={(formik.touched.deployedUrl && formik.errors.deployedUrl) || " "}
               error={Boolean(formik.touched.deployedUrl && formik.errors.deployedUrl)}
-              sx={{ mb: 2 }}
             />
             <TextField
               name="sourceCodeUrl"
@@ -194,15 +186,17 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
               label="Source code link"
               type="text"
               fullWidth
-              variant="standard"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               helperText={(formik.touched.sourceCodeUrl && formik.errors.sourceCodeUrl) || " "}
               error={Boolean(formik.touched.sourceCodeUrl && formik.errors.sourceCodeUrl)}
-              sx={{ mb: 2 }}
             />
             <Box sx={{ marginTop: 2, marginBottom: 2 }}>
-              <Typography variant="h6" color="text" sx={{ display: "inline-block", marginRight: 2 }}>
+              <Typography
+                variant="h6"
+                color="text"
+                sx={{ display: "inline-block", marginRight: 1, fontSize: 16, fontWeight: 400 }}
+              >
                 Completed
               </Typography>
               <Checkbox

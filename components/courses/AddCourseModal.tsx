@@ -104,14 +104,13 @@ const AddCourseModal = ({
           <TextField
             name="title"
             value={title}
+            inputProps={{ maxLength: 100 }}
             autoFocus
             margin="dense"
             id="name"
             label="Title"
             type="text"
             fullWidth
-            variant="standard"
-            sx={{ mb: 2 }}
             onChange={(e) => onChange(e.target.name, e.target.value)}
             onBlur={() => onBlur("title")}
             helperText={(touched.title && errors.title) || " "}
@@ -122,17 +121,16 @@ const AddCourseModal = ({
             value={description}
             multiline
             rows={3}
+            inputProps={{ maxLength: 500 }}
             margin="dense"
             id="description"
             label="Description"
             type="text"
             fullWidth
-            variant="standard"
             onChange={(e) => onChange(e.target.name, e.target.value)}
             onBlur={() => onBlur("description")}
             helperText={(touched.description && errors.description) || " "}
             error={Boolean(touched.description && errors.description)}
-            sx={{ mb: 2 }}
           />
           <TextField
             name="url"
@@ -142,12 +140,10 @@ const AddCourseModal = ({
             label="Url to course"
             type="text"
             fullWidth
-            variant="standard"
             onChange={(e) => onChange(e.target.name, e.target.value)}
             onBlur={() => onBlur("url")}
             helperText={(touched.url && errors.url) || " "}
             error={Boolean(touched.url && errors.url)}
-            sx={{ mb: 2 }}
           />
           <TextField
             name="certificateUrl"
@@ -157,12 +153,10 @@ const AddCourseModal = ({
             label="Url to certificate"
             type="text"
             fullWidth
-            variant="standard"
             onChange={(e) => onChange(e.target.name, e.target.value)}
             onBlur={() => onBlur("certificateUrl")}
             helperText={(touched.certificateUrl && errors.certificateUrl) || " "}
             error={Boolean(touched.certificateUrl && errors.certificateUrl)}
-            sx={{ mb: 2 }}
           />
           <FormControlLabel
             control={
@@ -176,7 +170,7 @@ const AddCourseModal = ({
               justifyContent: "start",
               flexWrap: "wrap",
               listStyle: "none",
-              marginTop: 5,
+              marginTop: 3,
               paddingBottom: !topicData.length ? 11 : 0,
             }}
           >
@@ -190,7 +184,7 @@ const AddCourseModal = ({
                 },
               }}
               options={skillsData}
-              sx={{ width: 470, marginRight: 2 }}
+              sx={{ width: 450, marginRight: 2 }}
               renderInput={(params) => <TextField {...params} label="Topics" />}
             />
             <Button disabled={!newSkill} onClick={addNewskill} style={{ fontSize: 20 }}>

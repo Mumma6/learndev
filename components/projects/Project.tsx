@@ -32,8 +32,8 @@ const Project = ({ project }: IProps) => {
     <Box
       component="main"
       sx={{
-        flexGrow: 1,
-        py: 8,
+        marginTop: 15,
+        paddingBottom: 43,
       }}
     >
       <EditProjectModal open={open} handleClose={handleClose} project={project} />

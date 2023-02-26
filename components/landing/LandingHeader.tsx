@@ -82,7 +82,7 @@ function LandingHeader() {
               }}
             >
               {pages.map((page) => (
-                <ScrollLink smooth={true} to={page.toLowerCase()}>
+                <ScrollLink key={page} smooth={true} to={page.toLowerCase()}>
                   <MenuItem key={page} onClick={handleCloseNavMenu}>
                     <Typography textAlign="center">{page}</Typography>
                   </MenuItem>
@@ -110,10 +110,8 @@ function LandingHeader() {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
-              <ScrollLink smooth={true} to={page.toLowerCase()}>
-                <Button key={page} sx={{ my: 2, color: "black", display: "block" }}>
-                  {page}
-                </Button>
+              <ScrollLink key={page} smooth={true} to={page.toLowerCase()}>
+                <Button sx={{ my: 2, color: "black", display: "block" }}>{page}</Button>
               </ScrollLink>
             ))}
           </Box>

@@ -22,15 +22,17 @@ const ProjectCard = ({ project, deleteProject }: IProps) => {
   return (
     <Paper elevation={10}>
       <Card sx={{ boxShadow: 5 }}>
-        <Button sx={{ width: "100%" }} onClick={() => router.push(`/projects/${project._id}`)}>
-          <CardContent style={{ padding: 0 }}>
-            <Typography variant="h5" component="div">
-              {project.title}
-            </Typography>
-          </CardContent>
-        </Button>
+        <Box sx={{ minHeight: 120 }}>
+          <Button sx={{ width: "100%" }} onClick={() => router.push(`/projects/${project._id}`)}>
+            <CardContent style={{ padding: 0 }}>
+              <Typography variant="h6" component="div" sx={{ marginTop: 2 }}>
+                {project.title}
+              </Typography>
+            </CardContent>
+          </Button>
+        </Box>
         <Divider />
-        <CardActions>
+        <CardActions sx={{ float: "right" }}>
           <Button onClick={() => deleteProject(project._id as string)} color="error" size="small">
             Delete
           </Button>

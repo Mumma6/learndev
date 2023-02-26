@@ -29,6 +29,7 @@ import TableRow from "@mui/material/TableRow"
 import { FiCode, FiExternalLink } from "react-icons/fi"
 import Link from "next/link"
 import { CgWebsite } from "react-icons/cg"
+import { FaBlog, FaGithub, FaLinkedin, FaTwitter, FaYoutube } from "react-icons/fa"
 
 // https://www.npmjs.com/package/react-to-pdf
 
@@ -226,6 +227,67 @@ const PublicProfile = ({ user, courses, projects, quizResults, quizzes }: IProps
                 </TableBody>
               </Table>
             </TableContainer>
+          </CardContent>
+        </Card>
+
+        <Card sx={{ height: "100%", marginTop: 5 }}>
+          <CardHeader title="Socials" />
+          <Divider />
+          <CardContent>
+            {user.socials.github && (
+              <Box sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}>
+                <Link style={{ textDecoration: "none" }} href={user.socials.github} target="_blank" passHref>
+                  <IconButton>
+                    <FaGithub style={{ marginRight: 25, marginBottom: 30, fontSize: 25 }} />
+                  </IconButton>
+                </Link>
+              </Box>
+            )}
+            {user.socials.linkedin && (
+              <Box sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}>
+                <Link style={{ textDecoration: "none" }} href={user.socials.linkedin} target="_blank" passHref>
+                  <IconButton>
+                    <FaLinkedin style={{ marginRight: 25, marginBottom: 30, fontSize: 25, color: "#0072b1" }} />
+                  </IconButton>
+                </Link>
+              </Box>
+            )}
+            {user.socials.twitter && (
+              <Box sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}>
+                <Link style={{ textDecoration: "none" }} href={user.socials.twitter} target="_blank" passHref>
+                  <IconButton>
+                    <FaTwitter style={{ marginRight: 25, marginBottom: 30, fontSize: 25, color: "#00acee" }} />
+                  </IconButton>
+                </Link>
+              </Box>
+            )}
+            {user.socials.youtube && (
+              <Box sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}>
+                <Link style={{ textDecoration: "none" }} href={user.socials.youtube} target="_blank" passHref>
+                  <IconButton>
+                    <FaYoutube style={{ marginRight: 25, marginBottom: 30, fontSize: 25, color: "#FF0000" }} />
+                  </IconButton>
+                </Link>
+              </Box>
+            )}
+            {user.socials.personalWebsite && (
+              <Box sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}>
+                <Link style={{ textDecoration: "none" }} href={user.socials.personalWebsite} target="_blank" passHref>
+                  <IconButton>
+                    <CgWebsite style={{ marginRight: 25, marginBottom: 30, fontSize: 25 }} />
+                  </IconButton>
+                </Link>
+              </Box>
+            )}
+            {user.socials.blog && (
+              <Box sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}>
+                <Link style={{ textDecoration: "none" }} href={user.socials.blog} target="_blank" passHref>
+                  <IconButton>
+                    <FaBlog style={{ marginRight: 25, marginBottom: 30, fontSize: 25 }} />
+                  </IconButton>
+                </Link>
+              </Box>
+            )}
           </CardContent>
         </Card>
       </Container>

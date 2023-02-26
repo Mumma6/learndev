@@ -102,6 +102,7 @@ const AddProjectModal = ({
         <Box component="form">
           <TextField
             name="title"
+            inputProps={{ maxLength: 100 }}
             value={title}
             autoFocus
             margin="dense"
@@ -109,31 +110,26 @@ const AddProjectModal = ({
             label="Title"
             type="text"
             fullWidth
-            variant="standard"
             onChange={(e) => onChange(e.target.name, e.target.value)}
             onBlur={() => zodForm.onBlur("title")}
             helperText={(zodForm.touched.title && zodForm.errors.title) || " "}
             error={Boolean(zodForm.touched.title && zodForm.errors.title)}
-            sx={{ mb: 2 }}
-            required
           />
           <TextField
             name="description"
             value={description}
-            required
             multiline
             rows={3}
             margin="dense"
             id="description"
             label="Description"
+            inputProps={{ maxLength: 500 }}
             type="text"
             fullWidth
-            variant="standard"
             onChange={(e) => onChange(e.target.name, e.target.value)}
             onBlur={() => zodForm.onBlur("description")}
             helperText={(zodForm.touched.description && zodForm.errors.description) || " "}
             error={Boolean(zodForm.touched.description && zodForm.errors.description)}
-            sx={{ mb: 2 }}
           />
           <TextField
             name="deployedUrl"
@@ -143,12 +139,10 @@ const AddProjectModal = ({
             label="Link to site"
             type="text"
             fullWidth
-            variant="standard"
             onChange={(e) => onChange(e.target.name, e.target.value)}
             onBlur={() => zodForm.onBlur("deployedUrl")}
             helperText={(zodForm.touched.deployedUrl && zodForm.errors.deployedUrl) || " "}
             error={Boolean(zodForm.touched.deployedUrl && zodForm.errors.deployedUrl)}
-            sx={{ mb: 2 }}
           />
           <TextField
             name="sourceCodeUrl"
@@ -158,12 +152,10 @@ const AddProjectModal = ({
             label="Source code link"
             type="text"
             fullWidth
-            variant="standard"
             onChange={(e) => onChange(e.target.name, e.target.value)}
             onBlur={() => zodForm.onBlur("sourceCodeUrl")}
             helperText={(zodForm.touched.sourceCodeUrl && zodForm.errors.sourceCodeUrl) || " "}
             error={Boolean(zodForm.touched.sourceCodeUrl && zodForm.errors.sourceCodeUrl)}
-            sx={{ mb: 2 }}
           />
           <Box
             sx={{
@@ -178,7 +170,7 @@ const AddProjectModal = ({
               disablePortal
               id="combo-box-demo"
               options={skillsData}
-              sx={{ width: 400, marginRight: 3 }}
+              sx={{ width: 450, marginRight: 2 }}
               renderInput={(params) => <TextField {...params} label="Tech stack" />}
             />
             <Button disabled={!newSkill} onClick={addNewskill} style={{ fontSize: 20 }}>

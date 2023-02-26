@@ -20,16 +20,18 @@ const CourseCard = ({ course, deleteCourse }: IProps) => {
   return (
     <Paper elevation={10}>
       <Card sx={{ boxShadow: 5 }}>
-        <Button sx={{ width: "100%" }} onClick={() => router.push(`/courses/${course._id}`)}>
-          <CardContent style={{ padding: 0 }}>
-            <Typography variant="h5" component="div">
-              {course.content.title}
-            </Typography>
-            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-              {course.content.institution}
-            </Typography>
-          </CardContent>
-        </Button>
+        <Box sx={{ minHeight: 150 }}>
+          <Button sx={{ width: "100%" }} onClick={() => router.push(`/courses/${course._id}`)}>
+            <CardContent style={{ padding: 0 }}>
+              <Typography sx={{ wordWrap: "break-word", marginTop: 3 }} variant="h6">
+                {course.content.title}
+              </Typography>
+              <Typography sx={{ fontSize: 14, marginTop: 2 }} color="text.secondary" gutterBottom>
+                {course.content.institution}
+              </Typography>
+            </CardContent>
+          </Button>
+        </Box>
         <Divider />
         <CardActions sx={{ float: "right" }}>
           <Button onClick={() => deleteCourse(course._id as string)} color="error" size="small">

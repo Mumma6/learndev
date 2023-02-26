@@ -28,8 +28,8 @@ const Course = ({ course }: IProps) => {
     <Box
       component="main"
       sx={{
-        flexGrow: 1,
-        py: 8,
+        marginTop: 15,
+        paddingBottom: 40,
       }}
     >
       <EditCourseModal open={open} handleClose={handleClose} course={course} />
@@ -57,7 +57,9 @@ const Course = ({ course }: IProps) => {
             )}
           </Box>
           <Divider />
-          <CardContent>{course.content.description}</CardContent>
+          <CardContent>
+            <Box>{course.content.description}</Box>
+          </CardContent>
           <Divider />
           <Box sx={{ marginTop: 3 }}>
             <Typography sx={{ marginLeft: 2.5 }} color="textPrimary" variant="h6">

@@ -19,6 +19,7 @@ const initialState = {
 
 const SignUp = () => {
   const { data, mutate } = useCurrentUser()
+  const [isLoading, setIsLoading] = useState(false)
 
   const router = useRouter()
 
@@ -36,6 +37,7 @@ const SignUp = () => {
 
   const onSubmit = async (formValues: UserRegistrationSchemaType) => {
     try {
+      setIsLoading(true)
       const response = await fetcher1<UserModelSchemaType, UserRegistrationSchemaType>("/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -46,11 +48,13 @@ const SignUp = () => {
       } else {
         mutate({ payload: response.payload }, false)
         toast.success("Your account has been created")
+        setIsLoading(false)
         router.replace("/home")
       }
     } catch (e: any) {
       console.log(e)
     } finally {
+      setIsLoading(false)
       formik.resetForm()
     }
   }
@@ -68,12 +72,13 @@ const SignUp = () => {
     >
       <Container maxWidth="sm">
         <Paper
+          elevation={20}
           sx={{
             padding: 5,
           }}
         >
           <NextLink href="/" passHref>
-            <Button component="a" startIcon={<FaArrowLeft />}>
+            <Button disabled={isLoading} component="a" startIcon={<FaArrowLeft />}>
               Home
             </Button>
           </NextLink>
@@ -133,11 +138,7 @@ const SignUp = () => {
             ></Box>
 
             <Box sx={{ py: 2 }}>
-              <SubmitButton
-                text="Sign up Now"
-                isLoading={formik.isSubmitting}
-                isDisabled={!formik.isValid || !formik.dirty}
-              />
+              <SubmitButton text="Sign up Now" isLoading={isLoading} isDisabled={!formik.isValid || !formik.dirty} />
             </Box>
             <Typography color="textSecondary" variant="body2">
               Have an account?{" "}

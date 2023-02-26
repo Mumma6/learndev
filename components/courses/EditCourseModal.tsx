@@ -165,7 +165,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
         <DialogTitle>{`Edit course ${course.content.title}`}</DialogTitle>
         <DialogContent>
           <DialogContentText>Edit your course here.</DialogContentText>
-          <Box>
+          <Box mt={2}>
             <TextField
               name="title"
               autoFocus
@@ -174,9 +174,6 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
               label="Title"
               type="text"
               fullWidth
-              sx={{ mb: 2 }}
-              required
-              variant="standard"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.title}
@@ -185,7 +182,6 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
             />
             <TextField
               name="description"
-              required
               multiline
               rows={3}
               margin="dense"
@@ -193,13 +189,11 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
               label="Description"
               type="text"
               fullWidth
-              variant="standard"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.description}
               helperText={(formik.touched?.description && formik.errors?.description) || " "}
               error={Boolean(formik.touched?.description && formik.errors?.description)}
-              sx={{ mb: 2 }}
             />
             <TextField
               name="url"
@@ -208,13 +202,11 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
               label="Link to site"
               type="text"
               fullWidth
-              variant="standard"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.url}
               helperText={(formik.touched?.url && formik.errors?.url) || " "}
               error={Boolean(formik.touched?.url && formik.errors?.url)}
-              sx={{ mb: 2 }}
             />
             <TextField
               name="certificateUrl"
@@ -223,16 +215,18 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
               label="Source code link"
               type="text"
               fullWidth
-              variant="standard"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
               value={formik.values.certificateUrl}
               helperText={(formik.touched?.certificateUrl && formik.errors?.certificateUrl) || " "}
               error={Boolean(formik.touched?.certificateUrl && formik.errors?.certificateUrl)}
-              sx={{ mb: 2 }}
             />
             <Box sx={{ marginTop: 2, marginBottom: 2 }}>
-              <Typography variant="h6" color="text" sx={{ display: "inline-block", marginRight: 2 }}>
+              <Typography
+                variant="h6"
+                color="text"
+                sx={{ display: "inline-block", marginRight: 1, fontSize: 16, fontWeight: 400 }}
+              >
                 Completed
               </Typography>
               <Checkbox

@@ -9,43 +9,31 @@ interface IProps {
 // create a generic component instead, this is copy paste from CoursesToolBar.
 const ProjectsToolbar = ({ handleClickOpen }: IProps) => {
   return (
-    <Box mt={2} mb={2}>
-      <Box
-        sx={{
-          alignItems: "center",
-          display: "flex",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
-          m: -1,
-        }}
-      >
-        <Typography sx={{ m: 1 }} variant="h4">
-          Projects
-        </Typography>
-        <Box sx={{ m: 1 }}>
-          <Button color="primary" variant="contained" onClick={handleClickOpen}>
-            Add project
-          </Button>
-        </Box>
-      </Box>
+    <Box mt={1} mb={1}>
       <Box sx={{ mt: 3 }}>
         <Card>
           <CardContent>
-            <Box sx={{ maxWidth: 500 }}>
-              <TextField
-                fullWidth
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SvgIcon fontSize="small" color="action">
-                        <FaSearch />
-                      </SvgIcon>
-                    </InputAdornment>
-                  ),
-                }}
-                placeholder="Search project"
-                variant="outlined"
-              />
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Box>
+                <TextField
+                  fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SvgIcon fontSize="small" color="action">
+                          <FaSearch />
+                        </SvgIcon>
+                      </InputAdornment>
+                    ),
+                  }}
+                  placeholder="Search project"
+                  variant="outlined"
+                />
+              </Box>
+
+              <Button sx={{ marginLeft: 1 }} color="primary" variant="contained" onClick={handleClickOpen}>
+                Add project
+              </Button>
             </Box>
           </CardContent>
         </Card>
