@@ -12,16 +12,12 @@ const Profile = () => {
       <Box
         component="main"
         sx={{
+          marginTop: 5,
           flexGrow: 1,
           py: 8,
         }}
       >
         <Container maxWidth={false}>
-          <Box mt={2} mb={2}>
-            <Typography color="textPrimary" variant="h4">
-              Profile
-            </Typography>
-          </Box>
           <AboutYou />
           <Box sx={{ pt: 3 }}>
             <Skills />

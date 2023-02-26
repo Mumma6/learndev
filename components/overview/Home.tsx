@@ -34,15 +34,10 @@ const Home = ({ user }: IProps) => {
         sx={{
           flexGrow: 1,
           py: 8,
+          marginTop: 5,
         }}
       >
         <Container maxWidth={false}>
-          <Box mt={2} mb={2}>
-            <Typography color="textPrimary" variant="h4">
-              Welcome {user.name}
-            </Typography>
-          </Box>
-
           <Grid container spacing={3}>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
               <TotalCourses

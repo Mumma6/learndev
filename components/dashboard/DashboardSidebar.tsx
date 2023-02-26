@@ -119,7 +119,7 @@ const DashboardSidebar = ({ open, onClose, user }: IProps) => {
 
       <Box
         sx={{
-          marginTop: 10,
+          marginTop: 4,
           display: "flex",
           flexDirection: "column",
           height: "100%",

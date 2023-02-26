@@ -88,7 +88,7 @@ const WorkexperienceModal = ({
       <DialogTitle>Add work experience</DialogTitle>
       <DialogContent>
         <DialogContentText>To add a work experience, please fill in the information below.</DialogContentText>
-        <Box component="form">
+        <Box component="form" mt={2}>
           <TextField
             name="role"
             value={role}
@@ -99,7 +99,6 @@ const WorkexperienceModal = ({
             label="Role"
             type="text"
             fullWidth
-            variant="standard"
             onBlur={() => onBlur("role")}
             helperText={(touched.role && errors.role) || " "}
             error={Boolean(touched.role && errors.role)}
@@ -111,7 +110,6 @@ const WorkexperienceModal = ({
             label="Company"
             type="text"
             fullWidth
-            variant="standard"
             value={company}
             onBlur={() => onBlur("company")}
             onChange={(e) => onChange(e.target.name, e.target.value)}
@@ -127,7 +125,6 @@ const WorkexperienceModal = ({
             label="Description"
             type="text"
             fullWidth
-            variant="standard"
             value={description}
             onBlur={() => onBlur("description")}
             onChange={(e) => onChange(e.target.name, e.target.value)}

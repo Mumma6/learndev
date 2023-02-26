@@ -27,15 +27,11 @@ const Quizzes = () => {
           flexGrow: 1,
           py: 8,
           pb: 50,
+          marginTop: 5,
         }}
       >
         <Container maxWidth={false}>
           <Box>
-            <Box mt={2} mb={2}>
-              <Typography color="textPrimary" variant="h4">
-                Quizzes
-              </Typography>
-            </Box>
             <Box sx={{ mt: 3 }}>
               <Card>
                 <CardContent>

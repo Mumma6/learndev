@@ -339,7 +339,7 @@ export default StudyCalendar
 Schema validation needs to be done sometime
 -------------------
 
-
+Add min={date} and max={date} to calender to control the time view.
 
 
 */
