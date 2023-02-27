@@ -74,9 +74,6 @@ const WorkexperienceCard = ({ work, deleteWorkexperience }: IProps) => {
           </Typography>
         </Typography>
 
-        <Typography variant="subtitle1" color="text">
-          description:
-        </Typography>
         <Typography variant="caption" color="text">
           {description}
         </Typography>

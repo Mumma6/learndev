@@ -8,7 +8,7 @@ type InstitutionCount = {
 }
 
 interface IProps {
-  courses: CourseModelSchemaType[] | undefined
+  courses: CourseModelSchemaType[] | null | undefined
 }
 
 const colors = ["#3F51B5", "#e53935", "#FB8C00", "green"]

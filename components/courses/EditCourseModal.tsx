@@ -183,7 +183,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
             <TextField
               name="description"
               multiline
-              rows={3}
+              rows={7}
               margin="dense"
               id="description"
               label="Description"

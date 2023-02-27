@@ -168,11 +168,13 @@ const PublicProfile = ({ user, courses, projects, quizResults, quizzes }: IProps
                         />
                       </TableCell>
                       <TableCell>
-                        <Link style={{ textDecoration: "none" }} href={course.content.url} target="_blank" passHref>
-                          <IconButton>
-                            <FiExternalLink />
-                          </IconButton>
-                        </Link>
+                        {course.content.url && (
+                          <Link style={{ textDecoration: "none" }} href={course.content.url} target="_blank" passHref>
+                            <IconButton>
+                              <FiExternalLink />
+                            </IconButton>
+                          </Link>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -209,18 +211,22 @@ const PublicProfile = ({ user, courses, projects, quizResults, quizzes }: IProps
                         />
                       </TableCell>
                       <TableCell>
-                        <Link style={{ textDecoration: "none" }} href={project.sourceCodeUrl} target="_blank" passHref>
-                          <IconButton disabled={!project.sourceCodeUrl}>
-                            <FiCode />
-                          </IconButton>
-                        </Link>
+                        {project.sourceCodeUrl && (
+                          <Link style={{ textDecoration: "none" }} href={project.sourceCodeUrl} target="_blank" passHref>
+                            <IconButton disabled={!project.sourceCodeUrl}>
+                              <FiCode />
+                            </IconButton>
+                          </Link>
+                        )}
                       </TableCell>
                       <TableCell>
-                        <Link style={{ textDecoration: "none" }} href={project.deployedUrl} target="_blank" passHref>
-                          <IconButton disabled={!project.deployedUrl}>
-                            <CgWebsite />
-                          </IconButton>
-                        </Link>
+                        {project.deployedUrl && (
+                          <Link style={{ textDecoration: "none" }} href={project.deployedUrl} target="_blank" passHref>
+                            <IconButton disabled={!project.deployedUrl}>
+                              <CgWebsite />
+                            </IconButton>
+                          </Link>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -234,60 +240,62 @@ const PublicProfile = ({ user, courses, projects, quizResults, quizzes }: IProps
           <CardHeader title="Socials" />
           <Divider />
           <CardContent>
-            {user.socials.github && (
-              <Box sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}>
-                <Link style={{ textDecoration: "none" }} href={user.socials.github} target="_blank" passHref>
-                  <IconButton>
-                    <FaGithub style={{ marginRight: 25, marginBottom: 30, fontSize: 25 }} />
-                  </IconButton>
-                </Link>
-              </Box>
-            )}
-            {user.socials.linkedin && (
-              <Box sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}>
-                <Link style={{ textDecoration: "none" }} href={user.socials.linkedin} target="_blank" passHref>
-                  <IconButton>
-                    <FaLinkedin style={{ marginRight: 25, marginBottom: 30, fontSize: 25, color: "#0072b1" }} />
-                  </IconButton>
-                </Link>
-              </Box>
-            )}
-            {user.socials.twitter && (
-              <Box sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}>
-                <Link style={{ textDecoration: "none" }} href={user.socials.twitter} target="_blank" passHref>
-                  <IconButton>
-                    <FaTwitter style={{ marginRight: 25, marginBottom: 30, fontSize: 25, color: "#00acee" }} />
-                  </IconButton>
-                </Link>
-              </Box>
-            )}
-            {user.socials.youtube && (
-              <Box sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}>
-                <Link style={{ textDecoration: "none" }} href={user.socials.youtube} target="_blank" passHref>
-                  <IconButton>
-                    <FaYoutube style={{ marginRight: 25, marginBottom: 30, fontSize: 25, color: "#FF0000" }} />
-                  </IconButton>
-                </Link>
-              </Box>
-            )}
-            {user.socials.personalWebsite && (
-              <Box sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}>
-                <Link style={{ textDecoration: "none" }} href={user.socials.personalWebsite} target="_blank" passHref>
-                  <IconButton>
-                    <CgWebsite style={{ marginRight: 25, marginBottom: 30, fontSize: 25 }} />
-                  </IconButton>
-                </Link>
-              </Box>
-            )}
-            {user.socials.blog && (
-              <Box sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}>
-                <Link style={{ textDecoration: "none" }} href={user.socials.blog} target="_blank" passHref>
-                  <IconButton>
-                    <FaBlog style={{ marginRight: 25, marginBottom: 30, fontSize: 25 }} />
-                  </IconButton>
-                </Link>
-              </Box>
-            )}
+            <Grid sx={{ margin: 2 }} container spacing={5}>
+              {user.socials.github && (
+                <Box>
+                  <Link style={{ textDecoration: "none" }} href={user.socials.github} target="_blank" passHref>
+                    <IconButton>
+                      <FaGithub />
+                    </IconButton>
+                  </Link>
+                </Box>
+              )}
+              {user.socials.linkedin && (
+                <Box>
+                  <Link style={{ textDecoration: "none" }} href={user.socials.linkedin} target="_blank" passHref>
+                    <IconButton>
+                      <FaLinkedin style={{ color: "#0072b1" }} />
+                    </IconButton>
+                  </Link>
+                </Box>
+              )}
+              {user.socials.twitter && (
+                <Box>
+                  <Link style={{ textDecoration: "none" }} href={user.socials.twitter} target="_blank" passHref>
+                    <IconButton>
+                      <FaTwitter style={{ color: "#00acee" }} />
+                    </IconButton>
+                  </Link>
+                </Box>
+              )}
+              {user.socials.youtube && (
+                <Box>
+                  <Link style={{ textDecoration: "none" }} href={user.socials.youtube} target="_blank" passHref>
+                    <IconButton>
+                      <FaYoutube style={{ color: "#FF0000" }} />
+                    </IconButton>
+                  </Link>
+                </Box>
+              )}
+              {user.socials.personalWebsite && (
+                <Box>
+                  <Link style={{ textDecoration: "none" }} href={user.socials.personalWebsite} target="_blank" passHref>
+                    <IconButton>
+                      <CgWebsite />
+                    </IconButton>
+                  </Link>
+                </Box>
+              )}
+              {user.socials.blog && (
+                <Box>
+                  <Link style={{ textDecoration: "none" }} href={user.socials.blog} target="_blank" passHref>
+                    <IconButton>
+                      <FaBlog />
+                    </IconButton>
+                  </Link>
+                </Box>
+              )}
+            </Grid>
           </CardContent>
         </Card>
       </Container>

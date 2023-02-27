@@ -100,7 +100,7 @@ const AboutYou = () => {
           <CardContent>
             <TextField
               multiline
-              rows={3}
+              rows={7}
               fullWidth
               label="About"
               margin="normal"
@@ -111,10 +111,12 @@ const AboutYou = () => {
               type="text"
               variant="outlined"
               placeholder=""
+              helperText={(formik.touched.about && formik.errors.about) || " "}
+              error={Boolean(formik.touched.about && formik.errors.about)}
             />
             <TextField
               multiline
-              rows={3}
+              rows={7}
               fullWidth
               label="Goals"
               margin="normal"
@@ -125,6 +127,8 @@ const AboutYou = () => {
               type="text"
               variant="outlined"
               placeholder=""
+              helperText={(formik.touched.goals && formik.errors.goals) || " "}
+              error={Boolean(formik.touched.goals && formik.errors.goals)}
             />
             <TextField
               fullWidth

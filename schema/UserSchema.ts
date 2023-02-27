@@ -27,7 +27,7 @@ export const UserWorkexperienceSchema = z.object({
   role: z.string().min(1),
   startDate: z.string().min(1),
   endDate: z.union([z.literal(undefined), z.string()]).default(""),
-  description: z.string().min(1).max(200),
+  description: z.string().min(1).max(2000),
   company: z.string().min(1),
   currentJob: z.boolean().default(false),
 })
@@ -52,9 +52,9 @@ export type UserSettingsType = z.infer<typeof UserSettingsModelSchema>
 export const UserModelSchema = UserRegistrationSchema.extend({
   _id: z.instanceof(ObjectId).transform((id) => id.toString()),
   completedQuizzes: z.array(z.string()).default([]),
-  about: z.string().default(""),
-  goals: z.string().default(""),
-  from: z.string().default(""),
+  about: z.string().min(1).max(2000).default(""),
+  goals: z.string().min(1).max(2000).default(""),
+  from: z.string().min(1).max(100).default(""),
   lookingForWork: z.boolean().default(false),
   emailVerified: z.boolean().default(false), // Move this to userSettings
   socials: UserSocialsSchema.default({}),

@@ -17,6 +17,8 @@ interface IProps {
 
 /*
 
+  Topics overview. What techs do i use the most
+
 
   Ska man kunna välja själv vilka grafer osv man vill se? Premium tjänst kanske?
 
@@ -58,7 +60,7 @@ const Home = ({ user }: IProps) => {
               <TotalQuizzes amount={userQuizResult?.length || 0} />
             </Grid>
             <Grid item lg={6} md={6} xl={3} xs={12}>
-              {!!data?.payload?.length && <CoursesByProvider courses={data?.payload} />}
+              <CoursesByProvider courses={data?.payload} />
             </Grid>
             <Grid item lg={6} md={6} xl={3} xs={12}>
               <LatestQuizResults />

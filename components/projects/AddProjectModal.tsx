@@ -119,11 +119,11 @@ const AddProjectModal = ({
             name="description"
             value={description}
             multiline
-            rows={3}
+            rows={7}
             margin="dense"
             id="description"
             label="Description"
-            inputProps={{ maxLength: 500 }}
+            inputProps={{ maxLength: 1500 }}
             type="text"
             fullWidth
             onChange={(e) => onChange(e.target.name, e.target.value)}

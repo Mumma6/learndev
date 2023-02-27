@@ -17,7 +17,7 @@ export type InstitutionEnumType = z.infer<typeof InstitutionEnum>
 
 export const CourseModelContentInputSchema = z.object({
   title: z.string().min(1).max(100),
-  description: z.string().min(1).max(500),
+  description: z.string().min(1).max(1500),
   url: z.string().url(),
   certificateUrl: z.union([z.literal(""), z.string().trim().url()]).default(""),
   institution: InstitutionEnum,

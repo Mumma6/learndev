@@ -120,8 +120,8 @@ const AddCourseModal = ({
             name="description"
             value={description}
             multiline
-            rows={3}
-            inputProps={{ maxLength: 500 }}
+            rows={7}
+            inputProps={{ maxLength: 1500 }}
             margin="dense"
             id="description"
             label="Description"

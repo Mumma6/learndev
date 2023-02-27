@@ -5,7 +5,7 @@ import { ObjectId } from "bson"
 // Avänd samma fält i /:id som man kan editera. Nya fält läggs i ett eget schema?
 export const ProjectModelFormInputSchema = z.object({
   title: z.string().min(1).max(100),
-  description: z.string().min(1).max(500),
+  description: z.string().min(1).max(1500),
   techStack: z.array(SkillSchema),
   completed: z.boolean().default(false),
   sourceCodeUrl: z.union([z.literal(""), z.string().trim().url()]).default(""),

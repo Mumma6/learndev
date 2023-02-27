@@ -118,7 +118,7 @@ const WorkexperienceModal = ({
           />
           <TextField
             multiline
-            rows={3}
+            rows={7}
             name="description"
             margin="dense"
             id="description"
