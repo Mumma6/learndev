@@ -28,7 +28,7 @@ const NavItem = ({ href, icon, title }: IProps) => {
           startIcon={icon}
           disableRipple
           sx={{
-            fontSize: 18,
+            fontSize: 17,
             backgroundColor: active ? "primary.main" : undefined,
             color: "#ffffff",
             borderRadius: 1,

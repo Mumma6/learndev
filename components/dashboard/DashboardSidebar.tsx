@@ -4,9 +4,9 @@ import NextLink from "next/link"
 import { useRouter } from "next/router"
 import { useTheme } from "@mui/material/styles"
 
-import { FaCog, FaHome, FaRegCalendarAlt, FaUser, FaUsers } from "react-icons/fa"
+import { FaBriefcase, FaCog, FaHome, FaRegCalendarAlt, FaUser, FaUsers } from "react-icons/fa"
 import { ImBooks } from "react-icons/im"
-import { BsCollection } from "react-icons/bs"
+import { BsCollection, BsFillCollectionFill } from "react-icons/bs"
 import { AiOutlineFundProjectionScreen } from "react-icons/ai"
 import NavItem from "./NavItem"
 import Link from "next/link"
@@ -54,27 +54,23 @@ const items: SidbarNavItems[] = [
     title: "Profile",
   },
 
-  /*
-
+  {
+    href: "/job-listing",
+    icon: <FaBriefcase fontSize="small" />,
+    title: "Job listing",
+  },
   {
     href: "/resources",
-    icon: <BsCollection fontSize="small" />,
+    icon: <BsFillCollectionFill fontSize="small" />,
     title: "Resources",
   },
-  
+
   {
-    href: "/learning-path",
-    icon: <FaCog fontSize="small" />,
-    title: "Learning path",
+    href: "/study-rooms",
+    icon: <FaUsers fontSize="small" />,
+    title: "Study rooms",
   },
 
-  
-  {
-    href: "/planning",
-    icon: <FaCog fontSize="small" />,
-    title: "Planning",
-  },
-  */
   {
     href: "/settings",
     icon: <FaCog fontSize="small" />,

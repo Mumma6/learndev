@@ -54,21 +54,6 @@ interface IProps {
 }
 
 const PublicProfile = ({ user, courses, projects, quizResults, quizzes }: IProps) => {
-  console.log("user")
-  console.log(user)
-
-  console.log("courses")
-  console.log(courses)
-
-  console.log("projects")
-  console.log(projects)
-
-  console.log("quizResults")
-  console.log(quizResults)
-
-  console.log("quizzes")
-  console.log(quizzes)
-
   return (
     <div style={{ backgroundColor: "#EDEADE", paddingTop: 50, paddingBottom: 50 }}>
       <Container>
