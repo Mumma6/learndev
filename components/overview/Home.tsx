@@ -10,6 +10,7 @@ import LatestQuizResults from "./LatestQuizResults"
 import UserSkillProfile from "./UserSkillProfile"
 import { UserModelSchemaType } from "../../schema/UserSchema"
 import UpcomingEvents from "./UpcomingEvents"
+import TopicsChart from "./TopicsChart"
 
 interface IProps {
   user: UserModelSchemaType
@@ -70,6 +71,9 @@ const Home = ({ user }: IProps) => {
             </Grid>
             <Grid item lg={6} md={6} xl={3} xs={12}>
               <UpcomingEvents />
+            </Grid>
+            <Grid item lg={6} md={6} xl={6} xs={6}>
+              <TopicsChart />
             </Grid>
           </Grid>
         </Container>
