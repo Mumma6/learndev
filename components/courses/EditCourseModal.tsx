@@ -51,7 +51,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
 
   const [disabled, setDisabeld] = useState(false)
 
-  const { content, completed, _id } = course
+  const { content, _id, completed } = course
   const { title, description, url, certificateUrl, institution } = content
 
   // Create a useSkillsHook
@@ -137,7 +137,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
             certificateUrl: formValues.certificateUrl,
             institution: course.content.institution,
           },
-          completed,
+          completed: formik.values.completed,
           topics: topicsData,
           _id,
         },
