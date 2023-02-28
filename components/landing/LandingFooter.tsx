@@ -7,9 +7,13 @@ import ListItemButton from "@mui/material/ListItemButton"
 import ListItemIcon from "@mui/material/ListItemIcon"
 import ListItemText from "@mui/material/ListItemText"
 
-const aboutUs = ["Offers", "Values", "Policy"]
-const company = ["Careers & Culture", "Blog", "Press"]
-const faq = ["GDPR", "Donation", "Press"]
+const aboutUs1 = ["Offers", "Values", "Policy"]
+const company1 = ["Careers & Culture", "Blog", "Press"]
+const faq1 = ["GDPR", "Donation", "Press"]
+
+const aboutUs = ["-", "-", "-"]
+const company = ["- & -", "-", "-"]
+const faq = ["-", "-", "-"]
 
 const LandingFooter = () => {
   return (
