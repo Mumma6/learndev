@@ -52,9 +52,9 @@ export type UserSettingsType = z.infer<typeof UserSettingsModelSchema>
 export const UserModelSchema = UserRegistrationSchema.extend({
   _id: z.instanceof(ObjectId).transform((id) => id.toString()),
   completedQuizzes: z.array(z.string()).default([]),
-  about: z.string().min(1).max(2000).default(""),
-  goals: z.string().min(1).max(2000).default(""),
-  from: z.string().min(1).max(100).default(""),
+  about: z.string().min(1).max(2000).default(" "),
+  goals: z.string().min(1).max(2000).default(" "),
+  from: z.string().min(1).max(100).default(" "),
   lookingForWork: z.boolean().default(false),
   emailVerified: z.boolean().default(false), // Move this to userSettings
   socials: UserSocialsSchema.default({}),

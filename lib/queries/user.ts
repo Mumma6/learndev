@@ -133,9 +133,11 @@ export async function insertUser(db: Db, data: Pick<UserModelSchemaType, "email"
   }
   const hashedPassword = await bcrypt.hash(user.password, 10)
 
-  const { insertedId } = await db.collection("users").insertOne({ ...user, password: hashedPassword })
+  const insert = await db.collection("users").insertOne({ ...user, password: hashedPassword })
 
-  const userOutput = await db.collection("users").findOne({ _id: insertedId })
+  console.log(insert)
+
+  const userOutput = await db.collection("users").findOne({ _id: insert.insertedId })
 
   return userOutput
 }

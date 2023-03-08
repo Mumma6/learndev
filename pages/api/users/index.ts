@@ -40,6 +40,7 @@ handler.post(...auths, async (req, res) => {
     req.logIn(user, (err: any) => {
       if (err) {
         console.log("error with passport logIn fn")
+        console.log(err)
         return handleAPIError(res, err)
       }
 
