@@ -72,7 +72,7 @@ const Home = ({ user }: IProps) => {
             <Grid item lg={6} md={6} xl={3} xs={12}>
               <UpcomingEvents />
             </Grid>
-            <Grid item lg={6} md={6} xl={6} xs={6}>
+            <Grid item lg={6} md={6} xl={3} xs={12}>
               <TopicsChart />
             </Grid>
           </Grid>

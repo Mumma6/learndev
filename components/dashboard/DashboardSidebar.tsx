@@ -4,7 +4,7 @@ import NextLink from "next/link"
 import { useRouter } from "next/router"
 import { useTheme } from "@mui/material/styles"
 
-import { FaBriefcase, FaCog, FaHome, FaRegCalendarAlt, FaUser, FaUsers } from "react-icons/fa"
+import { FaBriefcase, FaCog, FaHome, FaRegCalendarAlt, FaTasks, FaUser, FaUsers } from "react-icons/fa"
 import { ImBooks } from "react-icons/im"
 import { BsCollection, BsFillCollectionFill } from "react-icons/bs"
 import { AiOutlineFundProjectionScreen } from "react-icons/ai"
@@ -47,6 +47,11 @@ const items: SidbarNavItems[] = [
     href: "/quizzes",
     icon: <MdQuiz fontSize="small" />,
     title: "Quizzes",
+  },
+  {
+    href: "/tasks",
+    icon: <FaTasks fontSize="small" />,
+    title: "Tasks",
   },
   {
     href: "/profile",

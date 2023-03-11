@@ -1,9 +1,18 @@
 import React from "react"
 import { Box, Card, CardContent, CardHeader, Divider, Typography, useTheme } from "@mui/material"
 import { Bar } from "react-chartjs-2"
+import { useCourses, useProjects } from "../../lib/hooks"
+import { SkillSchemaType } from "../.../../../schema/SharedSchema"
 
 const TopicsChart = () => {
   const theme = useTheme()
+  const { data: courseData } = useCourses()
+  const { data: projectData } = useProjects()
+
+  interface Label {
+    name: string
+    number: number
+  }
 
   const options = {
     responsive: true,
@@ -29,7 +38,7 @@ const TopicsChart = () => {
     },
   }
 
-  const labels = [
+  const labels: Label[] = [
     {
       name: "react",
       number: 5,

@@ -1,10 +1,6 @@
 import { useState, useEffect, useCallback, Dispatch, SetStateAction } from "react"
 import { z } from "zod"
 
-/*
-create a is disable fn
-*/
-
 export type ErrorsType<T> = { [key in keyof T]: string | undefined }
 export type TouchedType<T> = { [key in keyof T]: boolean }
 
@@ -18,8 +14,6 @@ export interface IZodFormValidation<FValues> {
   reset: () => void
   isDisabled: (validator?: () => boolean) => boolean
 }
-
-// export interface for the whole thing. So we can pass an object as props and not all the destro props.
 
 const cloneWithDefaultValues = <T extends object>(input: T, newVal: any) =>
   Object.fromEntries(Object.keys(input).map((key) => [key, newVal])) as Record<keyof T, any>
