@@ -87,7 +87,6 @@ const Landing = () => {
       <Element name="pricing">
         <Pricing />
       </Element>
-
       <LandingFooter />
     </div>
   )

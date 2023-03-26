@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useState } from "react"
+import { ChangeEvent, useState } from "react"
 
 import TextField from "@mui/material/TextField"
 import Checkbox from "@mui/material/Checkbox"
@@ -11,16 +11,14 @@ import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import Button from "@mui/material/Button"
 import FormControlLabel from "@mui/material/FormControlLabel"
-import { Box, Divider, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material"
+import { Box, Divider, FormControl, InputLabel, MenuItem, Select } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
-
-import { initialCourseFormState } from "./Courses"
 import { ClickEventRet, SetState } from "../../types/generics"
 import { skillsData } from "../../constants/skillsData"
 import { FaPlus } from "react-icons/fa"
 import { SkillSchemaType } from "../../schema/SharedSchema"
 import { CourseModelContentInputSchemaType, InstitutionEnum } from "../../schema/CourseSchema"
-import { ErrorsType, TouchedType } from "../customHooks/useZodFormValidation"
+import { IZodFormValidation } from "zod-react-form"
 
 interface IProps {
   open: boolean
@@ -31,12 +29,10 @@ interface IProps {
   setCompleted: SetState<boolean>
   completed: boolean
   onAddCourse: ClickEventRet<Promise<void>>
-
-  setFieldValue: (key: keyof CourseModelContentInputSchemaType, value: unknown) => void
-  errors: ErrorsType<CourseModelContentInputSchemaType>
-
-  onBlur: (key: keyof CourseModelContentInputSchemaType) => void
-  touched: TouchedType<CourseModelContentInputSchemaType>
+  setFieldValue: IZodFormValidation<CourseModelContentInputSchemaType>["setFieldValue"]
+  errors: IZodFormValidation<CourseModelContentInputSchemaType>["errors"]
+  onBlur: IZodFormValidation<CourseModelContentInputSchemaType>["onBlur"]
+  touched: IZodFormValidation<CourseModelContentInputSchemaType>["touched"]
 }
 
 const AddCourseModal = ({
@@ -53,7 +49,7 @@ const AddCourseModal = ({
   touched,
   errors,
 }: IProps) => {
-  const { title, description, institution, url, certificateUrl } = formValues
+  const { title, description, institution, url, certificateUrl, duration } = formValues
 
   const [newSkill, setNewSkill] = useState<SkillSchemaType | null>()
 
@@ -65,10 +61,6 @@ const AddCourseModal = ({
   }
   const handleCheckBoxChange = (event: ChangeEvent<HTMLInputElement>) => {
     setCompleted(event.target.checked)
-  }
-
-  const onChange = (key: string, value: unknown) => {
-    setFieldValue(key as keyof CourseModelContentInputSchemaType, value)
   }
 
   const onClose = () => {
@@ -85,7 +77,6 @@ const AddCourseModal = ({
 
   const isDisabled = () => {
     const formErrors = Object.values(errors).some((error) => error)
-    console.log(formErrors)
 
     if (formErrors || !topicData.length) {
       return true
@@ -111,7 +102,7 @@ const AddCourseModal = ({
             label="Title"
             type="text"
             fullWidth
-            onChange={(e) => onChange(e.target.name, e.target.value)}
+            onChange={(e) => setFieldValue("title", e.target.value)}
             onBlur={() => onBlur("title")}
             helperText={(touched.title && errors.title) || " "}
             error={Boolean(touched.title && errors.title)}
@@ -127,10 +118,24 @@ const AddCourseModal = ({
             label="Description"
             type="text"
             fullWidth
-            onChange={(e) => onChange(e.target.name, e.target.value)}
+            onChange={(e) => setFieldValue("description", e.target.value)}
             onBlur={() => onBlur("description")}
             helperText={(touched.description && errors.description) || " "}
             error={Boolean(touched.description && errors.description)}
+          />
+          <TextField
+            name="duration"
+            value={duration}
+            inputProps={{ min: 0 }}
+            margin="dense"
+            id="duration"
+            label="Duration in hours"
+            type="number"
+            fullWidth
+            onChange={(e) => setFieldValue("duration", Number(e.target.value))} //onChange("duration", Number(e.target.value))}
+            onBlur={() => onBlur("duration")}
+            helperText={(touched.duration && errors.duration) || " "}
+            error={Boolean(touched.duration && errors.duration)}
           />
           <TextField
             name="url"
@@ -140,7 +145,7 @@ const AddCourseModal = ({
             label="Url to course"
             type="text"
             fullWidth
-            onChange={(e) => onChange(e.target.name, e.target.value)}
+            onChange={(e) => setFieldValue("url", e.target.value)}
             onBlur={() => onBlur("url")}
             helperText={(touched.url && errors.url) || " "}
             error={Boolean(touched.url && errors.url)}
@@ -153,7 +158,7 @@ const AddCourseModal = ({
             label="Url to certificate"
             type="text"
             fullWidth
-            onChange={(e) => onChange(e.target.name, e.target.value)}
+            onChange={(e) => setFieldValue("certificateUrl", e.target.value)}
             onBlur={() => onBlur("certificateUrl")}
             helperText={(touched.certificateUrl && errors.certificateUrl) || " "}
             error={Boolean(touched.certificateUrl && errors.certificateUrl)}
@@ -219,7 +224,7 @@ const AddCourseModal = ({
               value={institution}
               label="Institution"
               name="institution"
-              onChange={(e) => onChange(e.target.name, e.target.value)}
+              onChange={(e) => setFieldValue("institution", e.target.value)}
               onBlur={() => onBlur("institution")}
               error={Boolean(touched.institution && errors.institution)}
             >

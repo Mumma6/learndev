@@ -36,12 +36,12 @@ const items: SidbarNavItems[] = [
   {
     href: "/courses",
     icon: <ImBooks fontSize="small" />,
-    title: "Courses",
+    title: "My courses",
   },
   {
     href: "/projects",
     icon: <AiOutlineFundProjectionScreen fontSize="small" />,
-    title: "Projects",
+    title: "My projects",
   },
   {
     href: "/quizzes",
@@ -58,7 +58,7 @@ const items: SidbarNavItems[] = [
     icon: <FaUser fontSize="small" />,
     title: "Profile",
   },
-
+  /*
   {
     href: "/job-listing",
     icon: <FaBriefcase fontSize="small" />,
@@ -75,7 +75,7 @@ const items: SidbarNavItems[] = [
     icon: <FaUsers fontSize="small" />,
     title: "Study rooms",
   },
-
+*/
   {
     href: "/settings",
     icon: <FaCog fontSize="small" />,

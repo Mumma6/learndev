@@ -86,7 +86,7 @@ const QuizzesCard = ({ quiz }: IProps) => {
           </CardContent>
         </Button>
       </Box>
-      <Box sx={{ flexGrow: 1 }} />
+      <Box sx={{ flexGrow: 1, backgroundColor: !!userQuizResult ? "#cdcdcd" : null }} />
       <Divider />
       <Box sx={{ p: 2 }}>
         <Grid container spacing={2} sx={{ justifyContent: "space-between" }}>

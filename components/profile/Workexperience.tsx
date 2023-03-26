@@ -4,10 +4,10 @@ import Card from "@mui/material/Card"
 import { Button, CardHeader, Divider, Typography } from "@mui/material"
 import WorkexperienceCard from "./WorkexperienceCard"
 import { FaPlus } from "react-icons/fa"
-import SubmitButton from "../SubmitButton"
+import SubmitButton from "../shared/SubmitButton"
 import { useCurrentUser } from "../../lib/hooks"
 import WorkexperienceModal from "./WorkexperienceModal"
-import { fetcher1 } from "../../lib/axiosFetcher"
+import { fetcher } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
 import * as _ from "lodash"
 import { UserModelSchemaType, UserWorkexperienceSchema, UserWorkexperienceSchemaType } from "../../schema/UserSchema"
@@ -90,7 +90,7 @@ const Workexperience = () => {
 
     try {
       setIsLoading(true)
-      const response = await fetcher1<UserModelSchemaType, Pick<UserModelSchemaType, "workexperience">>("/api/user", {
+      const response = await fetcher<UserModelSchemaType, Pick<UserModelSchemaType, "workexperience">>("/api/user", {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
         data: {

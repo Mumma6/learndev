@@ -7,7 +7,7 @@ import CourseCard from "./CourseCard"
 import CoursesToolbar from "./CoursesToolbar"
 import { toast } from "react-toastify"
 import { ClickEvent } from "../../types/generics"
-import { fetcher1 } from "../../lib/axiosFetcher"
+import { fetcher } from "../../lib/axiosFetcher"
 import {
   CourseModelContentInputSchema,
   CourseModelContentInputSchemaType,
@@ -16,7 +16,14 @@ import {
   InstitutionEnum,
 } from "../../schema/CourseSchema"
 import { SkillSchemaType } from "../../schema/SharedSchema"
-import { useZodFormValidation } from "../customHooks/useZodFormValidation"
+import { useZodFormValidation } from "zod-react-form"
+
+/*
+Lägga till en wishlist med kurser?
+
+Göra korten mindre?
+
+*/
 
 export const initialCourseFormState: CourseModelContentInputSchemaType = {
   title: "",
@@ -24,6 +31,7 @@ export const initialCourseFormState: CourseModelContentInputSchemaType = {
   institution: InstitutionEnum.Enum.Other,
   url: "",
   certificateUrl: "",
+  duration: 0,
 }
 
 const Courses = () => {
@@ -40,7 +48,7 @@ const Courses = () => {
 
   const deleteCourse = async (id: string) => {
     console.log("deleing", id)
-    const response = await fetcher1(`/api/courses?id=${id}`, {
+    const response = await fetcher(`/api/courses?id=${id}`, {
       method: "DELETE",
     })
 
@@ -57,7 +65,7 @@ const Courses = () => {
     try {
       setIsLoading(true)
 
-      const response = await fetcher1<undefined, CourseModelformInputType>("/api/courses", {
+      const response = await fetcher<undefined, CourseModelformInputType>("/api/courses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: {
@@ -119,7 +127,7 @@ const Courses = () => {
         <Box sx={{ pt: 3 }}>
           <Box sx={{ mt: 1, mb: 1 }}>
             <Card>
-              <CardHeader subheader="Upcoming and courses in progress" title="Courses" />
+              <CardHeader subheader="Add upcoming and courses you have in progress" title="Courses" />
               <Divider />
               <CardContent>
                 <Grid mb={4} mt={2} container spacing={2}>

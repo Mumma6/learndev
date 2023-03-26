@@ -4,7 +4,7 @@ import NextLink from "next/link"
 import { FaArrowLeft, FaPen, FaPenAlt } from "react-icons/fa"
 import { ProjectModelType, ProjectModelFromInputType } from "../../schema/ProjectSchema"
 import EditProjectModal from "./EditProjectModal"
-import { fetcher1 } from "../../lib/axiosFetcher"
+import { fetcher } from "../../lib/axiosFetcher"
 import { ClickEvent } from "../../types/generics"
 import { useSWRConfig } from "swr"
 

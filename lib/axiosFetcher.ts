@@ -1,10 +1,20 @@
 import axios, { AxiosError, AxiosResponse } from "axios"
 import { Response } from "../types/response"
 
-interface Options<T> {
-  method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH"
+export type HTTPMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH"
+
+export interface Options<T> {
+  method?: HTTPMethod
   data?: T
   headers?: any
+}
+
+export const getHttpOptions = <T>(data: T, method: HTTPMethod): Options<T> => {
+  return {
+    method,
+    headers: { "Content-Type": "application/json" },
+    data,
+  }
 }
 
 const handleResponse = <R>(response: AxiosResponse<R>) => {
@@ -24,7 +34,7 @@ const handleError = <R>(error: AxiosError): Response<R> => {
   }
 }
 
-export const fetcher1 = <R, T>(url?: string, options?: Options<T>): Promise<Response<R>> => {
+export const fetcher = <R, T>(url?: string, options?: Options<T>): Promise<Response<R>> => {
   return axios
     .request({ url, ...options })
     .then(handleResponse)

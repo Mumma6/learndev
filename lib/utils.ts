@@ -7,7 +7,7 @@ import { Db, ObjectId, WithId } from "mongodb"
 import { AnyZodObject } from "zod"
 
 /*
-Update to function to include a status code aswell
+Only used on the server side.
 
 */
 

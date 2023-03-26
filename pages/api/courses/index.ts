@@ -57,7 +57,7 @@ handler.post(...auths, async (req, res) => {
     const createTags = (data: Pick<CourseModelSchemaType, "content" | "topics">) =>
       [data.content.title, data.content.institution, ...data.topics.map((t) => t.label)]
         .map((tag) => tag.toLowerCase())
-        .join(" ,")
+        .join(", ")
 
     const db = await getMongoDb()
 

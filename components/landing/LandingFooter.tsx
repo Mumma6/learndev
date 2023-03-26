@@ -27,9 +27,9 @@ const LandingFooter = () => {
               <Typography variant="h5" gutterBottom>
                 Company
               </Typography>
-              {company.map((page) => (
-                <Box key={page} sx={{ flexGrow: 1, display: { xs: "none", md: "flex", justifyContent: "center" } }}>
-                  <Button sx={{ color: "black", display: "block", fontWeight: 300 }}>{page}</Button>
+              {company.map((page, index) => (
+                <Box key={index} sx={{ flexGrow: 1, display: { xs: "none", md: "flex", justifyContent: "center" } }}>
+                  <Button sx={{ color: "black", display: "block", fontWeight: 300 }}>{index + 111}</Button>
                 </Box>
               ))}
             </div>
@@ -40,9 +40,9 @@ const LandingFooter = () => {
                 About us
               </Typography>
 
-              {aboutUs.map((page) => (
-                <Box key={page} sx={{ flexGrow: 1, display: { xs: "none", md: "flex", justifyContent: "center" } }}>
-                  <Button key={page} sx={{ color: "black", display: "block", fontWeight: 300 }}>
+              {aboutUs.map((page, index) => (
+                <Box key={index} sx={{ flexGrow: 1, display: { xs: "none", md: "flex", justifyContent: "center" } }}>
+                  <Button key={index + 100} sx={{ color: "black", display: "block", fontWeight: 300 }}>
                     {page}
                   </Button>
                 </Box>
@@ -54,9 +54,9 @@ const LandingFooter = () => {
               <Typography variant="h5" gutterBottom>
                 FAQ
               </Typography>
-              {faq.map((page) => (
-                <Box key={page} sx={{ flexGrow: 1, display: { xs: "none", md: "flex", justifyContent: "center" } }}>
-                  <Button key={page} sx={{ color: "black", display: "block", fontWeight: 300 }}>
+              {faq.map((page, index) => (
+                <Box key={index} sx={{ flexGrow: 1, display: { xs: "none", md: "flex", justifyContent: "center" } }}>
+                  <Button key={index + 100} sx={{ color: "black", display: "block", fontWeight: 300 }}>
                     {page}
                   </Button>
                 </Box>

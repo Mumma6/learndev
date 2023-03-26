@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { Box, Container, Grid, Pagination, Card, CardContent, Typography, Divider, CardHeader } from "@mui/material"
 import { toast } from "react-toastify"
 import { ClickEvent } from "../../types/generics"
-import { fetcher1 } from "../../lib/axiosFetcher"
+import { fetcher } from "../../lib/axiosFetcher"
 import { Skill } from "../../constants/skillsData"
 import { useProjects } from "../../lib/hooks"
 import { useSWRConfig } from "swr"
@@ -51,7 +51,7 @@ export const Projects = () => {
     try {
       setIsLoading(true)
 
-      const response = await fetcher1<undefined, ProjectModelFromInputType>("/api/projects", {
+      const response = await fetcher<undefined, ProjectModelFromInputType>("/api/projects", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: {
@@ -80,7 +80,7 @@ export const Projects = () => {
   }
 
   const deleteProject = async (id: string) => {
-    const response = await fetcher1(`/api/projects?id=${id}`, {
+    const response = await fetcher(`/api/projects?id=${id}`, {
       method: "DELETE",
     })
 

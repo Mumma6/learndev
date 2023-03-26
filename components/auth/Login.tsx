@@ -1,49 +1,52 @@
-import { ChangeEvent, useCallback, useEffect, useState } from "react"
-import { Box, Button, Container, Grid, Paper, TextField, Typography } from "@mui/material"
-import { useFormik } from "formik"
+import { FormEvent, useEffect, useState } from "react"
+import { Box, Button, Container, Paper, TextField, Typography } from "@mui/material"
 import NextLink from "next/link"
 import { useRouter } from "next/router"
 import { toast } from "react-toastify"
 import { useCurrentUser } from "../../lib/hooks"
-import SubmitButton from "../SubmitButton"
-import { fetcher1 } from "../../lib/axiosFetcher"
+import SubmitButton from "../shared/SubmitButton"
+import { fetcher, getHttpOptions } from "../../lib/axiosFetcher"
 import { FaArrowLeft } from "react-icons/fa"
-import { toFormikValidate } from "zod-formik-adapter"
 import { UserModelSchemaType, UserRegistrationSchema, UserRegistrationSchemaType } from "../../schema/UserSchema"
+import { Status } from "../../types/status"
+import { useZodFormValidation } from "zod-react-form"
 
 const initialState = {
   email: "",
   password: "",
 }
 
-const Login = () => {
-  const { data, mutate } = useCurrentUser()
+type TLogin = Omit<UserRegistrationSchemaType, "name">
 
+const Login = () => {
+  const [status, setStatus] = useState<Status>("idle")
+  const { data, mutate } = useCurrentUser()
   const router = useRouter()
 
-  const formik = useFormik({
-    initialValues: initialState,
-    validate: toFormikValidate(UserRegistrationSchema.omit({ name: true })),
-    onSubmit: (formValue) => {
-      onSubmit(formValue)
-    },
-  })
+  const { values, errors, setFieldValue, onBlur, touched, isDisabled, setValues, reset } = useZodFormValidation<TLogin>(
+    UserRegistrationSchema.omit({ name: true }),
+    initialState
+  )
 
   useEffect(() => {
-    if (data?.payload) router.replace("/home")
+    if (data?.payload) {
+      router.replace("/home")
+    }
   }, [data?.payload, router])
 
-  const onSubmit = async (formValue: Omit<UserRegistrationSchemaType, "name">) => {
-    const response = await fetcher1<UserModelSchemaType, Omit<UserRegistrationSchemaType, "name">>("/api/auth", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      data: formValue,
-    })
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setStatus("loading")
+    const response = await fetcher<UserModelSchemaType, TLogin>("/api/auth", getHttpOptions(values, "POST"))
 
     if (response.error) {
+      setStatus("error")
       toast.error(response.error)
-      formik.resetForm()
+      setValues(initialState)
+      reset()
     } else {
+      setStatus("success")
+
       mutate({ payload: response.payload })
     }
   }
@@ -67,11 +70,9 @@ const Login = () => {
           }}
         >
           <NextLink href="/" passHref>
-            <Button component="a" startIcon={<FaArrowLeft />}>
-              Home
-            </Button>
+            <Button startIcon={<FaArrowLeft />}>Home</Button>
           </NextLink>
-          <form onSubmit={formik.handleSubmit}>
+          <form onSubmit={onSubmit}>
             <Box sx={{ my: 3 }}>
               <Typography color="textPrimary" variant="h4">
                 Sign in
@@ -84,49 +85,57 @@ const Login = () => {
               }}
             >
               <Typography align="center" color="textSecondary" variant="body1">
-                Login with email address
+                Login with your email address
               </Typography>
             </Box>
             <TextField
-              error={Boolean(formik.touched.email && formik.errors.email)}
               fullWidth
-              helperText={formik.touched.email && formik.errors.email}
               label="Email Address"
               margin="normal"
               name="email"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
+              onBlur={() => onBlur("email")}
+              onChange={(e) => setFieldValue("email", e.target.value)}
+              value={values.email}
               type="email"
-              value={formik.values.email}
               variant="outlined"
+              placeholder=""
+              helperText={(touched.email && errors.email) || " "}
+              error={Boolean(touched.email && errors.email)}
             />
             <TextField
-              error={Boolean(formik.touched.password && formik.errors.password)}
+              error={Boolean(touched.password && errors.password)}
               fullWidth
-              helperText={formik.touched.password && formik.errors.password}
+              helperText={touched.password && errors.password}
               label="Password"
               margin="normal"
               name="password"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
+              onBlur={() => onBlur("password")}
+              onChange={(e) => setFieldValue("password", e.target.value)}
               type="password"
-              value={formik.values.password}
+              value={values.password}
               variant="outlined"
             />
             <Box sx={{ py: 2 }}>
               <SubmitButton
                 text="Sign in Now"
-                isLoading={formik.isSubmitting}
-                isDisabled={!formik.isValid || !formik.dirty}
+                isLoading={status === "loading" || status === "success"}
+                isDisabled={isDisabled() || status === "loading" || status === "success"}
               />
             </Box>
-            <NextLink href="/forgot-password" passHref>
-              Forget password
-            </NextLink>
-            <Typography color="textSecondary" variant="body2">
-              Don&apos;t have an account? <NextLink href="/sign-up">Sign Up</NextLink>
-            </Typography>
           </form>
+          <NextLink href="/forgot-password" passHref>
+            Forget password
+          </NextLink>
+          <div style={{ display: "flex" }}>
+            <Typography mt={1} mr={1} color="textSecondary" variant="body2">
+              Don&apos;t have an account?
+            </Typography>
+            <NextLink href="/sign-up">
+              <Typography mt={1} color="textSecondary" variant="body2">
+                Sign up
+              </Typography>
+            </NextLink>
+          </div>
         </Paper>
       </Container>
     </Box>

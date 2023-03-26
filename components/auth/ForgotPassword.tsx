@@ -1,13 +1,13 @@
 import React, { useState, ChangeEvent, FormEvent } from "react"
 
-import SubmitButton from "../SubmitButton"
+import SubmitButton from "../shared/SubmitButton"
 import { toast } from "react-toastify"
 import useRedirect from "../customHooks/useRedirect"
 import { Status } from "../../types/status"
 import { FaArrowLeft } from "react-icons/fa"
 import NextLink from "next/link"
-import { Box, Button, Container, Grid, Link, TextField, Typography } from "@mui/material"
-import { fetcher1 } from "../../lib/axiosFetcher"
+import { Box, Button, Container, TextField, Typography } from "@mui/material"
+import { fetcher } from "../../lib/axiosFetcher"
 
 const ForgotPassword = () => {
   const [status, setStatus] = useState<Status>("idle")
@@ -19,7 +19,7 @@ const ForgotPassword = () => {
     event.preventDefault()
     try {
       setStatus("loading")
-      const response = await fetcher1("/api/user/password/reset", {
+      const response = await fetcher("/api/user/password/reset", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: email,

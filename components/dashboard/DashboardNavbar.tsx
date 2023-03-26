@@ -6,7 +6,7 @@ import { FaBell, FaSignOutAlt, FaUser, FaUserCircle, FaUsers } from "react-icons
 import { useCurrentUser } from "../../lib/hooks"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
-import { fetcher1 } from "../../lib/axiosFetcher"
+import { fetcher } from "../../lib/axiosFetcher"
 import Link from "next/link"
 
 const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
@@ -25,7 +25,7 @@ export const DashboardNavbar = ({ onSidebarOpen }: IProps) => {
 
   const onSignOut = useCallback(async () => {
     try {
-      await fetcher1("/api/auth", {
+      await fetcher("/api/auth", {
         method: "DELETE",
       })
       toast.success("You have been signed out")

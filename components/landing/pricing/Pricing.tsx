@@ -109,8 +109,8 @@ const Pricing = () => {
           </p>
         </Box>
         <Grid container spacing={3}>
-          {DATA.map((data) => (
-            <Grid item xs={12} sm={12} md={6}>
+          {DATA.map((data, index) => (
+            <Grid key={index} item xs={12} sm={12} md={6}>
               <PricingCard data={data} />
             </Grid>
           ))}

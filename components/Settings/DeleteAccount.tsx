@@ -9,7 +9,7 @@ import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 
 import { toast } from "react-toastify"
-import { fetcher1 } from "../../lib/axiosFetcher"
+import { fetcher } from "../../lib/axiosFetcher"
 import { useRouter } from "next/router"
 import { useCurrentUser } from "../../lib/hooks"
 
@@ -30,7 +30,7 @@ const DeleteAccount = () => {
   const handleDelete = async () => {
     try {
       setIsLoading(true)
-      const response = await fetcher1("/api/user", {
+      const response = await fetcher("/api/user", {
         method: "DELETE",
       })
 

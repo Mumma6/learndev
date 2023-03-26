@@ -10,6 +10,7 @@
     "@emotion/react": "^11.10.5",
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.10.5",
+    "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.10.15",
     "@mui/types": "^7.2.1",
     "@mui/x-date-pickers": "^5.0.12",
@@ -51,7 +52,8 @@
     "vercel": "^28.4.14",
     "yup": "^0.32.11",
     "zod": "^3.20.2",
-    "zod-formik-adapter": "^1.2.0"
+    "zod-formik-adapter": "^1.2.0",
+    "zod-react-form": "^1.0.22"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",

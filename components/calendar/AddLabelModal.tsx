@@ -17,7 +17,7 @@ import { Box, Button, Divider, IconButton, List, ListItem, ListItemText, TextFie
 import { HexColorPicker } from "react-colorful"
 import { useCurrentUser } from "../../lib/hooks"
 import { toast } from "react-toastify"
-import { fetcher1 } from "../../lib/axiosFetcher"
+import { fetcher } from "../../lib/axiosFetcher"
 import { FaTrash } from "react-icons/fa"
 
 interface IProps {
@@ -51,7 +51,7 @@ const AddLabelModal = ({ open, handleClose }: IProps) => {
         ],
       }
 
-      const response = await fetcher1<UserModelSchemaType, Input>("/api/user", {
+      const response = await fetcher<UserModelSchemaType, Input>("/api/user", {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
         data: {
@@ -86,7 +86,7 @@ const AddLabelModal = ({ open, handleClose }: IProps) => {
         labels: [...(data?.payload?.userSettings.labels || [])].filter((label) => label.name !== name),
       }
 
-      const response = await fetcher1<UserModelSchemaType, Input>("/api/user", {
+      const response = await fetcher<UserModelSchemaType, Input>("/api/user", {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
         data: {

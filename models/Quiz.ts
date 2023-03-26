@@ -19,4 +19,5 @@ export interface IQuiz {
   tags: string[] // t ex "javascript, functionell programming, front end."
   passingScore: number
   questions: IQuestion[]
+  mainTopic: string
 }

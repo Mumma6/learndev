@@ -3,21 +3,61 @@ import { Box, Card, CardContent, CardHeader, Divider, Typography, useTheme } fro
 import { Bar } from "react-chartjs-2"
 import { useCourses, useProjects } from "../../lib/hooks"
 import { SkillSchemaType } from "../.../../../schema/SharedSchema"
+import CardHeaderTitle from "../shared/CardHeaderTitle"
 
 const TopicsChart = () => {
   const theme = useTheme()
   const { data: courseData } = useCourses()
   const { data: projectData } = useProjects()
 
-  interface Label {
-    name: string
-    number: number
+  type Total = {
+    [key: string]: number
   }
+
+  const topicsOccurrences = [
+    courseData?.payload?.map((course) => course.topics.map((topic) => topic.label)).flat(),
+    projectData?.payload?.map((project) => project.techStack.map((project) => project.label)).flat(),
+  ]
+    .flat()
+    .filter(Boolean) as string[]
+
+  const getNumberOfOccurrences = (list: string[]) => {
+    return list.reduce((total: Total, skill: string) => {
+      total[skill] = total[skill] ? total[skill] + 1 : 1
+      return total
+    }, {})
+  }
+
+  const mappedOccurrences = Object.entries(getNumberOfOccurrences(topicsOccurrences))
+    .map(([topic, value]) => ({
+      [topic]: value,
+    }))
+    .sort((a, b) => {
+      const valueA = Object.values(a)[0]
+      const valueB = Object.values(b)[0]
+      return valueB - valueA
+    })
+    .slice(0, 5)
+    .sort((a, b) => {
+      const keyA = Object.keys(a)[0]
+      const keyB = Object.keys(b)[0]
+      if (keyA < keyB) return -1
+      if (keyA > keyB) return 1
+      return 0
+    })
 
   const options = {
     responsive: true,
     legend: {
       display: false,
+    },
+    scales: {
+      y: {
+        min: 0,
+        ticks: {
+          stepSize: 1,
+        },
+      },
     },
     maintainAspectRatio: false,
     plugins: {
@@ -38,39 +78,26 @@ const TopicsChart = () => {
     },
   }
 
-  const labels: Label[] = [
-    {
-      name: "react",
-      number: 5,
-    },
-    {
-      name: "javascript",
-      number: 12,
-    },
-    {
-      name: "html",
-      number: 8,
-    },
-    {
-      name: "mongodb",
-      number: 1,
-    },
-  ]
-
   const data = {
-    labels: labels.map(({ name }) => name),
+    labels: mappedOccurrences.map((obj) => Object.keys(obj)[0]),
     datasets: [
       {
-        data: labels.map((label) => label.number),
-        backgroundColor: ["#14b8a6", "#7c4dff", "#3F51B5", "#e53935"],
-
+        data: mappedOccurrences.map((obj) => Object.values(obj)[0]),
+        backgroundColor: ["#14b8a6", "#7c4dff", "#3F51B5", "#e53935", "#FF9800"],
         maxBarThickness: 50,
       },
     ],
   }
   return (
     <Card sx={{ height: "100%" }}>
-      <CardHeader title="Topics covered" subheader="Most used techs" />
+      <CardHeader
+        title={
+          <CardHeaderTitle
+            title="Tech coverage"
+            toolTipText="This graph shows your most used technologies from your courses and projects. Each number represent how many courses and projects use that technology"
+          />
+        }
+      />
       <Divider />
       <CardContent>
         <Box

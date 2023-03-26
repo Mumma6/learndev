@@ -15,11 +15,11 @@ import { isEqual } from "lodash"
 import { useRouter } from "next/router"
 import { skillsData } from "../../constants/skillsData"
 import { FaPlus } from "react-icons/fa"
-import SubmitButton from "../SubmitButton"
+import SubmitButton from "../shared/SubmitButton"
 import { SkillSchemaType } from "../../schema/SharedSchema"
 import { useFormik } from "formik"
 import { toFormikValidate } from "zod-formik-adapter"
-import { fetcher1 } from "../../lib/axiosFetcher"
+import { fetcher } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
 import {
   Autocomplete,
@@ -52,7 +52,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
   const [disabled, setDisabeld] = useState(false)
 
   const { content, _id, completed } = course
-  const { title, description, url, certificateUrl, institution } = content
+  const { title, description, url, certificateUrl, duration } = content
 
   // Create a useSkillsHook
   const addNewskill = () => {
@@ -94,6 +94,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
       url,
       certificateUrl,
       completed,
+      duration,
     },
     validate: toFormikValidate(validateSchema),
     onSubmit: (formValues) => {
@@ -110,6 +111,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
       formik.values.title === course.content.title &&
       formik.values.description === course.content.description &&
       formik.values.url === course.content.url &&
+      formik.values.duration === course.content.duration &&
       formik.values.certificateUrl === course.content.certificateUrl &&
       !!formik.values.completed === !!course.completed &&
       isEqual(topicsData, course.topics)
@@ -126,7 +128,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
     try {
       setIsLoading(true)
 
-      const response = await fetcher1<CourseModelSchemaType, Partial<CourseModelSchemaType>>("/api/courses", {
+      const response = await fetcher<CourseModelSchemaType, Partial<CourseModelSchemaType>>("/api/courses", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         data: {
@@ -136,6 +138,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
             url: formValues.url,
             certificateUrl: formValues.certificateUrl,
             institution: course.content.institution,
+            duration: formValues.duration,
           },
           completed: formik.values.completed,
           topics: topicsData,
@@ -194,6 +197,20 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
               value={formik.values.description}
               helperText={(formik.touched?.description && formik.errors?.description) || " "}
               error={Boolean(formik.touched?.description && formik.errors?.description)}
+            />
+            <TextField
+              name="duration"
+              inputProps={{ min: 0 }}
+              margin="dense"
+              id="duration"
+              label="Duration in hours"
+              type="number"
+              fullWidth
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.duration}
+              helperText={(formik.touched?.duration && formik.errors?.duration) || " "}
+              error={Boolean(formik.touched?.duration && formik.errors?.duration)}
             />
             <TextField
               name="url"

@@ -1,5 +1,17 @@
 import React, { useState } from "react"
-import { Box, Paper, Card, CardContent, CardHeader, Divider, Container, Button, Typography, Chip } from "@mui/material"
+import {
+  Box,
+  Paper,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  Container,
+  Button,
+  Typography,
+  Chip,
+  duration,
+} from "@mui/material"
 import NextLink from "next/link"
 import { FaArrowLeft, FaPen } from "react-icons/fa"
 import { CourseModelSchemaType } from "../../schema/CourseSchema"
@@ -45,7 +57,7 @@ const Course = ({ course }: IProps) => {
               Edit
             </Button>
           </Box>
-          <CardHeader title={course.content.title} />
+          <CardHeader title={course.content.title} subheader={`Duration: ${course.content.duration} hours`} />
           <Box m={2}>
             <NextLink style={{ textDecoration: "none" }} target="_blank" href={course.content.url} passHref>
               <Button component="a">Go to course</Button>

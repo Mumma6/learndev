@@ -1,7 +1,18 @@
 import React, { useState, useCallback, useEffect } from "react"
 import * as _ from "lodash"
 
-import { Box, Container, Typography, Pagination, Card, CardContent, CardHeader, Divider, Button } from "@mui/material"
+import {
+  Box,
+  Container,
+  Typography,
+  Pagination,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  Button,
+  ButtonGroup,
+} from "@mui/material"
 
 import { Calendar, dateFnsLocalizer, Event, Views } from "react-big-calendar"
 
@@ -21,7 +32,7 @@ import { IQuiz } from "../../models/Quiz"
 import AddEventInfoModal from "./AddEventInfoModal"
 import { ClickEvent } from "../../types/generics"
 import { useCourses, useCurrentUser, useEvents } from "../../lib/hooks"
-import { fetcher1 } from "../../lib/axiosFetcher"
+import { fetcher } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
 import { useSWRConfig } from "swr"
 import EditEventInfoModal from "./EditEventInfoModal"
@@ -161,7 +172,7 @@ const StudyCalendar = () => {
     if (match) {
       try {
         const { _id } = match
-        const response = await fetcher1(`/api/events?_id=${_id}`, {
+        const response = await fetcher(`/api/events?_id=${_id}`, {
           method: "DELETE",
         })
 
@@ -199,7 +210,7 @@ const StudyCalendar = () => {
     }
 
     try {
-      const response = await fetcher1<undefined, Omit<IEventInfo, "userId">>("/api/events", {
+      const response = await fetcher<undefined, Omit<IEventInfo, "userId">>("/api/events", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: {
@@ -226,7 +237,7 @@ const StudyCalendar = () => {
     e.preventDefault()
 
     try {
-      const response = await fetcher1<undefined, Omit<IEventInfo, "userId">>("/api/events", {
+      const response = await fetcher<undefined, Omit<IEventInfo, "userId">>("/api/events", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: {
@@ -250,6 +261,13 @@ const StudyCalendar = () => {
       handleClose()
     }
   }
+  /*
+ <Box mt={2}>
+              <Button onClick={() => setOpenLabelModal(true)} size="small" variant="contained">
+                Create study plan, "go to new page"
+              </Button>
+            </Box>
+  */
 
   return (
     <Box
@@ -264,19 +282,23 @@ const StudyCalendar = () => {
       <AddLabelModal open={openLabelModal} handleClose={() => setOpenLabelModal(false)} />
       <Container maxWidth={false}>
         <Card>
-          <CardHeader title="Calendar" subheader="Use for planning" />
+          <CardHeader
+            title="Calendar"
+            subheader="Use the calender to plan your study. Create different labels to stay organized and link to different activities. Use the button to Add event or drag your mouse in the calendar"
+          />
           <Divider />
           <CardContent>
-            <Box>
-              <Button onClick={() => setOpenExternModal(true)} size="small" variant="contained">
-                Add event
-              </Button>
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <ButtonGroup size="large" variant="contained" aria-label="outlined primary button group">
+                <Button onClick={() => setOpenExternModal(true)} size="small" variant="contained">
+                  Add event
+                </Button>
+                <Button onClick={() => setOpenLabelModal(true)} size="small" variant="contained">
+                  Create label
+                </Button>
+              </ButtonGroup>
             </Box>
-            <Box mt={2}>
-              <Button onClick={() => setOpenLabelModal(true)} size="small" variant="contained">
-                Create label
-              </Button>
-            </Box>
+            <Box></Box>
 
             <Divider style={{ margin: 10 }} />
             <AddEventModal

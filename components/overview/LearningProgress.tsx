@@ -2,7 +2,12 @@ import React from "react"
 import { Avatar, Box, Card, CardContent, Grid, LinearProgress, Typography } from "@mui/material"
 import { FaChartBar } from "react-icons/fa"
 
-const LearningProgress = () => {
+/*
+
+
+*/
+
+const LearningProgress = ({ number }: { number: number }) => {
   return (
     <Card sx={{ height: "100%" }}>
       <CardContent>
@@ -12,7 +17,7 @@ const LearningProgress = () => {
               MONTHLY PROGRESS
             </Typography>
             <Typography color="textPrimary" variant="h4">
-              75.5%
+              {`${number}%`}
             </Typography>
           </Grid>
           <Grid item>

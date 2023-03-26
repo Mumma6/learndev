@@ -11,6 +11,7 @@ import { useEvents } from "../../lib/hooks"
 import { format, isAfter, startOfDay, startOfToday } from "date-fns"
 import { IEventInfo } from "../../models/EventInfo"
 import _ from "lodash"
+import CardHeaderTitle from "../shared/CardHeaderTitle"
 
 const UpcomingEvents = () => {
   const { data } = useEvents()
@@ -34,7 +35,9 @@ const UpcomingEvents = () => {
 
   return (
     <Card sx={{ height: "100%" }}>
-      <CardHeader title="Upcoming events" />
+      <CardHeader
+        title={<CardHeaderTitle title="Upcoming events" toolTipText="This graph shows your next 5 upcoming events" />}
+      />
       <Divider />
       <CardContent>
         <TableContainer component={Paper}>

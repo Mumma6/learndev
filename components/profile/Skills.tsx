@@ -1,12 +1,12 @@
 import React, { useState, FormEvent } from "react"
 import { Box, Alert, Card, CardContent, CardHeader, Divider, TextField, Button } from "@mui/material"
-import SubmitButton from "../SubmitButton"
+import SubmitButton from "../shared/SubmitButton"
 import Chip from "@mui/material/Chip"
 import Paper from "@mui/material/Paper"
 import Autocomplete from "@mui/material/Autocomplete"
 import { skillsData } from "../../constants/skillsData"
 import { FaPlus } from "react-icons/fa"
-import { fetcher1 } from "../../lib/axiosFetcher"
+import { fetcher } from "../../lib/axiosFetcher"
 
 import { toast } from "react-toastify"
 import { useCurrentUser } from "../../lib/hooks"
@@ -54,7 +54,7 @@ const Skills = () => {
 
     try {
       setIsLoading(true)
-      const response = await fetcher1<UserModelSchemaType, Pick<UserModelSchemaType, "skills">>("/api/user", {
+      const response = await fetcher<UserModelSchemaType, Pick<UserModelSchemaType, "skills">>("/api/user", {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
         data: {

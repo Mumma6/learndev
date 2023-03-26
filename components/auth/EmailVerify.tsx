@@ -1,7 +1,7 @@
 import { Alert, Button } from "@mui/material"
 import React, { useState } from "react"
 import { toast } from "react-toastify"
-import { fetcher1 } from "../../lib/axiosFetcher"
+import { fetcher } from "../../lib/axiosFetcher"
 import { UserModelSchemaType } from "../../schema/UserSchema"
 import { Status } from "../../types/status"
 
@@ -12,7 +12,7 @@ const EmailVerify = ({ user }: { user: UserModelSchemaType }) => {
     event.preventDefault()
     try {
       setStatus("loading")
-      const response = await fetcher1("/api/user/email/verify", {
+      const response = await fetcher("/api/user/email/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: {

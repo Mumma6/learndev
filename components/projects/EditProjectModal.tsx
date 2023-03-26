@@ -8,14 +8,14 @@ import { ProjectModelFormInputSchema, ProjectModelFromInputType, ProjectModelTyp
 import { toFormikValidate } from "zod-formik-adapter"
 import { useFormik } from "formik"
 import { truncate } from "fs"
-import { fetcher1 } from "../../lib/axiosFetcher"
+import { fetcher } from "../../lib/axiosFetcher"
 import { SkillSchemaType } from "../../schema/SharedSchema"
 import { toast } from "react-toastify"
 import { useSWRConfig } from "swr"
 import { Autocomplete, Box, Button, Checkbox, Chip, Paper, TextField, Typography } from "@mui/material"
 import { skillsData } from "../../constants/skillsData"
 import { FaPlus } from "react-icons/fa"
-import SubmitButton from "../SubmitButton"
+import SubmitButton from "../shared/SubmitButton"
 import { isEqual } from "lodash"
 import { useRouter } from "next/router"
 
@@ -103,7 +103,7 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
     try {
       setIsLoading(true)
 
-      const response = await fetcher1<ProjectModelType, Partial<ProjectModelType>>("/api/projects", {
+      const response = await fetcher<ProjectModelType, Partial<ProjectModelType>>("/api/projects", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         data: {

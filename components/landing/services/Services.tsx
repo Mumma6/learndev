@@ -75,8 +75,8 @@ const Services = () => {
         </Box>
         <Grid mb={4} mt={2} container spacing={2}>
           {SERVICES_DATA.map((service, index) => (
-            <Grid item lg={4} md={4} sm={6} xs={12}>
-              <ServiceCard image={service.image} text={service.text} heading={service.heading} key={index} />
+            <Grid key={index} item lg={4} md={4} sm={6} xs={12}>
+              <ServiceCard image={service.image} text={service.text} heading={service.heading} />
             </Grid>
           ))}
         </Grid>

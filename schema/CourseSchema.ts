@@ -5,9 +5,9 @@ import { ObjectId } from "bson"
 
 /*
 
-Make a seperate type for the datebase stuff?
+Add array of tasks.
 
-extends the rest but with _id as objectID
+id and status maybe?
 
 */
 
@@ -18,6 +18,7 @@ export type InstitutionEnumType = z.infer<typeof InstitutionEnum>
 export const CourseModelContentInputSchema = z.object({
   title: z.string().min(1).max(100),
   description: z.string().min(1).max(1500),
+  duration: z.number(),
   url: z.string().url(),
   certificateUrl: z.union([z.literal(""), z.string().trim().url()]).default(""),
   institution: InstitutionEnum,

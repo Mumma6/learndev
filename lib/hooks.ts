@@ -7,7 +7,7 @@ import { CourseModelSchemaType } from "../schema/CourseSchema"
 import { ProjectModelType } from "../schema/ProjectSchema"
 import { UserModelSchemaType } from "../schema/UserSchema"
 
-import { fetcher1 } from "./axiosFetcher"
+import { fetcher } from "./axiosFetcher"
 
 // useSWR vs useSWRImmutable
 // https://swr.vercel.app/docs/revalidation#disable-automatic-revalidations
@@ -16,26 +16,26 @@ import { fetcher1 } from "./axiosFetcher"
 // Zod will replace all Interfaces. Make sure the hooks still work with the infer type
 
 export function useCurrentUser() {
-  return useSWRImmutable("/api/user", (url) => fetcher1<UserModelSchemaType | null, undefined>(url))
+  return useSWRImmutable("/api/user", (url) => fetcher<UserModelSchemaType | null, undefined>(url))
 }
 
 export const useCourses = () => {
-  return useSWR("/api/courses", (url) => fetcher1<CourseModelSchemaType[], undefined>(url))
+  return useSWR("/api/courses", (url) => fetcher<CourseModelSchemaType[], undefined>(url))
 }
 
 export const useProjects = () => {
-  return useSWR("/api/projects", (url) => fetcher1<ProjectModelType[], undefined>(url))
+  return useSWR("/api/projects", (url) => fetcher<ProjectModelType[], undefined>(url))
 }
 
 export const useEvents = () => {
-  return useSWR("/api/events", (url) => fetcher1<IEventInfo[], undefined>(url))
+  return useSWR("/api/events", (url) => fetcher<IEventInfo[], undefined>(url))
 }
 
 export const useQuizzes = () => {
-  return useSWR("/api/quizzes", (url) => fetcher1<IQuiz[], undefined>(url))
+  return useSWR("/api/quizzes", (url) => fetcher<IQuiz[], undefined>(url))
 }
 
 // This will get ALL results. Create a seperate serverless function for user specifik results?
 export const useQuizResults = () => {
-  return useSWR("/api/quizresults", (url) => fetcher1<IQuizResult[], undefined>(url))
+  return useSWR("/api/quizresults", (url) => fetcher<IQuizResult[], undefined>(url))
 }

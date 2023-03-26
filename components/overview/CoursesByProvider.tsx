@@ -2,6 +2,7 @@ import React from "react"
 import { Doughnut } from "react-chartjs-2"
 import { Box, Card, CardContent, CardHeader, Divider, Typography, useTheme } from "@mui/material"
 import { CourseModelSchemaType } from "../../schema/CourseSchema"
+import CardHeaderTitle from "../shared/CardHeaderTitle"
 
 type InstitutionCount = {
   [key: string]: number
@@ -75,7 +76,14 @@ const CoursesByProvider = ({ courses }: IProps) => {
 
   return (
     <Card sx={{ height: "100%" }}>
-      <CardHeader title="Courses by provider" />
+      <CardHeader
+        title={
+          <CardHeaderTitle
+            title="Courses by provider"
+            toolTipText="This graph shows the number of courses you have from each provider. This will give you an overview of your favorit learning resource"
+          />
+        }
+      />
       <Divider />
       <CardContent>
         <Box
@@ -93,6 +101,11 @@ const CoursesByProvider = ({ courses }: IProps) => {
             pt: 2,
           }}
         >
+          {!amountOfProviders.length && (
+            <Typography color="textPrimary" variant="body1">
+              No courses
+            </Typography>
+          )}
           {amountOfProviders.map(({ color, institution, percentage }) => (
             <Box
               key={institution}

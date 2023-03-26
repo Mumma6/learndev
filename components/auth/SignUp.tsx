@@ -1,15 +1,15 @@
-import { ChangeEvent, useCallback, useEffect, useState } from "react"
-import { Box, Button, Container, Grid, Link, Paper, TextField, Typography } from "@mui/material"
-import { useFormik } from "formik"
-import { toFormikValidationSchema, toFormikValidate } from "zod-formik-adapter"
+import { FormEvent, useEffect, useState } from "react"
+import { Box, Button, Container, Link, Paper, TextField, Typography } from "@mui/material"
 import NextLink from "next/link"
 import { useRouter } from "next/router"
 import { toast } from "react-toastify"
 import { useCurrentUser } from "../../lib/hooks"
-import SubmitButton from "../SubmitButton"
-import { fetcher1 } from "../../lib/axiosFetcher"
+import SubmitButton from "../shared/SubmitButton"
+import { fetcher, getHttpOptions } from "../../lib/axiosFetcher"
 import { FaArrowLeft } from "react-icons/fa"
 import { UserModelSchemaType, UserRegistrationSchema, UserRegistrationSchemaType } from "../../schema/UserSchema"
+import { Status } from "../../types/status"
+import { useZodFormValidation } from "zod-react-form"
 
 const initialState = {
   name: "",
@@ -19,43 +19,40 @@ const initialState = {
 
 const SignUp = () => {
   const { data, mutate } = useCurrentUser()
-  const [isLoading, setIsLoading] = useState(false)
+  const [status, setStatus] = useState<Status>("idle")
 
   const router = useRouter()
 
-  const formik = useFormik({
-    initialValues: initialState,
-    validate: toFormikValidate(UserRegistrationSchema),
-    onSubmit: (formValues) => {
-      onSubmit(formValues)
-    },
-  })
+  const { values, errors, setFieldValue, onBlur, touched, isDisabled, setValues, reset } =
+    useZodFormValidation<UserRegistrationSchemaType>(UserRegistrationSchema.omit({ name: true }), initialState)
 
   useEffect(() => {
     if (data?.payload) router.replace("/home")
   }, [data?.payload, router])
 
-  const onSubmit = async (formValues: UserRegistrationSchemaType) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
     try {
-      setIsLoading(true)
-      const response = await fetcher1<UserModelSchemaType, UserRegistrationSchemaType>("/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        data: formValues,
-      })
+      setStatus("loading")
+      const response = await fetcher<UserModelSchemaType, UserRegistrationSchemaType>(
+        "/api/users",
+        getHttpOptions(values, "POST")
+      )
       if (response.error) {
         toast.error(response.error)
+        setStatus("error")
+        setValues(initialState)
+        reset()
       } else {
         mutate({ payload: response.payload }, false)
         toast.success("Your account has been created")
-        setIsLoading(false)
+        setStatus("success")
         router.replace("/home")
       }
     } catch (e: any) {
       console.log(e)
     } finally {
-      setIsLoading(false)
-      formik.resetForm()
+      reset()
     }
   }
 
@@ -78,55 +75,62 @@ const SignUp = () => {
           }}
         >
           <NextLink href="/" passHref>
-            <Button disabled={isLoading} component="a" startIcon={<FaArrowLeft />}>
+            <Button disabled={status === "loading"} startIcon={<FaArrowLeft />}>
               Home
             </Button>
           </NextLink>
-          <form onSubmit={formik.handleSubmit}>
+          <form onSubmit={onSubmit}>
             <Box sx={{ my: 3 }}>
               <Typography color="textPrimary" variant="h4">
                 Create a new account
               </Typography>
-              <Typography color="textSecondary" gutterBottom variant="body2">
+            </Box>
+            <Box
+              sx={{
+                pb: 1,
+                pt: 1,
+              }}
+            >
+              <Typography align="center" color="textSecondary" variant="body1">
                 Use your email to create a new account
               </Typography>
             </Box>
             <TextField
-              error={Boolean(formik.touched.name && formik.errors.name)}
+              error={Boolean(touched.name && errors.name)}
               fullWidth
-              helperText={formik.touched.name && formik.errors.name}
+              helperText={touched.name && errors.name}
               label="Name"
               margin="normal"
               name="name"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.name}
+              onBlur={() => onBlur("name")}
+              onChange={(e) => setFieldValue("name", e.target.value)}
+              value={values.name}
               variant="outlined"
             />
             <TextField
-              error={Boolean(formik.touched.email && formik.errors.email)}
+              error={Boolean(touched.email && errors.email)}
               fullWidth
-              helperText={formik.touched.email && formik.errors.email}
+              helperText={touched.email && errors.email}
               label="Email Address"
               margin="normal"
               name="email"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
               type="email"
-              value={formik.values.email}
+              onBlur={() => onBlur("email")}
+              onChange={(e) => setFieldValue("email", e.target.value)}
+              value={values.email}
               variant="outlined"
             />
             <TextField
-              error={Boolean(formik.touched.password && formik.errors.password)}
+              error={Boolean(touched.password && errors.password)}
               fullWidth
-              helperText={formik.touched.password && formik.errors.password}
+              helperText={touched.password && errors.password}
               label="Password"
               margin="normal"
               name="password"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
               type="password"
-              value={formik.values.password}
+              onBlur={() => onBlur("password")}
+              onChange={(e) => setFieldValue("password", e.target.value)}
+              value={values.password}
               variant="outlined"
             />
             <Box
@@ -138,7 +142,11 @@ const SignUp = () => {
             ></Box>
 
             <Box sx={{ py: 2 }}>
-              <SubmitButton text="Sign up Now" isLoading={isLoading} isDisabled={!formik.isValid || !formik.dirty} />
+              <SubmitButton
+                text="Sign up Now"
+                isLoading={status === "loading"}
+                isDisabled={isDisabled() || status === "loading" || status === "success"}
+              />
             </Box>
             <Typography color="textSecondary" variant="body2">
               Have an account?{" "}

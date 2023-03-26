@@ -1,16 +1,34 @@
 import React from "react"
 import { Radar } from "react-chartjs-2"
 import { Box, Card, CardContent, CardHeader, Divider, Typography, useTheme } from "@mui/material"
+import CardHeaderTitle from "../shared/CardHeaderTitle"
+import { useCurrentUser, useQuizResults } from "../../lib/hooks"
 
 const UserSkillProfile = () => {
   const theme = useTheme()
 
+  const { data: userQuizData } = useQuizResults()
+  const { data: userData } = useCurrentUser()
+  const userQuizResult = userQuizData?.payload?.filter((p) => p.user_id === userData?.payload?._id)
+
+  // utveckla denna funktion så den tar hänsyn till fler saker för en bättre "viktning"
+
+  const getPercentageValue = (score: number, maxScore: number) => {
+    return (score / maxScore) * 100
+  }
+
+  // Måste ha minst 3 träffar?
+  const mappedResults = userQuizResult?.map((res) => ({
+    label: res.title,
+    weight: getPercentageValue(res.score, res.maxScore),
+  }))
+
   const data = {
-    labels: ["Javascript", "React", "CSS", "HTML"],
+    labels: mappedResults?.map(({ label }) => label),
     datasets: [
       {
-        label: "Skillset",
-        data: [70, 90, 30, 55],
+        label: "",
+        data: mappedResults?.map(({ weight }) => weight),
         backgroundColor: "rgb(205, 187, 255)", // theme.palette.primary.main,
         borderColor: theme.palette.primary.main,
         borderWidth: 2,
@@ -24,7 +42,12 @@ const UserSkillProfile = () => {
       max: 100,
       fontColor: theme.palette.text.secondary,
     },
-    maintainAspectRatio: true,
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    maintainAspectRatio: false,
     responsive: true,
     tooltips: {
       backgroundColor: theme.palette.background.paper,
@@ -39,37 +62,26 @@ const UserSkillProfile = () => {
     },
   }
 
-  const mappedData = [
-    {
-      label: "Javascript",
-      number: 70,
-    },
-    {
-      label: "react",
-      number: 10,
-    },
-    {
-      label: "html",
-      number: 50,
-    },
-    {
-      label: "css",
-      number: 30,
-    },
-  ]
   return (
     <Card sx={{ height: "100%" }}>
-      <CardHeader title="Skill overview" />
+      <CardHeader
+        title={
+          <CardHeaderTitle title="Skill profile" toolTipText="This graph shows your skill profile based quiz results" />
+        }
+      />
       <Divider />
       <CardContent>
-        <Box
-          sx={{
-            height: 300,
+        <div
+          style={{
             position: "relative",
+            marginLeft: "auto",
+            marginRight: "auto",
+            height: "20rem",
+            width: "20rem",
           }}
         >
           <Radar data={data} options={options} />
-        </Box>
+        </div>
         <Box
           sx={{
             display: "flex",
@@ -77,7 +89,7 @@ const UserSkillProfile = () => {
             pt: 2,
           }}
         >
-          {mappedData.map(({ label, number }, index) => (
+          {mappedResults?.map(({ label, weight }, index) => (
             <Box
               key={index}
               sx={{
@@ -88,7 +100,7 @@ const UserSkillProfile = () => {
               <Typography color="textPrimary" variant="body1">
                 {label}
               </Typography>
-              <Typography variant="body1">{number}</Typography>
+              <Typography variant="body1">{weight}</Typography>
             </Box>
           ))}
         </Box>

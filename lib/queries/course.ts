@@ -33,13 +33,6 @@ export const findCoursebyId = async (db: Db, _id: string) => {
 }
 
 export const updateCourseById = async (db: Db, data: Partial<CourseModelSchemaType>) => {
-  /*
-  const createTags = (data: Pick<ProjectModelType, "techStack" | "title">) =>
-    [data.title, ...data.techStack.map((t) => t.label)].map((tag) => tag.toLowerCase()).join(", ")
-
-  const tags = createTags(data)
-  */
-
   const dataToUpdate = { ...data }
 
   delete dataToUpdate._id

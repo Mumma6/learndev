@@ -1,18 +1,17 @@
-import { useEffect, useState, FormEvent, ChangeEvent } from "react"
+import { useState, FormEvent } from "react"
 import Box from "@mui/material/Box"
 import Card from "@mui/material/Card"
-import { Button, CardContent, CardHeader, Divider, TextField, Typography } from "@mui/material"
+import { CardContent, CardHeader, Divider, TextField } from "@mui/material"
 import { FaBlog, FaGithub, FaHome, FaLinkedin, FaTwitter, FaYoutube } from "react-icons/fa"
 import * as _ from "lodash"
 
 import { CgWebsite } from "react-icons/cg"
-import SubmitButton from "../SubmitButton"
+import SubmitButton from "../shared/SubmitButton"
 import { useCurrentUser } from "../../lib/hooks"
-import { fetcher1 } from "../../lib/axiosFetcher"
+import { fetcher } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
-import { useFormik } from "formik"
-import { toFormikValidate } from "zod-formik-adapter"
 import { UserModelSchemaType, UserSocialsSchema, UserSocialsSchemaType } from "../../schema/UserSchema"
+import { useZodFormValidation } from "zod-react-form"
 
 const initialFormState = {
   twitter: "",
@@ -27,17 +26,15 @@ const Socials = () => {
   const { data, mutate } = useCurrentUser()
   const [isLoading, setIsLoading] = useState(false)
 
-  const formik = useFormik({
-    initialValues: {
+  const { values, errors, setFieldValue, onBlur, touched, isDisabled } = useZodFormValidation<UserSocialsSchemaType>(
+    UserSocialsSchema,
+    {
       ...(data?.payload?.socials ? data?.payload?.socials : initialFormState),
-    },
-    validate: toFormikValidate(UserSocialsSchema),
-    onSubmit: (formValue) => {
-      onSubmit(formValue)
-    },
-  })
+    }
+  )
 
-  const onSubmit = async (formValue: UserSocialsSchemaType) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
     console.log("submit")
     try {
       setIsLoading(true)
@@ -46,11 +43,11 @@ const Socials = () => {
         socials: UserSocialsSchemaType
       }
 
-      const response = await fetcher1<UserModelSchemaType, Input>("/api/user", {
+      const response = await fetcher<UserModelSchemaType, Input>("/api/user", {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
         data: {
-          socials: formValue,
+          socials: values,
         },
       })
       if (response.error) {
@@ -68,7 +65,7 @@ const Socials = () => {
   }
 
   return (
-    <form onSubmit={formik.handleSubmit}>
+    <form onSubmit={onSubmit}>
       <Card>
         <CardHeader title="Socials" subheader="Add your socials here" />
         <Divider />
@@ -76,17 +73,16 @@ const Socials = () => {
           <Box>
             <Box sx={{ display: "flex", alignItems: "flex-end", marginBottom: 1 }}>
               <FaGithub style={{ marginRight: 25, marginBottom: 30, fontSize: 25 }} />
-
               <TextField
                 label="Github"
                 name="github"
                 variant="standard"
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={formik.values.github}
+                onBlur={() => onBlur("github")}
+                onChange={(e) => setFieldValue("github", e.target.value)}
+                value={values.github}
                 type="text"
-                helperText={(formik.touched.github && formik.errors.github) || " "}
-                error={Boolean(formik.touched.github && formik.errors.github)}
+                helperText={(touched.github && errors.github) || " "}
+                error={Boolean(touched.github && errors.github)}
                 style={{ width: 500 }}
               />
             </Box>
@@ -95,11 +91,11 @@ const Socials = () => {
               <TextField
                 label="Twitter"
                 name="twitter"
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={formik.values.twitter}
-                helperText={(formik.touched.twitter && formik.errors.twitter) || " "}
-                error={Boolean(formik.touched.twitter && formik.errors.twitter)}
+                onBlur={() => onBlur("twitter")}
+                onChange={(e) => setFieldValue("twitter", e.target.value)}
+                value={values.twitter}
+                helperText={(touched.twitter && errors.twitter) || " "}
+                error={Boolean(touched.twitter && errors.twitter)}
                 type="text"
                 variant="standard"
                 style={{ width: 500 }}
@@ -110,11 +106,11 @@ const Socials = () => {
               <TextField
                 label="Linkedin"
                 name="linkedin"
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={formik.values.linkedin}
-                helperText={(formik.touched.linkedin && formik.errors.linkedin) || " "}
-                error={Boolean(formik.touched.linkedin && formik.errors.linkedin)}
+                onBlur={() => onBlur("linkedin")}
+                onChange={(e) => setFieldValue("linkedin", e.target.value)}
+                value={values.linkedin}
+                helperText={(touched.linkedin && errors.linkedin) || " "}
+                error={Boolean(touched.linkedin && errors.linkedin)}
                 type="text"
                 variant="standard"
                 style={{ width: 500 }}
@@ -125,11 +121,11 @@ const Socials = () => {
               <TextField
                 label="Youtube"
                 name="youtube"
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={formik.values.youtube}
-                helperText={(formik.touched.youtube && formik.errors.youtube) || " "}
-                error={Boolean(formik.touched.youtube && formik.errors.youtube)}
+                onBlur={() => onBlur("youtube")}
+                onChange={(e) => setFieldValue("youtube", e.target.value)}
+                value={values.youtube}
+                helperText={(touched.youtube && errors.youtube) || " "}
+                error={Boolean(touched.youtube && errors.youtube)}
                 type="text"
                 variant="standard"
                 style={{ width: 500 }}
@@ -140,11 +136,11 @@ const Socials = () => {
               <TextField
                 label="Personal website"
                 name="personalWebsite"
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={formik.values.personalWebsite}
-                helperText={(formik.touched.personalWebsite && formik.errors.personalWebsite) || " "}
-                error={Boolean(formik.touched.personalWebsite && formik.errors.personalWebsite)}
+                onBlur={() => onBlur("personalWebsite")}
+                onChange={(e) => setFieldValue("personalWebsite", e.target.value)}
+                value={values.personalWebsite}
+                helperText={(touched.personalWebsite && errors.personalWebsite) || " "}
+                error={Boolean(touched.personalWebsite && errors.personalWebsite)}
                 type="text"
                 variant="standard"
                 style={{ width: 500 }}
@@ -155,11 +151,11 @@ const Socials = () => {
               <TextField
                 label="Blog"
                 name="blog"
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={formik.values.blog}
-                helperText={(formik.touched.blog && formik.errors.blog) || " "}
-                error={Boolean(formik.touched.blog && formik.errors.blog)}
+                onBlur={() => onBlur("blog")}
+                onChange={(e) => setFieldValue("blog", e.target.value)}
+                value={values.blog}
+                helperText={(touched.blog && errors.blog) || " "}
+                error={Boolean(touched.blog && errors.blog)}
                 type="text"
                 variant="standard"
                 style={{ width: 500 }}
@@ -182,7 +178,7 @@ const Socials = () => {
               size={"medium"}
               text="Update socials"
               isLoading={isLoading}
-              isDisabled={!formik.isValid || _.isEqual(formik.values, data?.payload?.socials)}
+              isDisabled={isDisabled() || _.isEqual(values, data?.payload?.socials)}
             />
           </Box>
         </CardContent>

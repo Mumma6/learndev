@@ -89,8 +89,8 @@ const PricingCard = ({ data }: IProps) => {
         <Divider />
         <Box mt={5}>
           <List sx={{ marginBottom: 10 }}>
-            {features.map((feature) => (
-              <ListItem>
+            {features.map((feature, index) => (
+              <ListItem key={index}>
                 <ListItemIcon>
                   {feature.isAvailable ? <FaCheck color="#14B8A6" /> : <ImCross color="#e1e1e1" />}
                 </ListItemIcon>

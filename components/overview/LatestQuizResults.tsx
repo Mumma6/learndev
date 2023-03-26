@@ -10,6 +10,10 @@ import Paper from "@mui/material/Paper"
 import { styled } from "@mui/material/styles"
 
 import LinearProgress, { linearProgressClasses } from "@mui/material/LinearProgress"
+import InfoTooltip from "../shared/Tooltip"
+import CardHeaderTitle from "../shared/CardHeaderTitle"
+import { IQuizResult } from "../../models/QuizResult"
+import { useQuizzes } from "../../lib/hooks"
 
 const getBackgroundColor = (theme: any, value: number | undefined) => {
   if (!value) {
@@ -34,10 +38,42 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme, value }) => ({
   },
 }))
 
-const LatestQuizResults = () => {
+interface IProps {
+  quizResults: IQuizResult[]
+}
+
+const LatestQuizResults = ({ quizResults }: IProps) => {
+  const getAvatarUrl = (title: string) => {
+    return title.includes("React") ? "/assets/images/react-logo.png" : "/assets/images/Javascript_Logo.png"
+  }
+
+  const getPercentageValue = (score: number, maxScore: number) => {
+    return (score / maxScore) * 100
+  }
+
+  const createRow = (result: IQuizResult) => (
+    <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+      <TableCell component="th" scope="row">
+        <Box sx={{ display: "flex" }}>
+          <Avatar sx={{ width: 24, height: 24 }} alt="JS Logo" src={getAvatarUrl(result.title)} />
+          <Typography ml={1}>{result.title}</Typography>
+        </Box>
+      </TableCell>
+      <TableCell>
+        <Box>
+          <Box>
+            <BorderLinearProgress variant="determinate" value={getPercentageValue(result.score, result.maxScore)} />
+          </Box>
+        </Box>
+      </TableCell>
+    </TableRow>
+  )
+
   return (
     <Card sx={{ height: "100%" }}>
-      <CardHeader title="Latest quizzes" />
+      <CardHeader
+        title={<CardHeaderTitle title="Latest quizzes" toolTipText="This graph shows your latest quiz results" />}
+      />
       <Divider />
       <CardContent>
         <TableContainer component={Paper}>
@@ -48,34 +84,7 @@ const LatestQuizResults = () => {
                 <TableCell align="right">Score</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                <TableCell component="th" scope="row">
-                  <Box sx={{ display: "flex" }}>
-                    <Avatar sx={{ width: 24, height: 24 }} alt="JS Logo" src="/assets/images/Javascript_Logo.png" />
-                    <Typography ml={1}>Javascript</Typography>
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box>
-                    <Box>
-                      <BorderLinearProgress variant="determinate" value={80} />
-                    </Box>
-                  </Box>
-                </TableCell>
-              </TableRow>
-              <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                <TableCell component="th" scope="row">
-                  <Box sx={{ display: "flex" }}>
-                    <Avatar sx={{ width: 24, height: 24 }} alt="JS Logo" src="/assets/images/react-logo.png" />
-                    <Typography ml={1}>React</Typography>
-                  </Box>
-                </TableCell>
-                <TableCell align="right">
-                  <BorderLinearProgress variant="determinate" value={30} />
-                </TableCell>
-              </TableRow>
-            </TableBody>
+            <TableBody>{quizResults.map((result) => createRow(result))}</TableBody>
           </Table>
         </TableContainer>
       </CardContent>

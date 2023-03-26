@@ -1,12 +1,12 @@
 import React from "react"
 import { IQuestion, IQuiz } from "../../models/Quiz"
 import { Box, Paper, Card, CardContent, CardHeader, Divider, Container, Button } from "@mui/material"
-import SubmitButton from "../SubmitButton"
+import SubmitButton from "../shared/SubmitButton"
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa"
 import NextLink from "next/link"
 import Question from "./Question"
 import { useCurrentUser } from "../../lib/hooks"
-import { fetcher1 } from "../../lib/axiosFetcher"
+import { fetcher } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
 import { UserModelSchemaType } from "../../schema/UserSchema"
 
@@ -16,7 +16,7 @@ interface IProps {
 
 const Quiz = ({ quiz }: IProps) => {
   const { data } = useCurrentUser()
-  const { title, questions, passingScore } = quiz
+  const { title, questions, passingScore, difficulty, mainTopic } = quiz
 
   const [currentIndex, setCurrentIndex] = React.useState(0)
   const [currentQuestion, setCurrentQuestion] = React.useState<IQuestion>(questions[currentIndex])
@@ -51,7 +51,7 @@ const Quiz = ({ quiz }: IProps) => {
     event.preventDefault()
     console.log("User", data?.payload?.name, " fick", score, " poäng")
 
-    const quizResultResponse = await fetcher1("/api/quizresults", {
+    const quizResultResponse = await fetcher("/api/quizresults", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       data: {
@@ -59,10 +59,14 @@ const Quiz = ({ quiz }: IProps) => {
         user_id: data?.payload?._id,
         score,
         approved: score >= passingScore,
+        difficulty,
+        maxScore: questions.length,
+        topic: mainTopic,
+        title,
       },
     })
 
-    const userResponse = await fetcher1<UserModelSchemaType, Pick<UserModelSchemaType, "completedQuizzes">>("/api/user", {
+    const userResponse = await fetcher<UserModelSchemaType, Pick<UserModelSchemaType, "completedQuizzes">>("/api/user", {
       headers: { "Content-Type": "application/json" },
       method: "PATCH",
       data: {
@@ -124,7 +128,7 @@ const Quiz = ({ quiz }: IProps) => {
         }}
       >
         <Container maxWidth="lg">
-          <Card>
+          <Card sx={{ marginTop: 4 }}>
             <Box m={2}>
               <NextLink style={{ textDecoration: "none" }} href="/quizzes" passHref>
                 <Button disabled={isLoading} component="a" startIcon={<FaArrowLeft />}>

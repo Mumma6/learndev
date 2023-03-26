@@ -1,9 +1,9 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect } from "react"
 
 import { toast } from "react-toastify"
-import SubmitButton from "../SubmitButton"
+import SubmitButton from "../shared/SubmitButton"
 import { Box, Alert, Card, CardContent, CardHeader, Divider, TextField } from "@mui/material"
-import { fetcher1 } from "../../lib/axiosFetcher"
+import { fetcher } from "../../lib/axiosFetcher"
 
 const ChangePassword = () => {
   const [oldPassword, setOldPassword] = useState("")
@@ -38,7 +38,7 @@ const ChangePassword = () => {
 
     try {
       setIsLoading(true)
-      const response = await fetcher1("/api/user/password", {
+      const response = await fetcher("/api/user/password", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         data: {
