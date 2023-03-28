@@ -102,6 +102,10 @@ const columns: GridColDef[] = [
     },
   },
   */
+
+  // lägg till en colum för completed också. Yes or No. Chip.
+  // lägg den brevid toggle knappen. Dom två ska ligga i samma rendercell
+  // delete ska få en egen.
 ]
 
 const rows = [
