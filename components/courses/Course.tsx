@@ -23,10 +23,7 @@ interface IProps {
 // single course
 
 /*
-Display all info. Should be able to edit
 
-Add resource stuff here.
-Feedback aswell. 
 
 
 */

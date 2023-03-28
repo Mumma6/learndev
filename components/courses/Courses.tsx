@@ -23,6 +23,8 @@ Lägga till en wishlist med kurser?
 
 Göra korten mindre?
 
+lägg knappen  "gå till" brevid delete
+
 */
 
 export const initialCourseFormState: CourseModelContentInputSchemaType = {

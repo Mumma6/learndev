@@ -13,14 +13,15 @@ import {
 } from "@mui/material"
 import { FaSearch } from "react-icons/fa"
 import Switch from "@mui/material/Switch"
+import { SetState } from "../../types/generics"
 
 interface IProps {
   handleClickOpen: () => void
-  // and checked and onchange to Switch
+  setShowCompleted: SetState<boolean>
+  showCompleted: boolean
 }
 
-const TasksToolbar = ({ handleClickOpen }: IProps) => {
-  const [showCompleted, setShowCompleted] = useState(false)
+const TasksToolbar = ({ handleClickOpen, showCompleted, setShowCompleted }: IProps) => {
   return (
     <Box mt={1} mb={1}>
       <Box sx={{ mt: 3 }}>
