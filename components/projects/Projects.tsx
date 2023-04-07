@@ -19,6 +19,18 @@ export const initialProjectsFormData: Omit<ProjectModelFromInputType, "techStack
   deployedUrl: "",
 }
 
+/*
+
+Använd mui tabs. En för varje status.
+https://mui.com/material-ui/react-tabs/
+använd "centered" och disabla sånt som är tomt?
+
+Gör mindre kort.
+
+Sök visar resultat per tab
+
+*/
+
 export const Projects = () => {
   const [open, setOpen] = useState(false)
 

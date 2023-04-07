@@ -3,14 +3,6 @@ import { z } from "zod"
 import { SkillSchema } from "./SharedSchema"
 import { ObjectId } from "bson"
 
-/*
-
-Add array of tasks.
-
-id and status maybe?
-
-*/
-
 export const InstitutionEnum = z.enum(["Udemy", "Youtube", "Pluralsight", "Linkedin", "Other"])
 
 export type InstitutionEnumType = z.infer<typeof InstitutionEnum>
@@ -27,7 +19,7 @@ export const CourseModelContentInputSchema = z.object({
 export type CourseModelContentInputSchemaType = z.infer<typeof CourseModelContentInputSchema>
 
 export const CourseModelformInputSchema = z.object({
-  completed: z.boolean().default(false),
+  status: z.enum(["inProgress", "done", "wishlist"]),
   content: CourseModelContentInputSchema,
   topics: z.array(SkillSchema),
 })
@@ -40,6 +32,8 @@ export const CourseModelSchema = CourseModelformInputSchema.extend({
   _id: z.union([z.string(), z.instanceof(ObjectId).transform((id) => id.toString())]),
   tags: z.string(),
   createdAt: z.date(),
+  tasks: z.array(z.string()).default([]),
+  resources: z.array(z.string()).default([]),
 })
 
 export type CourseModelSchemaType = z.infer<typeof CourseModelSchema>

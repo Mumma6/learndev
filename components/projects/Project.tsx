@@ -14,10 +14,7 @@ interface IProps {
 
 /*
 
-Edit ska öppna en EditModal. fälten ska populeras från project propen. 
-Ska skicka en patch med nya datan (samma som när man skapar, samma schema osv).
-
-Kolla hur User gör med sin patch. Behöver vi ett lika avancerat defaultValues() här?
+lägg till 2 listor under kortet med tasks och resources.
 
 */
 

@@ -7,7 +7,7 @@ export const ProjectModelFormInputSchema = z.object({
   title: z.string().min(1).max(100),
   description: z.string().min(1).max(1500),
   techStack: z.array(SkillSchema),
-  completed: z.boolean().default(false),
+  status: z.enum(["inProgress", "done", "wishlist"]),
   sourceCodeUrl: z.union([z.literal(""), z.string().trim().url()]).default(""),
   deployedUrl: z.union([z.literal(""), z.string().trim().url()]).default(""),
 })
@@ -19,6 +19,8 @@ export const ProjectModelSchema = ProjectModelFormInputSchema.extend({
   _id: z.union([z.string(), z.instanceof(ObjectId).transform((id) => id.toString())]),
   tags: z.string(),
   createdAt: z.date(),
+  tasks: z.array(z.string()).default([]),
+  resources: z.array(z.string()).default([]),
 })
 
 export type ProjectModelType = z.infer<typeof ProjectModelSchema>
