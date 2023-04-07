@@ -1,4 +1,17 @@
-import { Box, Container, Grid, Pagination, Card, CardContent, Typography, Divider, CardHeader } from "@mui/material"
+import {
+  Box,
+  Container,
+  Grid,
+  Pagination,
+  Card,
+  CardContent,
+  Typography,
+  Divider,
+  CardHeader,
+} from "@mui/material"
+import Tabs from "@mui/material/Tabs"
+import Tab from "@mui/material/Tab"
+
 import { useEffect, useState } from "react"
 import { useCourses } from "../../lib/hooks"
 import { useSWRConfig } from "swr"
@@ -11,9 +24,11 @@ import { fetcher } from "../../lib/axiosFetcher"
 import {
   CourseModelContentInputSchema,
   CourseModelContentInputSchemaType,
+  CourseModelSchemaType,
   CourseModelformInputSchema,
   CourseModelformInputType,
   InstitutionEnum,
+  StatusEnum,
 } from "../../schema/CourseSchema"
 import { SkillSchemaType } from "../../schema/SharedSchema"
 import { useZodFormValidation } from "zod-react-form"
@@ -31,6 +46,7 @@ export const initialCourseFormState: CourseModelContentInputSchemaType = {
   title: "",
   description: "",
   institution: InstitutionEnum.Enum.Other,
+  status: StatusEnum.Enum["In progress"],
   url: "",
   certificateUrl: "",
   duration: 0,
@@ -39,11 +55,18 @@ export const initialCourseFormState: CourseModelContentInputSchemaType = {
 const Courses = () => {
   const [open, setOpen] = useState(false)
   const [topicData, setTopicData] = useState<SkillSchemaType[]>([])
-  const [completed, setCompleted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [value, setValue] = useState("1") // show correct courses based on this state
+
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    setValue(newValue)
+  }
 
   const { values, setValues, errors, setFieldValue, onBlur, touched, reset } =
-    useZodFormValidation<CourseModelContentInputSchemaType>(CourseModelContentInputSchema, initialCourseFormState)
+    useZodFormValidation<CourseModelContentInputSchemaType>(
+      CourseModelContentInputSchema,
+      initialCourseFormState
+    )
 
   const { data } = useCourses()
   const { mutate } = useSWRConfig()
@@ -67,15 +90,17 @@ const Courses = () => {
     try {
       setIsLoading(true)
 
-      const response = await fetcher<undefined, CourseModelformInputType>("/api/courses", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        data: {
-          content: values,
-          topics: topicData,
-          completed,
-        },
-      })
+      const response = await fetcher<CourseModelSchemaType, CourseModelformInputType>(
+        "/api/courses",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          data: {
+            content: values,
+            topics: topicData,
+          },
+        }
+      )
 
       if (response?.error) {
         toast.error(response.error)
@@ -99,7 +124,6 @@ const Courses = () => {
   const handleClose = () => {
     setValues(initialCourseFormState)
     setTopicData([])
-    setCompleted(false)
     reset()
     setOpen(false)
   }
@@ -115,10 +139,8 @@ const Courses = () => {
         handleClose={handleClose}
         formValues={values}
         onAddCourse={onAddCourse}
-        setCompleted={setCompleted}
         setTopicData={setTopicData}
         topicData={topicData}
-        completed={completed}
         onBlur={onBlur}
         touched={touched}
         setFieldValue={setFieldValue}
@@ -126,57 +148,30 @@ const Courses = () => {
       />
       <Container maxWidth={false}>
         <CoursesToolbar handleClickOpen={handleClickOpen} />
-        <Box sx={{ pt: 3 }}>
-          <Box sx={{ mt: 1, mb: 1 }}>
-            <Card>
-              <CardHeader subheader="Add upcoming and courses you have in progress" title="Courses" />
-              <Divider />
-              <CardContent>
-                <Grid mb={4} mt={2} container spacing={2}>
-                  {!isLoading &&
-                    data?.payload
-                      ?.filter((c) => !c.completed)
-                      .map((course) => (
-                        <Grid item key={course._id} xl={3} lg={4} md={4} sm={6} xs={12}>
-                          <CourseCard deleteCourse={deleteCourse} course={course} />
-                        </Grid>
-                      ))}
-                </Grid>
-              </CardContent>
-            </Card>
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            pt: 3,
-          }}
-        >
-          {false && <Pagination color="primary" count={3} size="small" />}
-        </Box>
-      </Container>
-      <Container maxWidth={false}>
-        <Box sx={{ pt: 1 }}>
-          <Box sx={{ mt: 3, mb: 3 }}>
-            <Card>
-              <CardHeader subheader="Archive of completed courses" title="Completed courses" />
-              <Divider />
-              <CardContent style={{ padding: 13 }}>
-                <Grid mb={4} mt={2} container spacing={2}>
-                  {!isLoading &&
-                    data?.payload
-                      ?.filter((c) => c.completed)
-                      .map((course) => (
-                        <Grid item key={course._id} xl={3} lg={4} md={4} sm={6} xs={12}>
-                          <CourseCard deleteCourse={deleteCourse} course={course} />
-                        </Grid>
-                      ))}
-                </Grid>
-              </CardContent>
-            </Card>
-          </Box>
-        </Box>
+        <Card>
+          <CardHeader
+            title={
+              <Tabs centered value={value} onChange={handleChange} aria-label="basic tabs example">
+                <Tab label="In progress" value={"1"} />
+                <Tab label="Done" value={"2"} />
+                <Tab label="Wishlist" value={"3"} />
+              </Tabs>
+            }
+          />
+          <Divider />
+          <CardContent>
+            <Grid mb={4} mt={2} container spacing={2}>
+              {!isLoading &&
+                data?.payload
+                  ?.map((course) => (
+                    <Grid item key={course._id} xl={3} lg={4} md={4} sm={6} xs={12}>
+                      <CourseCard deleteCourse={deleteCourse} course={course} />
+                    </Grid>
+                  ))}
+            </Grid>
+          </CardContent>
+        </Card>
+
         <Box
           sx={{
             display: "flex",

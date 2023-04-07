@@ -5,8 +5,10 @@ import {
   CourseModelContentInputSchema,
   CourseModelformInputType,
   InstitutionEnum,
+  StatusEnum,
 } from "../../schema/CourseSchema"
 import Dialog from "@mui/material/Dialog"
+import FormControl from "@mui/material/FormControl"
 import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
@@ -51,8 +53,8 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
 
   const [disabled, setDisabeld] = useState(false)
 
-  const { content, _id, completed } = course
-  const { title, description, url, certificateUrl, duration } = content
+  const { content, _id } = course
+  const { title, description, url, certificateUrl, duration, status } = content
 
   // Create a useSkillsHook
   const addNewskill = () => {
@@ -93,8 +95,8 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
       description,
       url,
       certificateUrl,
-      completed,
       duration,
+      status,
     },
     validate: toFormikValidate(validateSchema),
     onSubmit: (formValues) => {
@@ -113,7 +115,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
       formik.values.url === course.content.url &&
       formik.values.duration === course.content.duration &&
       formik.values.certificateUrl === course.content.certificateUrl &&
-      !!formik.values.completed === !!course.completed &&
+      !!formik.values.status === !!course.content.status &&
       isEqual(topicsData, course.topics)
     )
   }
@@ -139,8 +141,8 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
             certificateUrl: formValues.certificateUrl,
             institution: course.content.institution,
             duration: formValues.duration,
+            status: formValues.status,
           },
-          completed: formik.values.completed,
           topics: topicsData,
           _id,
         },
@@ -239,20 +241,23 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
               error={Boolean(formik.touched?.certificateUrl && formik.errors?.certificateUrl)}
             />
             <Box sx={{ marginTop: 2, marginBottom: 2 }}>
-              <Typography
-                variant="h6"
-                color="text"
-                sx={{ display: "inline-block", marginRight: 1, fontSize: 16, fontWeight: 400 }}
-              >
-                Completed
-              </Typography>
-              <Checkbox
-                sx={{ transform: "scale(1)" }}
-                name="completed"
-                onChange={formik.handleChange}
-                value={formik.values.completed}
-                checked={formik.values.completed}
-              />
+            <FormControl fullWidth style={{ marginTop: 20, marginBottom: 20 }}>
+            <InputLabel id="demo-simple-select-label">Status</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+            
+              label="Course status"
+              name="status"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.status}
+            >
+              <MenuItem value={StatusEnum.Enum.Done}>Done</MenuItem>
+              <MenuItem value={StatusEnum.Enum["In progress"]}>In progress</MenuItem>
+              <MenuItem value={StatusEnum.Enum.Wishlist}>Wishlist</MenuItem>
+            </Select>
+          </FormControl>
             </Box>
           </Box>
           <Box>

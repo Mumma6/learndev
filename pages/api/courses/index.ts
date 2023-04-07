@@ -68,6 +68,8 @@ handler.post(...auths, async (req, res) => {
       userId: req.user._id,
       tags,
       createdAt: new Date(),
+      tasks: [], // får komma in som data
+      resources: [] // får komma in som data
     })
 
     handleAPIResponse(res, null, "Course added")

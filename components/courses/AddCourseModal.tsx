@@ -19,6 +19,7 @@ import { FaPlus } from "react-icons/fa"
 import { SkillSchemaType } from "../../schema/SharedSchema"
 import { CourseModelContentInputSchemaType, InstitutionEnum } from "../../schema/CourseSchema"
 import { IZodFormValidation } from "zod-react-form"
+import { StatusEnum } from "../../schema/CourseSchema"
 
 interface IProps {
   open: boolean
@@ -26,8 +27,6 @@ interface IProps {
   formValues: CourseModelContentInputSchemaType
   topicData: SkillSchemaType[]
   setTopicData: SetState<SkillSchemaType[]>
-  setCompleted: SetState<boolean>
-  completed: boolean
   onAddCourse: ClickEventRet<Promise<void>>
   setFieldValue: IZodFormValidation<CourseModelContentInputSchemaType>["setFieldValue"]
   errors: IZodFormValidation<CourseModelContentInputSchemaType>["errors"]
@@ -40,8 +39,7 @@ const AddCourseModal = ({
   handleClose,
   formValues,
   onAddCourse,
-  setCompleted,
-  completed,
+
   setTopicData,
   topicData,
   setFieldValue,
@@ -49,7 +47,7 @@ const AddCourseModal = ({
   touched,
   errors,
 }: IProps) => {
-  const { title, description, institution, url, certificateUrl, duration } = formValues
+  const { title, description, institution, url, certificateUrl, duration, status } = formValues
 
   const [newSkill, setNewSkill] = useState<SkillSchemaType | null>()
 
@@ -58,9 +56,6 @@ const AddCourseModal = ({
       setTopicData((data) => [...data, newSkill])
       setNewSkill(null)
     }
-  }
-  const handleCheckBoxChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setCompleted(event.target.checked)
   }
 
   const onClose = () => {
@@ -89,7 +84,9 @@ const AddCourseModal = ({
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Add course</DialogTitle>
       <DialogContent>
-        <DialogContentText>To add a course, please fill in the information below.</DialogContentText>
+        <DialogContentText>
+          To add a course, please fill in the information below.
+        </DialogContentText>
 
         <Box component="form" mt={4}>
           <TextField
@@ -163,12 +160,25 @@ const AddCourseModal = ({
             helperText={(touched.certificateUrl && errors.certificateUrl) || " "}
             error={Boolean(touched.certificateUrl && errors.certificateUrl)}
           />
-          <FormControlLabel
-            control={
-              <Checkbox checked={completed} onChange={handleCheckBoxChange} inputProps={{ "aria-label": "controlled" }} />
-            }
-            label="Course completed"
-          />
+
+          <FormControl fullWidth style={{ marginTop: 20, marginBottom: 20 }}>
+            <InputLabel id="demo-simple-select-label">Status</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={status}
+              label="Course status"
+              name="status"
+              onChange={(e) => setFieldValue("status", e.target.value)}
+              onBlur={() => onBlur("status")}
+              error={Boolean(touched.status && errors.status)}
+            >
+              <MenuItem value={StatusEnum.Enum.Done}>Done</MenuItem>
+              <MenuItem value={StatusEnum.Enum["In progress"]}>In progress</MenuItem>
+              <MenuItem value={StatusEnum.Enum.Wishlist}>Wishlist</MenuItem>
+            </Select>
+          </FormControl>
+
           <Box
             sx={{
               display: "flex",
@@ -209,7 +219,12 @@ const AddCourseModal = ({
                   component="ul"
                 >
                   {topicData.map((data) => (
-                    <Chip key={data.label} color="primary" label={data.label} onDelete={handleTopicDelete(data)} />
+                    <Chip
+                      key={data.label}
+                      color="primary"
+                      label={data.label}
+                      onDelete={handleTopicDelete(data)}
+                    />
                   ))}
                 </Paper>
               </Box>

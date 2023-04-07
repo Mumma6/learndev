@@ -7,19 +7,23 @@ export const InstitutionEnum = z.enum(["Udemy", "Youtube", "Pluralsight", "Linke
 
 export type InstitutionEnumType = z.infer<typeof InstitutionEnum>
 
+export const StatusEnum = z.enum(["In progress", "Done", "Wishlist"])
+
+export type StatusEnumType = z.infer<typeof StatusEnum>
+
 export const CourseModelContentInputSchema = z.object({
   title: z.string().min(1).max(100),
   description: z.string().min(1).max(1500),
   duration: z.number(),
   url: z.string().url(),
   certificateUrl: z.union([z.literal(""), z.string().trim().url()]).default(""),
+  status: StatusEnum,
   institution: InstitutionEnum,
 })
 
 export type CourseModelContentInputSchemaType = z.infer<typeof CourseModelContentInputSchema>
 
 export const CourseModelformInputSchema = z.object({
-  status: z.enum(["inProgress", "done", "wishlist"]),
   content: CourseModelContentInputSchema,
   topics: z.array(SkillSchema),
 })
@@ -40,16 +44,3 @@ export type CourseModelSchemaType = z.infer<typeof CourseModelSchema>
 
 export type CourseModelformInputType = z.infer<typeof CourseModelformInputSchema>
 
-/*
-Field ideas
-
-export interface IResources {
-  title: string
-  link: string // url, github repo osv osv.
-}
-
-learningResources?: IResources[], Eller från en egen collection.
-  duration?: string // Hur lång den är. t ex 3h eller 20h
-  feedback?: string
-
-*/
