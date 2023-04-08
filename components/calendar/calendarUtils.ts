@@ -10,7 +10,7 @@ export interface ActivitesData {
 
 export const getCourses = (data: CourseModelSchemaType[]): ActivitesData[] => {
   return data
-    .filter((d) => !d.completed)
+    .filter((d) => d.content.status !== "Done")
     .map((d) => ({
       id: d._id,
       name: d.content.title,
@@ -20,7 +20,7 @@ export const getCourses = (data: CourseModelSchemaType[]): ActivitesData[] => {
 
 export const getProjects = (data: ProjectModelType[]): ActivitesData[] => {
   return data
-    .filter((d) => !d.completed)
+    .filter((d) => d.status !== "Done")
     .map((d) => ({
       id: d._id,
       name: d.title,
