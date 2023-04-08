@@ -66,6 +66,8 @@ handler.post(...auths, async (req, res) => {
       tags,
       userId: req.user?._id,
       createdAt: new Date(),
+      tasks: [], // får komma in som data
+      resources: [], // får komma in som data
     })
     handleAPIResponse(res, null, "Project added")
   } catch (error) {

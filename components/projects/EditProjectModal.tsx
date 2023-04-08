@@ -43,6 +43,10 @@ interface IProps {
   project: ProjectModelType
 }
 
+/*
+change this to use zodReactFrom
+*/
+
 const EditProjectModal = ({ open, handleClose, project }: IProps) => {
   const [isLoading, setIsLoading] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -89,7 +93,6 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
       deployedUrl,
       status,
     },
-    validate: toFormikValidate(ProjectModelFormInputSchema.omit({ techStack: true })),
     onSubmit: (formValues) => {
       onAddProject(formValues)
     },
@@ -117,7 +120,7 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
   }
 
   // Vi kan ändra formValues till en partial om vi vill uppdatera fler saker än det som är i ModelFormInput.
-  const onAddProject = async (formValues: Omit<ProjectModelFromInputType, "techStack">) => {
+  const onAddProject = async (formValues: any) => {
     try {
       setIsLoading(true)
 

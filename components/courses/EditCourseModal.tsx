@@ -44,6 +44,8 @@ interface IProps {
   course: CourseModelSchemaType
 }
 
+// change this to use zodReactFrom
+
 const EditCourseModal = ({ open, handleClose, course }: IProps) => {
   const [isLoading, setIsLoading] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -98,7 +100,6 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
       duration,
       status,
     },
-    validate: toFormikValidate(validateSchema),
     onSubmit: (formValues) => {
       onUpdateCourse(formValues)
     },
@@ -126,7 +127,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
     handleClose()
   }
 
-  const onUpdateCourse = async (formValues: validateSchemaType) => {
+  const onUpdateCourse = async (formValues: any) => {
     try {
       setIsLoading(true)
 
