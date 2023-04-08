@@ -6,12 +6,13 @@ import { MdSchool } from "react-icons/md"
 interface IProps {
   completedAmount: number
   inProgressAmount: number
+  wishlistAmount: number
 }
 
 // visa completed courses x och courses inprogress x
 // två rader
 
-const TotalCourses = ({ completedAmount, inProgressAmount }: IProps) => {
+const TotalCourses = ({ completedAmount, inProgressAmount, wishlistAmount }: IProps) => {
   return (
     <Card sx={{ height: "100%" }}>
       <CardContent>
@@ -28,6 +29,11 @@ const TotalCourses = ({ completedAmount, inProgressAmount }: IProps) => {
             <Box>
               <Typography sx={{ fontSize: 18 }} color="textPrimary" variant="overline">
                 In progress: {inProgressAmount}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography sx={{ fontSize: 18 }} color="textPrimary" variant="overline">
+                Wishlist: {wishlistAmount}
               </Typography>
             </Box>
           </Grid>

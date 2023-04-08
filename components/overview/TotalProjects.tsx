@@ -5,9 +5,10 @@ import { BsCollection } from "react-icons/bs"
 interface IProps {
   completedAmount: number
   inProgressAmount: number
+  planningAmount: number
 }
 
-const TotalProjects = ({ completedAmount, inProgressAmount }: IProps) => {
+const TotalProjects = ({ completedAmount, inProgressAmount, planningAmount }: IProps) => {
   return (
     <Card sx={{ height: "100%" }}>
       <CardContent>
@@ -24,6 +25,11 @@ const TotalProjects = ({ completedAmount, inProgressAmount }: IProps) => {
             <Box>
               <Typography sx={{ fontSize: 18 }} color="textPrimary" variant="overline">
                 In progress: {inProgressAmount}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography sx={{ fontSize: 18 }} color="textPrimary" variant="overline">
+                Planning: {inProgressAmount}
               </Typography>
             </Box>
           </Grid>

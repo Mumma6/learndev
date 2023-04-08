@@ -1,11 +1,13 @@
 import { z } from "zod"
 import { ObjectId } from "bson"
 
+export const PrioEnum = z.enum(["Low", "Medium", "High"])
+
 export const TaskFormInputSchema = z.object({
   title: z.string().min(1).max(50),
   description: z.string().min(1).max(50),
   completed: z.boolean().default(false),
-  prio: z.number(),
+  prio: PrioEnum,
   activityName: z.string().optional(),
   activityId: z.string().optional(),
   activityGroup: z.string().optional(),

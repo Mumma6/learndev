@@ -1,7 +1,6 @@
 import { ChangeEvent, useCallback, useState } from "react"
 
 import TextField from "@mui/material/TextField"
-import Checkbox from "@mui/material/Checkbox"
 import Chip from "@mui/material/Chip"
 import Paper from "@mui/material/Paper"
 import Dialog from "@mui/material/Dialog"
@@ -10,15 +9,14 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import Button from "@mui/material/Button"
-import FormControlLabel from "@mui/material/FormControlLabel"
-import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material"
+import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
 
 import { ClickEvent, ClickEventRet, SetState } from "../../types/generics"
 import { Skill, skillsData } from "../../constants/skillsData"
 import { FaPlus } from "react-icons/fa"
 import { initialProjectsFormData } from "./Projects"
-import { ProjectModelFromInputType } from "../../schema/ProjectSchema"
+import { ProjectModelFromInputType, ProjectStatusEnum } from "../../schema/ProjectSchema"
 import { IZodFormValidation } from "../customHooks/useZodFormValidation"
 
 interface IProps {
@@ -26,23 +24,13 @@ interface IProps {
   handleClose: SetState<void>
   topicData: Skill[]
   setTopicData: SetState<Skill[]>
-  setCompleted: SetState<boolean>
-  completed: boolean
+
   onAddProject: ClickEventRet<Promise<void>>
   zodForm: IZodFormValidation<Omit<ProjectModelFromInputType, "techStack" | "completed">>
 }
 
-const AddProjectModal = ({
-  open,
-  handleClose,
-  setCompleted,
-  setTopicData,
-  topicData,
-  onAddProject,
-  completed,
-  zodForm,
-}: IProps) => {
-  const { title, deployedUrl, sourceCodeUrl, description } = zodForm.values
+const AddProjectModal = ({ open, handleClose, setTopicData, topicData, onAddProject, zodForm }: IProps) => {
+  const { title, deployedUrl, sourceCodeUrl, description, status } = zodForm.values
 
   // gör till en customHook, samma sak i AddCourseModal
   const [newSkill, setNewSkill] = useState<Skill | null>(null)
@@ -52,10 +40,6 @@ const AddProjectModal = ({
       setTopicData((data) => [...data, newSkill])
       setNewSkill(null)
     }
-  }
-
-  const handleCheckBoxChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setCompleted(event.target.checked)
   }
 
   const onChange = (key: string, value: unknown) => {
@@ -93,12 +77,7 @@ const AddProjectModal = ({
         <DialogContentText>
           To add a project, please fill in the information below. More information can be added later.
         </DialogContentText>
-        <FormControlLabel
-          control={
-            <Checkbox checked={completed} onChange={handleCheckBoxChange} inputProps={{ "aria-label": "controlled" }} />
-          }
-          label="Project completed"
-        />
+
         <Box component="form">
           <TextField
             name="title"
@@ -157,6 +136,22 @@ const AddProjectModal = ({
             helperText={(zodForm.touched.sourceCodeUrl && zodForm.errors.sourceCodeUrl) || " "}
             error={Boolean(zodForm.touched.sourceCodeUrl && zodForm.errors.sourceCodeUrl)}
           />
+
+          <FormControl fullWidth style={{ marginTop: 20, marginBottom: 20 }}>
+            <InputLabel>Project status</InputLabel>
+            <Select
+              value={status}
+              label="Project status"
+              name="status"
+              onChange={(e) => zodForm.setFieldValue("status", e.target.value)}
+              onBlur={() => zodForm.onBlur("status")}
+              error={Boolean(zodForm.touched.status && zodForm.errors.status)}
+            >
+              <MenuItem value={ProjectStatusEnum.Enum.Done}>Done</MenuItem>
+              <MenuItem value={ProjectStatusEnum.Enum["In progress"]}>In progress</MenuItem>
+              <MenuItem value={ProjectStatusEnum.Enum.Planning}>Planning</MenuItem>
+            </Select>
+          </FormControl>
           <Box
             sx={{
               display: "flex",

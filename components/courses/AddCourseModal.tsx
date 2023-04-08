@@ -84,9 +84,7 @@ const AddCourseModal = ({
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Add course</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          To add a course, please fill in the information below.
-        </DialogContentText>
+        <DialogContentText>To add a course, please fill in the information below.</DialogContentText>
 
         <Box component="form" mt={4}>
           <TextField
@@ -99,6 +97,7 @@ const AddCourseModal = ({
             label="Title"
             type="text"
             fullWidth
+            required
             onChange={(e) => setFieldValue("title", e.target.value)}
             onBlur={() => onBlur("title")}
             helperText={(touched.title && errors.title) || " "}
@@ -115,6 +114,7 @@ const AddCourseModal = ({
             label="Description"
             type="text"
             fullWidth
+            required
             onChange={(e) => setFieldValue("description", e.target.value)}
             onBlur={() => onBlur("description")}
             helperText={(touched.description && errors.description) || " "}
@@ -128,6 +128,7 @@ const AddCourseModal = ({
             id="duration"
             label="Duration in hours"
             type="number"
+            required
             fullWidth
             onChange={(e) => setFieldValue("duration", Number(e.target.value))} //onChange("duration", Number(e.target.value))}
             onBlur={() => onBlur("duration")}
@@ -162,10 +163,8 @@ const AddCourseModal = ({
           />
 
           <FormControl fullWidth style={{ marginTop: 20, marginBottom: 20 }}>
-            <InputLabel id="demo-simple-select-label">Status</InputLabel>
+            <InputLabel>Course status</InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
               value={status}
               label="Course status"
               name="status"
@@ -200,7 +199,7 @@ const AddCourseModal = ({
               }}
               options={skillsData}
               sx={{ width: 450, marginRight: 2 }}
-              renderInput={(params) => <TextField {...params} label="Topics" />}
+              renderInput={(params) => <TextField required {...params} label="Topics" />}
             />
             <Button disabled={!newSkill} onClick={addNewskill} style={{ fontSize: 20 }}>
               <FaPlus />
@@ -219,12 +218,7 @@ const AddCourseModal = ({
                   component="ul"
                 >
                   {topicData.map((data) => (
-                    <Chip
-                      key={data.label}
-                      color="primary"
-                      label={data.label}
-                      onDelete={handleTopicDelete(data)}
-                    />
+                    <Chip key={data.label} color="primary" label={data.label} onDelete={handleTopicDelete(data)} />
                   ))}
                 </Paper>
               </Box>
@@ -232,7 +226,7 @@ const AddCourseModal = ({
           </Box>
 
           <FormControl fullWidth style={{ marginTop: 20, marginBottom: 20 }}>
-            <InputLabel id="demo-simple-select-label">institution</InputLabel>
+            <InputLabel id="demo-simple-select-label">Institution</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"

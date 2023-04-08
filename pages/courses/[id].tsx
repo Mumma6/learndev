@@ -12,6 +12,7 @@ import { CourseModelSchema, CourseModelSchemaType } from "../../schema/CourseSch
 export const getServerSideProps: GetServerSideProps = async (context) =>
   handleAuthGetServerSideProps<CourseModelSchemaType>(context, findCoursebyId, "course", CourseModelSchema)
 
+// behöver hämta tasks och resources här
 const coursePage = ({ course }: { course: CourseModelSchemaType }) => {
   return (
     <>

@@ -6,29 +6,41 @@ import Button from "@mui/material/Button"
 import CheckIcon from "@mui/icons-material/Check"
 import CloseIcon from "@mui/icons-material/Close"
 import DeleteIcon from "@mui/icons-material/Delete"
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
 import { Stack } from "@mui/material"
+import { FaArrowRight } from "react-icons/fa"
 
 const columns: GridColDef[] = [
   {
     field: "title",
     headerName: "Title",
-    width: 150,
+    flex: 1,
+    // width: 150,
   },
   {
     field: "activityGroup",
     headerName: "Activity group",
-    width: 150,
+    flex: 1,
+    // width: 150,
+  },
+  {
+    field: "activityName",
+    headerName: "Activity",
+    flex: 1,
+    // width: 150,
   },
   {
     field: "created",
     headerName: "Created at",
-    width: 110,
+    flex: 1,
+    // width: 110,
     // editable: true,
   },
   {
     field: "prio",
     headerName: "Prio",
-    width: 110,
+    flex: 1,
+    // width: 110,
     renderCell: (params) => {
       const currentRow = params.row
 
@@ -42,51 +54,50 @@ const columns: GridColDef[] = [
     sortComparator: (v1, v2) => v1.localeCompare(v2),
     valueGetter: (params) => params.row.prio,
   },
+
   {
     field: "toggle",
-    headerName: "Actions",
-    width: 250,
+    headerName: "Toggle task",
+    flex: 1,
+    // width: 150,
     sortable: false,
     renderCell: (params) => {
+      const currentRow = params.row
       const onClick = (e: any) => {
-        // behöver uppdatera samt
-
-        const currentRow = params.row
         return alert(JSON.stringify(currentRow, null, 4))
       }
 
-      // better colors
-
-      if (!params.row.completed) {
-        return (
-          <Stack direction="row" spacing={2}>
-            <Button size="small" variant="contained" color="success">
-              <CheckIcon />
-            </Button>
-            <Button variant="contained" color="error" size="small" onClick={onClick}>
-              <DeleteIcon />
-            </Button>
-          </Stack>
-        )
-      }
-
       return (
-        <Stack direction="row" spacing={2}>
-          <Button size="small" variant="contained" color="info">
-            <CloseIcon />
-          </Button>
-          <Button variant="contained" color="error" size="small" onClick={onClick}>
-            <DeleteIcon />
-          </Button>
-        </Stack>
+        <Button variant="contained" color={currentRow.completed ? "info" : "success"} size="small" onClick={onClick}>
+          {currentRow.completed ? <CloseIcon /> : <CheckIcon />}
+        </Button>
       )
     },
   },
-  /*
+  {
+    field: "goto",
+    headerName: "Go to",
+    flex: 1,
+    // width: 150,
+    sortable: false,
+    renderCell: (params) => {
+      const currentRow = params.row
+      const onClick = (e: any) => {
+        return alert(JSON.stringify(currentRow, null, 4))
+      }
+
+      return (
+        <Button size="small" variant="contained" color="primary">
+          <ArrowForwardIcon />
+        </Button>
+      )
+    },
+  },
   {
     field: "delete",
     headerName: "Delete",
-    width: 150,
+    flex: 1,
+    // width: 150,
     sortable: false,
     renderCell: (params) => {
       const onClick = (e: any) => {
@@ -96,12 +107,11 @@ const columns: GridColDef[] = [
 
       return (
         <Button variant="contained" color="error" size="small" onClick={onClick}>
-          Delete
+          <DeleteIcon />
         </Button>
       )
     },
   },
-  */
 
   // lägg till en colum för completed också. Yes or No. Chip.
   // lägg den brevid toggle knappen. Dom två ska ligga i samma rendercell
@@ -113,6 +123,7 @@ const rows = [
     id: 1,
     title: "todo1",
     activityGroup: "Projects",
+    activityName: "Hemsida1",
     created: "2022-01-02",
     prio: "High",
   },
@@ -120,6 +131,7 @@ const rows = [
     id: 2,
     title: "todo2",
     activityGroup: "None",
+    activityName: "None",
     created: "2022-01-02",
     prio: "Low",
     completed: true,
@@ -128,6 +140,7 @@ const rows = [
     id: 3,
     title: "todo2",
     activityGroup: "Courses",
+    activityName: "Course X",
     created: "2022-01-02",
     prio: "Medium",
     completed: false,

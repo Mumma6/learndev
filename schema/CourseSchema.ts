@@ -15,7 +15,7 @@ export const CourseModelContentInputSchema = z.object({
   title: z.string().min(1).max(100),
   description: z.string().min(1).max(1500),
   duration: z.number(),
-  url: z.string().url(),
+  url: z.union([z.literal(""), z.string().trim().url()]).default(""),
   certificateUrl: z.union([z.literal(""), z.string().trim().url()]).default(""),
   status: StatusEnum,
   institution: InstitutionEnum,
@@ -43,4 +43,3 @@ export const CourseModelSchema = CourseModelformInputSchema.extend({
 export type CourseModelSchemaType = z.infer<typeof CourseModelSchema>
 
 export type CourseModelformInputType = z.infer<typeof CourseModelformInputSchema>
-

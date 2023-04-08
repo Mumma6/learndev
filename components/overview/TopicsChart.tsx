@@ -28,6 +28,7 @@ const TopicsChart = () => {
     }, {})
   }
 
+  // här kan man använda en compose / pipe
   const mappedOccurrences = Object.entries(getNumberOfOccurrences(topicsOccurrences))
     .map(([topic, value]) => ({
       [topic]: value,

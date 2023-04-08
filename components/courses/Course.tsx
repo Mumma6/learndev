@@ -10,12 +10,20 @@ import {
   Button,
   Typography,
   Chip,
-  duration,
+  IconButton,
+  Grid,
 } from "@mui/material"
+import Table from "@mui/material/Table"
+import TableBody from "@mui/material/TableBody"
+import TableCell from "@mui/material/TableCell"
+import TableContainer from "@mui/material/TableContainer"
+import TableHead from "@mui/material/TableHead"
+import TableRow from "@mui/material/TableRow"
 import NextLink from "next/link"
-import { FaArrowLeft, FaPen } from "react-icons/fa"
+import { FaArrowLeft, FaArrowRight, FaPen } from "react-icons/fa"
 import { CourseModelSchemaType } from "../../schema/CourseSchema"
 import EditCourseModal from "./EditCourseModal"
+import Link from "next/link"
 interface IProps {
   course: CourseModelSchemaType
 }
@@ -27,6 +35,17 @@ interface IProps {
 
 
 */
+
+const tasks = [
+  {
+    name: "Todo 1",
+    completed: false,
+  },
+  {
+    name: "Todo 2",
+    completed: true,
+  },
+]
 const Course = ({ course }: IProps) => {
   const [open, setOpen] = useState(false)
 
@@ -91,6 +110,48 @@ const Course = ({ course }: IProps) => {
             </Box>
           </Box>
         </Card>
+        <Box mt={8}>
+          <Grid container spacing={2}>
+            <Grid item sm={6}>
+              <TableContainer component={Paper}>
+                <Table aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Task name</TableCell>
+                      <TableCell>Status</TableCell>
+                      <TableCell>Go to</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {tasks.map((task) => (
+                      <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                        <TableCell component="th" scope="row">
+                          <Typography>{task.name}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            label={task.completed ? "Completed" : "In progess"}
+                            color={task.completed ? "success" : "info"}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Link style={{ textDecoration: "none" }} href={"/"} target="_blank" passHref>
+                            <IconButton>
+                              <FaArrowRight />
+                            </IconButton>
+                          </Link>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Grid>
+            <Grid item>
+              <p>Resurser</p>
+            </Grid>
+          </Grid>
+        </Box>
       </Container>
     </Box>
   )

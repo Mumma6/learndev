@@ -115,7 +115,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
       formik.values.url === course.content.url &&
       formik.values.duration === course.content.duration &&
       formik.values.certificateUrl === course.content.certificateUrl &&
-      !!formik.values.status === !!course.content.status &&
+      formik.values.status === course.content.status &&
       isEqual(topicsData, course.topics)
     )
   }
@@ -241,23 +241,22 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
               error={Boolean(formik.touched?.certificateUrl && formik.errors?.certificateUrl)}
             />
             <Box sx={{ marginTop: 2, marginBottom: 2 }}>
-            <FormControl fullWidth style={{ marginTop: 20, marginBottom: 20 }}>
-            <InputLabel id="demo-simple-select-label">Status</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-            
-              label="Course status"
-              name="status"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.status}
-            >
-              <MenuItem value={StatusEnum.Enum.Done}>Done</MenuItem>
-              <MenuItem value={StatusEnum.Enum["In progress"]}>In progress</MenuItem>
-              <MenuItem value={StatusEnum.Enum.Wishlist}>Wishlist</MenuItem>
-            </Select>
-          </FormControl>
+              <FormControl fullWidth style={{ marginTop: 20, marginBottom: 20 }}>
+                <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="Course status"
+                  name="status"
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                  value={formik.values.status}
+                >
+                  <MenuItem value={StatusEnum.Enum.Done}>Done</MenuItem>
+                  <MenuItem value={StatusEnum.Enum["In progress"]}>In progress</MenuItem>
+                  <MenuItem value={StatusEnum.Enum.Wishlist}>Wishlist</MenuItem>
+                </Select>
+              </FormControl>
             </Box>
           </Box>
           <Box>

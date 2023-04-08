@@ -89,12 +89,14 @@ const Home = ({ user }: IProps) => {
               <TotalCourses
                 completedAmount={data?.payload?.filter((c) => c.content.status === "Done").length || 0}
                 inProgressAmount={data?.payload?.filter((c) => c.content.status === "In progress").length || 0}
+                wishlistAmount={data?.payload?.filter((c) => c.content.status === "Wishlist").length || 0}
               />
             </Grid>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
               <TotalProjects
-                completedAmount={0}
-                inProgressAmount={0}
+                completedAmount={projectsData?.payload?.filter((c) => c.status === "Done").length || 0}
+                inProgressAmount={projectsData?.payload?.filter((c) => c.status === "In progress").length || 0}
+                planningAmount={projectsData?.payload?.filter((c) => c.status === "Planning").length || 0}
               />
             </Grid>
             <Grid item xl={3} lg={3} sm={6} xs={12}>

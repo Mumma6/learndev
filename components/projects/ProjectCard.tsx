@@ -17,13 +17,15 @@ interface IProps {
 
 // Make the card abit higer and allow the shortDescription to use 2 rows and also increase the max value
 
+// same card as course - make a generic compoent
+
 const ProjectCard = ({ project, deleteProject }: IProps) => {
   const router = useRouter()
   return (
     <Paper elevation={10}>
       <Card sx={{ boxShadow: 5 }}>
-        <Box sx={{ minHeight: 120 }}>
-          <Button sx={{ width: "100%" }} onClick={() => router.push(`/projects/${project._id}`)}>
+        <Box sx={{ minHeight: 100 }}>
+          <Button sx={{ width: "100%", textAlign: "center" }} onClick={() => router.push(`/projects/${project._id}`)}>
             <CardContent style={{ padding: 0 }}>
               <Typography variant="h6" component="div" sx={{ marginTop: 2 }}>
                 {project.title}
@@ -32,7 +34,10 @@ const ProjectCard = ({ project, deleteProject }: IProps) => {
           </Button>
         </Box>
         <Divider />
-        <CardActions sx={{ float: "right" }}>
+        <CardActions sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Button sx={{ width: "100%" }} onClick={() => router.push(`/projects/${project._id}`)}>
+            Go to
+          </Button>
           <Button onClick={() => deleteProject(project._id as string)} color="error" size="small">
             Delete
           </Button>

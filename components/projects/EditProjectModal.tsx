@@ -4,7 +4,12 @@ import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
-import { ProjectModelFormInputSchema, ProjectModelFromInputType, ProjectModelType } from "../../schema/ProjectSchema"
+import {
+  ProjectModelFormInputSchema,
+  ProjectModelFromInputType,
+  ProjectModelType,
+  ProjectStatusEnum,
+} from "../../schema/ProjectSchema"
 import { toFormikValidate } from "zod-formik-adapter"
 import { useFormik } from "formik"
 import { truncate } from "fs"
@@ -12,7 +17,20 @@ import { fetcher } from "../../lib/axiosFetcher"
 import { SkillSchemaType } from "../../schema/SharedSchema"
 import { toast } from "react-toastify"
 import { useSWRConfig } from "swr"
-import { Autocomplete, Box, Button, Checkbox, Chip, Paper, TextField, Typography } from "@mui/material"
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Checkbox,
+  Chip,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material"
 import { skillsData } from "../../constants/skillsData"
 import { FaPlus } from "react-icons/fa"
 import SubmitButton from "../shared/SubmitButton"
@@ -32,7 +50,7 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
   const [techStack, setTechStack] = useState<SkillSchemaType[]>(project.techStack)
   const [newSkill, setNewSkill] = useState<SkillSchemaType | null>(null)
 
-  const { title, description, completed, sourceCodeUrl, deployedUrl, _id } = project
+  const { title, description, sourceCodeUrl, deployedUrl, _id, status } = project
 
   // Create a useSkillsHook
   const addNewskill = () => {
@@ -67,9 +85,9 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
     initialValues: {
       title,
       description,
-      completed,
       sourceCodeUrl,
       deployedUrl,
+      status,
     },
     validate: toFormikValidate(ProjectModelFormInputSchema.omit({ techStack: true })),
     onSubmit: (formValues) => {
@@ -83,7 +101,7 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
       formik.values.description === project.description &&
       formik.values.deployedUrl === project.deployedUrl &&
       formik.values.sourceCodeUrl === project.sourceCodeUrl &&
-      !!formik.values.completed === !!project.completed &&
+      formik.values.status === project.status &&
       isEqual(techStack, project.techStack)
     )
   }
@@ -192,20 +210,22 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
               error={Boolean(formik.touched.sourceCodeUrl && formik.errors.sourceCodeUrl)}
             />
             <Box sx={{ marginTop: 2, marginBottom: 2 }}>
-              <Typography
-                variant="h6"
-                color="text"
-                sx={{ display: "inline-block", marginRight: 1, fontSize: 16, fontWeight: 400 }}
-              >
-                Completed
-              </Typography>
-              <Checkbox
-                sx={{ transform: "scale(1)" }}
-                name="completed"
-                onChange={formik.handleChange}
-                value={formik.values.completed}
-                checked={formik.values.completed}
-              />
+              <FormControl fullWidth style={{ marginTop: 20, marginBottom: 20 }}>
+                <InputLabel id="demo-simple-select-label">Project status</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="Course status"
+                  name="status"
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                  value={formik.values.status}
+                >
+                  <MenuItem value={ProjectStatusEnum.Enum.Done}>Done</MenuItem>
+                  <MenuItem value={ProjectStatusEnum.Enum["In progress"]}>In progress</MenuItem>
+                  <MenuItem value={ProjectStatusEnum.Enum.Planning}>Planning</MenuItem>
+                </Select>
+              </FormControl>
             </Box>
           </Box>
           <Box>

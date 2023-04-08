@@ -148,8 +148,8 @@ const PublicProfile = ({ user, courses, projects, quizResults, quizzes }: IProps
                       </TableCell>
                       <TableCell>
                         <Chip
-                          label={course.completed ? "Completed" : "In progess"}
-                          color={course.completed ? "success" : "info"}
+                          label={course.content.status === "Done" ? "Completed" : "In progess"}
+                          color={course.content.status === "Done" ? "success" : "info"}
                         />
                       </TableCell>
                       <TableCell>
@@ -191,8 +191,8 @@ const PublicProfile = ({ user, courses, projects, quizResults, quizzes }: IProps
                       </TableCell>
                       <TableCell>
                         <Chip
-                          label={project.completed ? "Completed" : "In progess"}
-                          color={project.completed ? "success" : "info"}
+                          label={project.status === "Done" ? "Completed" : "In progess"}
+                          color={project.status === "Done" ? "success" : "info"}
                         />
                       </TableCell>
                       <TableCell>

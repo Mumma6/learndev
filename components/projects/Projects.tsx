@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Box, Container, Grid, Pagination, Card, CardContent, Typography, Divider, CardHeader } from "@mui/material"
 import { toast } from "react-toastify"
 import { ClickEvent } from "../../types/generics"
@@ -8,15 +8,27 @@ import { useProjects } from "../../lib/hooks"
 import { useSWRConfig } from "swr"
 import ProjectsToolbar from "./ProjectsToolbar"
 import ProjectCard from "./ProjectCard"
-import AddProjectModal from "./AddProjectModal"
-import { ProjectModelFormInputSchema, ProjectModelFromInputType } from "../../schema/ProjectSchema"
-import { useZodFormValidation } from "../customHooks/useZodFormValidation"
+import Tabs from "@mui/material/Tabs"
+import Tab from "@mui/material/Tab"
 
-export const initialProjectsFormData: Omit<ProjectModelFromInputType, "techStack" | "completed"> = {
+import AddProjectModal from "./AddProjectModal"
+import {
+  ProjectModelFormInputSchema,
+  ProjectModelFromInputType,
+  ProjectModelType,
+  ProjectStatusEnum,
+  ProjectStatusEnumType,
+} from "../../schema/ProjectSchema"
+import { useZodFormValidation } from "../customHooks/useZodFormValidation"
+import { StatusEnum } from "../../schema/CourseSchema"
+import InfoTooltip from "../shared/Tooltip"
+
+export const initialProjectsFormData: Omit<ProjectModelFromInputType, "techStack"> = {
   title: "",
   description: "",
   sourceCodeUrl: "",
   deployedUrl: "",
+  status: ProjectStatusEnum.Enum["In progress"],
 }
 
 /*
@@ -33,16 +45,17 @@ Sök visar resultat per tab
 
 export const Projects = () => {
   const [open, setOpen] = useState(false)
-
+  const [statusValue, setStatusValue] = useState<ProjectStatusEnumType>("In progress")
   const [topicData, setTopicData] = useState<Skill[]>([])
-  const [completed, setCompleted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+
+  const [dataToShow, setDataToShow] = useState<ProjectModelType[]>([])
 
   const { data } = useProjects()
   const { mutate } = useSWRConfig()
 
-  const zodForm = useZodFormValidation<Omit<ProjectModelFromInputType, "techStack" | "completed">>(
-    ProjectModelFormInputSchema.omit({ techStack: true, completed: true }),
+  const zodForm = useZodFormValidation<Omit<ProjectModelFromInputType, "techStack">>(
+    ProjectModelFormInputSchema.omit({ techStack: true }),
     initialProjectsFormData
   )
 
@@ -53,10 +66,15 @@ export const Projects = () => {
   const handleClose = () => {
     zodForm.setValues(initialProjectsFormData)
     setTopicData([])
-    setCompleted(false)
     zodForm.reset()
     setOpen(false)
   }
+
+  useEffect(() => {
+    if (data?.payload) {
+      return setDataToShow(data?.payload?.filter((c) => c.status === statusValue))
+    }
+  }, [statusValue, data])
 
   const onAddProject = async (event: ClickEvent) => {
     event.preventDefault()
@@ -69,7 +87,6 @@ export const Projects = () => {
         data: {
           ...zodForm.values,
           techStack: topicData,
-          completed,
         },
       })
 
@@ -104,6 +121,10 @@ export const Projects = () => {
     }
   }
 
+  const handleChange = (event: React.SyntheticEvent, newValue: ProjectStatusEnumType) => {
+    setStatusValue(newValue)
+  }
+
   return (
     <>
       <Box
@@ -116,58 +137,36 @@ export const Projects = () => {
           open={open}
           handleClose={handleClose}
           onAddProject={onAddProject}
-          setCompleted={setCompleted}
           setTopicData={setTopicData}
           topicData={topicData}
-          completed={completed}
           zodForm={zodForm}
         />
         <Container maxWidth={false}>
           <ProjectsToolbar handleClickOpen={handleClickOpen} />
           <Box sx={{ pt: 3 }}>
             <Box sx={{ mt: 1, mb: 1 }}>
-              <Card>
-                <CardHeader subheader="Projects in progress" title="Projects" />
+              <Card sx={{ marginTop: 4 }}>
+                <CardHeader
+                  title={
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <Tabs value={statusValue} onChange={handleChange} aria-label="basic tabs example">
+                        <Tab label="In progress" value={StatusEnum.Enum["In progress"]} />
+                        <Tab label="Done" value={StatusEnum.Enum.Done} />
+                        <Tab label="Wishlist" value={StatusEnum.Enum.Wishlist} />
+                      </Tabs>
+                      <InfoTooltip text="Keep track of all your projects here. Add projects you have completed, working on at this moment and projects you want plan to make in the future" />
+                    </div>
+                  }
+                />
                 <Divider />
                 <CardContent>
                   <Grid mb={4} mt={2} container spacing={2}>
                     {!isLoading &&
-                      data?.payload
-                        ?.filter((c) => !c.completed)
-                        .map((project) => (
-                          <Grid item key={project._id?.toString()} xl={3} lg={4} md={4} sm={6} xs={12}>
-                            <ProjectCard deleteProject={deleteProject} project={project} />
-                          </Grid>
-                        ))}
-                  </Grid>
-                </CardContent>
-              </Card>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              pt: 3,
-            }}
-          ></Box>
-        </Container>
-        <Container maxWidth={false}>
-          <Box sx={{ pt: 1 }}>
-            <Box sx={{ mt: 3, mb: 3 }}>
-              <Card>
-                <CardHeader subheader="Completed Projects" title="Projects" />
-                <Divider />
-                <CardContent style={{ padding: 13 }}>
-                  <Grid mb={4} mt={2} container spacing={2}>
-                    {!isLoading &&
-                      data?.payload
-                        ?.filter((c) => c.completed)
-                        .map((project) => (
-                          <Grid item key={project._id?.toString()} xl={3} lg={4} md={4} sm={6} xs={12}>
-                            <ProjectCard deleteProject={deleteProject} project={project} />
-                          </Grid>
-                        ))}
+                      dataToShow.map((project) => (
+                        <Grid item key={project._id} xl={3} lg={3} md={3} sm={6} xs={12}>
+                          <ProjectCard deleteProject={deleteProject} project={project} />
+                        </Grid>
+                      ))}
                   </Grid>
                 </CardContent>
               </Card>

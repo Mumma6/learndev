@@ -7,6 +7,7 @@ import FormGroup from "@mui/material/FormGroup"
 import FormControlLabel from "@mui/material/FormControlLabel"
 import Switch from "@mui/material/Switch"
 import Button from "@mui/material/Button"
+import AddTaskModal from "./AddTaskModal"
 
 /*
 Tasks should show up when going to /course | project/id
@@ -53,6 +54,10 @@ const Tasks = () => {
     setOpen(true)
   }
 
+  const handleClose = () => {
+    setOpen(false)
+  }
+
   return (
     <Box
       component="main"
@@ -61,6 +66,7 @@ const Tasks = () => {
       }}
     >
       <Container maxWidth={false}>
+        <AddTaskModal open={open} handleClose={handleClose} />
         <Box sx={{ pt: 3 }}>
           <Box sx={{ mt: 1, mb: 1 }}>
             <Card>
