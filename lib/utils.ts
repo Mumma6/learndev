@@ -1,10 +1,11 @@
-import { GetServerSidePropsContext, NextApiResponse } from "next"
+import { GetServerSidePropsContext, NextApiResponse, NextApiRequest } from "next"
 import { Response } from "../types/response"
 import { getMongoDb } from "./mongodb"
 import { findUserBySession } from "./queries/user"
 import { ParsedUrlQuery } from "querystring"
 import { Db, ObjectId, WithId } from "mongodb"
 import { AnyZodObject } from "zod"
+import * as E from "fp-ts/Either"
 
 /*
 Only used on the server side.
@@ -101,3 +102,6 @@ export const handleAuthGetServerSideProps = async <ObjectType>(
     }
   }
 }
+
+export const checkUser = (req: NextApiRequest): E.Either<string, NextApiRequest> =>
+  req.user ? E.right(req) : E.left("No user found")

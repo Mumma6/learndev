@@ -1,6 +1,9 @@
 import { Box, Container, Grid, Pagination, Card, CardContent, Typography, Divider, CardHeader } from "@mui/material"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
+import { pipe } from "fp-ts/function"
+import * as E from "fp-ts/Either"
+import * as TE from "fp-ts/TaskEither"
 
 import { useEffect, useState } from "react"
 import { useCourses } from "../../lib/hooks"
@@ -10,7 +13,7 @@ import CourseCard from "./CourseCard"
 import CoursesToolbar from "./CoursesToolbar"
 import { toast } from "react-toastify"
 import { ClickEvent } from "../../types/generics"
-import { fetcher } from "../../lib/axiosFetcher"
+import { fetcher, fetcherTE } from "../../lib/axiosFetcher"
 import {
   CourseModelContentInputSchema,
   CourseModelContentInputSchemaType,
@@ -24,6 +27,7 @@ import {
 import { SkillSchemaType } from "../../schema/SharedSchema"
 import { useZodFormValidation } from "zod-react-form"
 import InfoTooltip from "../shared/Tooltip"
+import { Response } from "../../types/response"
 
 /*
 Lägga till en wishlist med kurser?
@@ -68,46 +72,55 @@ const Courses = () => {
   }, [statusValue, data])
 
   const deleteCourse = async (id: string) => {
-    console.log("deleing", id)
-    const response = await fetcher(`/api/courses?id=${id}`, {
-      method: "DELETE",
-    })
-
-    if (response?.error) {
-      toast.error(response.error)
-    } else {
-      mutate("/api/courses")
-      toast.success(response?.message)
-    }
+    pipe(
+      fetcherTE(`/api/courses?id=${id}`, { method: "DELETE" }),
+      TE.fold(
+        (error) => {
+          toast.error(error)
+          return TE.left(error)
+        },
+        (response) => {
+          mutate("/api/courses")
+          toast.success(response?.message)
+          return TE.right(response)
+        }
+      )
+    )()
   }
 
-  const onAddCourse = async (event: ClickEvent) => {
-    event.preventDefault()
-    try {
-      setIsLoading(true)
+  const resetForm = () => {
+    setValues(initialCourseFormState)
+    setIsLoading(false)
+    handleClose()
+  }
 
-      const response = await fetcher<CourseModelSchemaType, CourseModelformInputType>("/api/courses", {
+  const onAddCourse = async () => {
+    setIsLoading(true)
+
+    // sätt detta i en variabel först?
+    pipe(
+      fetcherTE<CourseModelSchemaType, CourseModelformInputType>("/api/courses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: {
           content: values,
           topics: topicData,
         },
-      })
-
-      if (response?.error) {
-        toast.error(response.error)
-      } else {
-        mutate("/api/courses")
-        toast.success(response?.message)
-      }
-    } catch (e: any) {
-      console.log(e)
-    } finally {
-      setValues(initialCourseFormState)
-      setIsLoading(false)
-      handleClose()
-    }
+      }),
+      TE.fold(
+        (error) => {
+          toast.error(error)
+          resetForm()
+          return TE.left(error)
+        },
+        (data) => {
+          toast.success(data.message)
+          mutate("/api/courses")
+          resetForm()
+          return TE.right(data)
+        }
+      )
+    )()
   }
 
   const handleClickOpen = () => {

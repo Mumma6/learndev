@@ -7,7 +7,7 @@ import { CourseModelSchemaType } from "../schema/CourseSchema"
 import { ProjectModelType } from "../schema/ProjectSchema"
 import { UserModelSchemaType } from "../schema/UserSchema"
 
-import { fetcher } from "./axiosFetcher"
+import { fetcher, fetcherTE } from "./axiosFetcher"
 
 // useSWR vs useSWRImmutable
 // https://swr.vercel.app/docs/revalidation#disable-automatic-revalidations

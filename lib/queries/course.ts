@@ -1,15 +1,16 @@
-import { Db, ObjectId, WithId } from "mongodb"
+import { Db, InsertOneResult, ObjectId, WithId } from "mongodb"
 import { CourseModelContentInputSchemaType, CourseModelSchema, CourseModelSchemaType } from "../../schema/CourseSchema"
+import { ZodError } from "zod"
+import { Either, right, left } from "../../helpers/either"
 
 export const insertCourse = async (db: Db, data: Omit<CourseModelSchemaType, "_id">) => {
-  // Ska ta emot all kurs data här.
-
   return await db.collection("courses").insertOne(data)
 }
 
-export const getCoursesForUser = async (db: Db, userId: string) => {
+export const getCoursesForUser = async (db: Db, userId: string): Promise<CourseModelSchemaType[]> => {
   // Make sure the find works. Should it be string or ObjectID
 
+  // @ts-ignore
   return await db
     .collection("courses")
     .find({ userId: new ObjectId(userId) })
