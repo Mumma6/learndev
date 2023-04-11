@@ -28,7 +28,6 @@ const TopicsChart = () => {
     }, {})
   }
 
-  // här kan man använda en compose / pipe
   const mappedOccurrences = Object.entries(getNumberOfOccurrences(topicsOccurrences))
     .map(([topic, value]) => ({
       [topic]: value,
@@ -115,3 +114,64 @@ const TopicsChart = () => {
 }
 
 export default TopicsChart
+
+/*
+import * as A from 'fp-ts/Array'
+import { pipe } from 'fp-ts/function'
+import * as O from 'fp-ts/Option'
+
+const topicsOccurrences = pipe(
+  [courseData?.payload, projectData?.payload],
+  A.filterMap(O.fromNullable),
+  A.map((payload) =>
+    payload.flatMap((item) =>
+      'topics' in item
+        ? item.topics.map((topic) => topic.label)
+        : item.techStack.map((tech) => tech.label)
+    )
+  ),
+  A.flatten,
+  A.filterMap(O.fromNullable)
+)
+
+type Total = Record<string, number>
+
+const getNumberOfOccurrences = (list: string[]) =>
+  list.reduce<Total>((total, skill) => {
+    total[skill] = total[skill] ? total[skill] + 1 : 1
+    return total
+  }, {})
+
+const sortByValueDesc = <A>(ord: O.Ord<A>) =>
+  pipe(
+    ord,
+    O.contramap((a: [string, A]) => -a[1])
+  )
+
+const sortByNameAsc = <A>(ord: O.Ord<A>) =>
+  pipe(
+    ord,
+    O.contramap((a: [string, A]) => a[0])
+  )
+
+const toArray = <A>() => (a: A) => [a]
+
+const mappedOccurrences = pipe(
+  getNumberOfOccurrences(topicsOccurrences),
+  Object.entries,
+  A.map(
+    pipe(
+      ([skill, value]) => [skill, value] as const,
+      toArray(),
+      O.fromPredicate((x) => x[1] > 0),
+      O.map(sortByNameAsc(O.ordString)),
+      O.getOrElse(() => ['undefined', 0]),
+      toArray()
+    )
+  ),
+  A.sortBy(sortByValueDesc(O.ordNumber)),
+  A.slice(0, 5),
+  A.sort(sortByNameAsc(O.ordString)),
+  A.reduce({}, (acc, [skill, value]) => ({ ...acc, [skill]: value }))
+)
+*/

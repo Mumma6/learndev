@@ -129,3 +129,48 @@ const CoursesByProvider = ({ courses }: IProps) => {
 }
 
 export default CoursesByProvider
+
+/*
+
+import { flow, pipe } from 'fp-ts/function'
+import * as A from 'fp-ts/Array'
+import * as NEA from 'fp-ts/NonEmptyArray'
+import * as O from 'fp-ts/Option'
+import * as Record from 'fp-ts/Record'
+
+const getAmountOfProviders = (): ReadonlyArray<{
+  readonly institution: string
+  readonly count: number
+  readonly color: string
+  readonly percentage: number
+}> => {
+  const total = pipe(
+    courses,
+    O.fromNullable,
+    O.fold(() => ({}), A.reduce({}, (total: Record.Record<string, number>, course) => {
+      const institution = course.content.institution
+      return {
+        ...total,
+        [institution]: total[institution] ? total[institution] + 1 : 1
+      }
+    })),
+  )
+
+  const totalCount = pipe(courses, O.fromNullable, O.fold(() => 0, A.size))
+
+  return pipe(
+    Record.toArray(total),
+    A.map(([institution, count], i) => ({
+      institution,
+      count,
+      color: colors[i % colors.length],
+      percentage: Math.round((count / totalCount) * 100),
+    })),
+    A.sortBy([o => o.institution]),
+  )
+}
+
+console.log(getAmountOfProviders())
+
+const amountOfProviders = getAmountOfProviders()
+*/

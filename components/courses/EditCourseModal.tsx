@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react"
+import { pipe } from "fp-ts/function"
+import * as E from "fp-ts/Either"
+import * as TE from "fp-ts/TaskEither"
 import {
   CourseModelSchemaType,
   CourseModelformInputSchema,
@@ -21,7 +24,7 @@ import SubmitButton from "../shared/SubmitButton"
 import { SkillSchemaType } from "../../schema/SharedSchema"
 import { useFormik } from "formik"
 import { toFormikValidate } from "zod-formik-adapter"
-import { fetcher } from "../../lib/axiosFetcher"
+import { fetcher, fetcherTE } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
 import {
   Autocomplete,
@@ -56,7 +59,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
   const [disabled, setDisabeld] = useState(false)
 
   const { content, _id } = course
-  const { title, description, url, certificateUrl, duration, status } = content
+  const { title, description, url, certificateUrl, duration, status, institution } = content
 
   // Create a useSkillsHook
   const addNewskill = () => {
@@ -99,6 +102,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
       certificateUrl,
       duration,
       status,
+      institution,
     },
     onSubmit: (formValues) => {
       onUpdateCourse(formValues)
@@ -117,6 +121,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
       formik.values.duration === course.content.duration &&
       formik.values.certificateUrl === course.content.certificateUrl &&
       formik.values.status === course.content.status &&
+      formik.values.institution === course.content.institution &&
       isEqual(topicsData, course.topics)
     )
   }
@@ -128,10 +133,10 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
   }
 
   const onUpdateCourse = async (formValues: any) => {
-    try {
-      setIsLoading(true)
+    setIsLoading(true)
 
-      const response = await fetcher<CourseModelSchemaType, Partial<CourseModelSchemaType>>("/api/courses", {
+    pipe(
+      fetcherTE<CourseModelSchemaType, Partial<CourseModelSchemaType>>("/api/courses", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         data: {
@@ -147,22 +152,23 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
           topics: topicsData,
           _id,
         },
-      })
-
-      console.log(response)
-
-      if (response?.error) {
-        toast.error(response.error)
-      } else {
-        refreshData()
-        toast.success(response?.message)
-      }
-    } catch (e: any) {
-      console.log(e)
-    } finally {
-      setIsLoading(false)
-      handleClose()
-    }
+      }),
+      TE.fold(
+        (error) => {
+          toast.error(error)
+          setIsLoading(false)
+          handleClose()
+          return TE.left(error)
+        },
+        (response) => {
+          refreshData()
+          toast.success(response?.message)
+          setIsLoading(false)
+          handleClose()
+          return TE.right(response)
+        }
+      )
+    )()
   }
 
   return (
@@ -241,6 +247,26 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
               helperText={(formik.touched?.certificateUrl && formik.errors?.certificateUrl) || " "}
               error={Boolean(formik.touched?.certificateUrl && formik.errors?.certificateUrl)}
             />
+            <Box sx={{ marginTop: 2, marginBottom: 2 }}>
+              <FormControl fullWidth style={{ marginTop: 20, marginBottom: 20 }}>
+                <InputLabel id="demo-simple-select-label">Course provider</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="Course provider"
+                  name="institution"
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                  value={formik.values.institution}
+                >
+                  <MenuItem value={InstitutionEnum.Enum.Other}>Other</MenuItem>
+                  <MenuItem value={InstitutionEnum.Enum.Udemy}>Udemy</MenuItem>
+                  <MenuItem value={InstitutionEnum.Enum.Linkedin}>Linkedin</MenuItem>
+                  <MenuItem value={InstitutionEnum.Enum.Pluralsight}>Pluralsight</MenuItem>
+                  <MenuItem value={InstitutionEnum.Enum.Youtube}>Youtube</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
             <Box sx={{ marginTop: 2, marginBottom: 2 }}>
               <FormControl fullWidth style={{ marginTop: 20, marginBottom: 20 }}>
                 <InputLabel id="demo-simple-select-label">Status</InputLabel>

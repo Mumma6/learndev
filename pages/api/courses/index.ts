@@ -3,8 +3,17 @@ import nextConnect from "next-connect"
 import { unknown, z, ZodError } from "zod"
 import auths from "../../../lib/middlewares/auth"
 import { getMongoDb } from "../../../lib/mongodb"
-import { deleteCourseById, getCoursesForUser, insertCourse, updateCourseById } from "../../../lib/queries/course"
-import { checkUser, handleAPIError, handleAPIResponse } from "../../../lib/utils"
+import { addCourseToDb, deleteCourseById, getCoursesForUser, updateCourseById } from "../../../lib/queries/course"
+import {
+  checkUser,
+  getUserId,
+  handleAPIError,
+  handleAPIResponse,
+  validateArrayData,
+  validateData,
+  validateQueryParam,
+  validateReqBody,
+} from "../../../lib/utils"
 
 import { CourseModelformInputSchema, CourseModelSchema, CourseModelSchemaType } from "../../../schema/CourseSchema"
 import { Response } from "../../../types/response"
@@ -14,6 +23,7 @@ import { CourseModelformInputType } from "../../../schema/CourseSchema"
 import * as E from "fp-ts/Either"
 import { pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
+import { WithId } from "mongodb"
 
 const createTags = (data: Pick<CourseModelSchemaType, "content" | "topics">): string => {
   return [data.content.title, data.content.institution, ...data.topics.map((t) => t.label)]
@@ -23,14 +33,7 @@ const createTags = (data: Pick<CourseModelSchemaType, "content" | "topics">): st
 
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<CourseModelSchemaType[] | null>>>()
 
-// testa att få saker att funka
-
 handler.post(...auths, async (req, res) => {
-  const validateBody = (req: NextApiRequest): E.Either<string, CourseModelformInputType> => {
-    const parsedFormInput = CourseModelformInputSchema.safeParse(req.body)
-    return parsedFormInput.success ? E.right(parsedFormInput.data) : E.left("parsedFormInput.error")
-  }
-
   const addNonInputData = (data: CourseModelformInputType): Omit<CourseModelSchemaType, "_id"> => ({
     ...data,
     tags: createTags(data),
@@ -40,22 +43,19 @@ handler.post(...auths, async (req, res) => {
     resources: [], // får komma in som data
   })
 
-  const addCourseToDb = (data: Omit<CourseModelSchemaType, "_id">) =>
-    E.tryCatch(
-      async () => {
-        const db = await getMongoDb()
-        const result = await insertCourse(db, data)
-        return result
-      },
-      () => `Failed to insert course`
-    )
-
-  pipe(
+  const task = pipe(
     req,
     checkUser,
-    E.chain(validateBody),
+    E.chain((req) => validateReqBody<CourseModelformInputType>(req, CourseModelformInputSchema)),
     E.map(addNonInputData),
-    E.chain(addCourseToDb),
+    TE.fromEither,
+    TE.chain(addCourseToDb)
+  )
+
+  const either = await task()
+
+  pipe(
+    either,
     E.fold(
       (error) => handleAPIError(res, error),
       () => handleAPIResponse(res, null, "Course added")
@@ -64,28 +64,13 @@ handler.post(...auths, async (req, res) => {
 })
 
 handler.get(...auths, async (req, res) => {
-  const getCourses = (req: NextApiRequest): TE.TaskEither<string, CourseModelSchemaType[]> =>
-    pipe(
-      TE.tryCatch(
-        async () => {
-          const db = await getMongoDb()
-          return await getCoursesForUser(db, req.user?._id!)
-        },
-        (error) => `Failed to fetch courses: ${error}`
-      )
-    )
-
-  const validateCourses = (courses: CourseModelSchemaType[]) => {
-    const parsedCourses = z.array(CourseModelSchema).safeParse(courses)
-    return parsedCourses.success ? E.right(parsedCourses.data) : E.left("Error while parsing courses")
-  }
-
   const task = pipe(
     req,
     checkUser,
+    E.chain(getUserId),
     TE.fromEither,
-    TE.chain(getCourses),
-    TE.chain((courses) => TE.fromEither(validateCourses(courses)))
+    TE.chain(getCoursesForUser),
+    TE.chain((courses) => TE.fromEither(validateArrayData<CourseModelSchemaType>(courses, CourseModelSchema)))
   )
 
   const either = await task()
@@ -100,55 +85,38 @@ handler.get(...auths, async (req, res) => {
 })
 
 handler.delete(...auths, async (req, res) => {
-  if (!req.user) {
-    handleAPIResponse(res, null, "No user found")
-  }
-  if (!req.query.id) {
-    handleAPIResponse(res, null, "ID provided")
-  }
+  const task = pipe(req, checkUser, E.chain(validateQueryParam), TE.fromEither, TE.chain(deleteCourseById))
 
-  try {
-    const db = await getMongoDb()
-    deleteCourseById(db, req.query.id as string)
-    // deleteEvents
-    // deleteProjects
-    handleAPIResponse(res, null, `Course with id: ${req.query.id} was deleted successfully`)
-  } catch (error) {
-    console.log("Error when deleting course")
-    handleAPIError(res, error)
-  }
+  const either = await task()
+
+  pipe(
+    either,
+    E.fold(
+      (error) => handleAPIError(res, { message: error }),
+      () => handleAPIResponse(res, null, `Course was deleted successfully`)
+    )
+  )
 })
 
 handler.patch(...auths, async (req, res) => {
-  if (!req.user) {
-    return handleAPIResponse(res, null, "No user found")
-  }
+  const task = pipe(
+    req,
+    checkUser,
+    E.chain((req) => validateReqBody<Partial<CourseModelSchemaType>>(req, CourseModelSchema.partial())),
+    TE.fromEither,
+    TE.chain(updateCourseById)
+  )
 
-  try {
-    const db = await getMongoDb()
+  const either = await task()
 
-    const parsedBody = CourseModelSchema.partial().safeParse(req.body)
-
-    if (!parsedBody.success) {
-      console.log(parsedBody.error)
-      return handleAPIError(res, { message: "Validation error. User input" })
-    }
-
-    const updatedCourse = await updateCourseById(db, parsedBody.data)
-
-    console.log(updatedCourse)
-
-    const parsedProject = CourseModelSchema.safeParse(updatedCourse)
-
-    if (!parsedProject.success) {
-      return handleAPIError(res, { message: "Validation error when updating Course" })
-    }
-
-    handleAPIResponse(res, parsedProject.data, "Course updated successfully")
-  } catch (error) {
-    console.log("Error when updating course")
-    handleAPIError(res, error)
-  }
+  pipe(
+    either,
+    E.chain((data) => validateData<CourseModelSchemaType>(data, CourseModelSchema)),
+    E.fold(
+      (error) => handleAPIError(res, error),
+      (data) => handleAPIResponse(res, data, "Course updated successfully")
+    )
+  )
 })
 
 export default handler

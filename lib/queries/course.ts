@@ -1,26 +1,47 @@
 import { Db, InsertOneResult, ObjectId, WithId } from "mongodb"
 import { CourseModelContentInputSchemaType, CourseModelSchema, CourseModelSchemaType } from "../../schema/CourseSchema"
 import { ZodError } from "zod"
-import { Either, right, left } from "../../helpers/either"
 
-export const insertCourse = async (db: Db, data: Omit<CourseModelSchemaType, "_id">) => {
-  return await db.collection("courses").insertOne(data)
-}
+import * as E from "fp-ts/Either"
+import { pipe } from "fp-ts/function"
+import * as TE from "fp-ts/TaskEither"
+import { getMongoDb } from "../mongodb"
+import { NextApiRequest } from "next"
 
-export const getCoursesForUser = async (db: Db, userId: string): Promise<CourseModelSchemaType[]> => {
-  // Make sure the find works. Should it be string or ObjectID
+export const addCourseToDb = (data: Omit<CourseModelSchemaType, "_id">) =>
+  TE.tryCatch(
+    async () => {
+      const db = await getMongoDb()
+      const result = await db.collection("courses").insertOne(data)
+      return result
+    },
+    () => `Failed to insert course`
+  )
 
-  // @ts-ignore
-  return await db
-    .collection("courses")
-    .find({ userId: new ObjectId(userId) })
-    .sort({ createdAt: -1, title: 1 })
-    .toArray()
-}
+export const getCoursesForUser = (userId: string) =>
+  pipe(
+    TE.tryCatch(
+      async () => {
+        const db = await getMongoDb()
+        return await db
+          .collection("courses")
+          .find({ userId: new ObjectId(userId) })
+          .sort({ createdAt: -1, title: 1 })
+          .toArray()
+      },
+      (error) => `Failed to fetch courses: ${error}`
+    )
+  )
 
-export const deleteCourseById = async (db: Db, id: string) => {
-  return await db.collection("courses").deleteOne({ _id: new ObjectId(id) })
-}
+export const deleteCourseById = (id: string) =>
+  TE.tryCatch(
+    async () => {
+      const db = await getMongoDb()
+      const result = await db.collection("courses").deleteOne({ _id: new ObjectId(id) })
+      return result
+    },
+    () => `Failed to delete course`
+  )
 
 export const findCoursebyId = async (db: Db, _id: string) => {
   const course = await db.collection("courses").findOne({ _id: new ObjectId(_id) })
@@ -33,20 +54,18 @@ export const findCoursebyId = async (db: Db, _id: string) => {
   return parsedCourse.data
 }
 
-export const updateCourseById = async (db: Db, data: Partial<CourseModelSchemaType>) => {
-  const dataToUpdate = { ...data }
+export const updateCourseById = (data: Partial<CourseModelSchemaType>) =>
+  pipe(
+    TE.tryCatch(
+      async () => {
+        const { _id, ...dataToUpdate } = data
+        const db = await getMongoDb()
+        const updatedCourse = await db
+          .collection("courses")
+          .findOneAndUpdate({ _id: new ObjectId(_id) }, { $set: dataToUpdate }, { returnDocument: "after" })
 
-  delete dataToUpdate._id
-
-  try {
-    const updatedCourse = await db
-      .collection("courses")
-      .findOneAndUpdate({ _id: new ObjectId(data._id) }, { $set: dataToUpdate }, { returnDocument: "after" })
-
-    console.log(updatedCourse)
-
-    return updatedCourse.value
-  } catch (error) {
-    console.log(error)
-  }
-}
+        return updatedCourse.value ?? TE.left("Course not found")
+      },
+      (error) => `Error while updating course`
+    )
+  )

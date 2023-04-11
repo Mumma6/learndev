@@ -4,7 +4,7 @@ import { getMongoDb } from "./mongodb"
 import { findUserBySession } from "./queries/user"
 import { ParsedUrlQuery } from "querystring"
 import { Db, ObjectId, WithId } from "mongodb"
-import { AnyZodObject } from "zod"
+import { AnyZodObject, z } from "zod"
 import * as E from "fp-ts/Either"
 
 /*
@@ -31,7 +31,7 @@ export const handleAPIResponse = <T>(
 
 export const handleAPIError = (res: NextApiResponse, error: any): void => {
   res.statusCode = 400
-  res.json({ payload: null, error: error.message, message: "An error occurred" })
+  res.json({ payload: null, error: error.message, message: error || "An error occurred" })
 }
 
 interface IParams extends ParsedUrlQuery {
@@ -103,5 +103,62 @@ export const handleAuthGetServerSideProps = async <ObjectType>(
   }
 }
 
+/**
+ *
+ * @param req
+ * @returns Either the NextApiRequest object or an error message
+ */
 export const checkUser = (req: NextApiRequest): E.Either<string, NextApiRequest> =>
   req.user ? E.right(req) : E.left("No user found")
+
+/**
+ *
+ * @param req
+ * @returns Either the user_id or an error message
+ */
+export const getUserId = (req: NextApiRequest): E.Either<string, string> =>
+  req.user?._id ? E.right(req.user._id) : E.left("User id not found")
+
+/**
+ *
+ * @param data any data object to parse
+ * @param schema any valid zodSchema
+ * @typedef T the expected return type of the parsed data
+ * @returns Either the parsed data as array<T> or an error message
+ */
+export const validateArrayData = <T>(data: unknown, schema: z.ZodSchema): E.Either<string, T[]> => {
+  const parsedData = z.array(schema).safeParse(data)
+  return parsedData.success ? E.right(parsedData.data) : E.left("Error while parsing data")
+}
+
+/**
+ *
+ * @param req The NextApiRequestObject
+ * @param schema any valid zodSchema
+ * @typedef T the expected return type of the parsed data
+ * @returns Either the parsed data as <T> or an error message
+ */
+export const validateReqBody = <T>(req: NextApiRequest, schema: z.ZodSchema): E.Either<string, T> => {
+  const parsedBody = schema.safeParse(req.body)
+  return parsedBody.success ? E.right(parsedBody.data) : E.left("Error while parsing req data")
+}
+
+/**
+ *
+ * @param req The NextApiRequestObject
+ * @param schema any valid zodSchema
+ * @typedef T the expected return type of the parsed data
+ * @returns Either the parsed data as <T> or an error message
+ */
+export const validateData = <T>(data: unknown, schema: z.ZodSchema): E.Either<string, T> => {
+  const parsedData = schema.safeParse(data)
+  return parsedData.success ? E.right(parsedData.data) : E.left("Error while parsing req data")
+}
+
+/**
+ *
+ * @param req
+ * @returns Either the query.id as a string or an error message
+ */
+export const validateQueryParam = (req: NextApiRequest): E.Either<string, string> =>
+  !Array.isArray(req.query.id) && req.query.id !== undefined ? E.right(req.query.id) : E.left("No ID provided")

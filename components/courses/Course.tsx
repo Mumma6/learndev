@@ -73,7 +73,15 @@ const Course = ({ course }: IProps) => {
               Edit
             </Button>
           </Box>
-          <CardHeader title={course.content.title} subheader={`Duration: ${course.content.duration} hours`} />
+          <CardHeader
+            title={course.content.title}
+            subheader={
+              <>
+                <p>{`Duration: ${course.content.duration} hours`}</p>
+                <p>{`Provider: ${course.content.institution}`}</p>
+              </>
+            }
+          />
           <Box m={2}>
             <NextLink style={{ textDecoration: "none" }} target="_blank" href={course.content.url} passHref>
               <Button component="a">Go to course</Button>
