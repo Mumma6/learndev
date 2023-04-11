@@ -4,7 +4,7 @@ import Head from "next/head"
 import { getMongoDb } from "../../../lib/mongodb"
 import { findUserById } from "../../../lib/queries/user"
 import { ParsedUrlQuery } from "querystring"
-import { WithId } from "mongodb"
+import { ObjectId, WithId } from "mongodb"
 import { UserModelSchema, UserModelSchemaType } from "../../../schema/UserSchema"
 import { getCoursesForUser } from "../../../lib/queries/course"
 import { getProjectsForUser } from "../../../lib/queries/projects"
@@ -22,6 +22,7 @@ interface IParams extends ParsedUrlQuery {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  // replace all this nonsens with pipes
   const db = await getMongoDb()
 
   const { id } = context.params as IParams
@@ -36,7 +37,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
   }
 
-  const userCourses = z.array(CourseModelSchema).safeParse(await getCoursesForUser(db, parsedUser.data._id))
+  const getC = async (id: string) => {
+    const db = await getMongoDb()
+    return await db
+      .collection("courses")
+      .find({ userId: new ObjectId(id) })
+      .sort({ createdAt: -1, title: 1 })
+      .toArray()
+  }
+
+  const userCourses = z.array(CourseModelSchema).safeParse(await getC(parsedUser.data._id))
   const userProjects = z.array(ProjectModelSchema).safeParse(await getProjectsForUser(db, parsedUser.data._id))
   const userQuizResults = (await getQuizResultsForUser(db, parsedUser.data._id)).map(serilizeObject) as IQuizResult[]
 
