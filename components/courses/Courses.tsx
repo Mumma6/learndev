@@ -65,6 +65,10 @@ const Courses = () => {
   const { data } = useCourses()
   const { mutate } = useSWRConfig()
 
+  useEffect(() => console.log("update"))
+
+  const getNumberOfStatuses = (status: StatusEnumType) => data?.payload?.filter((d) => d.content.status === status).length
+
   useEffect(() => {
     if (data?.payload) {
       return setDataToShow(data?.payload?.filter((c) => c.content.status === statusValue))
@@ -159,9 +163,12 @@ const Courses = () => {
             title={
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <Tabs value={statusValue} onChange={handleChange} aria-label="basic tabs example">
-                  <Tab label="In progress" value={StatusEnum.Enum["In progress"]} />
-                  <Tab label="Done" value={StatusEnum.Enum.Done} />
-                  <Tab label="Wishlist" value={StatusEnum.Enum.Wishlist} />
+                  <Tab
+                    label={`In progress (${getNumberOfStatuses("In progress")})`}
+                    value={StatusEnum.Enum["In progress"]}
+                  />
+                  <Tab label={`Done (${getNumberOfStatuses("Done")})`} value={StatusEnum.Enum.Done} />
+                  <Tab label={`Wishlist (${getNumberOfStatuses("Wishlist")})`} value={StatusEnum.Enum.Wishlist} />
                 </Tabs>
                 <InfoTooltip text="Keep track of all your courses here. Add courses you have completed, working on at this moment and courses you want to take in the future" />
               </div>

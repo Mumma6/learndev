@@ -4,6 +4,10 @@ import { Bar } from "react-chartjs-2"
 import { useCourses, useProjects } from "../../lib/hooks"
 import { SkillSchemaType } from "../.../../../schema/SharedSchema"
 import CardHeaderTitle from "../shared/CardHeaderTitle"
+import * as E from "fp-ts/Either"
+import { pipe } from "fp-ts/function"
+import * as A from "fp-ts/Array"
+import * as S from "fp-ts/string"
 
 const TopicsChart = () => {
   const theme = useTheme()

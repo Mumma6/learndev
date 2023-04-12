@@ -6,7 +6,7 @@ import { findUserById } from "../../../lib/queries/user"
 import { ParsedUrlQuery } from "querystring"
 import { ObjectId, WithId } from "mongodb"
 import { UserModelSchema, UserModelSchemaType } from "../../../schema/UserSchema"
-import { getCoursesForUser } from "../../../lib/queries/course"
+
 import { getProjectsForUser } from "../../../lib/queries/projects"
 import { getAllQuizzes, getQuizResultsForUser } from "../../../lib/queries/quizzes"
 import { CourseModelSchema, CourseModelSchemaType } from "../../../schema/CourseSchema"
@@ -32,6 +32,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const parsedUser = UserModelSchema.omit({ password: true }).safeParse(user)
 
   if (!user || !parsedUser.success) {
+    console.log("return not found")
     return {
       notFound: true,
     }
@@ -46,13 +47,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       .toArray()
   }
 
-  const userCourses = z.array(CourseModelSchema).safeParse(await getC(parsedUser.data._id))
-  const userProjects = z.array(ProjectModelSchema).safeParse(await getProjectsForUser(db, parsedUser.data._id))
-  const userQuizResults = (await getQuizResultsForUser(db, parsedUser.data._id)).map(serilizeObject) as IQuizResult[]
+  const getP = async (id: string) => {
+    const db = await getMongoDb()
+    return await db
+      .collection("projects")
+      .find({ userId: new ObjectId(id) })
+      .sort({ createdAt: -1, title: 1 })
+      .toArray()
+  }
 
-  const userQuizzes = (await getAllQuizzes(db))
-    .filter((quiz) => userQuizResults.map((q) => q.quiz_id).includes(quiz._id.toString()))
-    .map(serilizeObject)
+  const userCourses = z.array(CourseModelSchema).safeParse(await getC(parsedUser.data._id))
+  const userProjects = z.array(ProjectModelSchema).safeParse(await getP(parsedUser.data._id))
+  const userQuizResults = (await getQuizResultsForUser(db, parsedUser.data._id)).map(serilizeObject) as IQuizResult[]
 
   if (!userCourses.success || !userProjects.success) {
     return {
@@ -66,7 +72,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       courses: serilizeObject(userCourses.data),
       projects: serilizeObject(userProjects.data),
       quizResults: userQuizResults,
-      quizzes: userQuizzes,
     },
   }
 }
@@ -76,18 +81,94 @@ interface IProps {
   courses: CourseModelSchemaType[]
   projects: ProjectModelType[]
   quizResults: IQuizResult[]
-  quizzes: IQuiz[]
 }
 
-const Profile = ({ user, courses, projects, quizResults, quizzes }: IProps) => {
+const Profile = ({ user, courses, projects, quizResults }: IProps) => {
   return (
     <>
       <Head>
         <title>Profile | {user.name}</title>
       </Head>
-      <PublicProfile user={user} courses={courses} projects={projects} quizResults={quizResults} quizzes={quizzes} />
+      <PublicProfile user={user} courses={courses} projects={projects} quizResults={quizResults} />
     </>
   )
 }
 
 export default Profile
+
+/*
+import * as E from 'fp-ts/lib/Either';
+import * as TE from 'fp-ts/lib/TaskEither';
+import { pipe } from 'fp-ts/lib/function';
+import { ObjectId } from 'mongodb';
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { id } = context.params as IParams;
+
+  const userOrNotFound = await pipe(
+    getMongoDb(),
+    TE.chain((db) => findUserById(db, id)),
+    TE.chain((user) => {
+      const parsedUser = UserModelSchema.omit({ password: true }).safeParse(user);
+      return parsedUser.success
+        ? TE.right(serilizeObject(parsedUser.data))
+        : TE.left({ notFound: true });
+    }),
+    TE.toUnion
+  )();
+
+  const coursesOrNotFound = await pipe(
+    getC(id),
+    TE.chain((courses) =>
+      pipe(
+        z.array(CourseModelSchema).safeParse(courses),
+        E.map(serilizeObject),
+        E.mapLeft(() => ({ notFound: true }))
+      )
+    ),
+    TE.toUnion
+  )();
+
+  const projectsOrNotFound = await pipe(
+    getMongoDb(),
+    TE.chain((db) => getProjectsForUser(db, id)),
+    TE.chain((projects) =>
+      pipe(
+        z.array(ProjectModelSchema).safeParse(projects),
+        E.map(serilizeObject),
+        E.mapLeft(() => ({ notFound: true }))
+      )
+    ),
+    TE.toUnion
+  )();
+
+  const quizResults = await pipe(
+    getMongoDb(),
+    TE.chain((db) => getQuizResultsForUser(db, id)),
+    TE.map((results) => results.map(serilizeObject))
+  )();
+
+  const quizzes = await pipe(
+    getAllQuizzes(db),
+    TE.map((allQuizzes) =>
+      allQuizzes
+        .filter((quiz) => quizResults.map((q) => q.quiz_id).includes(quiz._id.toString()))
+        .map(serilizeObject)
+    )
+  )();
+
+  return {
+    props: pipe(
+      userOrNotFound,
+      E.map((user) => ({
+        user,
+        courses: coursesOrNotFound,
+        projects: projectsOrNotFound,
+        quizResults,
+        quizzes,
+      })),
+      E.getOrElse(() => ({ notFound: true }))
+    ),
+  };
+};
+*/

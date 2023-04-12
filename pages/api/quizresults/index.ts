@@ -1,10 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import nextConnect from "next-connect"
 import auths from "../../../lib/middlewares/auth"
-import { getMongoDb } from "../../../lib/mongodb"
-import { addQuizResult, getAllQuizResults, getAllQuizzes } from "../../../lib/queries/quizzes"
+import { addQuizResult, getAllQuizResults } from "../../../lib/queries/quizzes"
+import * as E from "fp-ts/Either"
+import { pipe } from "fp-ts/function"
+import * as TE from "fp-ts/TaskEither"
 
-import { handleAPIError, handleAPIResponse } from "../../../lib/utils"
+import { checkUser, handleAPIError, handleAPIResponse } from "../../../lib/utils"
 
 import { IQuizResult } from "../../../models/QuizResult"
 import { Response } from "../../../types/response"
@@ -12,41 +14,43 @@ import { Response } from "../../../types/response"
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<IQuizResult[] | null>>>()
 
 handler.post(...auths, async (req, res) => {
-  if (!req.user) {
-    handleAPIResponse(res, [], "User auth")
-    return
-  }
+  // Needs validation here.
 
-  const payload = {
-    user_id: req.user._id,
-    takenAt: new Date(),
-    ...req.body,
-  }
+  const task = pipe(
+    req,
+    checkUser,
+    E.map((req) => ({
+      user_id: req.user?._id,
+      takenAt: new Date(),
+      ...req.body,
+    })),
+    TE.fromEither,
+    TE.chain(addQuizResult)
+  )
 
-  try {
-    const db = await getMongoDb()
-    addQuizResult(db, payload)
-    handleAPIResponse(res, null, "Quiz result added")
-  } catch (error) {
-    console.log("Error when adding quiz result")
-    handleAPIError(res, error)
-  }
+  const either = await task()
+
+  pipe(
+    either,
+    E.fold(
+      (error) => handleAPIError(res, error),
+      () => handleAPIResponse(res, null, "Quizresult added")
+    )
+  )
 })
 
 handler.get(...auths, async (req, res) => {
-  if (!req.user) {
-    handleAPIResponse(res, [], "User auth")
-    return
-  }
+  const task = pipe(req, checkUser, TE.fromEither, TE.chain(getAllQuizResults))
 
-  try {
-    const db = await getMongoDb()
-    const quizResults = await getAllQuizResults(db)
-    handleAPIResponse(res, quizResults, "All quizResults")
-  } catch (error) {
-    console.log("Error when fethcing quizResults")
-    handleAPIError(res, error)
-  }
+  const either = await task()
+
+  pipe(
+    either,
+    E.fold(
+      (error) => handleAPIError(res, error),
+      (quizresults) => handleAPIResponse(res, quizresults, "All quizResults")
+    )
+  )
 })
 
 export default handler

@@ -24,7 +24,6 @@ interface IProps {
   handleClose: SetState<void>
   topicData: Skill[]
   setTopicData: SetState<Skill[]>
-
   onAddProject: ClickEventRet<Promise<void>>
   zodForm: IZodFormValidation<Omit<ProjectModelFromInputType, "techStack" | "completed">>
 }

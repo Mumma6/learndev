@@ -30,30 +30,18 @@ import { FiCode, FiExternalLink } from "react-icons/fi"
 import Link from "next/link"
 import { CgWebsite } from "react-icons/cg"
 import { FaBlog, FaGithub, FaLinkedin, FaTwitter, FaYoutube } from "react-icons/fa"
+import LatestQuizResults from "../../overview/LatestQuizResults"
 
 // https://www.npmjs.com/package/react-to-pdf
-
-/*
-
-
-tabel med kurser
-tabel med projects
-tabel med quiz results
-
-knappar till socials
-
-
-*/
 
 interface IProps {
   user: UserModelSchemaType
   courses: CourseModelSchemaType[]
   projects: ProjectModelType[]
   quizResults: IQuizResult[]
-  quizzes: IQuiz[]
 }
 
-const PublicProfile = ({ user, courses, projects, quizResults, quizzes }: IProps) => {
+const PublicProfile = ({ user, courses, projects, quizResults }: IProps) => {
   return (
     <div style={{ backgroundColor: "#EDEADE", paddingTop: 50, paddingBottom: 50 }}>
       <Container>
@@ -220,6 +208,10 @@ const PublicProfile = ({ user, courses, projects, quizResults, quizzes }: IProps
             </TableContainer>
           </CardContent>
         </Card>
+
+        <Box mt={5}>
+          <LatestQuizResults quizResults={quizResults} />
+        </Box>
 
         <Card sx={{ height: "100%", marginTop: 5 }}>
           <CardHeader title="Socials" />

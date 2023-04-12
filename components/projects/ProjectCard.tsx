@@ -24,14 +24,12 @@ const ProjectCard = ({ project, deleteProject }: IProps) => {
   return (
     <Paper elevation={10}>
       <Card sx={{ boxShadow: 5 }}>
-        <Box sx={{ minHeight: 100 }}>
-          <Button sx={{ width: "100%", textAlign: "center" }} onClick={() => router.push(`/projects/${project._id}`)}>
-            <CardContent style={{ padding: 0 }}>
-              <Typography variant="h6" component="div" sx={{ marginTop: 2 }}>
-                {project.title}
-              </Typography>
-            </CardContent>
-          </Button>
+        <Box sx={{ minHeight: 100, textAlign: "center" }}>
+          <CardContent style={{ padding: 0 }}>
+            <Typography variant="h6" component="div" sx={{ marginTop: 2 }}>
+              {project.title}
+            </Typography>
+          </CardContent>
         </Box>
         <Divider />
         <CardActions sx={{ display: "flex", justifyContent: "space-between" }}>

@@ -11,11 +11,10 @@ interface IProps {
   title: string
 }
 
-// lägg till onClose på knappen
-
 const NavItem = ({ href, icon, title }: IProps) => {
   const router = useRouter()
-  const active = href ? router.pathname === href : false
+
+  const active = href ? router.pathname.includes(href) : false
   return (
     <div
       style={{

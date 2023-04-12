@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from "react"
+import React, { FormEvent, useState, useEffect } from "react"
 
 import { toast } from "react-toastify"
 
@@ -13,6 +13,13 @@ import * as _ from "lodash"
 
 import { useZodFormValidation } from "zod-react-form"
 
+const initialFormState = {
+  about: "",
+  goals: "",
+  from: "",
+  lookingForWork: false,
+}
+
 const AboutYou = () => {
   const { data } = useCurrentUser()
 
@@ -20,14 +27,20 @@ const AboutYou = () => {
 
   const [isLoading, setIsLoading] = useState(false)
 
-  const { values, errors, setFieldValue, onBlur, touched, isDisabled } = useZodFormValidation<
+  const { values, errors, setFieldValue, onBlur, touched, isDisabled, setValues } = useZodFormValidation<
     Pick<UserModelSchemaType, "about" | "goals" | "from" | "lookingForWork">
-  >(UserModelSchema.pick({ about: true, goals: true }), {
-    about: data?.payload?.about || "",
-    goals: data?.payload?.goals || "",
-    from: data?.payload?.from || "",
-    lookingForWork: !!data?.payload?.lookingForWork,
-  })
+  >(UserModelSchema.pick({ about: true, goals: true }), initialFormState)
+
+  useEffect(() => {
+    if (data?.payload) {
+      setValues({
+        about: data?.payload?.about || "",
+        goals: data?.payload?.goals || "",
+        from: data?.payload?.from || "",
+        lookingForWork: !!data?.payload?.lookingForWork,
+      })
+    }
+  }, [data?.payload])
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()

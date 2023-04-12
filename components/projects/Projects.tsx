@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { Box, Container, Grid, Pagination, Card, CardContent, Typography, Divider, CardHeader } from "@mui/material"
 import { toast } from "react-toastify"
 import { ClickEvent } from "../../types/generics"
-import { fetcher } from "../../lib/axiosFetcher"
+import { fetcher, fetcherTE } from "../../lib/axiosFetcher"
 import { Skill } from "../../constants/skillsData"
 import { useProjects } from "../../lib/hooks"
 import { useSWRConfig } from "swr"
@@ -10,6 +10,9 @@ import ProjectsToolbar from "./ProjectsToolbar"
 import ProjectCard from "./ProjectCard"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
+import { pipe } from "fp-ts/function"
+import * as E from "fp-ts/Either"
+import * as TE from "fp-ts/TaskEither"
 
 import AddProjectModal from "./AddProjectModal"
 import {
@@ -76,49 +79,59 @@ export const Projects = () => {
     }
   }, [statusValue, data])
 
-  const onAddProject = async (event: ClickEvent) => {
-    event.preventDefault()
-    try {
-      setIsLoading(true)
+  const resetForm = () => {
+    zodForm.setValues(initialProjectsFormData)
+    setIsLoading(false)
+    setTopicData([])
+    handleClose()
+  }
 
-      const response = await fetcher<undefined, ProjectModelFromInputType>("/api/projects", {
+  const getNumberOfStatuses = (status: ProjectStatusEnumType) => data?.payload?.filter((d) => d.status === status).length
+
+  const onAddProject = async () => {
+    setIsLoading(true)
+
+    // sätt detta i en variabel först?
+    pipe(
+      fetcherTE<ProjectModelType, ProjectModelFromInputType>("/api/projects", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: {
           ...zodForm.values,
           techStack: topicData,
         },
-      })
-
-      console.log(response)
-
-      if (response?.error) {
-        toast.error(response.error)
-      } else {
-        mutate("/api/projects")
-        toast.success(response?.message)
-      }
-    } catch (e: any) {
-      console.log(e)
-    } finally {
-      zodForm.setValues(initialProjectsFormData)
-      setTopicData([])
-      setIsLoading(false)
-      handleClose()
-    }
+      }),
+      TE.fold(
+        (error) => {
+          toast.error(error)
+          resetForm()
+          return TE.left(error)
+        },
+        (data) => {
+          toast.success(data.message)
+          mutate("/api/courses")
+          resetForm()
+          return TE.right(data)
+        }
+      )
+    )()
   }
 
   const deleteProject = async (id: string) => {
-    const response = await fetcher(`/api/projects?id=${id}`, {
-      method: "DELETE",
-    })
-
-    if (response?.error) {
-      toast.error(response.error)
-    } else {
-      mutate("/api/projects")
-      toast.success(response?.message)
-    }
+    pipe(
+      fetcherTE(`/api/projects?id=${id}`, { method: "DELETE" }),
+      TE.fold(
+        (error) => {
+          toast.error(error)
+          return TE.left(error)
+        },
+        (response) => {
+          mutate("/api/projects")
+          toast.success(response?.message)
+          return TE.right(response)
+        }
+      )
+    )()
   }
 
   const handleChange = (event: React.SyntheticEvent, newValue: ProjectStatusEnumType) => {
@@ -143,42 +156,35 @@ export const Projects = () => {
         />
         <Container maxWidth={false}>
           <ProjectsToolbar handleClickOpen={handleClickOpen} />
-          <Box sx={{ pt: 3 }}>
-            <Box sx={{ mt: 1, mb: 1 }}>
-              <Card sx={{ marginTop: 4 }}>
-                <CardHeader
-                  title={
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <Tabs value={statusValue} onChange={handleChange} aria-label="basic tabs example">
-                        <Tab label="In progress" value={StatusEnum.Enum["In progress"]} />
-                        <Tab label="Done" value={StatusEnum.Enum.Done} />
-                        <Tab label="Wishlist" value={StatusEnum.Enum.Wishlist} />
-                      </Tabs>
-                      <InfoTooltip text="Keep track of all your projects here. Add projects you have completed, working on at this moment and projects you want plan to make in the future" />
-                    </div>
-                  }
-                />
-                <Divider />
-                <CardContent>
-                  <Grid mb={4} mt={2} container spacing={2}>
-                    {!isLoading &&
-                      dataToShow.map((project) => (
-                        <Grid item key={project._id} xl={3} lg={3} md={3} sm={6} xs={12}>
-                          <ProjectCard deleteProject={deleteProject} project={project} />
-                        </Grid>
-                      ))}
-                  </Grid>
-                </CardContent>
-              </Card>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              pt: 3,
-            }}
-          ></Box>
+
+          <Card sx={{ marginTop: 4 }}>
+            <CardHeader
+              title={
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <Tabs value={statusValue} onChange={handleChange} aria-label="basic tabs example">
+                    <Tab
+                      label={`In progress (${getNumberOfStatuses("In progress")})`}
+                      value={ProjectStatusEnum.Enum["In progress"]}
+                    />
+                    <Tab label={`Done (${getNumberOfStatuses("Done")})`} value={ProjectStatusEnum.Enum.Done} />
+                    <Tab label={`Planning (${getNumberOfStatuses("Planning")})`} value={ProjectStatusEnum.Enum.Planning} />
+                  </Tabs>
+                  <InfoTooltip text="Keep track of all your projects here. Add projects you have completed, working on at this moment and projects you want plan to make in the future" />
+                </div>
+              }
+            />
+            <Divider />
+            <CardContent>
+              <Grid mb={4} mt={2} container spacing={2}>
+                {!isLoading &&
+                  dataToShow.map((project) => (
+                    <Grid item key={project._id} xl={3} lg={3} md={3} sm={6} xs={12}>
+                      <ProjectCard deleteProject={deleteProject} project={project} />
+                    </Grid>
+                  ))}
+              </Grid>
+            </CardContent>
+          </Card>
         </Container>
       </Box>
     </>

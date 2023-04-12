@@ -3,14 +3,15 @@ import { Response } from "../types/response"
 import { getMongoDb } from "./mongodb"
 import { findUserBySession } from "./queries/user"
 import { ParsedUrlQuery } from "querystring"
-import { Db, ObjectId, WithId } from "mongodb"
+import { Db, DeleteResult, ObjectId, WithId } from "mongodb"
 import { AnyZodObject, z } from "zod"
 import * as E from "fp-ts/Either"
+import { pipe } from "fp-ts/function"
+import * as TE from "fp-ts/TaskEither"
 
 /*
-Only used on the server side.
-
-*/
+ ***** Only used on the server side.
+ */
 
 export const handleAPIResponse = <T>(
   res: NextApiResponse<Response<T>>,
@@ -126,7 +127,7 @@ export const getUserId = (req: NextApiRequest): E.Either<string, string> =>
  * @typedef T the expected return type of the parsed data
  * @returns Either the parsed data as array<T> or an error message
  */
-export const validateArrayData = <T>(data: unknown, schema: z.ZodSchema): E.Either<string, T[]> => {
+export const validateArrayData = <T>(data: unknown[], schema: z.ZodSchema): E.Either<string, T[]> => {
   const parsedData = z.array(schema).safeParse(data)
   return parsedData.success ? E.right(parsedData.data) : E.left("Error while parsing data")
 }
@@ -162,3 +163,19 @@ export const validateData = <T>(data: unknown, schema: z.ZodSchema): E.Either<st
  */
 export const validateQueryParam = (req: NextApiRequest): E.Either<string, string> =>
   !Array.isArray(req.query.id) && req.query.id !== undefined ? E.right(req.query.id) : E.left("No ID provided")
+
+export const createDeleteHandler =
+  (deleteFunction: (id: string) => TE.TaskEither<string, DeleteResult>) =>
+  async (req: NextApiRequest, res: NextApiResponse) => {
+    const task = pipe(req, checkUser, E.chain(validateQueryParam), TE.fromEither, TE.chain(deleteFunction))
+
+    const either = await task()
+
+    pipe(
+      either,
+      E.fold(
+        (error) => handleAPIError(res, { message: error }),
+        () => handleAPIResponse(res, null, `Resource was deleted successfully`)
+      )
+    )
+  }

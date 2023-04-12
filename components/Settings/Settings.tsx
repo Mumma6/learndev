@@ -5,7 +5,7 @@ import Head from "next/head"
 import EmailVerify from "../auth/EmailVerify"
 import AboutYou from "../profile/AboutYou"
 import ChangePassword from "./ChangePassword"
-import { Box, Container, Typography } from "@mui/material"
+import { Box, Container, Grid, Typography } from "@mui/material"
 import DeleteAccount from "./DeleteAccount"
 
 const Settings = () => {
@@ -25,14 +25,20 @@ const Settings = () => {
         }}
       >
         <Container maxWidth={false}>
-          <EmailVerify user={data?.payload!} />
+          <Grid container spacing={2}>
+            <Grid item sm={6}>
+              <EmailVerify user={data?.payload!} />
 
-          <Box sx={{ pt: 3 }}>
-            <ChangePassword />
-          </Box>
-          <Box sx={{ pt: 3 }}>
-            <DeleteAccount />
-          </Box>
+              <Box sx={{ pt: 3 }}>
+                <ChangePassword />
+              </Box>
+            </Grid>
+            <Grid item sm={6}>
+              <Box sx={{ pt: 3 }}>
+                <DeleteAccount />
+              </Box>
+            </Grid>
+          </Grid>
         </Container>
       </Box>
     </>

@@ -17,6 +17,8 @@ interface IProps {
 
 // this is same as project card.
 
+// breddare och  allt brevid varandra
+
 const CourseCard = ({ course, deleteCourse }: IProps) => {
   const router = useRouter()
   return (

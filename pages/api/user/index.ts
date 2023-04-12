@@ -1,15 +1,12 @@
-import { v2 as cloudinary } from "cloudinary"
-import slug from "slug"
-import multer from "multer"
 import nextConnect from "next-connect"
 import auths from "../../../lib/middlewares/auth"
 import { getMongoDb } from "../../../lib/mongodb"
-import { deleteUser, findUserByEmail, updateUserById } from "../../../lib/queries/user"
+import { deleteUser, updateUserById } from "../../../lib/queries/user"
 import { NextApiRequest, NextApiResponse } from "next"
 
 import { Response } from "../../../types/response"
 import { handleAPIError, handleAPIResponse } from "../../../lib/utils"
-import { ObjectId } from "mongodb"
+
 import { UserModelSchema, UserModelSchemaType } from "../../../schema/UserSchema"
 
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<Omit<UserModelSchemaType, "password"> | null>>>()
@@ -68,32 +65,3 @@ handler.patch(async (req, res) => {
 })
 
 export default handler
-
-/*
-// Need to register on cloudinary.com
-/*
-
-//upload.single("profilePicture"),
-if (process.env.CLOUDINARY_URL) {
-  const { hostname: cloud_name, username: api_key, password: api_secret } = new URL(process.env.CLOUDINARY_URL)
-
-  cloudinary.config({
-    cloud_name,
-    api_key,
-    api_secret,
-  })
-}
-
- let profilePicture
-      if (req.file) {
-        const image = await cloudinary.uploader.upload(req.file.path, {
-          width: 512,
-          height: 512,
-          crop: "fill",
-        })
-        profilePicture = image.secure_url
-      }
-
-const upload = multer({ dest: "/tmp" })
-
-*/

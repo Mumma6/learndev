@@ -1,17 +1,15 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import nextConnect from "next-connect"
-import { unknown, z, ZodError } from "zod"
 import auths from "../../../lib/middlewares/auth"
-import { getMongoDb } from "../../../lib/mongodb"
 import { addCourseToDb, deleteCourseById, getCoursesForUser, updateCourseById } from "../../../lib/queries/course"
 import {
   checkUser,
+  createDeleteHandler,
   getUserId,
   handleAPIError,
   handleAPIResponse,
   validateArrayData,
   validateData,
-  validateQueryParam,
   validateReqBody,
 } from "../../../lib/utils"
 
@@ -23,7 +21,6 @@ import { CourseModelformInputType } from "../../../schema/CourseSchema"
 import * as E from "fp-ts/Either"
 import { pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
-import { WithId } from "mongodb"
 
 const createTags = (data: Pick<CourseModelSchemaType, "content" | "topics">): string => {
   return [data.content.title, data.content.institution, ...data.topics.map((t) => t.label)]
@@ -84,19 +81,7 @@ handler.get(...auths, async (req, res) => {
   )
 })
 
-handler.delete(...auths, async (req, res) => {
-  const task = pipe(req, checkUser, E.chain(validateQueryParam), TE.fromEither, TE.chain(deleteCourseById))
-
-  const either = await task()
-
-  pipe(
-    either,
-    E.fold(
-      (error) => handleAPIError(res, { message: error }),
-      () => handleAPIResponse(res, null, `Course was deleted successfully`)
-    )
-  )
-})
+handler.delete(...auths, createDeleteHandler(deleteCourseById))
 
 handler.patch(...auths, async (req, res) => {
   const task = pipe(

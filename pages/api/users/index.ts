@@ -19,7 +19,6 @@ handler.post(...auths, async (req, res) => {
     if (!parsedFormInput.success) {
       console.log(parsedFormInput.error)
 
-      // gör en cool generic function som visar alla felen från valideringen
       return handleAPIError(res, { message: "Validation error" })
     }
 

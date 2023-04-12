@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react"
+import { useState, FormEvent, useEffect } from "react"
 import Box from "@mui/material/Box"
 import Card from "@mui/material/Card"
 import { CardContent, CardHeader, Divider, TextField } from "@mui/material"
@@ -26,12 +26,14 @@ const Socials = () => {
   const { data, mutate } = useCurrentUser()
   const [isLoading, setIsLoading] = useState(false)
 
-  const { values, errors, setFieldValue, onBlur, touched, isDisabled } = useZodFormValidation<UserSocialsSchemaType>(
-    UserSocialsSchema,
-    {
-      ...(data?.payload?.socials ? data?.payload?.socials : initialFormState),
+  const { values, errors, setFieldValue, onBlur, touched, isDisabled, setValues } =
+    useZodFormValidation<UserSocialsSchemaType>(UserSocialsSchema, initialFormState)
+
+  useEffect(() => {
+    if (data?.payload?.socials) {
+      setValues(data?.payload?.socials)
     }
-  )
+  }, [data])
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()

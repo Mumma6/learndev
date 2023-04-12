@@ -1,134 +1,107 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import nextConnect from "next-connect"
-import { z } from "zod"
 import auths from "../../../lib/middlewares/auth"
-import { getMongoDb } from "../../../lib/mongodb"
 import { deleteProjectById, getProjectsForUser, insertProject, updateProjectById } from "../../../lib/queries/projects"
 
-import { handleAPIError, handleAPIResponse } from "../../../lib/utils"
-import { ProjectModelFormInputSchema, ProjectModelSchema, ProjectModelType } from "../../../schema/ProjectSchema"
-
+import {
+  checkUser,
+  createDeleteHandler,
+  getUserId,
+  handleAPIError,
+  handleAPIResponse,
+  validateArrayData,
+  validateData,
+  validateQueryParam,
+  validateReqBody,
+} from "../../../lib/utils"
+import {
+  ProjectModelFormInputSchema,
+  ProjectModelFromInputType,
+  ProjectModelSchema,
+  ProjectModelType,
+} from "../../../schema/ProjectSchema"
+import * as E from "fp-ts/Either"
+import { pipe } from "fp-ts/function"
+import * as TE from "fp-ts/TaskEither"
 import { Response } from "../../../types/response"
 
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<ProjectModelType[] | null>>>()
 
 handler.get(...auths, async (req, res) => {
-  if (!req.user) {
-    handleAPIResponse(res, [], "User auth")
-    return
-  }
+  const task = pipe(
+    req,
+    checkUser,
+    E.chain(getUserId),
+    TE.fromEither,
+    TE.chain(getProjectsForUser),
+    TE.chain((projects) => TE.fromEither(validateArrayData<ProjectModelType>(projects, ProjectModelSchema)))
+  )
 
-  try {
-    const db = await getMongoDb()
-    const projects = await getProjectsForUser(db, req.user?._id)
+  const either = await task()
 
-    const parsedProjecs = z.array(ProjectModelSchema).safeParse(projects)
-
-    if (!parsedProjecs.success) {
-      return handleAPIError(res, { message: "Validation error" })
-    }
-
-    const { data } = parsedProjecs
-
-    handleAPIResponse(res, data, `projects for user: ${req.user?.name}`)
-  } catch (error) {
-    console.log("Error when fetching projects")
-    handleAPIError(res, error)
-  }
+  pipe(
+    either,
+    E.fold(
+      (error) => handleAPIError(res, { message: error }),
+      (data) => handleAPIResponse(res, data, `Projects for user: ${req.user?.name}`)
+    )
+  )
 })
+
+const createTags = (data: Pick<ProjectModelType, "techStack" | "title">) =>
+  [data.title, ...data.techStack.map((t) => t.label)].map((tag) => tag.toLowerCase()).join(", ")
 
 handler.post(...auths, async (req, res) => {
-  if (!req.user) {
-    return handleAPIResponse(res, null, "No user found")
-  }
+  const addNonInputData = (data: ProjectModelFromInputType): Omit<ProjectModelType, "_id"> => ({
+    ...data,
+    tags: createTags(data),
+    userId: req.user?._id!,
+    createdAt: new Date(),
+    tasks: [], // får komma in som data
+    resources: [], // får komma in som data
+  })
 
-  try {
-    const db = await getMongoDb()
+  const task = pipe(
+    req,
+    checkUser,
+    E.chain((req) => validateReqBody<ProjectModelFromInputType>(req, ProjectModelFormInputSchema)),
+    E.map(addNonInputData),
+    TE.fromEither,
+    TE.chain(insertProject)
+  )
 
-    const parsedFormInput = ProjectModelFormInputSchema.safeParse(req.body)
+  const either = await task()
 
-    if (!parsedFormInput.success) {
-      console.log(parsedFormInput.error)
-
-      // gör en cool generic function som visar alla felen från valideringen
-      return handleAPIError(res, { message: "Validation error" })
-    }
-
-    const { data } = parsedFormInput
-
-    const createTags = (data: Pick<ProjectModelType, "techStack" | "title">) =>
-      [data.title, ...data.techStack.map((t) => t.label)].map((tag) => tag.toLowerCase()).join(", ")
-
-    const tags = createTags(data)
-
-    insertProject(db, {
-      ...data,
-      tags,
-      userId: req.user?._id,
-      createdAt: new Date(),
-      tasks: [], // får komma in som data
-      resources: [], // får komma in som data
-    })
-    handleAPIResponse(res, null, "Project added")
-  } catch (error) {
-    console.log("Error when inserting project")
-    handleAPIError(res, error)
-  }
+  pipe(
+    either,
+    E.fold(
+      (error) => handleAPIError(res, error),
+      () => handleAPIResponse(res, null, "Project added")
+    )
+  )
 })
 
-handler.delete(...auths, async (req, res) => {
-  if (!req.user) {
-    handleAPIResponse(res, null, "No user found")
-  }
-  if (!req.query.id) {
-    handleAPIResponse(res, null, "ID provided")
-  }
-
-  try {
-    const db = await getMongoDb()
-    deleteProjectById(db, req.query.id as string)
-    handleAPIResponse(res, null, `Project with id: ${req.query.id} was deleted successfully`)
-  } catch (error) {
-    console.log("Error when deleting project")
-    handleAPIError(res, error)
-  }
-})
+handler.delete(...auths, createDeleteHandler(deleteProjectById))
 
 handler.patch(...auths, async (req, res) => {
-  if (!req.user) {
-    handleAPIResponse(res, null, "No user found")
-  }
+  const task = pipe(
+    req,
+    checkUser,
+    E.chain((req) => validateReqBody<Partial<ProjectModelFromInputType>>(req, ProjectModelSchema.partial())),
+    TE.fromEither,
+    TE.chain(updateProjectById)
+  )
 
-  try {
-    const db = await getMongoDb()
+  const either = await task()
 
-    const parsedBody = ProjectModelSchema.partial().safeParse(req.body)
-
-    if (!parsedBody.success) {
-      return handleAPIError(res, { message: "Validation error. User input" })
-    }
-
-    const updatedProject = await updateProjectById(db, parsedBody.data)
-
-    console.log(updatedProject)
-
-    const parsedProject = ProjectModelSchema.safeParse(updatedProject)
-
-    if (!parsedProject.success) {
-      return handleAPIError(res, { message: "Validation error when updating project" })
-    }
-
-    handleAPIResponse(res, parsedProject.data, "Project updated successfully")
-  } catch (error) {
-    console.log("Error when updating project")
-    handleAPIError(res, error)
-  }
-
-  // gör en parse för att validtera + att få nya default värden
-
-  // findAndReplace med det parsade värdet. Borde bara uppdatera req.body data + lägga till eventuella nya fält?
+  pipe(
+    either,
+    E.chain((data) => validateData<ProjectModelFromInputType>(data, ProjectModelSchema)),
+    E.fold(
+      (error) => handleAPIError(res, error),
+      (data) => handleAPIResponse(res, data, "Project updated successfully")
+    )
+  )
 })
-
-// add post here
 
 export default handler

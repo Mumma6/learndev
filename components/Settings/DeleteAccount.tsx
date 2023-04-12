@@ -54,7 +54,7 @@ const DeleteAccount = () => {
     <Card>
       <CardHeader subheader="Delete your account" title="Delete" />
       <Divider />
-      <CardContent>
+      <CardContent sx={{ minHeight: 242 }}>
         <Alert severity="error">This will delete your account permanently</Alert>
       </CardContent>
       <Divider />
