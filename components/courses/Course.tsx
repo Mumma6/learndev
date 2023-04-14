@@ -28,14 +28,7 @@ interface IProps {
   course: CourseModelSchemaType
 }
 
-// single course
-
-/*
-
-
-
-*/
-
+// get these from useTasks when its done
 const tasks = [
   {
     name: "Todo 1",

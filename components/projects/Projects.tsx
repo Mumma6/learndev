@@ -11,7 +11,9 @@ import ProjectCard from "./ProjectCard"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
 import { pipe } from "fp-ts/function"
-import * as E from "fp-ts/Either"
+import * as A from "fp-ts/Array"
+
+import * as O from "fp-ts/Option"
 import * as TE from "fp-ts/TaskEither"
 
 import AddProjectModal from "./AddProjectModal"
@@ -25,6 +27,7 @@ import {
 import { useZodFormValidation } from "../customHooks/useZodFormValidation"
 import { StatusEnum } from "../../schema/CourseSchema"
 import InfoTooltip from "../shared/Tooltip"
+import { getOArraySize } from "../../helpers/helpers"
 
 export const initialProjectsFormData: Omit<ProjectModelFromInputType, "techStack"> = {
   title: "",
@@ -33,18 +36,6 @@ export const initialProjectsFormData: Omit<ProjectModelFromInputType, "techStack
   deployedUrl: "",
   status: ProjectStatusEnum.Enum["In progress"],
 }
-
-/*
-
-Använd mui tabs. En för varje status.
-https://mui.com/material-ui/react-tabs/
-använd "centered" och disabla sånt som är tomt?
-
-Gör mindre kort.
-
-Sök visar resultat per tab
-
-*/
 
 export const Projects = () => {
   const [open, setOpen] = useState(false)
@@ -86,12 +77,11 @@ export const Projects = () => {
     handleClose()
   }
 
-  const getNumberOfStatuses = (status: ProjectStatusEnumType) => data?.payload?.filter((d) => d.status === status).length
+  const getNumberOfStatuses = (status: ProjectStatusEnumType) =>
+    pipe(O.fromNullable(data?.payload), O.map(A.filter((d) => d.status === status)), getOArraySize)
 
   const onAddProject = async () => {
     setIsLoading(true)
-
-    // sätt detta i en variabel först?
     pipe(
       fetcherTE<ProjectModelType, ProjectModelFromInputType>("/api/projects", {
         method: "POST",
@@ -109,7 +99,7 @@ export const Projects = () => {
         },
         (data) => {
           toast.success(data.message)
-          mutate("/api/courses")
+          mutate("/api/projects")
           resetForm()
           return TE.right(data)
         }
@@ -134,7 +124,7 @@ export const Projects = () => {
     )()
   }
 
-  const handleChange = (event: React.SyntheticEvent, newValue: ProjectStatusEnumType) => {
+  const handleChange = (_: React.SyntheticEvent, newValue: ProjectStatusEnumType) => {
     setStatusValue(newValue)
   }
 

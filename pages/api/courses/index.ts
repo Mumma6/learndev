@@ -31,6 +31,8 @@ const createTags = (data: Pick<CourseModelSchemaType, "content" | "topics">): st
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<CourseModelSchemaType[] | null>>>()
 
 handler.post(...auths, async (req, res) => {
+  // create a seperate function that takes req and add the userId
+
   const addNonInputData = (data: CourseModelformInputType): Omit<CourseModelSchemaType, "_id"> => ({
     ...data,
     tags: createTags(data),

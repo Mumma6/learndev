@@ -25,10 +25,9 @@ const Settings = () => {
         }}
       >
         <Container maxWidth={false}>
+          <EmailVerify user={data?.payload!} />
           <Grid container spacing={2}>
             <Grid item sm={6}>
-              <EmailVerify user={data?.payload!} />
-
               <Box sx={{ pt: 3 }}>
                 <ChangePassword />
               </Box>

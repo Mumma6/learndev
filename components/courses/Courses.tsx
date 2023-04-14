@@ -2,7 +2,9 @@ import { Box, Container, Grid, Pagination, Card, CardContent, Typography, Divide
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
 import { pipe } from "fp-ts/function"
-import * as E from "fp-ts/Either"
+import * as A from "fp-ts/Array"
+
+import * as O from "fp-ts/Option"
 import * as TE from "fp-ts/TaskEither"
 
 import { useEffect, useState } from "react"
@@ -12,7 +14,6 @@ import AddCourseModal from "./AddCourseModal"
 import CourseCard from "./CourseCard"
 import CoursesToolbar from "./CoursesToolbar"
 import { toast } from "react-toastify"
-import { ClickEvent } from "../../types/generics"
 import { fetcher, fetcherTE } from "../../lib/axiosFetcher"
 import {
   CourseModelContentInputSchema,
@@ -27,7 +28,7 @@ import {
 import { SkillSchemaType } from "../../schema/SharedSchema"
 import { useZodFormValidation } from "zod-react-form"
 import InfoTooltip from "../shared/Tooltip"
-import { Response } from "../../types/response"
+import { getOArraySize } from "../../helpers/helpers"
 
 /*
 Lägga till en wishlist med kurser?
@@ -55,19 +56,20 @@ const Courses = () => {
   const [dataToShow, setDataToShow] = useState<CourseModelSchemaType[]>([])
   const [statusValue, setStatusValue] = useState<StatusEnumType>("In progress") // show correct courses based on this state
 
-  const handleChange = (event: React.SyntheticEvent, newValue: StatusEnumType) => {
+  const handleChange = (_: React.SyntheticEvent, newValue: StatusEnumType) => {
     setStatusValue(newValue)
   }
 
-  const { values, setValues, errors, setFieldValue, onBlur, touched, reset } =
-    useZodFormValidation<CourseModelContentInputSchemaType>(CourseModelContentInputSchema, initialCourseFormState)
+  const zodForm = useZodFormValidation<CourseModelContentInputSchemaType>(
+    CourseModelContentInputSchema,
+    initialCourseFormState
+  )
 
   const { data } = useCourses()
   const { mutate } = useSWRConfig()
 
-  useEffect(() => console.log("update"))
-
-  const getNumberOfStatuses = (status: StatusEnumType) => data?.payload?.filter((d) => d.content.status === status).length
+  const getNumberOfStatuses = (status: StatusEnumType) =>
+    pipe(O.fromNullable(data?.payload), O.map(A.filter((d) => d.content.status === status)), getOArraySize)
 
   useEffect(() => {
     if (data?.payload) {
@@ -93,21 +95,19 @@ const Courses = () => {
   }
 
   const resetForm = () => {
-    setValues(initialCourseFormState)
+    zodForm.setValues(initialCourseFormState)
     setIsLoading(false)
     handleClose()
   }
 
   const onAddCourse = async () => {
     setIsLoading(true)
-
-    // sätt detta i en variabel först?
     pipe(
       fetcherTE<CourseModelSchemaType, CourseModelformInputType>("/api/courses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: {
-          content: values,
+          content: zodForm.values,
           topics: topicData,
         },
       }),
@@ -132,9 +132,9 @@ const Courses = () => {
   }
 
   const handleClose = () => {
-    setValues(initialCourseFormState)
+    zodForm.setValues(initialCourseFormState)
     setTopicData([])
-    reset()
+    zodForm.reset()
     setOpen(false)
   }
   return (
@@ -147,14 +147,10 @@ const Courses = () => {
       <AddCourseModal
         open={open}
         handleClose={handleClose}
-        formValues={values}
         onAddCourse={onAddCourse}
         setTopicData={setTopicData}
         topicData={topicData}
-        onBlur={onBlur}
-        touched={touched}
-        setFieldValue={setFieldValue}
-        errors={errors}
+        zodForm={zodForm}
       />
       <Container maxWidth={false}>
         <CoursesToolbar handleClickOpen={handleClickOpen} />

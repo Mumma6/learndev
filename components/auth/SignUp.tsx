@@ -5,7 +5,7 @@ import { useRouter } from "next/router"
 import { toast } from "react-toastify"
 import { useCurrentUser } from "../../lib/hooks"
 import SubmitButton from "../shared/SubmitButton"
-import { fetcher, getHttpOptions } from "../../lib/axiosFetcher"
+import { fetcher } from "../../lib/axiosFetcher"
 import { FaArrowLeft } from "react-icons/fa"
 import { UserModelSchemaType, UserRegistrationSchema, UserRegistrationSchemaType } from "../../schema/UserSchema"
 import { Status } from "../../types/status"
@@ -34,10 +34,11 @@ const SignUp = () => {
     event.preventDefault()
     try {
       setStatus("loading")
-      const response = await fetcher<UserModelSchemaType, UserRegistrationSchemaType>(
-        "/api/users",
-        getHttpOptions(values, "POST")
-      )
+      const response = await fetcher<UserModelSchemaType, UserRegistrationSchemaType>("/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        data: values,
+      })
       if (response.error) {
         toast.error(response.error)
         setStatus("error")

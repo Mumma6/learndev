@@ -3,7 +3,7 @@ import { Response } from "../types/response"
 import { getMongoDb } from "./mongodb"
 import { findUserBySession } from "./queries/user"
 import { ParsedUrlQuery } from "querystring"
-import { Db, DeleteResult, ObjectId, WithId } from "mongodb"
+import { Db, DeleteResult } from "mongodb"
 import { AnyZodObject, z } from "zod"
 import * as E from "fp-ts/Either"
 import { pipe } from "fp-ts/function"
@@ -37,27 +37,6 @@ export const handleAPIError = (res: NextApiResponse, error: any): void => {
 
 interface IParams extends ParsedUrlQuery {
   id: string
-}
-
-const convertMongoIdToString = <T>(obj: T): T => {
-  const checkIfObjectId = (val: any) => val instanceof ObjectId
-  const convertToString = (val: any): string => val.toString()
-
-  if (checkIfObjectId(obj)) {
-    return convertToString(obj) as any
-  }
-  if (Array.isArray(obj)) {
-    return obj.map(convertMongoIdToString) as any
-  }
-  if (typeof obj !== "object" || obj === null) {
-    return obj
-  }
-  const newObj = { ...obj }
-  for (const key in newObj) {
-    newObj[key] = convertMongoIdToString(newObj[key])
-  }
-
-  return newObj
 }
 
 export const serilizeObject = (obj: Object) => JSON.parse(JSON.stringify(obj))

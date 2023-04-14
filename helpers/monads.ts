@@ -1,3 +1,7 @@
+/**
+ * These functions should not be use. Instead use Option and Either/TaskEither from fp-ts
+ */
+
 interface Left<E> {
   _tag: "Left"
   left: E
@@ -8,7 +12,27 @@ interface Right<A> {
   right: A
 }
 
+interface None {
+  _tag: "None"
+}
+
+interface Some<T> {
+  _tag: "Some"
+  value: T
+}
+
+export type Option<T> = None | Some<T>
+
 export type Either<E, A> = Left<E> | Right<A>
+
+const some = <A>(x: A): Option<A> => ({
+  _tag: "Some",
+  value: x,
+})
+
+const none: Option<never> = {
+  _tag: "None",
+}
 
 export const left = <E, A = never>(error: E): Either<E, A> => ({
   _tag: "Left",

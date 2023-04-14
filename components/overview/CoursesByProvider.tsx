@@ -3,48 +3,49 @@ import { Doughnut } from "react-chartjs-2"
 import { Box, Card, CardContent, CardHeader, Divider, Typography, useTheme } from "@mui/material"
 import { CourseModelSchemaType } from "../../schema/CourseSchema"
 import CardHeaderTitle from "../shared/CardHeaderTitle"
-
-type InstitutionCount = {
-  [key: string]: number
-}
+import { colors } from "../../constants/colors"
+import { pipe } from "fp-ts/function"
+import * as A from "fp-ts/Array"
+import * as O from "fp-ts/Option"
+import * as Record from "fp-ts/Record"
 
 interface IProps {
   courses: CourseModelSchemaType[] | null | undefined
 }
 
-const colors = ["#3F51B5", "#e53935", "#FB8C00", "green"]
+const getAmountOfProviders = (courses: CourseModelSchemaType[] | null | undefined) =>
+  pipe(
+    courses,
+    O.fromNullable,
+    O.fold(
+      () => [],
+      (_courses) =>
+        pipe(
+          _courses,
+          A.reduce({}, (total: Record<string, number>, course) => ({
+            ...total,
+            [course.content.institution]: (total[course.content.institution] || 0) + 1,
+          })),
+          Object.entries,
+          A.mapWithIndex((index, [institution, count]) => ({
+            institution,
+            count,
+            color: colors[index % colors.length],
+            percentage: Math.round((count / A.size(_courses)) * 100),
+          }))
+        )
+    )
+  )
 
 const CoursesByProvider = ({ courses }: IProps) => {
-  const getAmountOfProviders = () => {
-    if (!courses) {
-      return []
-    }
-    const total = courses.reduce((total: InstitutionCount, course: CourseModelSchemaType) => {
-      total[course.content.institution] = total[course.content.institution] ? total[course.content.institution] + 1 : 1
-      return total
-    }, {})
-
-    const totalCount = courses.length
-
-    return Object.entries(total).map(([institution, count], i) => ({
-      institution,
-      count,
-      color: colors[i],
-      percentage: Math.round((count / totalCount) * 100),
-    }))
-  }
-
-  console.log(getAmountOfProviders())
-
-  const amountOfProviders = getAmountOfProviders()
-
+  const amountOfProviders = getAmountOfProviders(courses)
   const theme = useTheme()
 
   const data = {
     datasets: [
       {
         data: amountOfProviders.map(({ count }) => count),
-        backgroundColor: ["#3F51B5", "#e53935", "#FB8C00", "green"],
+        backgroundColor: colors,
         borderWidth: 8,
         borderColor: "#FFFFFF",
         hoverBorderColor: "#FFFFFF",
@@ -129,48 +130,3 @@ const CoursesByProvider = ({ courses }: IProps) => {
 }
 
 export default CoursesByProvider
-
-/*
-
-import { flow, pipe } from 'fp-ts/function'
-import * as A from 'fp-ts/Array'
-import * as NEA from 'fp-ts/NonEmptyArray'
-import * as O from 'fp-ts/Option'
-import * as Record from 'fp-ts/Record'
-
-const getAmountOfProviders = (): ReadonlyArray<{
-  readonly institution: string
-  readonly count: number
-  readonly color: string
-  readonly percentage: number
-}> => {
-  const total = pipe(
-    courses,
-    O.fromNullable,
-    O.fold(() => ({}), A.reduce({}, (total: Record.Record<string, number>, course) => {
-      const institution = course.content.institution
-      return {
-        ...total,
-        [institution]: total[institution] ? total[institution] + 1 : 1
-      }
-    })),
-  )
-
-  const totalCount = pipe(courses, O.fromNullable, O.fold(() => 0, A.size))
-
-  return pipe(
-    Record.toArray(total),
-    A.map(([institution, count], i) => ({
-      institution,
-      count,
-      color: colors[i % colors.length],
-      percentage: Math.round((count / totalCount) * 100),
-    })),
-    A.sortBy([o => o.institution]),
-  )
-}
-
-console.log(getAmountOfProviders())
-
-const amountOfProviders = getAmountOfProviders()
-*/

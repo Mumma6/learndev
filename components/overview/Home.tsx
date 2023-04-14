@@ -11,6 +11,12 @@ import UserSkillProfile from "./UserSkillProfile"
 import { UserModelSchemaType } from "../../schema/UserSchema"
 import UpcomingEvents from "./UpcomingEvents"
 import TopicsChart from "./TopicsChart"
+import { pipe } from "fp-ts/function"
+import * as A from "fp-ts/Array"
+
+import * as O from "fp-ts/Option"
+import { IQuizResult } from "../../models/QuizResult"
+import { getOArraySize } from "../../helpers/helpers"
 
 interface IProps {
   user: UserModelSchemaType
@@ -47,16 +53,23 @@ const Home = ({ user }: IProps) => {
   const { data: quizResultsData } = useQuizResults()
 
   // the results are sorted on the backend
-  const userQuizResult = quizResultsData?.payload
-    ?.filter((p) => p.user_id === user._id)
+  const userQuizResult = pipe(
+    O.fromNullable(quizResultsData),
+    O.chain((data) => O.fromNullable(data.payload)),
+    O.map(A.filter((p) => p.user_id === user._id)),
+    O.map(A.takeLeft(5)),
+    O.getOrElse<Array<IQuizResult>>(() => [])
+  )
 
-    .slice(0, 5)
-
-  const approvedQuizzes = quizResultsData?.payload?.filter((p) => p.user_id === user._id).filter((x) => x.approved).length
+  const numberOfApprovedQuizzes = pipe(
+    O.fromNullable(quizResultsData),
+    O.chain((data) => O.fromNullable(data.payload)),
+    O.map(A.filter((p) => p.user_id === user._id)),
+    O.map(A.filter((p) => p.approved)),
+    getOArraySize
+  )
 
   const montlyProgress = 70 // should come from goals. Ex, if the uses should to 10 courses in 7 days. When the user have done 7, show 70%
-
-  // hide graphs should change the user settings object
 
   return (
     <>
@@ -87,29 +100,53 @@ const Home = ({ user }: IProps) => {
           <Grid container spacing={3}>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
               <TotalCourses
-                completedAmount={data?.payload?.filter((c) => c.content.status === "Done").length || 0}
-                inProgressAmount={data?.payload?.filter((c) => c.content.status === "In progress").length || 0}
-                wishlistAmount={data?.payload?.filter((c) => c.content.status === "Wishlist").length || 0}
+                completedAmount={pipe(
+                  O.fromNullable(data?.payload),
+                  O.map(A.filter((d) => d.content.status === "Done")),
+                  getOArraySize
+                )}
+                inProgressAmount={pipe(
+                  O.fromNullable(data?.payload),
+                  O.map(A.filter((d) => d.content.status === "In progress")),
+                  getOArraySize
+                )}
+                wishlistAmount={pipe(
+                  O.fromNullable(data?.payload),
+                  O.map(A.filter((d) => d.content.status === "Wishlist")),
+                  getOArraySize
+                )}
               />
             </Grid>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
               <TotalProjects
-                completedAmount={projectsData?.payload?.filter((c) => c.status === "Done").length || 0}
-                inProgressAmount={projectsData?.payload?.filter((c) => c.status === "In progress").length || 0}
-                planningAmount={projectsData?.payload?.filter((c) => c.status === "Planning").length || 0}
+                completedAmount={pipe(
+                  O.fromNullable(projectsData?.payload),
+                  O.map(A.filter((d) => d.status === "Done")),
+                  getOArraySize
+                )}
+                inProgressAmount={pipe(
+                  O.fromNullable(projectsData?.payload),
+                  O.map(A.filter((d) => d.status === "In progress")),
+                  getOArraySize
+                )}
+                planningAmount={pipe(
+                  O.fromNullable(projectsData?.payload),
+                  O.map(A.filter((d) => d.status === "Planning")),
+                  getOArraySize
+                )}
               />
             </Grid>
             <Grid item xl={3} lg={3} sm={6} xs={12}>
               <LearningProgress number={montlyProgress} />
             </Grid>
             <Grid item xl={3} lg={3} sm={6} xs={12}>
-              <TotalQuizzes amount={approvedQuizzes || 0} />
+              <TotalQuizzes amount={numberOfApprovedQuizzes} />
             </Grid>
             <Grid item lg={6} md={6} xl={3} xs={12}>
               <CoursesByProvider courses={data?.payload} />
             </Grid>
             <Grid item lg={6} md={6} xl={3} xs={12}>
-              <LatestQuizResults quizResults={userQuizResult || []} />
+              <LatestQuizResults quizResults={userQuizResult} />
             </Grid>
             <Grid item lg={6} md={6} xl={3} xs={12}>
               <UserSkillProfile />

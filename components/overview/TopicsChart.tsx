@@ -1,13 +1,11 @@
 import React from "react"
-import { Box, Card, CardContent, CardHeader, Divider, Typography, useTheme } from "@mui/material"
+import { Box, Card, CardContent, CardHeader, Divider, useTheme } from "@mui/material"
 import { Bar } from "react-chartjs-2"
 import { useCourses, useProjects } from "../../lib/hooks"
-import { SkillSchemaType } from "../.../../../schema/SharedSchema"
 import CardHeaderTitle from "../shared/CardHeaderTitle"
-import * as E from "fp-ts/Either"
 import { pipe } from "fp-ts/function"
 import * as A from "fp-ts/Array"
-import * as S from "fp-ts/string"
+import * as O from "fp-ts/Option"
 
 const TopicsChart = () => {
   const theme = useTheme()
@@ -18,37 +16,42 @@ const TopicsChart = () => {
     [key: string]: number
   }
 
-  const topicsOccurrences = [
-    courseData?.payload?.map((course) => course.topics.map((topic) => topic.label)).flat(),
-    projectData?.payload?.map((project) => project.techStack.map((project) => project.label)).flat(),
-  ]
-    .flat()
-    .filter(Boolean) as string[]
+  const topicsOccurrences = pipe(
+    projectData?.payload?.flatMap((project) => project.techStack.map((tech) => tech.label)),
+    O.fromNullable,
+    O.chain((a1) =>
+      pipe(
+        courseData?.payload?.map((course) => course.topics.map((topic) => topic.label)).flat(),
+        O.fromNullable,
+        O.map((a2) => A.concat(a1)(a2))
+      )
+    ),
+    O.fold(
+      () => [],
+      (data) => data
+    )
+  )
 
-  const getNumberOfOccurrences = (list: string[]) => {
-    return list.reduce((total: Total, skill: string) => {
+  const getNumberOfOccurrences = (list: string[]) =>
+    list.reduce((total: Total, skill: string) => {
       total[skill] = total[skill] ? total[skill] + 1 : 1
       return total
     }, {})
-  }
 
-  const mappedOccurrences = Object.entries(getNumberOfOccurrences(topicsOccurrences))
-    .map(([topic, value]) => ({
-      [topic]: value,
-    }))
-    .sort((a, b) => {
-      const valueA = Object.values(a)[0]
-      const valueB = Object.values(b)[0]
-      return valueB - valueA
-    })
-    .slice(0, 5)
-    .sort((a, b) => {
-      const keyA = Object.keys(a)[0]
-      const keyB = Object.keys(b)[0]
-      if (keyA < keyB) return -1
-      if (keyA > keyB) return 1
-      return 0
-    })
+  const mappedOccurrences = pipe(
+    topicsOccurrences,
+    getNumberOfOccurrences,
+    Object.entries,
+    A.map(([topic, value]) => ({ [topic]: value })),
+    O.fromNullable,
+    O.map((data) => data.sort((a, b) => Object.values(a)[0] - Object.values(b)[0])),
+    O.map(A.takeLeft(5)),
+    O.map((data) => data.sort((a, b) => Object.keys(a)[0].localeCompare(Object.keys(b)[0]))),
+    O.fold(
+      () => [],
+      (data) => data
+    )
+  )
 
   const options = {
     responsive: true,
@@ -118,45 +121,3 @@ const TopicsChart = () => {
 }
 
 export default TopicsChart
-
-/*
-import * as E from "fp-ts/Either"
-import { pipe } from "fp-ts/function"
-import * as A from "fp-ts/Array"
-import * as S from "fp-ts/string"
-
-const { data: courseData } = useCourses()
-const { data: projectData } = useProjects()
-
-type Total = Record<string, number>
-
-const topicsOccurrences = pipe(
-  [
-    ...courseData?.payload?.flatMap((course) => course.topics.map((topic) => topic.label)),
-    ...projectData?.payload?.flatMap((project) => project.techStack.map((project) => project.label)),
-  ],
-  A.filter(S.trim), // remove empty strings
-  A.sort(S.Ord), // sort alphabetically
-)
-
-const getNumberOfOccurrences = (list: string[]) =>
-  pipe(
-    list,
-    A.reduce<Total>({}, (total, skill) => {
-      total[skill] = total[skill] ? total[skill] + 1 : 1
-      return total
-    }),
-  )
-
-const mappedOccurrences = pipe(
-  topicsOccurrences,
-  getNumberOfOccurrences,
-  Object.entries,
-  A.sort((a, b) => b[1] - a[1]), // sort by frequency
-  A.takeLeft(5),
-  A.sort((a, b) => S.Ord.compare(Object.keys(a)[0], Object.keys(b)[0])), // sort alphabetically by topic name
-  A.map(([topic, value]) => ({
-    [topic]: value,
-  })),
-)
-*/

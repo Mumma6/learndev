@@ -7,24 +7,21 @@ import TableContainer from "@mui/material/TableContainer"
 import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
 import Paper from "@mui/material/Paper"
-import { styled } from "@mui/material/styles"
-
+import { Theme, styled } from "@mui/material/styles"
 import LinearProgress, { linearProgressClasses } from "@mui/material/LinearProgress"
-import InfoTooltip from "../shared/Tooltip"
 import CardHeaderTitle from "../shared/CardHeaderTitle"
 import { IQuizResult } from "../../models/QuizResult"
-import { useQuizzes } from "../../lib/hooks"
+import { pipe } from "fp-ts/function"
+import * as O from "fp-ts/Option"
 
-const getBackgroundColor = (theme: any, value: number | undefined) => {
-  if (!value) {
-    return undefined
-  }
-  if (value > 50) {
-    return theme.palette.success.main
-  } else {
-    return theme.palette.error.main
-  }
-}
+const getBackgroundColor = (theme: Theme, value: number | undefined) =>
+  pipe(
+    O.fromNullable(value),
+    O.fold(
+      () => undefined,
+      (v) => (v > 50 ? theme.palette.success.main : theme.palette.error.main)
+    )
+  )
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme, value }) => ({
   height: 7,
@@ -43,13 +40,10 @@ interface IProps {
 }
 
 const LatestQuizResults = ({ quizResults }: IProps) => {
-  const getAvatarUrl = (title: string) => {
-    return title.includes("React") ? "/assets/images/react-logo.png" : "/assets/images/Javascript_Logo.png"
-  }
+  const getAvatarUrl = (title: string) =>
+    title.includes("React") ? "/assets/images/react-logo.png" : "/assets/images/Javascript_Logo.png"
 
-  const getPercentageValue = (score: number, maxScore: number) => {
-    return (score / maxScore) * 100
-  }
+  const getPercentageValue = (score: number, maxScore: number) => (score / maxScore) * 100
 
   const createRow = (result: IQuizResult) => (
     <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>

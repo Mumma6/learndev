@@ -12,14 +12,6 @@ export interface Options<T> {
   headers?: any
 }
 
-export const getHttpOptions = <T>(data: T, method: HTTPMethod): Options<T> => {
-  return {
-    method,
-    headers: { "Content-Type": "application/json" },
-    data,
-  }
-}
-
 const handleResponse = <R>(response: AxiosResponse<R>) => {
   if (response.status >= 200 && response.status < 300) {
     return response.data as Response<R>

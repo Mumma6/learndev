@@ -1,18 +1,21 @@
-interface Pipeline {
-  <A, B>(fn1: (input: A) => B): (value: A) => B
-  <A, B, C>(fn1: (input: A) => B, fn2: (input: B) => C): (value: A) => C
-  <A, B, C, D>(fn1: (input: A) => B, fn2: (input: B) => C, fn3: (input: C) => D): (value: A) => D
-  <A, B, C, D, E>(fn1: (input: A) => B, fn2: (input: B) => C, fn3: (input: C) => D, fn4: (input: D) => E): (value: A) => E
-  <A, B, C, D, E, F>(
-    fn1: (input: A) => B,
-    fn2: (input: B) => C,
-    fn3: (input: C) => D,
-    fn4: (input: D) => E,
-    fn5: (input: E) => F
-  ): (value: A) => F
+import { flow, pipe } from "fp-ts/function"
+import * as A from "fp-ts/Array"
+import * as NEA from "fp-ts/NonEmptyArray"
+import * as O from "fp-ts/Option"
+import * as Record from "fp-ts/Record"
+import { CourseModelSchemaType, StatusEnumType } from "../schema/CourseSchema"
+import { colors } from "../constants/colors"
+import { ProjectModelType, ProjectStatusEnumType } from "../schema/ProjectSchema"
+import * as E from "fp-ts/Either"
+import * as R from "fp-ts/Record"
+import * as semigroup from "fp-ts/Semigroup"
+
+export const tap = <T>(val: T): T => {
+  console.log(val)
+  return val
 }
 
-export const pipeline: Pipeline =
-  (...fns: Function[]) =>
-  (value: unknown): unknown =>
-    fns.reduce((acc, fn) => fn(acc), value)
+export const getOArraySize = flow(
+  O.map(A.size),
+  O.getOrElse(() => 0)
+)

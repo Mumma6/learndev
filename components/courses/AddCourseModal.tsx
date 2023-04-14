@@ -24,30 +24,14 @@ import { StatusEnum } from "../../schema/CourseSchema"
 interface IProps {
   open: boolean
   handleClose: SetState<void>
-  formValues: CourseModelContentInputSchemaType
   topicData: SkillSchemaType[]
   setTopicData: SetState<SkillSchemaType[]>
   onAddCourse: ClickEventRet<Promise<void>>
-  setFieldValue: IZodFormValidation<CourseModelContentInputSchemaType>["setFieldValue"]
-  errors: IZodFormValidation<CourseModelContentInputSchemaType>["errors"]
-  onBlur: IZodFormValidation<CourseModelContentInputSchemaType>["onBlur"]
-  touched: IZodFormValidation<CourseModelContentInputSchemaType>["touched"]
+  zodForm: IZodFormValidation<CourseModelContentInputSchemaType>
 }
 
-const AddCourseModal = ({
-  open,
-  handleClose,
-  formValues,
-  onAddCourse,
-
-  setTopicData,
-  topicData,
-  setFieldValue,
-  onBlur,
-  touched,
-  errors,
-}: IProps) => {
-  const { title, description, institution, url, certificateUrl, duration, status } = formValues
+const AddCourseModal = ({ open, handleClose, onAddCourse, setTopicData, topicData, zodForm }: IProps) => {
+  const { title, description, institution, url, certificateUrl, duration, status } = zodForm.values
 
   const [newSkill, setNewSkill] = useState<SkillSchemaType | null>()
 
@@ -66,12 +50,16 @@ const AddCourseModal = ({
     setNewSkill(value)
   }
 
+  const onChange = (key: string, value: string | number) => {
+    zodForm.setFieldValue(key as keyof CourseModelContentInputSchemaType, value)
+  }
+
   const handleTopicDelete = (topicToDelete: SkillSchemaType) => () => {
     setTopicData((topics) => topics.filter((topic) => topic.label !== topicToDelete.label))
   }
 
   const isDisabled = () => {
-    const formErrors = Object.values(errors).some((error) => error)
+    const formErrors = Object.values(zodForm.errors).some((error) => error)
 
     if (formErrors || !topicData.length) {
       return true
@@ -98,10 +86,10 @@ const AddCourseModal = ({
             type="text"
             fullWidth
             required
-            onChange={(e) => setFieldValue("title", e.target.value)}
-            onBlur={() => onBlur("title")}
-            helperText={(touched.title && errors.title) || " "}
-            error={Boolean(touched.title && errors.title)}
+            onChange={(e) => onChange(e.target.name, e.target.value)}
+            onBlur={() => zodForm.onBlur("title")}
+            helperText={(zodForm.touched.title && zodForm.errors.title) || " "}
+            error={Boolean(zodForm.touched.title && zodForm.errors.title)}
           />
           <TextField
             name="description"
@@ -115,10 +103,10 @@ const AddCourseModal = ({
             type="text"
             fullWidth
             required
-            onChange={(e) => setFieldValue("description", e.target.value)}
-            onBlur={() => onBlur("description")}
-            helperText={(touched.description && errors.description) || " "}
-            error={Boolean(touched.description && errors.description)}
+            onChange={(e) => onChange(e.target.name, e.target.value)}
+            onBlur={() => zodForm.onBlur("description")}
+            helperText={(zodForm.touched.description && zodForm.errors.description) || " "}
+            error={Boolean(zodForm.touched.description && zodForm.errors.description)}
           />
           <TextField
             name="duration"
@@ -130,10 +118,10 @@ const AddCourseModal = ({
             type="number"
             required
             fullWidth
-            onChange={(e) => setFieldValue("duration", Number(e.target.value))} //onChange("duration", Number(e.target.value))}
-            onBlur={() => onBlur("duration")}
-            helperText={(touched.duration && errors.duration) || " "}
-            error={Boolean(touched.duration && errors.duration)}
+            onChange={(e) => onChange(e.target.name, Number(e.target.value))}
+            onBlur={() => zodForm.onBlur("duration")}
+            helperText={(zodForm.touched.duration && zodForm.errors.duration) || " "}
+            error={Boolean(zodForm.touched.duration && zodForm.errors.duration)}
           />
           <TextField
             name="url"
@@ -143,10 +131,10 @@ const AddCourseModal = ({
             label="Url to course"
             type="text"
             fullWidth
-            onChange={(e) => setFieldValue("url", e.target.value)}
-            onBlur={() => onBlur("url")}
-            helperText={(touched.url && errors.url) || " "}
-            error={Boolean(touched.url && errors.url)}
+            onChange={(e) => onChange(e.target.name, e.target.value)}
+            onBlur={() => zodForm.onBlur("url")}
+            helperText={(zodForm.touched.url && zodForm.errors.url) || " "}
+            error={Boolean(zodForm.touched.url && zodForm.errors.url)}
           />
           <TextField
             name="certificateUrl"
@@ -156,10 +144,10 @@ const AddCourseModal = ({
             label="Url to certificate"
             type="text"
             fullWidth
-            onChange={(e) => setFieldValue("certificateUrl", e.target.value)}
-            onBlur={() => onBlur("certificateUrl")}
-            helperText={(touched.certificateUrl && errors.certificateUrl) || " "}
-            error={Boolean(touched.certificateUrl && errors.certificateUrl)}
+            onChange={(e) => onChange(e.target.name, e.target.value)}
+            onBlur={() => zodForm.onBlur("certificateUrl")}
+            helperText={(zodForm.touched.certificateUrl && zodForm.errors.certificateUrl) || " "}
+            error={Boolean(zodForm.touched.certificateUrl && zodForm.errors.certificateUrl)}
           />
 
           <FormControl fullWidth style={{ marginTop: 20, marginBottom: 20 }}>
@@ -168,9 +156,9 @@ const AddCourseModal = ({
               value={status}
               label="Course status"
               name="status"
-              onChange={(e) => setFieldValue("status", e.target.value)}
-              onBlur={() => onBlur("status")}
-              error={Boolean(touched.status && errors.status)}
+              onChange={(e) => onChange(e.target.name, e.target.value)}
+              onBlur={() => zodForm.onBlur("status")}
+              error={Boolean(zodForm.touched.status && zodForm.errors.status)}
             >
               <MenuItem value={StatusEnum.Enum.Done}>Done</MenuItem>
               <MenuItem value={StatusEnum.Enum["In progress"]}>In progress</MenuItem>
@@ -233,9 +221,9 @@ const AddCourseModal = ({
               value={institution}
               label="Institution"
               name="institution"
-              onChange={(e) => setFieldValue("institution", e.target.value)}
-              onBlur={() => onBlur("institution")}
-              error={Boolean(touched.institution && errors.institution)}
+              onChange={(e) => onChange(e.target.name, e.target.value)}
+              onBlur={() => zodForm.onBlur("institution")}
+              error={Boolean(zodForm.touched.institution && zodForm.errors.institution)}
             >
               <MenuItem value={InstitutionEnum.Enum.Other}>Other</MenuItem>
               <MenuItem value={InstitutionEnum.Enum.Udemy}>Udemy</MenuItem>

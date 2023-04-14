@@ -1,6 +1,5 @@
 import { Avatar, Box, Card, CardContent, Grid, Typography } from "@mui/material"
 import React from "react"
-import { FaArrowUp } from "react-icons/fa"
 import { MdSchool } from "react-icons/md"
 
 interface IProps {
@@ -8,9 +7,6 @@ interface IProps {
   inProgressAmount: number
   wishlistAmount: number
 }
-
-// visa completed courses x och courses inprogress x
-// två rader
 
 const TotalCourses = ({ completedAmount, inProgressAmount, wishlistAmount }: IProps) => {
   return (

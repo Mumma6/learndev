@@ -17,7 +17,7 @@ import { Skill, skillsData } from "../../constants/skillsData"
 import { FaPlus } from "react-icons/fa"
 import { initialProjectsFormData } from "./Projects"
 import { ProjectModelFromInputType, ProjectStatusEnum } from "../../schema/ProjectSchema"
-import { IZodFormValidation } from "../customHooks/useZodFormValidation"
+import { IZodFormValidation } from "zod-react-form"
 
 interface IProps {
   open: boolean
@@ -41,7 +41,7 @@ const AddProjectModal = ({ open, handleClose, setTopicData, topicData, onAddProj
     }
   }
 
-  const onChange = (key: string, value: unknown) => {
+  const onChange = (key: string, value: string) => {
     zodForm.setFieldValue(key as keyof Omit<ProjectModelFromInputType, "techStack" | "completed">, value)
   }
 
@@ -57,7 +57,6 @@ const AddProjectModal = ({ open, handleClose, setTopicData, topicData, onAddProj
     setTopicData((topics) => topics.filter((topic) => topic.label !== topicToDelete.label))
   }
 
-  // Kolla så inte detta blir någon konstig re-render
   const addProject = (event: ClickEvent) => {
     setNewSkill(null)
     onAddProject(event)
