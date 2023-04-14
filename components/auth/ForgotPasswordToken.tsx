@@ -26,7 +26,6 @@ const ForgotPasswordToken = ({ valid, token }: { valid: boolean; token: any }) =
           password: newPassword,
         },
       })
-      console.log(response)
       if (response.error) {
         setStatus("error")
         toast.error(response.error)

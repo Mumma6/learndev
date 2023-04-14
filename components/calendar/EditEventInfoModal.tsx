@@ -24,7 +24,6 @@ interface IProps {
 */
 
 const EditEventInfoModal = ({ open, handleClose, onDeleteEvent, currentEvent }: IProps) => {
-  console.log(currentEvent)
   const router = useRouter()
   const onClose = () => {
     handleClose()

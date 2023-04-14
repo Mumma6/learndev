@@ -48,7 +48,6 @@ const ChangePassword = () => {
       })
 
       if (response.error) {
-        console.log(response)
         setIsLoading(false)
         toast.error(response.error)
         setOldPassword("")

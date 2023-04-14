@@ -38,19 +38,8 @@ passport.use(
 export default passport
 
 /*
-passport.deserializeUser((req: any, id: string, done: any) => {
-  getMongoDb().then((db) => {
-    findUserForAuth(db, id).then(
-      (user) => done(null, user),
-      (err) => done(err)
-    )
-  })
-})
 
 
-The code you provided appears to be setting up Passport.js, a popular authentication middleware for Node.js, to be used with Next.js, a framework for building server-rendered or statically-exported React apps. It also appears to be using MongoDB, a NoSQL database, to store user data.
-
-Here's a brief overview of how the code works:
 
 The serializeUser and deserializeUser functions are used to store and retrieve user data from the session. The serializeUser function is called when a user logs in, and it saves the user's unique identifier (in this case, their _id field from the MongoDB database) to the session. The deserializeUser function is called on every subsequent request, and it retrieves the user's data from the database using the unique identifier saved in the session.
 

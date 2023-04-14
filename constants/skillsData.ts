@@ -2,6 +2,7 @@ export interface Skill {
   label: string
 }
 
+// Add more skills or find an API to use instead
 export const skillsData: Skill[] = [
   { label: "Agile Development" },
   { label: "Algorithms" },

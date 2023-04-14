@@ -1,4 +1,4 @@
-import useSWR, { SWRResponse } from "swr"
+import useSWR from "swr"
 import useSWRImmutable from "swr/immutable"
 import { IEventInfo } from "../models/EventInfo"
 import { IQuiz } from "../models/Quiz"
@@ -13,7 +13,7 @@ import { fetcher, fetcherTE } from "./axiosFetcher"
 // https://swr.vercel.app/docs/revalidation#disable-automatic-revalidations
 // https://stackoverflow.com/questions/73309030/swr-not-pulling-from-cache
 
-// Zod will replace all Interfaces. Make sure the hooks still work with the infer type
+// Add fetcherTE to these hooks. Need to handle the data differently in the components tho
 
 export function useCurrentUser() {
   return useSWRImmutable("/api/user", (url) => fetcher<UserModelSchemaType | null, undefined>(url))

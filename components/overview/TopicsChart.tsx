@@ -53,8 +53,6 @@ const TopicsChart = () => {
     )
   )
 
-  console.log(mappedOccurrences)
-
   const options = {
     responsive: true,
     legend: {

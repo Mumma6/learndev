@@ -49,7 +49,6 @@ const Quiz = ({ quiz }: IProps) => {
 
   const submitQuiz = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    console.log("User", data?.payload?.name, " fick", score, " poäng")
 
     const quizResultResponse = await fetcher("/api/quizresults", {
       method: "POST",

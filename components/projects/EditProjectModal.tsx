@@ -134,8 +134,6 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
         },
       })
 
-      console.log(response)
-
       if (response?.error) {
         toast.error(response.error)
       } else {

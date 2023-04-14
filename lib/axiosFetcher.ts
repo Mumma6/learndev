@@ -36,7 +36,7 @@ export const fetcher = <R, T>(url?: string, options?: Options<T>): Promise<Respo
     .catch((error) => handleError<R>(error))
 }
 
-// Use this when possible
+// Use this when possible in the codebase
 export const fetcherTE = <A, T>(url: string, options: Options<T>): TE.TaskEither<string, Response<A>> =>
   pipe(
     TE.tryCatch(

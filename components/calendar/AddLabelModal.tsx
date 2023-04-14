@@ -62,7 +62,6 @@ const AddLabelModal = ({ open, handleClose }: IProps) => {
         toast.error(response.error)
         setIsLoading(false)
       } else {
-        console.log(response)
         mutate({ payload: response.payload }, false)
         setName("")
         toast.success("Label added")
@@ -97,7 +96,6 @@ const AddLabelModal = ({ open, handleClose }: IProps) => {
         toast.error(response.error)
         setIsLoading(false)
       } else {
-        console.log(response)
         mutate({ payload: response.payload }, false)
         setName("")
         toast.success("Label removed")

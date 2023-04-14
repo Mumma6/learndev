@@ -24,7 +24,6 @@ const ForgotPassword = () => {
         headers: { "Content-Type": "application/json" },
         data: email,
       })
-      console.log(response)
       if (response.error) {
         setStatus("error")
         toast.error(response.error)

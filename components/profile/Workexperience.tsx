@@ -103,11 +103,9 @@ const Workexperience = () => {
         (error) => {
           toast.error(error)
           setIsLoading(false)
-          console.log(error)
           return TE.left(error)
         },
         (data) => {
-          console.log(data)
           mutate("/api/user")
           toast.success("Your profile has been updated")
           setIsLoading(false)

@@ -2,8 +2,6 @@ import { createTheme } from "@mui/material"
 
 // skapa ett darkmode theme
 
-// Ändra färgerna i svg filerna
-
 export const theme = createTheme({
   breakpoints: {
     values: {

@@ -4,8 +4,6 @@ import Settings from "../components/Settings/Settings"
 import { DashboardLayout } from "../components/dashboard/DashboardLayout"
 
 const SettingPage = () => {
-  console.log("settingPage")
-
   return (
     <>
       <DashboardLayout>

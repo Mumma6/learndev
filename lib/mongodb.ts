@@ -21,8 +21,6 @@ async function createIndexes(client: MongoClient) {
   return client
 }
 
-// Should not use a cache in production
-
 export async function getMongoClient() {
   /**
    * Global is used here to maintain a cached connection across hot reloads
@@ -32,7 +30,6 @@ export async function getMongoClient() {
    */
   if (!global._mongoClientPromise) {
     const client = new MongoClient(uri)
-    // client.connect() returns an instance of MongoClient when resolved
     console.log("Connected to MongoDB")
     global._mongoClientPromise = client.connect().then((client) => createIndexes(client))
   }
@@ -40,8 +37,6 @@ export async function getMongoClient() {
   return global._mongoClientPromise
 }
 
-// Can this be used to create a getTestMongoDb?
-// return mongoClient.db("test"). Look at the Teast course.
 export async function getMongoDb() {
   const mongoClient = await getMongoClient()
   return mongoClient.db("dev")

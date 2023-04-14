@@ -5,10 +5,6 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { NextResponse } from "next/server"
 import { getMongoClient } from "../mongodb"
 
-/*
-In your code, you are using the connect-mongo library to store the session data in a MongoDB collection called "sessions".
-
-*/
 const mongoStore = MongoStore.create({
   clientPromise: getMongoClient(),
   dbName: "dev",
@@ -17,8 +13,8 @@ const mongoStore = MongoStore.create({
 
 /*
 This line creates a new session middleware, using the promisifyStore(mongoStore) as the store for the session data and it will create the session in mongodb sessions collection.
-
 */
+
 const getSession = nextSession({
   store: promisifyStore(mongoStore),
   cookie: {
@@ -37,7 +33,7 @@ export default async function session(req: NextApiRequest, res: NextApiResponse,
 }
 
 /*
-When a user logs in, Passport.js stores the user's identifier (in your case, the user's _id) in the session using the passport.serializeUser() function. This identifier is then sent to the client as a cookie.
+When a user logs in, Passport.js stores the user's identifier (the user's _id) in the session using the passport.serializeUser() function. This identifier is then sent to the client as a cookie.
 
 When the user makes a subsequent request, the cookie is sent back to the server, and Passport.js uses the passport.deserializeUser() function to retrieve the full user object from the session data (by querying the MongoDB with the user's _id).
 

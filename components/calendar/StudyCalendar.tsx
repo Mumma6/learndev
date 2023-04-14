@@ -119,7 +119,6 @@ const StudyCalendar = () => {
   }, [userData?.payload])
 
   useEffect(() => {
-    console.log("effect")
     setEvents([
       ...(eventsData?.payload || []).map((e) => ({
         ...e,
@@ -132,7 +131,6 @@ const StudyCalendar = () => {
   const { mutate } = useSWRConfig()
 
   const handleSelectSlot = (event: Event) => {
-    console.log(event)
     setOpen(true)
     setCurrentEvent(event)
   }
@@ -182,9 +180,7 @@ const StudyCalendar = () => {
           mutate("/api/events")
           toast.success(response?.message)
         }
-      } catch (error) {
-        console.log(error)
-      }
+      } catch (error) {}
     }
 
     handleEditModalClose()
