@@ -24,10 +24,10 @@ import {
   ProjectStatusEnum,
   ProjectStatusEnumType,
 } from "../../schema/ProjectSchema"
-import { useZodFormValidation } from "../customHooks/useZodFormValidation"
 import { StatusEnum } from "../../schema/CourseSchema"
 import InfoTooltip from "../shared/Tooltip"
 import { getOArraySize } from "../../helpers/helpers"
+import { useZodFormValidation } from "zod-react-form"
 
 export const initialProjectsFormData: Omit<ProjectModelFromInputType, "techStack"> = {
   title: "",

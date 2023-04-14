@@ -15,7 +15,6 @@ import Autocomplete from "@mui/material/Autocomplete"
 import { ClickEvent, ClickEventRet, SetState } from "../../types/generics"
 import { Skill, skillsData } from "../../constants/skillsData"
 import { FaPlus } from "react-icons/fa"
-import { initialProjectsFormData } from "./Projects"
 import { ProjectModelFromInputType, ProjectStatusEnum } from "../../schema/ProjectSchema"
 import { IZodFormValidation } from "zod-react-form"
 
