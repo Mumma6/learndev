@@ -1,5 +1,7 @@
 import { ObjectId } from "mongodb"
 
+// Replace these with Zod
+
 export interface IAnswer {
   text: string
   key: number

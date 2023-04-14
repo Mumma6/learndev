@@ -3,6 +3,8 @@ import { Event } from "react-big-calendar"
 
 import { IQuiz } from "./Quiz"
 
+// Replace these with Zod
+
 export interface IEventInfo extends Event {
   _id?: string
   description: string
