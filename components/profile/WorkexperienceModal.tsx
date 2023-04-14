@@ -20,17 +20,17 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import Typography from "@mui/material/Typography"
 import { UserWorkexperienceSchema, UserWorkexperienceSchemaType } from "../../schema/UserSchema"
-import { ErrorsType, TouchedType, useZodFormValidation } from "../customHooks/useZodFormValidation"
+import { IZodFormValidation } from "zod-react-form"
 
 interface IProps {
   open: boolean
   handleClose: SetState<void>
   formValues: UserWorkexperienceSchemaType
-  setFieldValue: (key: keyof UserWorkexperienceSchemaType, value: unknown) => void
-  errors: ErrorsType<UserWorkexperienceSchemaType>
+  setFieldValue: (key: keyof UserWorkexperienceSchemaType, value: string | boolean) => void
+  errors: IZodFormValidation<UserWorkexperienceSchemaType>["errors"]
   onAddWorkexperience: () => void
   onBlur: (key: keyof UserWorkexperienceSchemaType) => void
-  touched: TouchedType<UserWorkexperienceSchemaType>
+  touched: IZodFormValidation<UserWorkexperienceSchemaType>["touched"]
 }
 
 const WorkexperienceModal = ({
@@ -45,20 +45,6 @@ const WorkexperienceModal = ({
 }: IProps) => {
   const { role, startDate, endDate, company, currentJob, description } = formValues
 
-  /*
-
-  const formik = useFormik({
-    initialValues: {
-      ...formValues,
-    },
-    validate: toFormikValidate(UserWorkexperienceSchema),
-    onSubmit: (formValue) => {
-      // onAddWorkexperience(formValue)
-    },
-  })
-
-  */
-
   const onAdd = () => {
     onAddWorkexperience()
   }
@@ -67,7 +53,7 @@ const WorkexperienceModal = ({
     handleClose()
   }
 
-  const onChange = (key: string, value: unknown) => {
+  const onChange = (key: string, value: string | boolean) => {
     setFieldValue(key as keyof UserWorkexperienceSchemaType, value)
   }
 

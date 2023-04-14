@@ -11,9 +11,8 @@ import { fetcher } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
 import * as _ from "lodash"
 import { UserModelSchemaType, UserWorkexperienceSchema, UserWorkexperienceSchemaType } from "../../schema/UserSchema"
-import { useZodFormValidation } from "../customHooks/useZodFormValidation"
+import { useZodFormValidation } from "zod-react-form"
 
-// Använd formink här istället.
 export const initialFormState: UserWorkexperienceSchemaType = {
   role: "",
   company: "",
