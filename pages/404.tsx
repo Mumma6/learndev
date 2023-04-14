@@ -9,7 +9,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>404 | Dev lerner</title>
+        <title>404 | Studify</title>
       </Head>
       <Box
         component="main"
@@ -33,8 +33,7 @@ const Page = () => {
               404: The page you are looking for isn’t here
             </Typography>
             <Typography align="center" color="textPrimary" variant="subtitle2">
-              You either tried some shady route or you came here by mistake. Whichever it is, try
-              using the navigation
+              You either tried some shady route or you came here by mistake. Whichever it is, try using the navigation
             </Typography>
             <Box sx={{ textAlign: "center" }}>
               <img

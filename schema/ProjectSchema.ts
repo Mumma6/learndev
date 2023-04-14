@@ -2,8 +2,6 @@ import { z } from "zod"
 import { SkillSchema } from "./SharedSchema"
 import { ObjectId } from "bson"
 
-// Avänd samma fält i /:id som man kan editera. Nya fält läggs i ett eget schema?
-
 export const ProjectStatusEnum = z.enum(["In progress", "Done", "Planning"])
 
 export type ProjectStatusEnumType = z.infer<typeof ProjectStatusEnum>
