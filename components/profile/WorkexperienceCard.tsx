@@ -9,8 +9,6 @@ interface IProps {
   deleteWorkexperience: (work: UserWorkexperienceSchemaType) => void
 }
 
-// en prop för delete function
-
 const WorkexperienceCard = ({ work, deleteWorkexperience }: IProps) => {
   const { role, company, startDate, endDate, currentJob, description } = work
   return (

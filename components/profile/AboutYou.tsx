@@ -1,10 +1,11 @@
 import React, { FormEvent, useState, useEffect } from "react"
 
 import { toast } from "react-toastify"
-
+import { pipe } from "fp-ts/function"
+import * as TE from "fp-ts/TaskEither"
 import SubmitButton from "../shared/SubmitButton"
 import { Box, Alert, Card, CardContent, CardHeader, Divider, TextField, Typography } from "@mui/material"
-import { fetcher } from "../../lib/axiosFetcher"
+import { fetcherTE } from "../../lib/axiosFetcher"
 import { UserModelSchema, UserModelSchemaType } from "../../schema/UserSchema"
 import { useCurrentUser } from "../../lib/hooks"
 import { useSWRConfig } from "swr"
@@ -44,44 +45,29 @@ const AboutYou = () => {
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    // this is to make it easier to update profile pic later.
-    // https://dev.to/hoangvvo/how-i-build-a-full-fledged-app-with-next-js-and-mongodb-part-2-user-profile-and-profile-picture-hcp
-    /*
-    const formdata = new FormData()
-    console.log(bio)
-    formdata.append("name", name)
-    formdata.append("bio", bio)
-    console.log(formdata)
-    */
-
-    /*
-
-    */
-    try {
-      setIsLoading(true)
-      const response = await fetcher<
-        UserModelSchemaType,
-        Pick<UserModelSchemaType, "about" | "goals" | "from" | "lookingForWork">
-      >("/api/user", {
+    setIsLoading(true)
+    pipe(
+      fetcherTE<UserModelSchemaType, Pick<UserModelSchemaType, "about" | "goals" | "from" | "lookingForWork">>("/api/user", {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
         data: values,
-      })
-
-      console.log(response)
-
-      if (response.error) {
-        toast.error(response.error)
-
-        setIsLoading(false)
-      } else {
-        mutate("/api/user")
-        toast.success("Your profile has been updated")
-        setIsLoading(false)
-      }
-    } catch (e) {
-      console.error(e)
-    }
+      }),
+      TE.fold(
+        (error) => {
+          toast.error(error)
+          setIsLoading(false)
+          console.log(error)
+          return TE.left(error)
+        },
+        (data) => {
+          console.log(data)
+          mutate("/api/user")
+          toast.success("Your profile has been updated")
+          setIsLoading(false)
+          return TE.right(data)
+        }
+      )
+    )()
   }
 
   return (

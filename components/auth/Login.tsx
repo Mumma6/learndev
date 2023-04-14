@@ -1,11 +1,13 @@
 import { FormEvent, useEffect, useState } from "react"
+import { pipe } from "fp-ts/function"
+import * as TE from "fp-ts/TaskEither"
 import { Box, Button, Container, Paper, TextField, Typography } from "@mui/material"
 import NextLink from "next/link"
 import { useRouter } from "next/router"
 import { toast } from "react-toastify"
 import { useCurrentUser } from "../../lib/hooks"
 import SubmitButton from "../shared/SubmitButton"
-import { fetcher } from "../../lib/axiosFetcher"
+import { fetcherTE } from "../../lib/axiosFetcher"
 import { FaArrowLeft } from "react-icons/fa"
 import { UserModelSchemaType, UserRegistrationSchema, UserRegistrationSchemaType } from "../../schema/UserSchema"
 import { Status } from "../../types/status"
@@ -37,22 +39,27 @@ const Login = () => {
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setStatus("loading")
-    const response = await fetcher<UserModelSchemaType, TLogin>("/api/auth", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      data: values,
-    })
-
-    if (response.error) {
-      setStatus("error")
-      toast.error(response.error)
-      setValues(initialState)
-      reset()
-    } else {
-      setStatus("success")
-
-      mutate({ payload: response.payload })
-    }
+    pipe(
+      fetcherTE<UserModelSchemaType, TLogin>("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        data: values,
+      }),
+      TE.fold(
+        (error) => {
+          setStatus("error")
+          toast.error(error)
+          setValues(initialState)
+          reset()
+          return TE.left(error)
+        },
+        (data) => {
+          mutate({ payload: data.payload }, false)
+          setStatus("success")
+          return TE.right(data)
+        }
+      )
+    )()
   }
 
   return (

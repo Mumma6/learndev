@@ -4,14 +4,16 @@ import Card from "@mui/material/Card"
 import { CardContent, CardHeader, Divider, TextField } from "@mui/material"
 import { FaBlog, FaGithub, FaHome, FaLinkedin, FaTwitter, FaYoutube } from "react-icons/fa"
 import * as _ from "lodash"
-
+import { pipe } from "fp-ts/function"
+import * as TE from "fp-ts/TaskEither"
 import { CgWebsite } from "react-icons/cg"
 import SubmitButton from "../shared/SubmitButton"
 import { useCurrentUser } from "../../lib/hooks"
-import { fetcher } from "../../lib/axiosFetcher"
+import { fetcher, fetcherTE } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
 import { UserModelSchemaType, UserSocialsSchema, UserSocialsSchemaType } from "../../schema/UserSchema"
 import { useZodFormValidation } from "zod-react-form"
+import { useSWRConfig } from "swr"
 
 const initialFormState = {
   twitter: "",
@@ -23,7 +25,8 @@ const initialFormState = {
 }
 
 const Socials = () => {
-  const { data, mutate } = useCurrentUser()
+  const { data } = useCurrentUser()
+  const { mutate } = useSWRConfig()
   const [isLoading, setIsLoading] = useState(false)
 
   const { values, errors, setFieldValue, onBlur, touched, isDisabled, setValues } =
@@ -35,35 +38,37 @@ const Socials = () => {
     }
   }, [data])
 
+  interface Input {
+    socials: UserSocialsSchemaType
+  }
+
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    console.log("submit")
-    try {
-      setIsLoading(true)
-
-      interface Input {
-        socials: UserSocialsSchemaType
-      }
-
-      const response = await fetcher<UserModelSchemaType, Input>("/api/user", {
+    setIsLoading(true)
+    pipe(
+      fetcherTE<UserModelSchemaType, Input>("/api/user", {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
         data: {
           socials: values,
         },
-      })
-      if (response.error) {
-        toast.error(response.error)
-        setIsLoading(false)
-      } else {
-        console.log(response)
-        mutate({ payload: response.payload }, false)
-        toast.success("Your profile has been updated")
-        setIsLoading(false)
-      }
-    } catch (e) {
-      console.error(e)
-    }
+      }),
+      TE.fold(
+        (error) => {
+          toast.error(error)
+          setIsLoading(false)
+          console.log(error)
+          return TE.left(error)
+        },
+        (data) => {
+          console.log(data)
+          mutate("/api/user")
+          toast.success("Your profile has been updated")
+          setIsLoading(false)
+          return TE.right(data)
+        }
+      )
+    )()
   }
 
   return (

@@ -29,11 +29,18 @@ handler.get(...auths, async (req, res) => {
 handler.post(...auths, async (req, res) => {
   // Needs validation on req body here. First add Event zod schema
 
+  const addUserId = () =>
+    pipe(
+      req,
+      getUserId,
+      E.getOrElse(() => "")
+    )
+
   const task = pipe(
     req,
     checkUser,
     E.map((req) => ({
-      userId: req.user?._id,
+      userId: addUserId(),
       ...req.body,
     })),
     TE.fromEither,

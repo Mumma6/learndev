@@ -5,11 +5,14 @@ import { useRouter } from "next/router"
 import { toast } from "react-toastify"
 import { useCurrentUser } from "../../lib/hooks"
 import SubmitButton from "../shared/SubmitButton"
-import { fetcher } from "../../lib/axiosFetcher"
+import { fetcherTE } from "../../lib/axiosFetcher"
 import { FaArrowLeft } from "react-icons/fa"
 import { UserModelSchemaType, UserRegistrationSchema, UserRegistrationSchemaType } from "../../schema/UserSchema"
 import { Status } from "../../types/status"
 import { useZodFormValidation } from "zod-react-form"
+
+import { pipe } from "fp-ts/function"
+import * as TE from "fp-ts/TaskEither"
 
 const initialState = {
   name: "",
@@ -32,29 +35,30 @@ const SignUp = () => {
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    try {
-      setStatus("loading")
-      const response = await fetcher<UserModelSchemaType, UserRegistrationSchemaType>("/api/users", {
+    setStatus("loading")
+    pipe(
+      fetcherTE<UserModelSchemaType, UserRegistrationSchemaType>("/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: values,
-      })
-      if (response.error) {
-        toast.error(response.error)
-        setStatus("error")
-        setValues(initialState)
-        reset()
-      } else {
-        mutate({ payload: response.payload }, false)
-        toast.success("Your account has been created")
-        setStatus("success")
-        router.replace("/home")
-      }
-    } catch (e: any) {
-      console.log(e)
-    } finally {
-      reset()
-    }
+      }),
+      TE.fold(
+        (error) => {
+          toast.error(error)
+          setStatus("error")
+          setValues(initialState)
+          reset()
+          return TE.left(error)
+        },
+        (data) => {
+          mutate({ payload: data.payload }, false)
+          toast.success("Your account has been created")
+          setStatus("success")
+          router.replace("/home")
+          return TE.right(data)
+        }
+      )
+    )()
   }
 
   return (
@@ -145,7 +149,7 @@ const SignUp = () => {
             <Box sx={{ py: 2 }}>
               <SubmitButton
                 text="Sign up Now"
-                isLoading={status === "loading"}
+                isLoading={status === "loading" || status === "success"}
                 isDisabled={isDisabled() || status === "loading" || status === "success"}
               />
             </Box>

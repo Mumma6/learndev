@@ -6,16 +6,22 @@ import Paper from "@mui/material/Paper"
 import Autocomplete from "@mui/material/Autocomplete"
 import { skillsData } from "../../constants/skillsData"
 import { FaPlus } from "react-icons/fa"
-import { fetcher } from "../../lib/axiosFetcher"
-
+import { fetcherTE } from "../../lib/axiosFetcher"
+import { pipe } from "fp-ts/function"
+import * as TE from "fp-ts/TaskEither"
+import * as A from "fp-ts/lib/Array"
+import * as O from "fp-ts/lib/Option"
 import { toast } from "react-toastify"
 import { useCurrentUser } from "../../lib/hooks"
 import * as _ from "lodash"
 import { UserModelSchemaType } from "../../schema/UserSchema"
 import { SkillSchemaType } from "../../schema/SharedSchema"
+import { useSWRConfig } from "swr"
 
 const Skills = () => {
-  const { data, mutate } = useCurrentUser()
+  const { data } = useCurrentUser()
+  const { mutate } = useSWRConfig()
+  const [isLoading, setIsLoading] = useState(false)
   const [chipData, setChipData] = React.useState<SkillSchemaType[]>(data?.payload?.skills || [])
 
   const [newSkill, setNewSkill] = useState<SkillSchemaType | null>()
@@ -51,29 +57,31 @@ const Skills = () => {
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-
-    try {
-      setIsLoading(true)
-      const response = await fetcher<UserModelSchemaType, Pick<UserModelSchemaType, "skills">>("/api/user", {
+    setIsLoading(true)
+    pipe(
+      fetcherTE<UserModelSchemaType, Pick<UserModelSchemaType, "skills">>("/api/user", {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
         data: {
           skills: chipData,
         },
-      })
-      if (response.error) {
-        toast.error(response.error)
-        setIsLoading(false)
-      } else {
-        mutate({ payload: response.payload }, false)
-        toast.success("Your profile has been updated")
-        setIsLoading(false)
-      }
-    } catch (e) {
-      console.error(e)
-    }
+      }),
+      TE.fold(
+        (error) => {
+          toast.error(error)
+          setIsLoading(false)
+          return TE.left(error)
+        },
+        (data) => {
+          mutate("/api/user")
+          toast.success("Your profile has been updated")
+          setIsLoading(false)
+          return TE.right(data)
+        }
+      )
+    )()
   }
-  const [isLoading, setIsLoading] = useState(false)
+
   return (
     <>
       <form onSubmit={onSubmit}>

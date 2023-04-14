@@ -6,12 +6,15 @@ import WorkexperienceCard from "./WorkexperienceCard"
 import { FaPlus } from "react-icons/fa"
 import SubmitButton from "../shared/SubmitButton"
 import { useCurrentUser } from "../../lib/hooks"
+import { pipe } from "fp-ts/function"
+import * as TE from "fp-ts/TaskEither"
 import WorkexperienceModal from "./WorkexperienceModal"
-import { fetcher } from "../../lib/axiosFetcher"
+import { fetcher, fetcherTE } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
 import * as _ from "lodash"
 import { UserModelSchemaType, UserWorkexperienceSchema, UserWorkexperienceSchemaType } from "../../schema/UserSchema"
 import { useZodFormValidation } from "zod-react-form"
+import { useSWRConfig } from "swr"
 
 export const initialFormState: UserWorkexperienceSchemaType = {
   role: "",
@@ -23,7 +26,8 @@ export const initialFormState: UserWorkexperienceSchemaType = {
 }
 
 const Workexperience = () => {
-  const { data, mutate } = useCurrentUser()
+  const { data } = useCurrentUser()
+  const { mutate } = useSWRConfig()
 
   const [open, setOpen] = useState(false)
   const [workexperience, setWorkexperience] = useState(data?.payload?.workexperience || [])
@@ -86,29 +90,33 @@ const Workexperience = () => {
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-
-    try {
-      setIsLoading(true)
-      const response = await fetcher<UserModelSchemaType, Pick<UserModelSchemaType, "workexperience">>("/api/user", {
+    setIsLoading(true)
+    pipe(
+      fetcherTE<UserModelSchemaType, Pick<UserModelSchemaType, "workexperience">>("/api/user", {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
         data: {
           workexperience,
         },
-      })
-      if (response.error) {
-        toast.error(response.error)
-        setIsLoading(false)
-      } else {
-        console.log(response)
-        mutate({ payload: response.payload }, false)
-        toast.success("Your profile has been updated")
-        setIsLoading(false)
-      }
-    } catch (e) {
-      console.error(e)
-    }
+      }),
+      TE.fold(
+        (error) => {
+          toast.error(error)
+          setIsLoading(false)
+          console.log(error)
+          return TE.left(error)
+        },
+        (data) => {
+          console.log(data)
+          mutate("/api/user")
+          toast.success("Your profile has been updated")
+          setIsLoading(false)
+          return TE.right(data)
+        }
+      )
+    )()
   }
+
   return (
     <form onSubmit={onSubmit}>
       <Card>

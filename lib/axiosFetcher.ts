@@ -36,10 +36,11 @@ export const fetcher = <R, T>(url?: string, options?: Options<T>): Promise<Respo
     .catch((error) => handleError<R>(error))
 }
 
+// Use this when possible
 export const fetcherTE = <A, T>(url: string, options: Options<T>): TE.TaskEither<string, Response<A>> =>
   pipe(
     TE.tryCatch(
-      () => fetcher<A, unknown>(url, options),
+      () => fetcher<A, T>(url, options),
       (reason) => `Error fetching from ${url}: ${reason}`
     ),
     TE.chain((response: Response<A>) => (response.error ? TE.left(response.error) : TE.right(response)))

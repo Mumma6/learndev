@@ -44,7 +44,7 @@ const TopicsChart = () => {
     Object.entries,
     A.map(([topic, value]) => ({ [topic]: value })),
     O.fromNullable,
-    O.map((data) => data.sort((a, b) => Object.values(a)[0] - Object.values(b)[0])),
+    O.map((data) => data.sort((a, b) => Object.values(b)[0] - Object.values(a)[0])),
     O.map(A.takeLeft(5)),
     O.map((data) => data.sort((a, b) => Object.keys(a)[0].localeCompare(Object.keys(b)[0]))),
     O.fold(
@@ -52,6 +52,8 @@ const TopicsChart = () => {
       (data) => data
     )
   )
+
+  console.log(mappedOccurrences)
 
   const options = {
     responsive: true,

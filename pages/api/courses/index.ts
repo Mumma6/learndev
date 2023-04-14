@@ -31,22 +31,29 @@ const createTags = (data: Pick<CourseModelSchemaType, "content" | "topics">): st
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<CourseModelSchemaType[] | null>>>()
 
 handler.post(...auths, async (req, res) => {
-  // create a seperate function that takes req and add the userId
+  const addNonInputData =
+    (data: CourseModelformInputType) =>
+    (userId: string): Omit<CourseModelSchemaType, "_id"> => ({
+      ...data,
+      tags: createTags(data),
+      createdAt: new Date(),
+      userId,
+      tasks: [], // får komma in som data
+      resources: [], // får komma in som data
+    })
 
-  const addNonInputData = (data: CourseModelformInputType): Omit<CourseModelSchemaType, "_id"> => ({
-    ...data,
-    tags: createTags(data),
-    createdAt: new Date(),
-    userId: req.user?._id!,
-    tasks: [], // får komma in som data
-    resources: [], // får komma in som data
-  })
+  const addUserId = () =>
+    pipe(
+      req,
+      getUserId,
+      E.getOrElse(() => "")
+    )
 
   const task = pipe(
     req,
     checkUser,
-    E.chain((req) => validateReqBody<CourseModelformInputType>(req, CourseModelformInputSchema)),
-    E.map(addNonInputData),
+    E.chain((r) => validateReqBody<CourseModelformInputType>(r, CourseModelformInputSchema)),
+    E.map((course) => addNonInputData(course)(addUserId())),
     TE.fromEither,
     TE.chain(addCourseToDb)
   )
