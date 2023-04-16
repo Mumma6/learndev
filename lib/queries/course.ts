@@ -43,6 +43,7 @@ export const deleteCourseById = (id: string) =>
     () => `Failed to delete course`
   )
 
+// The parsing should not be done here
 export const findCoursebyId = async (db: Db, _id: string) => {
   const course = await db.collection("courses").findOne({ _id: new ObjectId(_id) })
 

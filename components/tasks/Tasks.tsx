@@ -8,6 +8,16 @@ import FormControlLabel from "@mui/material/FormControlLabel"
 import Switch from "@mui/material/Switch"
 import Button from "@mui/material/Button"
 import AddTaskModal from "./AddTaskModal"
+import { PrioEnum, TaskFormInputSchema, TaskFormInputType, TaskModelType, TaskPrioEnumType } from "../../schema/TaskSchema"
+import { useZodFormValidation } from "zod-react-form"
+import { useTasks } from "../../lib/hooks"
+import { useSWRConfig } from "swr"
+import { pipe } from "fp-ts/function"
+import * as A from "fp-ts/Array"
+import * as O from "fp-ts/Option"
+import * as TE from "fp-ts/TaskEither"
+import { fetcherTE } from "../../lib/axiosFetcher"
+import { toast } from "react-toastify"
 
 /*
 Tasks should show up when going to /course | project/id
@@ -47,14 +57,76 @@ modal to add.
 
 */
 
+export type InitialZodFormState = Omit<TaskFormInputType, "activityName" | "activityId" | "activityGroup">
+
+export type InitialActivityFromState = Pick<TaskFormInputType, "activityName" | "activityId" | "activityGroup">
+
+export const initialTaskFormstate: InitialZodFormState = {
+  title: "",
+  description: "",
+  completed: false,
+  prio: PrioEnum.Enum["Medium"],
+}
+
+export const initialActivityTaskFormstate: InitialActivityFromState = {
+  activityName: "",
+  activityId: "",
+  activityGroup: "",
+}
+
 const Tasks = () => {
   const [open, setOpen] = useState(false)
+  const [activityFormState, setActivityFormState] = useState(initialActivityTaskFormstate)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const { data } = useTasks()
+
+  // pass these to the datagrid
+  console.log(data)
+  const { mutate } = useSWRConfig()
+
+  const zodForm = useZodFormValidation<InitialZodFormState>(TaskFormInputSchema, initialTaskFormstate)
+
+  const resetForm = () => {
+    setIsLoading(false)
+    handleClose()
+  }
+
+  const onAddTask = async () => {
+    setIsLoading(true)
+    pipe(
+      fetcherTE<TaskModelType, TaskFormInputType>("/api/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        data: {
+          ...zodForm.values,
+          ...activityFormState,
+        },
+      }),
+      TE.fold(
+        (error) => {
+          toast.error(error)
+          resetForm()
+          return TE.left(error)
+        },
+        (data) => {
+          toast.error(data.message)
+          mutate("/api/tasks")
+          resetForm()
+          return TE.right(data)
+        }
+      )
+    )()
+  }
 
   const handleClickOpen = () => {
     setOpen(true)
   }
 
   const handleClose = () => {
+    zodForm.setValues(initialTaskFormstate)
+    setActivityFormState(initialActivityTaskFormstate)
+
     setOpen(false)
   }
 
@@ -66,7 +138,13 @@ const Tasks = () => {
       }}
     >
       <Container maxWidth={false}>
-        <AddTaskModal open={open} handleClose={handleClose} />
+        <AddTaskModal
+          open={open}
+          handleClose={handleClose}
+          zodForm={zodForm}
+          onAddTask={onAddTask}
+          setActivityFormState={setActivityFormState}
+        />
         <Box sx={{ pt: 3 }}>
           <Box sx={{ mt: 1, mb: 1 }}>
             <Card>
@@ -90,7 +168,7 @@ const Tasks = () => {
               />
               <Divider />
               <CardContent>
-                <TaskDataGrid />
+                <TaskDataGrid tasks={data?.payload || []} />
               </CardContent>
             </Card>
           </Box>

@@ -9,6 +9,7 @@ import DeleteIcon from "@mui/icons-material/Delete"
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
 import { Stack } from "@mui/material"
 import { FaArrowRight } from "react-icons/fa"
+import { TaskModelType } from "../../schema/TaskSchema"
 
 const columns: GridColDef[] = [
   {
@@ -30,7 +31,7 @@ const columns: GridColDef[] = [
     // width: 150,
   },
   {
-    field: "created",
+    field: "createdAt",
     headerName: "Created at",
     flex: 1,
     // width: 110,
@@ -57,7 +58,7 @@ const columns: GridColDef[] = [
 
   {
     field: "toggle",
-    headerName: "Toggle task",
+    headerName: "Toggle complete",
     flex: 1,
     // width: 150,
     sortable: false,
@@ -147,11 +148,21 @@ const exampleDataRows = [
   },
 ]
 
-const TaskDataGrid = () => {
+interface IProps {
+  tasks: TaskModelType[]
+}
+
+const TaskDataGrid = ({ tasks }: IProps) => {
+  const mappedTasks = (ts: TaskModelType[]) =>
+    ts.map((task) => ({
+      ...task,
+      id: task._id,
+    }))
+
   return (
     <Box sx={{ height: 600, width: "100%" }}>
       <DataGrid
-        rows={exampleDataRows}
+        rows={mappedTasks(tasks)}
         sx={{
           "& .super-app-theme--true": {
             bgcolor: () => "#9e9e9e",

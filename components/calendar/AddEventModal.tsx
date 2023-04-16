@@ -84,14 +84,6 @@ const AddEventModal = ({
     }))
   }
 
-  const handleSelectCourseChange = (event: SelectChangeEvent) => {
-    setExternEventFormData((prevState) => ({
-      ...prevState,
-      [event.target.name]: event.target.value,
-      courseName: (courseData?.payload || []).find((c) => c._id?.toString() === event.target.value)?.content.title || null,
-    }))
-  }
-
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
     setExternEventFormData((prevState) => ({
       ...prevState,
