@@ -2,7 +2,7 @@ import { flow } from "fp-ts/function"
 import * as A from "fp-ts/Array"
 import * as O from "fp-ts/Option"
 
-export const tap = <T>(val: T): T => {
+export const tap = (val: any) => {
   console.log(val)
   return val
 }

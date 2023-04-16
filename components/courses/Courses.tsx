@@ -3,7 +3,6 @@ import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
 import { pipe } from "fp-ts/function"
 import * as A from "fp-ts/Array"
-
 import * as O from "fp-ts/Option"
 import * as TE from "fp-ts/TaskEither"
 
@@ -29,15 +28,6 @@ import { SkillSchemaType } from "../../schema/SharedSchema"
 import { useZodFormValidation } from "zod-react-form"
 import InfoTooltip from "../shared/Tooltip"
 import { getOArraySize } from "../../helpers/helpers"
-
-/*
-Lägga till en wishlist med kurser?
-
-Göra korten mindre?
-
-lägg knappen  "gå till" brevid delete
-
-*/
 
 export const initialCourseFormState: CourseModelContentInputSchemaType = {
   title: "",

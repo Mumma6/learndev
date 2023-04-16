@@ -4,25 +4,26 @@ import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
-import { useFormik } from "formik"
-import {
-  UserModelSchemaType,
-  UserSettingsLabelSchema,
-  UserSettingsType,
-  UserSocialsSchemaType,
-} from "../../schema/UserSchema"
-import { toFormikValidate } from "zod-formik-adapter"
-import { Box, Button, Divider, IconButton, List, ListItem, ListItemText, TextField, Typography } from "@mui/material"
+import { pipe } from "fp-ts/function"
+import * as A from "fp-ts/Array"
+import * as O from "fp-ts/Option"
+import * as TE from "fp-ts/TaskEither"
+import { UserModelSchemaType, UserSettingsType } from "../../schema/UserSchema"
+import { Box, Button, Divider, IconButton, List, ListItem, ListItemText, TextField } from "@mui/material"
 
 import { HexColorPicker } from "react-colorful"
 import { useCurrentUser } from "../../lib/hooks"
 import { toast } from "react-toastify"
-import { fetcher } from "../../lib/axiosFetcher"
+import { fetcherTE } from "../../lib/axiosFetcher"
 import { FaTrash } from "react-icons/fa"
 
 interface IProps {
   open: boolean
   handleClose: () => void
+}
+
+interface Input {
+  userSettings: UserSettingsType
 }
 
 const AddLabelModal = ({ open, handleClose }: IProps) => {
@@ -32,78 +33,78 @@ const AddLabelModal = ({ open, handleClose }: IProps) => {
 
   const { data, mutate } = useCurrentUser()
 
-  const addLabel = async () => {
-    try {
-      setIsLoading(true)
-
-      interface Input {
-        userSettings: UserSettingsType
-      }
-
-      const updatedUserSettings: UserSettingsType = {
-        ...data?.payload?.userSettings,
-        labels: [
-          ...(data?.payload?.userSettings.labels || []),
-          {
-            name,
-            color,
-          },
-        ],
-      }
-
-      const response = await fetcher<UserModelSchemaType, Input>("/api/user", {
+  const onAddLabel = async () => {
+    setIsLoading(true)
+    pipe(
+      fetcherTE<UserModelSchemaType, Input>("/api/user", {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
         data: {
-          userSettings: updatedUserSettings,
+          userSettings: pipe(
+            data?.payload?.userSettings,
+            O.fromNullable,
+            O.map((settings) => ({
+              ...settings,
+              labels: [...(settings.labels || []), { name, color }],
+            })),
+            O.getOrElseW(() => ({ labels: [] }))
+          ),
         },
-      })
-      if (response.error) {
-        toast.error(response.error)
-        setIsLoading(false)
-      } else {
-        mutate({ payload: response.payload }, false)
-        setName("")
-        toast.success("Label added")
-        setIsLoading(false)
-      }
-    } catch (e) {
-      console.error(e)
-    }
+      }),
+      TE.fold(
+        (error) => {
+          toast.error(error)
+          setIsLoading(false)
+          return TE.left(error)
+        },
+        (data) => {
+          mutate({ payload: data.payload }, false)
+          setName("")
+          toast.success("Label added")
+          setIsLoading(false)
+          return TE.right(data)
+        }
+      )
+    )()
   }
 
-  const deleteLabel = async (name: string) => {
-    try {
-      setIsLoading(true)
-
-      interface Input {
-        userSettings: UserSettingsType
-      }
-
-      const updatedUserSettings: UserSettingsType = {
-        ...data?.payload?.userSettings,
-        labels: [...(data?.payload?.userSettings.labels || [])].filter((label) => label.name !== name),
-      }
-
-      const response = await fetcher<UserModelSchemaType, Input>("/api/user", {
+  const onDeleteLabel = async (name: string) => {
+    setIsLoading(true)
+    pipe(
+      fetcherTE<UserModelSchemaType, Input>("/api/user", {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
         data: {
-          userSettings: updatedUserSettings,
+          userSettings: pipe(
+            data?.payload?.userSettings,
+            O.fromNullable,
+            O.map((settings) => ({
+              ...settings,
+              labels: pipe(
+                settings.labels,
+                A.filter((label) => label.name !== name),
+                (filteredLabels) => filteredLabels
+              ),
+            })),
+            O.getOrElseW(() => ({ labels: [] }))
+          ),
         },
-      })
-      if (response.error) {
-        toast.error(response.error)
-        setIsLoading(false)
-      } else {
-        mutate({ payload: response.payload }, false)
-        setName("")
-        toast.success("Label removed")
-        setIsLoading(false)
-      }
-    } catch (e) {
-      console.error(e)
-    }
+      }),
+      TE.fold(
+        (error) => {
+          toast.error(error)
+          setIsLoading(false)
+          return TE.left(error)
+        },
+        (response) => {
+          mutate({ payload: response.payload }, false)
+          setName("")
+          toast.success("Label removed")
+          setIsLoading(false)
+          return TE.right(response)
+        }
+      )
+    )()
   }
 
   return (
@@ -135,7 +136,7 @@ const AddLabelModal = ({ open, handleClose }: IProps) => {
               {data?.payload?.userSettings.labels.map((label) => (
                 <ListItem
                   secondaryAction={
-                    <IconButton onClick={() => deleteLabel(label.name)} color="error" edge="end" aria-label="delete">
+                    <IconButton onClick={() => onDeleteLabel(label.name)} color="error" edge="end" aria-label="delete">
                       <FaTrash />
                     </IconButton>
                   }
@@ -158,7 +159,7 @@ const AddLabelModal = ({ open, handleClose }: IProps) => {
           Cancel
         </Button>
         <Button
-          onClick={() => addLabel()}
+          onClick={() => onAddLabel()}
           disabled={name === "" || color === "" || isLoading}
           sx={{ marginRight: 2 }}
           variant="contained"

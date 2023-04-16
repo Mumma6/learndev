@@ -3,6 +3,7 @@ import nextConnect from "next-connect"
 import auths from "../../../lib/middlewares/auth"
 import { addCourseToDb, deleteCourseById, getCoursesForUser, updateCourseById } from "../../../lib/queries/course"
 import {
+  addUserId,
   checkUser,
   createDeleteHandler,
   getUserId,
@@ -42,18 +43,11 @@ handler.post(...auths, async (req, res) => {
       resources: [], // får komma in som data
     })
 
-  const addUserId = () =>
-    pipe(
-      req,
-      getUserId,
-      E.getOrElse(() => "")
-    )
-
   const task = pipe(
     req,
     checkUser,
     E.chain((r) => validateReqBody<CourseModelformInputType>(r, CourseModelformInputSchema)),
-    E.map((course) => addNonInputData(course)(addUserId())),
+    E.map((course) => addNonInputData(course)(addUserId(req))),
     TE.fromEither,
     TE.chain(addCourseToDb)
   )

@@ -1,11 +1,13 @@
-import React, { useState, ChangeEvent } from "react"
+import React, { useState, ChangeEvent, FormEvent } from "react"
 import { Box, Button, Container, TextField, Typography } from "@mui/material"
 import SubmitButton from "../shared/SubmitButton"
 import { toast } from "react-toastify"
 import { FaArrowLeft } from "react-icons/fa"
 import NextLink from "next/link"
 import useRedirect from "../customHooks/useRedirect"
-import { fetcher } from "../../lib/axiosFetcher"
+import { fetcherTE } from "../../lib/axiosFetcher"
+import { pipe } from "fp-ts/function"
+import * as TE from "fp-ts/TaskEither"
 import { Status } from "../../types/status"
 
 const ForgotPasswordToken = ({ valid, token }: { valid: boolean; token: any }) => {
@@ -14,34 +16,35 @@ const ForgotPasswordToken = ({ valid, token }: { valid: boolean; token: any }) =
 
   const { activateTimer } = useRedirect("/login", 4)
 
-  const onSubmit = async (e: any) => {
-    e.preventDefault()
-    try {
-      setStatus("loading")
-      const response = await fetcher("/api/user/password/reset", {
+  const onSubmit = async (event: FormEvent) => {
+    event.preventDefault()
+    pipe(
+      fetcherTE("/api/user/password/reset", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         data: {
           token,
           password: newPassword,
         },
-      })
-      if (response.error) {
-        setStatus("error")
-        toast.error(response.error)
-        setNewPassword("")
-      } else {
-        setStatus("success")
-        setNewPassword("")
-        activateTimer()
-        toast.success("Your password has been updated successfully. Redirecting to login page", {
-          autoClose: 4000,
-        })
-      }
-    } catch (e) {
-      setStatus("idle")
-      console.error(e)
-    }
+      }),
+      TE.fold(
+        (error) => {
+          setStatus("error")
+          toast.error(error)
+          setNewPassword("")
+          return TE.left(error)
+        },
+        (data) => {
+          setStatus("success")
+          setNewPassword("")
+          activateTimer()
+          toast.success("Your password has been updated successfully. Redirecting to login page", {
+            autoClose: 4000,
+          })
+          return TE.right(data)
+        }
+      )
+    )()
   }
 
   return (

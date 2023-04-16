@@ -1,11 +1,9 @@
-import { useRouter } from "next/router"
-import React, { useEffect } from "react"
+import React from "react"
 import { useCurrentUser } from "../../lib/hooks"
 import Head from "next/head"
 import EmailVerify from "../auth/EmailVerify"
-import AboutYou from "../profile/AboutYou"
 import ChangePassword from "./ChangePassword"
-import { Box, Container, Grid, Typography } from "@mui/material"
+import { Box, Container, Grid } from "@mui/material"
 import DeleteAccount from "./DeleteAccount"
 
 const Settings = () => {

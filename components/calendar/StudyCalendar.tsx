@@ -135,7 +135,6 @@ const StudyCalendar = () => {
     setCurrentEvent(event)
   }
 
-  // kanske kan ha type EventInfo
   const handleSelectEvent = (event: IEventInfo) => {
     setCurrentEvent(event)
     setEditModalOpen(true)

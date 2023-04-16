@@ -60,13 +60,6 @@ const AddEventInfoModal = ({ open, handleClose, eventFormData, setEventFormData,
     }))
   }
 
-  const handleSelectChange = (event: SelectChangeEvent) => {
-    setEventFormData((prevState) => ({
-      ...prevState,
-      [event.target.name]: event.target.value,
-    }))
-  }
-
   const handleActivityChange = (e: React.SyntheticEvent, value: ActivitesData | null) => {
     setEventFormData((prevState) => ({
       ...prevState,

@@ -4,6 +4,7 @@ import auths from "../../../lib/middlewares/auth"
 import { deleteProjectById, getProjectsForUser, insertProject, updateProjectById } from "../../../lib/queries/projects"
 
 import {
+  addUserId,
   checkUser,
   createDeleteHandler,
   getUserId,
@@ -11,7 +12,6 @@ import {
   handleAPIResponse,
   validateArrayData,
   validateData,
-  validateQueryParam,
   validateReqBody,
 } from "../../../lib/utils"
 import {
@@ -52,20 +52,22 @@ const createTags = (data: Pick<ProjectModelType, "techStack" | "title">) =>
   [data.title, ...data.techStack.map((t) => t.label)].map((tag) => tag.toLowerCase()).join(", ")
 
 handler.post(...auths, async (req, res) => {
-  const addNonInputData = (data: ProjectModelFromInputType): Omit<ProjectModelType, "_id"> => ({
-    ...data,
-    tags: createTags(data),
-    userId: req.user?._id!,
-    createdAt: new Date(),
-    tasks: [], // får komma in som data
-    resources: [], // får komma in som data
-  })
+  const addNonInputData =
+    (data: ProjectModelFromInputType) =>
+    (userId: string): Omit<ProjectModelType, "_id"> => ({
+      ...data,
+      tags: createTags(data),
+      userId,
+      createdAt: new Date(),
+      tasks: [], // får komma in som data
+      resources: [], // får komma in som data
+    })
 
   const task = pipe(
     req,
     checkUser,
     E.chain((req) => validateReqBody<ProjectModelFromInputType>(req, ProjectModelFormInputSchema)),
-    E.map(addNonInputData),
+    E.map((project) => addNonInputData(project)(addUserId(req))),
     TE.fromEither,
     TE.chain(insertProject)
   )

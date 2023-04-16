@@ -19,10 +19,6 @@ interface IProps {
   currentEvent: IEventInfo | null
 }
 
-/*  
- Should be able to toggle Events as "completed" "started" "not done". Should give the student a overview of what has been accomplished
-*/
-
 const EditEventInfoModal = ({ open, handleClose, onDeleteEvent, currentEvent }: IProps) => {
   const router = useRouter()
   const onClose = () => {

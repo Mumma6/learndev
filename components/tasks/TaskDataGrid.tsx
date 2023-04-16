@@ -118,7 +118,7 @@ const columns: GridColDef[] = [
   // delete ska få en egen.
 ]
 
-const rows = [
+const exampleDataRows = [
   {
     id: 1,
     title: "todo1",
@@ -151,7 +151,7 @@ const TaskDataGrid = () => {
   return (
     <Box sx={{ height: 600, width: "100%" }}>
       <DataGrid
-        rows={rows}
+        rows={exampleDataRows}
         sx={{
           "& .super-app-theme--true": {
             bgcolor: () => "#9e9e9e",

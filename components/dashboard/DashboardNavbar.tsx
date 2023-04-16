@@ -1,13 +1,15 @@
 import React, { useCallback } from "react"
 import { styled } from "@mui/material/styles"
-import { AppBar, Avatar, Badge, Box, Button, IconButton, Toolbar, Tooltip } from "@mui/material"
+import { AppBar, Box, Button, IconButton, Toolbar, Tooltip } from "@mui/material"
 import { RiMenuUnfoldFill } from "react-icons/ri"
-import { FaBell, FaSignOutAlt, FaUser, FaUserCircle, FaUsers } from "react-icons/fa"
+import { FaSignOutAlt, FaUser } from "react-icons/fa"
 import { useCurrentUser } from "../../lib/hooks"
 import { toast } from "react-toastify"
 import { useRouter } from "next/router"
-import { fetcher } from "../../lib/axiosFetcher"
+import { fetcherTE } from "../../lib/axiosFetcher"
 import Link from "next/link"
+import { pipe } from "fp-ts/function"
+import * as TE from "fp-ts/TaskEither"
 
 const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -24,16 +26,23 @@ export const DashboardNavbar = ({ onSidebarOpen }: IProps) => {
   const router = useRouter()
 
   const onSignOut = useCallback(async () => {
-    try {
-      await fetcher("/api/auth", {
+    pipe(
+      fetcherTE("/api/auth", {
         method: "DELETE",
-      })
-      toast.success("You have been signed out")
-      mutate({ payload: null })
-      router.replace("/")
-    } catch (e: any) {
-      toast.error(e.message)
-    }
+      }),
+      TE.fold(
+        (error) => {
+          toast.error(error)
+          return TE.left(error)
+        },
+        (data) => {
+          toast.success("You have been signed out")
+          mutate({ payload: null })
+          router.replace("/")
+          return TE.right(data)
+        }
+      )
+    )()
   }, [mutate])
   return (
     <>

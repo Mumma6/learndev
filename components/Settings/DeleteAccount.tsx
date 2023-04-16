@@ -1,15 +1,15 @@
 import React from "react"
-import { Box, Alert, Card, CardContent, CardHeader, Divider, TextField } from "@mui/material"
-
+import { Box, Alert, Card, CardContent, CardHeader, Divider } from "@mui/material"
+import { pipe } from "fp-ts/function"
+import * as TE from "fp-ts/TaskEither"
 import Button from "@mui/material/Button"
 import Dialog from "@mui/material/Dialog"
 import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
-
 import { toast } from "react-toastify"
-import { fetcher } from "../../lib/axiosFetcher"
+import { fetcherTE } from "../../lib/axiosFetcher"
 import { useRouter } from "next/router"
 import { useCurrentUser } from "../../lib/hooks"
 
@@ -28,26 +28,27 @@ const DeleteAccount = () => {
   }
 
   const handleDelete = async () => {
-    try {
-      setIsLoading(true)
-      const response = await fetcher("/api/user", {
+    pipe(
+      fetcherTE("/api/user", {
         method: "DELETE",
-      })
-
-      if (response.error) {
-        setIsLoading(false)
-        handleClose()
-        toast.error(response.error)
-      } else {
-        setIsLoading(false)
-        handleClose()
-        mutate({ payload: null })
-        toast.success(response.message)
-        router.replace("/")
-      }
-    } catch (error: any) {
-      toast.error(error.message)
-    }
+      }),
+      TE.fold(
+        (error) => {
+          setIsLoading(false)
+          handleClose()
+          toast.error(error)
+          return TE.left(error)
+        },
+        (data) => {
+          setIsLoading(false)
+          handleClose()
+          mutate({ payload: null })
+          toast.success(data.message)
+          router.replace("/")
+          return TE.right(data)
+        }
+      )
+    )()
   }
 
   return (

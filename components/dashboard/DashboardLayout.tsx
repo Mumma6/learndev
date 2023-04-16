@@ -33,6 +33,7 @@ export const DashboardLayout = ({ children }: IProps) => {
     }
   }, [router, data])
 
+  // The spinner should be in the center
   if (!data?.payload)
     return (
       <Container>

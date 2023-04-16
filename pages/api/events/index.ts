@@ -3,7 +3,7 @@ import nextConnect from "next-connect"
 import auths from "../../../lib/middlewares/auth"
 
 import { addEventForUser, deleteEventById, getEventsForUser } from "../../../lib/queries/events"
-import { checkUser, createDeleteHandler, getUserId, handleAPIError, handleAPIResponse } from "../../../lib/utils"
+import { addUserId, checkUser, createDeleteHandler, getUserId, handleAPIError, handleAPIResponse } from "../../../lib/utils"
 import { IEventInfo } from "../../../models/EventInfo"
 import { Response } from "../../../types/response"
 import * as E from "fp-ts/Either"
@@ -29,18 +29,11 @@ handler.get(...auths, async (req, res) => {
 handler.post(...auths, async (req, res) => {
   // Needs validation on req body here. First add Event zod schema
 
-  const addUserId = () =>
-    pipe(
-      req,
-      getUserId,
-      E.getOrElse(() => "")
-    )
-
   const task = pipe(
     req,
     checkUser,
     E.map((req) => ({
-      userId: addUserId(),
+      userId: addUserId(req),
       ...req.body,
     })),
     TE.fromEither,

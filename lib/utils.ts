@@ -97,6 +97,13 @@ export const checkUser = (req: NextApiRequest): E.Either<string, NextApiRequest>
 export const getUserId = (req: NextApiRequest): E.Either<string, string> =>
   req.user?._id ? E.right(req.user._id) : E.left("User id not found")
 
+export const addUserId = (req: NextApiRequest) =>
+  pipe(
+    req,
+    getUserId,
+    E.getOrElse(() => "")
+  )
+
 /**
  *
  * @param data any data object to parse

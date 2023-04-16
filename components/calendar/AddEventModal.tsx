@@ -84,13 +84,6 @@ const AddEventModal = ({
     }))
   }
 
-  const handleSelectChange = (event: SelectChangeEvent) => {
-    setExternEventFormData((prevState) => ({
-      ...prevState,
-      [event.target.name]: event.target.value,
-    }))
-  }
-
   const handleSelectCourseChange = (event: SelectChangeEvent) => {
     setExternEventFormData((prevState) => ({
       ...prevState,
