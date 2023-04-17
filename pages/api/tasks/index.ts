@@ -11,8 +11,11 @@ import {
   handleAPIError,
   handleAPIResponse,
   validateArrayData,
+  validateArrayData2,
   validateData,
+  validateData2,
   validateReqBody,
+  validateReqBody2,
 } from "../../../lib/utils"
 import { TaskFormInputSchema, TaskFormInputType, TaskModelSchema, TaskModelType } from "../../../schema/TaskSchema"
 import * as E from "fp-ts/Either"
@@ -30,7 +33,7 @@ handler.get(...auths, async (req, res) => {
     E.chain(getUserId),
     TE.fromEither,
     TE.chain(getTasksForUser),
-    TE.chain((resData) => TE.fromEither(validateArrayData<TaskModelType>(resData, TaskModelSchema)))
+    TE.chain(validateArrayData2<TaskModelType>(TaskModelSchema))
   )
 
   const either = await task()
@@ -48,7 +51,7 @@ handler.patch(...auths, async (req, res) => {
   const task = pipe(
     req,
     checkUser,
-    E.chain((req) => validateReqBody<Partial<TaskFormInputType>>(req, TaskModelSchema.partial())),
+    E.chain(validateReqBody2<Partial<TaskFormInputType>>(TaskModelSchema.partial())),
     TE.fromEither,
     TE.chain(updateTaskById)
   )
@@ -57,7 +60,7 @@ handler.patch(...auths, async (req, res) => {
 
   pipe(
     either,
-    E.chain((data) => validateData<TaskModelType>(data, TaskModelSchema)),
+    E.chain(validateData2<TaskModelType>(TaskModelSchema)),
     E.fold(
       (error) => handleAPIError(res, error),
       (data) => handleAPIResponse(res, data, "Task updated successfully")
@@ -67,8 +70,8 @@ handler.patch(...auths, async (req, res) => {
 
 handler.post(...auths, async (req, res) => {
   const addNonInputData =
-    (data: TaskFormInputType) =>
-    (userId: string): Omit<TaskModelType, "_id"> => ({
+    (userId: string) =>
+    (data: TaskFormInputType): Omit<TaskModelType, "_id"> => ({
       ...data,
       createdAt: new Date(),
       userId,
@@ -77,8 +80,8 @@ handler.post(...auths, async (req, res) => {
   const task = pipe(
     req,
     checkUser,
-    E.chain((r) => validateReqBody<TaskFormInputType>(r, TaskFormInputSchema)),
-    E.map((course) => addNonInputData(course)(addUserId(req))),
+    E.chain(validateReqBody2<TaskFormInputType>(TaskFormInputSchema)),
+    E.map(addNonInputData(addUserId(req))),
     TE.fromEither,
     TE.chain(addTaskToDb)
   )

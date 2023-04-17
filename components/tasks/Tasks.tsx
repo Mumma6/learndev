@@ -119,6 +119,46 @@ const Tasks = () => {
     )()
   }
 
+  const toggleTask = async (_id: string, completed: boolean) => {
+    pipe(
+      fetcherTE<TaskModelType, Partial<TaskModelType>>("/api/tasks", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        data: {
+          _id,
+          completed,
+        },
+      }),
+      TE.fold(
+        (error) => {
+          toast.error(error)
+          return TE.left(error)
+        },
+        (response) => {
+          mutate("/api/tasks")
+          return TE.right(response)
+        }
+      )
+    )()
+  }
+
+  const deleteTask = async (id: string) => {
+    pipe(
+      fetcherTE(`/api/tasks?id=${id}`, { method: "DELETE" }),
+      TE.fold(
+        (error) => {
+          toast.error(error)
+          return TE.left(error)
+        },
+        (response) => {
+          mutate("/api/tasks")
+          toast.success(response?.message)
+          return TE.right(response)
+        }
+      )
+    )()
+  }
+
   const handleClickOpen = () => {
     setOpen(true)
   }
@@ -168,7 +208,7 @@ const Tasks = () => {
               />
               <Divider />
               <CardContent>
-                <TaskDataGrid tasks={data?.payload || []} />
+                <TaskDataGrid tasks={data?.payload || []} deleteTask={deleteTask} toggleTask={toggleTask} />
               </CardContent>
             </Card>
           </Box>

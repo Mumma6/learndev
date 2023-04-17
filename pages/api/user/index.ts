@@ -43,7 +43,6 @@ handler.patch(async (req, res) => {
 
     const parsedBody = UserModelSchema.partial().safeParse(req.body)
 
-    console.log(parsedBody)
 
     if (!parsedBody.success) {
       return handleAPIError(res, { message: "Validation error. User input" })

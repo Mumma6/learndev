@@ -10,8 +10,11 @@ import {
   handleAPIError,
   handleAPIResponse,
   validateArrayData,
+  validateArrayData2,
   validateData,
+  validateData2,
   validateReqBody,
+  validateReqBody2,
 } from "../../../lib/utils"
 
 import { CourseModelformInputSchema, CourseModelSchema, CourseModelSchemaType } from "../../../schema/CourseSchema"
@@ -33,8 +36,8 @@ const handler = nextConnect<NextApiRequest, NextApiResponse<Response<CourseModel
 
 handler.post(...auths, async (req, res) => {
   const addNonInputData =
-    (data: CourseModelformInputType) =>
-    (userId: string): Omit<CourseModelSchemaType, "_id"> => ({
+    (userId: string) =>
+    (data: CourseModelformInputType): Omit<CourseModelSchemaType, "_id"> => ({
       ...data,
       tags: createTags(data),
       createdAt: new Date(),
@@ -46,8 +49,8 @@ handler.post(...auths, async (req, res) => {
   const task = pipe(
     req,
     checkUser,
-    E.chain((r) => validateReqBody<CourseModelformInputType>(r, CourseModelformInputSchema)),
-    E.map((course) => addNonInputData(course)(addUserId(req))),
+    E.chain(validateReqBody2<CourseModelformInputType>(CourseModelformInputSchema)),
+    E.map(addNonInputData(addUserId(req))),
     TE.fromEither,
     TE.chain(addCourseToDb)
   )
@@ -70,7 +73,7 @@ handler.get(...auths, async (req, res) => {
     E.chain(getUserId),
     TE.fromEither,
     TE.chain(getCoursesForUser),
-    TE.chain((courses) => TE.fromEither(validateArrayData<CourseModelSchemaType>(courses, CourseModelSchema)))
+    TE.chain(validateArrayData2<CourseModelSchemaType>(CourseModelSchema))
   )
 
   const either = await task()
@@ -90,7 +93,7 @@ handler.patch(...auths, async (req, res) => {
   const task = pipe(
     req,
     checkUser,
-    E.chain((req) => validateReqBody<Partial<CourseModelSchemaType>>(req, CourseModelSchema.partial())),
+    E.chain(validateReqBody2<Partial<CourseModelSchemaType>>(CourseModelSchema.partial())),
     TE.fromEither,
     TE.chain(updateCourseById)
   )
@@ -99,7 +102,7 @@ handler.patch(...auths, async (req, res) => {
 
   pipe(
     either,
-    E.chain((data) => validateData<CourseModelSchemaType>(data, CourseModelSchema)),
+    E.chain(validateData2<CourseModelSchemaType>(CourseModelSchema)),
     E.fold(
       (error) => handleAPIError(res, error),
       (data) => handleAPIResponse(res, data, "Course updated successfully")

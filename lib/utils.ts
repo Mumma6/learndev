@@ -104,6 +104,8 @@ export const addUserId = (req: NextApiRequest) =>
     E.getOrElse(() => "")
   )
 
+// todo- Make all validate functions partial.
+
 /**
  *
  * @param data any data object to parse
@@ -115,6 +117,13 @@ export const validateArrayData = <T>(data: unknown[], schema: z.ZodSchema): E.Ei
   const parsedData = z.array(schema).safeParse(data)
   return parsedData.success ? E.right(parsedData.data) : E.left("Error while parsing data")
 }
+
+export const validateArrayData2 =
+  <T>(schema: z.ZodSchema) =>
+  (data: unknown[]): TE.TaskEither<string, T[]> => {
+    const parsedData = z.array(schema).safeParse(data)
+    return parsedData.success ? TE.right(parsedData.data) : TE.left("Error while parsing data")
+  }
 
 /**
  *
@@ -128,6 +137,19 @@ export const validateReqBody = <T>(req: NextApiRequest, schema: z.ZodSchema): E.
   return parsedBody.success ? E.right(parsedBody.data) : E.left("Error while parsing req data")
 }
 
+// We use currying so we dont need to pass the parameter in the pipe steps
+/* 
+E.chain((req) => validateReqBody<Partial<CourseModelSchemaType>>(req, CourseModelSchema.partial())),
+
+E.chain(validateReqBody2<TaskFormInputType>(TaskFormInputSchema)),
+*/
+export const validateReqBody2 =
+  <T>(schema: z.ZodSchema) =>
+  (req: NextApiRequest): E.Either<string, T> => {
+    const parsedBody = schema.safeParse(req.body)
+    return parsedBody.success ? E.right(parsedBody.data) : E.left("Error while parsing req data")
+  }
+
 /**
  *
  * @param req The NextApiRequestObject
@@ -139,6 +161,13 @@ export const validateData = <T>(data: unknown, schema: z.ZodSchema): E.Either<st
   const parsedData = schema.safeParse(data)
   return parsedData.success ? E.right(parsedData.data) : E.left("Error while parsing req data")
 }
+
+export const validateData2 =
+  <T>(schema: z.ZodSchema) =>
+  (data: unknown): E.Either<string, T> => {
+    const parsedData = schema.safeParse(data)
+    return parsedData.success ? E.right(parsedData.data) : E.left("Error while parsing req data")
+  }
 
 /**
  *
