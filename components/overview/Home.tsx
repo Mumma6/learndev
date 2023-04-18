@@ -44,6 +44,8 @@ Ska man kunna lägga till grafer till sin publica profile? "Add to public profil
 
 Lägg till default text på grafer som behöver. tex om det inte finns några events eller kurser osv.
 
+Istället för approved quizzes. Visa hur många tasks man har, completed/inprogress
+
 
 */
 
@@ -69,6 +71,7 @@ const Home = ({ user }: IProps) => {
     getOArraySize
   )
 
+  // the goal can consists of tasks, events, quizzes and so on...
   const montlyProgress = 70 // should come from goals. Ex, if the uses should to 10 courses in 7 days. When the user have done 7, show 70%
 
   return (

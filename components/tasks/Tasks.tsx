@@ -110,7 +110,7 @@ const Tasks = () => {
           return TE.left(error)
         },
         (data) => {
-          toast.error(data.message)
+          toast.success(data.message)
           mutate("/api/tasks")
           resetForm()
           return TE.right(data)
@@ -208,7 +208,7 @@ const Tasks = () => {
               />
               <Divider />
               <CardContent>
-                <TaskDataGrid tasks={data?.payload || []} deleteTask={deleteTask} toggleTask={toggleTask} />
+                <TaskDataGrid tasks={data?.payload} deleteTask={deleteTask} toggleTask={toggleTask} />
               </CardContent>
             </Card>
           </Box>

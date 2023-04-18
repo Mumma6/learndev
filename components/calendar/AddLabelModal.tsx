@@ -10,7 +10,6 @@ import * as O from "fp-ts/Option"
 import * as TE from "fp-ts/TaskEither"
 import { UserModelSchemaType, UserSettingsType } from "../../schema/UserSchema"
 import { Box, Button, Divider, IconButton, List, ListItem, ListItemText, TextField } from "@mui/material"
-
 import { HexColorPicker } from "react-colorful"
 import { useCurrentUser } from "../../lib/hooks"
 import { toast } from "react-toastify"

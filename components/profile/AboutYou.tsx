@@ -14,6 +14,12 @@ import * as _ from "lodash"
 
 import { useZodFormValidation } from "zod-react-form"
 
+/*
+
+About and Goals should be next to eachother
+
+*/
+
 const initialFormState = {
   about: "",
   goals: "",

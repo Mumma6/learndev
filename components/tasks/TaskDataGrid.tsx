@@ -2,22 +2,26 @@ import React from "react"
 import Box from "@mui/material/Box"
 import Chip from "@mui/material/Chip"
 import { DataGrid, GridApi, GridColDef, GridEditCellValueParams, GridValueGetterParams } from "@mui/x-data-grid"
-import Button from "@mui/material/Button"
-import CheckIcon from "@mui/icons-material/Check"
-import CloseIcon from "@mui/icons-material/Close"
-import DeleteIcon from "@mui/icons-material/Delete"
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
-import { Stack } from "@mui/material"
-import { FaArrowRight } from "react-icons/fa"
+
+import ClearIcon from "@mui/icons-material/Clear"
+
+import { FaArrowRight, FaTrash, FaCheck } from "react-icons/fa"
+import { IconButton } from "@mui/material"
 import { TaskModelType } from "../../schema/TaskSchema"
+import { pipe } from "fp-ts/lib/function"
+import * as O from "fp-ts/Option"
+import * as A from "fp-ts/Array"
+import { useRouter } from "next/router"
 
 interface IProps {
-  tasks: TaskModelType[]
+  tasks: TaskModelType[] | null | undefined
   deleteTask: (id: string) => void
   toggleTask: (id: string, completed: boolean) => void
 }
 
 const TaskDataGrid = ({ tasks, deleteTask, toggleTask }: IProps) => {
+  const router = useRouter()
+
   const columns: GridColDef[] = [
     {
       field: "title",
@@ -65,74 +69,61 @@ const TaskDataGrid = ({ tasks, deleteTask, toggleTask }: IProps) => {
 
     {
       field: "toggle",
-      headerName: "Toggle complete",
+      headerName: "",
       flex: 1,
       // width: 150,
       sortable: false,
       renderCell: (params) => {
         const currentRow = params.row
 
-        const onClick = (e: any) => {
+        const onClickToggle = (e: any) => {
           toggleTask(currentRow._id, !currentRow.completed)
         }
 
-        return (
-          <Button variant="contained" color={currentRow.completed ? "info" : "success"} size="small" onClick={onClick}>
-            {currentRow.completed ? <CloseIcon /> : <CheckIcon />}
-          </Button>
-        )
-      },
-    },
-    {
-      field: "goto",
-      headerName: "Go to",
-      flex: 1,
-      // width: 150,
-      sortable: false,
-      renderCell: (params) => {
-        const currentRow = params.row
-        const onClick = (e: any) => {
-          return alert(JSON.stringify(currentRow, null, 4))
-        }
-
-        return (
-          <Button size="small" variant="contained" color="primary">
-            <ArrowForwardIcon />
-          </Button>
-        )
-      },
-    },
-    {
-      field: "delete",
-      headerName: "Delete",
-      flex: 1,
-      // width: 150,
-      sortable: false,
-      renderCell: (params) => {
-        const onClick = (e: any) => {
-          const currentRow = params.row
+        const onClickDelete = (e: any) => {
           deleteTask(currentRow._id)
         }
 
+        const onClickGoTo = (e: any) => {
+          router.push(`/${currentRow.activityGroup?.toLocaleLowerCase()}/${currentRow?.activityId}`)
+        }
+
         return (
-          <Button variant="contained" color="error" size="small" onClick={onClick}>
-            <DeleteIcon />
-          </Button>
+          <>
+            <IconButton disabled={!currentRow.activityId} onClick={onClickGoTo} color="primary">
+              <FaArrowRight />
+            </IconButton>
+            <IconButton color={currentRow.completed ? "info" : "success"} size="small" onClick={onClickToggle}>
+              {currentRow.completed ? <ClearIcon /> : <FaCheck />}
+            </IconButton>
+            <IconButton onClick={onClickDelete} color="error" edge="end" aria-label="delete">
+              <FaTrash />
+            </IconButton>
+          </>
         )
       },
     },
   ]
 
-  const mappedTasks = (ts: TaskModelType[]) =>
-    ts.map((task) => ({
-      ...task,
-      id: task._id,
-    }))
+  type TTaskModelType = TaskModelType & { id: string }
+
+  const mapT = (task: TaskModelType): TTaskModelType => ({ ...task, id: task._id })
+
+  // sortera på completed och title
+  const mappedTasks = pipe(
+    tasks,
+    O.fromNullable,
+    O.map(A.map(mapT)),
+    O.map((d) =>
+      d.sort((at, bt) => (at.completed === bt.completed ? at.title.localeCompare(bt.title) : at.completed ? 1 : -1))
+    ),
+    O.getOrElse<Array<TTaskModelType>>(() => [])
+  )
 
   return (
     <Box sx={{ height: 600, width: "100%" }}>
       <DataGrid
-        rows={mappedTasks(tasks)}
+        rows={mappedTasks}
         sx={{
           "& .super-app-theme--true": {
             bgcolor: () => "#9e9e9e",
