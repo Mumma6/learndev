@@ -1,47 +1,41 @@
 import { Avatar, Box, Card, CardContent, Grid, Typography } from "@mui/material"
 import React from "react"
-import { ImBooks } from "react-icons/im"
+import { FaTasks } from "react-icons/fa"
 
 interface IProps {
-  completedAmount: number
-  inProgressAmount: number
-  wishlistAmount: number
+  completed: number
+  inProgress: number
 }
 
-const TotalCourses = ({ completedAmount, inProgressAmount, wishlistAmount }: IProps) => {
+const TotalTasks = ({ completed, inProgress }: IProps) => {
   return (
     <Card sx={{ height: "100%" }}>
       <CardContent>
         <Grid container spacing={3} sx={{ justifyContent: "space-between" }}>
           <Grid item>
             <Typography color="textSecondary" gutterBottom variant="overline">
-              COURSES
+              TASKS
             </Typography>
             <Box mt={1}>
               <Typography sx={{ fontSize: 18 }} color="textPrimary" variant="overline">
-                Completed: {completedAmount}
+                Completed: {completed}
               </Typography>
             </Box>
             <Box>
               <Typography sx={{ fontSize: 18 }} color="textPrimary" variant="overline">
-                In progress: {inProgressAmount}
-              </Typography>
-            </Box>
-            <Box>
-              <Typography sx={{ fontSize: 18 }} color="textPrimary" variant="overline">
-                Wishlist: {wishlistAmount}
+                In progress: {inProgress}
               </Typography>
             </Box>
           </Grid>
           <Grid item>
             <Avatar
               sx={{
-                backgroundColor: "success.main",
+                backgroundColor: "primary.main",
                 height: 56,
                 width: 56,
               }}
             >
-              <ImBooks />
+              <FaTasks />
             </Avatar>
           </Grid>
         </Grid>
@@ -50,4 +44,4 @@ const TotalCourses = ({ completedAmount, inProgressAmount, wishlistAmount }: IPr
   )
 }
 
-export default TotalCourses
+export default TotalTasks

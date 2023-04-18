@@ -5,12 +5,15 @@ import { DataGrid, GridApi, GridColDef, GridEditCellValueParams, GridValueGetter
 
 import ClearIcon from "@mui/icons-material/Clear"
 
-import { FaArrowRight, FaTrash, FaCheck } from "react-icons/fa"
+import { FaArrowRight, FaTrash, FaCheck, FaPlus } from "react-icons/fa"
 import { IconButton } from "@mui/material"
 import { TaskModelType } from "../../schema/TaskSchema"
 import { pipe } from "fp-ts/lib/function"
 import * as O from "fp-ts/Option"
 import * as A from "fp-ts/Array"
+import * as Ord from "fp-ts/Ord"
+import * as string from "fp-ts/string"
+import * as boolean from "fp-ts/boolean"
 import { useRouter } from "next/router"
 
 interface IProps {
@@ -90,11 +93,16 @@ const TaskDataGrid = ({ tasks, deleteTask, toggleTask }: IProps) => {
 
         return (
           <>
-            <IconButton disabled={!currentRow.activityId} onClick={onClickGoTo} color="primary">
+            <IconButton sx={{ marginRight: 2 }} disabled={!currentRow.activityId} onClick={onClickGoTo} color="primary">
               <FaArrowRight />
             </IconButton>
-            <IconButton color={currentRow.completed ? "info" : "success"} size="small" onClick={onClickToggle}>
-              {currentRow.completed ? <ClearIcon /> : <FaCheck />}
+            <IconButton
+              sx={{ marginRight: 2 }}
+              color={currentRow.completed ? "info" : "success"}
+              size="small"
+              onClick={onClickToggle}
+            >
+              {currentRow.completed ? <FaPlus /> : <FaCheck />}
             </IconButton>
             <IconButton onClick={onClickDelete} color="error" edge="end" aria-label="delete">
               <FaTrash />
@@ -109,14 +117,18 @@ const TaskDataGrid = ({ tasks, deleteTask, toggleTask }: IProps) => {
 
   const mapT = (task: TaskModelType): TTaskModelType => ({ ...task, id: task._id })
 
-  // sortera på completed och title
+  const taskOrd = Ord.contramap((x: TTaskModelType) => x.completed)(boolean.Ord)
+  const titleOrd = Ord.contramap((x: TTaskModelType) => x.title)(string.Ord)
+
+  const S = Ord.getSemigroup<TTaskModelType>()
+
+  const taskTitleOrd = S.concat(taskOrd, titleOrd)
+
   const mappedTasks = pipe(
     tasks,
     O.fromNullable,
     O.map(A.map(mapT)),
-    O.map((d) =>
-      d.sort((at, bt) => (at.completed === bt.completed ? at.title.localeCompare(bt.title) : at.completed ? 1 : -1))
-    ),
+    O.map(A.sort(taskTitleOrd)),
     O.getOrElse<Array<TTaskModelType>>(() => [])
   )
 
@@ -126,9 +138,9 @@ const TaskDataGrid = ({ tasks, deleteTask, toggleTask }: IProps) => {
         rows={mappedTasks}
         sx={{
           "& .super-app-theme--true": {
-            bgcolor: () => "#9e9e9e",
+            bgcolor: () => "#c4c4c4",
             "&:hover": {
-              backgroundColor: "#9e9e9e",
+              backgroundColor: "#c4c4c4",
             },
           },
           "& .super-app-theme--false": {

@@ -43,15 +43,21 @@ const items: SidbarNavItems[] = [
     icon: <AiOutlineFundProjectionScreen fontSize="small" />,
     title: "My projects",
   },
-  {
-    href: "/quizzes",
-    icon: <MdQuiz fontSize="small" />,
-    title: "Quizzes",
-  },
+
   {
     href: "/tasks",
     icon: <FaTasks fontSize="small" />,
     title: "Tasks",
+  },
+  {
+    href: "/resources",
+    icon: <BsFillCollectionFill fontSize="small" />,
+    title: "Resources",
+  },
+  {
+    href: "/quizzes",
+    icon: <MdQuiz fontSize="small" />,
+    title: "Quizzes",
   },
   {
     href: "/profile",
@@ -64,11 +70,7 @@ const items: SidbarNavItems[] = [
     icon: <FaBriefcase fontSize="small" />,
     title: "Job listing",
   },
-  {
-    href: "/resources",
-    icon: <BsFillCollectionFill fontSize="small" />,
-    title: "Resources",
-  },
+  
 
   {
     href: "/study-rooms",

@@ -5,7 +5,7 @@ import LearningProgress from "./LearningProgress"
 import CoursesByProvider from "./CoursesByProvider"
 import TotalQuizzes from "./TotalQuizzes"
 import TotalProjects from "./TotalProjects"
-import { useCourses, useProjects, useQuizResults } from "../../lib/hooks"
+import { useCourses, useProjects, useQuizResults, useTasks } from "../../lib/hooks"
 import LatestQuizResults from "./LatestQuizResults"
 import UserSkillProfile from "./UserSkillProfile"
 import { UserModelSchemaType } from "../../schema/UserSchema"
@@ -17,12 +17,15 @@ import * as A from "fp-ts/Array"
 import * as O from "fp-ts/Option"
 import { IQuizResult } from "../../models/QuizResult"
 import { getOArraySize } from "../../helpers/helpers"
+import TotalTasks from "./TotalTasks"
 
 interface IProps {
   user: UserModelSchemaType
 }
 
 /*
+
+Byt till samma ikoner som sidebaren
 
 Create a "tasks module" just like courses and projects.
 
@@ -53,6 +56,7 @@ const Home = ({ user }: IProps) => {
   const { data } = useCourses()
   const { data: projectsData } = useProjects()
   const { data: quizResultsData } = useQuizResults()
+  const { data: tasksData } = useTasks()
 
   // the results are sorted on the backend
   const userQuizResult = pipe(
@@ -139,15 +143,20 @@ const Home = ({ user }: IProps) => {
                 )}
               />
             </Grid>
+
             <Grid item xl={3} lg={3} sm={6} xs={12}>
-              <LearningProgress number={montlyProgress} />
+              <TotalTasks
+                completed={pipe(O.fromNullable(tasksData?.payload), O.map(A.filter((d) => d.completed)), getOArraySize)}
+                inProgress={pipe(O.fromNullable(tasksData?.payload), O.map(A.filter((d) => !d.completed)), getOArraySize)}
+              />
             </Grid>
             <Grid item xl={3} lg={3} sm={6} xs={12}>
-              <TotalQuizzes amount={numberOfApprovedQuizzes} />
+              <LearningProgress number={montlyProgress} />
             </Grid>
             <Grid item lg={6} md={6} xl={3} xs={12}>
               <CoursesByProvider courses={data?.payload} />
             </Grid>
+
             <Grid item lg={6} md={6} xl={3} xs={12}>
               <LatestQuizResults quizResults={userQuizResult} />
             </Grid>
