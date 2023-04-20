@@ -14,6 +14,9 @@ import { useCourses, useProjects } from "../../lib/hooks"
 import { CourseModelSchemaType } from "../../schema/CourseSchema"
 import { ProjectModelType } from "../../schema/ProjectSchema"
 import { Autocomplete, Box, Typography, Checkbox, FormControl, InputLabel, MenuItem, Select, Divider } from "@mui/material"
+import * as A from "fp-ts/Array"
+import * as O from "fp-ts/Option"
+import { pipe } from "fp-ts/function"
 
 interface IProps {
   open: boolean
@@ -54,6 +57,35 @@ const AddTaskModal = ({ open, handleClose, onAddTask, zodForm, setActivityFormSt
 
   const { data: courseData } = useCourses()
   const { data: projectData } = useProjects()
+
+  /*
+  useEffect(() => {
+    const courses = pipe(
+      courseData?.payload,
+      O.fromNullable,
+      O.map(
+        A.map((d) => ({
+          id: d._id,
+          name: d.content.title,
+          group: "Projects",
+        }))
+      ),
+      O.fold(
+        () => [],
+        (d) => d
+      )
+    )
+
+    const projects = pipe(
+      projectData?.payload,
+      O.fromNullable,
+      O.map((data) => getProjects(data.payload)),
+      O.getOrElse(() => [])
+    )
+
+    setActivites([...courses, ...projects])
+  }, [coursesOption, projectsOption])
+  */
 
   useEffect(() => {
     if (courseData?.payload && projectData?.payload) {

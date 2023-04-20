@@ -41,6 +41,8 @@ import { useTasks } from "../../lib/hooks"
 
 Do tha same for projects
 
+en grid med 3 kort plus en header med Add och Back
+
 */
 
 interface IProps {
@@ -189,6 +191,7 @@ const Course = ({ course }: IProps) => {
                       <TableRow>
                         <TableCell>Name</TableCell>
                         <TableCell>Status</TableCell>
+                        <TableCell>Prio</TableCell>
                         <TableCell>Mark as done</TableCell>
                       </TableRow>
                     </TableHead>
@@ -202,6 +205,12 @@ const Course = ({ course }: IProps) => {
                             <Chip
                               label={task.completed ? "Completed" : "In progess"}
                               color={task.completed ? "success" : "info"}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Chip
+                              label={task.prio}
+                              color={task.prio === "Low" ? "default" : task.prio === "High" ? "error" : "info"}
                             />
                           </TableCell>
                           <TableCell>

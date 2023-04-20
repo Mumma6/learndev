@@ -1,11 +1,8 @@
 import React, { useState } from "react"
-import { Box, Container, Grid, Pagination, Card, CardContent, Typography, Divider, CardHeader } from "@mui/material"
-import TasksToolbar from "./TasksToolbar"
+import { Box, Container, Card, CardContent, Divider, CardHeader } from "@mui/material"
 import CardHeaderTitle from "../shared/CardHeaderTitle"
 import TaskDataGrid from "./TaskDataGrid"
-import FormGroup from "@mui/material/FormGroup"
-import FormControlLabel from "@mui/material/FormControlLabel"
-import Switch from "@mui/material/Switch"
+
 import Button from "@mui/material/Button"
 import AddTaskModal from "./AddTaskModal"
 import { PrioEnum, TaskFormInputSchema, TaskFormInputType, TaskModelType, TaskPrioEnumType } from "../../schema/TaskSchema"
@@ -13,8 +10,6 @@ import { useZodFormValidation } from "zod-react-form"
 import { useTasks } from "../../lib/hooks"
 import { useSWRConfig } from "swr"
 import { pipe } from "fp-ts/function"
-import * as A from "fp-ts/Array"
-import * as O from "fp-ts/Option"
 import * as TE from "fp-ts/TaskEither"
 import { fetcherTE } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
@@ -82,7 +77,7 @@ const Tasks = () => {
   const { data } = useTasks()
 
   // pass these to the datagrid
-  console.log(data)
+
   const { mutate } = useSWRConfig()
 
   const zodForm = useZodFormValidation<InitialZodFormState>(TaskFormInputSchema, initialTaskFormstate)
@@ -165,8 +160,8 @@ const Tasks = () => {
 
   const handleClose = () => {
     zodForm.setValues(initialTaskFormstate)
+    zodForm.reset()
     setActivityFormState(initialActivityTaskFormstate)
-
     setOpen(false)
   }
 

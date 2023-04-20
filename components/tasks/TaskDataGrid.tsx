@@ -1,11 +1,16 @@
-import React from "react"
+import React, { useState } from "react"
 import Box from "@mui/material/Box"
 import Chip from "@mui/material/Chip"
 import { DataGrid, GridApi, GridColDef, GridEditCellValueParams, GridValueGetterParams } from "@mui/x-data-grid"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogContentText from "@mui/material/DialogContentText"
+import DialogTitle from "@mui/material/DialogTitle"
 
 import ClearIcon from "@mui/icons-material/Clear"
 
-import { FaArrowRight, FaTrash, FaCheck, FaPlus } from "react-icons/fa"
+import { FaArrowRight, FaTrash, FaCheck, FaPlus, FaInfoCircle } from "react-icons/fa"
 import { IconButton } from "@mui/material"
 import { TaskModelType } from "../../schema/TaskSchema"
 import { pipe } from "fp-ts/lib/function"
@@ -15,6 +20,7 @@ import * as Ord from "fp-ts/Ord"
 import * as string from "fp-ts/string"
 import * as boolean from "fp-ts/boolean"
 import { useRouter } from "next/router"
+import { TaskInfoModal } from "./TaskInfoModal"
 
 interface IProps {
   tasks: TaskModelType[] | null | undefined
@@ -23,25 +29,32 @@ interface IProps {
 }
 
 const TaskDataGrid = ({ tasks, deleteTask, toggleTask }: IProps) => {
+  const [showModal, setShowModal] = useState(false)
+  const [infoTask, setInfoTask] = useState<TaskModelType | undefined>(undefined)
   const router = useRouter()
+
+  const onCloseInfoModal = () => {
+    setShowModal(false)
+    setInfoTask(undefined)
+  }
 
   const columns: GridColDef[] = [
     {
       field: "title",
       headerName: "Title",
-      flex: 1,
+      flex: 0.7,
       // width: 150,
     },
     {
       field: "activityGroup",
       headerName: "Activity group",
-      flex: 1,
+      flex: 0.7,
       // width: 150,
     },
     {
       field: "activityName",
       headerName: "Activity",
-      flex: 1,
+      flex: 0.5,
       // width: 150,
     },
     {
@@ -54,7 +67,7 @@ const TaskDataGrid = ({ tasks, deleteTask, toggleTask }: IProps) => {
     {
       field: "prio",
       headerName: "Prio",
-      flex: 1,
+      flex: 0.5,
       // width: 110,
       renderCell: (params) => {
         const currentRow = params.row
@@ -87,12 +100,20 @@ const TaskDataGrid = ({ tasks, deleteTask, toggleTask }: IProps) => {
           deleteTask(currentRow._id)
         }
 
+        const onClickInfo = (e: any) => {
+          setShowModal(true)
+          setInfoTask(tasks?.find((task) => task._id === currentRow._id))
+        }
+
         const onClickGoTo = (e: any) => {
           router.push(`/${currentRow.activityGroup?.toLocaleLowerCase()}/${currentRow?.activityId}`)
         }
 
         return (
           <>
+            <IconButton sx={{ marginRight: 2 }} onClick={onClickInfo} color="info">
+              <FaInfoCircle />
+            </IconButton>
             <IconButton sx={{ marginRight: 2 }} disabled={!currentRow.activityId} onClick={onClickGoTo} color="primary">
               <FaArrowRight />
             </IconButton>
@@ -134,6 +155,7 @@ const TaskDataGrid = ({ tasks, deleteTask, toggleTask }: IProps) => {
 
   return (
     <Box sx={{ height: 600, width: "100%" }}>
+      <TaskInfoModal open={showModal} task={infoTask} handleClose={onCloseInfoModal} />
       <DataGrid
         rows={mappedTasks}
         sx={{

@@ -10,8 +10,10 @@ I tasks så länkar man en task till en aktivitet
 I resurserna ska man bara skapa upp dom. Sen i kurser eller projekt
 så kan man länka till en specifik resurs
 
+1 - 1 förhållande eller 1-0
 task -> activity
 
+flera - 1  eller 0 - 1
 activities => resurs
 
 title
