@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import nextConnect from "next-connect"
-import { z } from "zod"
+
 import auths from "../../../lib/middlewares/auth"
-import { addTaskToDb, deleteTaskById, getTasksForUser, updateTaskById } from "../../../lib/queries/tasks"
+
 import {
   addUserId,
   checkUser,
@@ -23,6 +23,12 @@ import { pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
 
 import { Response } from "../../../types/response"
+import {
+  addToDbCollection,
+  deleteFromCollectionById,
+  getFromCollectionForUser,
+  updateFromCollectionById,
+} from "../../../lib/queries"
 
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<TaskModelType[] | null>>>()
 
@@ -32,7 +38,7 @@ handler.get(...auths, async (req, res) => {
     checkUser,
     E.chain(getUserId),
     TE.fromEither,
-    TE.chain(getTasksForUser),
+    TE.chain(getFromCollectionForUser("tasks")),
     TE.chain(validateArrayData2<TaskModelType>(TaskModelSchema))
   )
 
@@ -53,7 +59,7 @@ handler.patch(...auths, async (req, res) => {
     checkUser,
     E.chain(validateReqBody2<Partial<TaskFormInputType>>(TaskModelSchema.partial())),
     TE.fromEither,
-    TE.chain(updateTaskById)
+    TE.chain(updateFromCollectionById("tasks"))
   )
 
   const either = await task()
@@ -83,7 +89,7 @@ handler.post(...auths, async (req, res) => {
     E.chain(validateReqBody2<TaskFormInputType>(TaskFormInputSchema)),
     E.map(addNonInputData(addUserId(req))),
     TE.fromEither,
-    TE.chain(addTaskToDb)
+    TE.chain(addToDbCollection("tasks"))
   )
 
   const either = await task()
@@ -91,12 +97,12 @@ handler.post(...auths, async (req, res) => {
   pipe(
     either,
     E.fold(
-      (error) => handleAPIError(res, error),
+      (error) => handleAPIError(res, { message: error }),
       () => handleAPIResponse(res, null, "Task added")
     )
   )
 })
 
-handler.delete(...auths, createDeleteHandler(deleteTaskById))
+handler.delete(...auths, createDeleteHandler(deleteFromCollectionById("tasks")))
 
 export default handler

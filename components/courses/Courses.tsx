@@ -42,6 +42,7 @@ export const initialCourseFormState: CourseModelContentInputSchemaType = {
 const Courses = () => {
   const [open, setOpen] = useState(false)
   const [topicData, setTopicData] = useState<SkillSchemaType[]>([])
+  const [resources, setResources] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [dataToShow, setDataToShow] = useState<CourseModelSchemaType[]>([])
   const [statusValue, setStatusValue] = useState<StatusEnumType>("In progress") // show correct courses based on this state
@@ -58,13 +59,21 @@ const Courses = () => {
   const { data } = useCourses()
   const { mutate } = useSWRConfig()
 
-  const getNumberOfStatuses = (status: StatusEnumType) =>
-    pipe(O.fromNullable(data?.payload), O.map(A.filter((d) => d.content.status === status)), getOArraySize)
+  const getCorrectStatus = (status: StatusEnumType) =>
+    pipe(data?.payload, O.fromNullable, O.map(A.filter((d) => d.content.status === status)))
+
+  const getNumberOfStatuses = (status: StatusEnumType) => pipe(getCorrectStatus(status), getOArraySize)
+
+  const getData = pipe(
+    getCorrectStatus(statusValue),
+    O.fold(
+      () => [],
+      (data) => data
+    )
+  )
 
   useEffect(() => {
-    if (data?.payload) {
-      return setDataToShow(data?.payload?.filter((c) => c.content.status === statusValue))
-    }
+    setDataToShow(getData)
   }, [statusValue, data])
 
   const deleteCourse = async (id: string) => {
@@ -93,12 +102,13 @@ const Courses = () => {
   const onAddCourse = async () => {
     setIsLoading(true)
     pipe(
-      fetcherTE<CourseModelSchemaType, CourseModelformInputType>("/api/courses", {
+      fetcherTE<CourseModelSchemaType, Partial<CourseModelSchemaType>>("/api/courses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: {
           content: zodForm.values,
           topics: topicData,
+          resources,
         },
       }),
       TE.fold(

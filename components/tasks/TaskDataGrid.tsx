@@ -2,13 +2,7 @@ import React, { useState } from "react"
 import Box from "@mui/material/Box"
 import Chip from "@mui/material/Chip"
 import { DataGrid, GridApi, GridColDef, GridEditCellValueParams, GridValueGetterParams } from "@mui/x-data-grid"
-import Dialog from "@mui/material/Dialog"
-import DialogActions from "@mui/material/DialogActions"
-import DialogContent from "@mui/material/DialogContent"
-import DialogContentText from "@mui/material/DialogContentText"
-import DialogTitle from "@mui/material/DialogTitle"
-
-import ClearIcon from "@mui/icons-material/Clear"
+import format from "date-fns/format"
 
 import { FaArrowRight, FaTrash, FaCheck, FaPlus, FaInfoCircle } from "react-icons/fa"
 import { IconButton } from "@mui/material"
@@ -60,7 +54,14 @@ const TaskDataGrid = ({ tasks, deleteTask, toggleTask }: IProps) => {
     {
       field: "createdAt",
       headerName: "Created at",
-      flex: 1,
+      flex: 0.7,
+      renderCell: (params) => {
+        const currentRow = params.row
+
+        return <p>{format(new Date(currentRow.createdAt), "yyyy-MM-dd hh:mm")}</p>
+      },
+      sortComparator: (v1, v2) => v1.localeCompare(v2),
+      valueGetter: (params) => params.row.createdAt,
       // width: 110,
       // editable: true,
     },

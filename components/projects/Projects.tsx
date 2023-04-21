@@ -64,10 +64,21 @@ export const Projects = () => {
     setOpen(false)
   }
 
+  const getCorrectStatus = (status: ProjectStatusEnumType) =>
+    pipe(data?.payload, O.fromNullable, O.map(A.filter((d) => d.status === status)))
+
+  const getNumberOfStatuses = (status: ProjectStatusEnumType) => pipe(getCorrectStatus(status), getOArraySize)
+
+  const getData = pipe(
+    getCorrectStatus(statusValue),
+    O.fold(
+      () => [],
+      (data) => data
+    )
+  )
+
   useEffect(() => {
-    if (data?.payload) {
-      return setDataToShow(data?.payload?.filter((c) => c.status === statusValue))
-    }
+    setDataToShow(getData)
   }, [statusValue, data])
 
   const resetForm = () => {
@@ -76,9 +87,6 @@ export const Projects = () => {
     setTopicData([])
     handleClose()
   }
-
-  const getNumberOfStatuses = (status: ProjectStatusEnumType) =>
-    pipe(O.fromNullable(data?.payload), O.map(A.filter((d) => d.status === status)), getOArraySize)
 
   const onAddProject = async () => {
     setIsLoading(true)

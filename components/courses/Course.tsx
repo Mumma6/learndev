@@ -107,10 +107,6 @@ const Course = ({ course }: IProps) => {
     )()
   }
 
-  const onClickToggle = (completed: boolean, id: string) => {
-    toggleTask(id, !completed)
-  }
-
   const handleClose = () => {
     setOpen(false)
   }
@@ -184,7 +180,10 @@ const Course = ({ course }: IProps) => {
           <Grid container spacing={2}>
             <Grid item sm={6}>
               <Card>
-                <CardHeader title="Tasks" />
+                <CardHeader
+                  title="Tasks"
+                  subheader={dataToShow.length ? "All tasks connected to this course" : "No tasks"}
+                />
                 <TableContainer component={Paper}>
                   <Table aria-label="simple table">
                     <TableHead>
@@ -197,7 +196,12 @@ const Course = ({ course }: IProps) => {
                     </TableHead>
                     <TableBody>
                       {dataToShow.map((task) => (
-                        <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                        <TableRow
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                            backgroundColor: task.completed ? "#c4c4c4" : null,
+                          }}
+                        >
                           <TableCell component="th" scope="row">
                             <Typography>{task.title}</Typography>
                           </TableCell>
@@ -215,7 +219,7 @@ const Course = ({ course }: IProps) => {
                           </TableCell>
                           <TableCell>
                             <IconButton
-                              onClick={() => onClickToggle(task.completed, task._id)}
+                              onClick={() => toggleTask(task._id, task.completed)}
                               color={task.completed ? "info" : "success"}
                               size="small"
                             >

@@ -1,5 +1,6 @@
 import React from "react"
 import { Box, Container, Grid, Pagination, Card, CardContent, Typography, Divider, CardHeader } from "@mui/material"
+import ResourcesDataGrid from "./ResourcesDataGrid"
 
 const Resources = () => {
   return (
@@ -16,7 +17,7 @@ const Resources = () => {
               <CardHeader subheader="Resources for your courses and projects." title="Resources" />
               <Divider />
               <CardContent>
-                <h1>Coming soon</h1>
+                <ResourcesDataGrid />
               </CardContent>
             </Card>
           </Box>

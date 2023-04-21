@@ -27,7 +27,6 @@ interface IProps {
 
 Byt till samma ikoner som sidebaren
 
-Create a "tasks module" just like courses and projects.
 
 Use Notifications. Like when you complete or miss a goal
 
@@ -35,11 +34,6 @@ Use Notifications. Like when you complete or miss a goal
 Create goals. Custom timeframe
 Goals should be on the user object.
 
-Number of tasks to complete
-Courses to complete
-Projects to complete
-
-Quizzes to complete
 
 
 Ska man kunna lägga till grafer till sin publica profile? "Add to public profile" knapp på varje graf?
@@ -47,8 +41,8 @@ Ska man kunna lägga till grafer till sin publica profile? "Add to public profil
 
 Lägg till default text på grafer som behöver. tex om det inte finns några events eller kurser osv.
 
-Istället för approved quizzes. Visa hur många tasks man har, completed/inprogress
 
+Lägg till en line chart brevid tech coveracge som visar hur många timmar man lagt på events för per vecka.
 
 */
 

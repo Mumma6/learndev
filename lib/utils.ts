@@ -11,6 +11,17 @@ import * as TE from "fp-ts/TaskEither"
 
 /*
  ***** Only used on the server side.
+
+
+
+ https://www.youtube.com/watch?v=mw97Dum7TnM&ab_channel=RyanDavisDev
+
+
+ Use smart constructs instead of E.right | E.left
+
+ // todo- Make all validate functions partial.
+
+ 
  */
 
 export const handleAPIResponse = <T>(
@@ -104,8 +115,6 @@ export const addUserId = (req: NextApiRequest) =>
     E.getOrElse(() => "")
   )
 
-// todo- Make all validate functions partial.
-
 /**
  *
  * @param data any data object to parse
@@ -177,6 +186,7 @@ export const validateData2 =
 export const validateQueryParam = (req: NextApiRequest): E.Either<string, string> =>
   !Array.isArray(req.query.id) && req.query.id !== undefined ? E.right(req.query.id) : E.left("No ID provided")
 
+// Should be able to create a getHandler aswell?
 export const createDeleteHandler =
   (deleteFunction: (id: string) => TE.TaskEither<string, DeleteResult>) =>
   async (req: NextApiRequest, res: NextApiResponse) => {

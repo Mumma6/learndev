@@ -13,42 +13,11 @@ import { pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
 import { fetcherTE } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
+import InfoTooltip from "../shared/Tooltip"
 
 /*
-Tasks should show up when going to /course | project/id
 
-When clicking on the they should show up below. 
-
-Make cards smaller then projects. 5 on each row.
-two buttons, delete and toggle done
-Also show prio.
-
-completed are greyish and can only be deleted. they are also sorted last.
-
-----------------------------TODO--------------
-
-Should use mui data tabel.
-
-We want to be able to sort on and display
-- name
-- activity group (project, kurs, quizz, inget)
-- completed/not completed
-- created at
-- prio
-
-show description and buttons when clicking?
-
-
-There should be buttons to go to the activity if any
-Button to set completed
-button to delete
-
-
-display the same or a normal tabel list under projects and courses.
-
-
-
-modal to add.
+Add a infoToolTip
 
 */
 
@@ -184,7 +153,7 @@ const Tasks = () => {
           <Box sx={{ mt: 1, mb: 1 }}>
             <Card>
               <CardHeader
-                subheader="Create and manage tasks and todos."
+                subheader="Create and manage tasks."
                 title={
                   <div
                     style={{
