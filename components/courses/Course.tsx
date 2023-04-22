@@ -36,6 +36,7 @@ import { fetcherTE } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
 import { TaskModelType } from "../../schema/TaskSchema"
 import { useTasks } from "../../lib/hooks"
+import SimpleTaskList from "../tasks/SimpleTaskList"
 
 /*
 
@@ -85,6 +86,7 @@ const Course = ({ course }: IProps) => {
   )
 
   const toggleTask = async (_id: string, completed: boolean) => {
+    console.log("toggle")
     pipe(
       fetcherTE<TaskModelType, Partial<TaskModelType>>("/api/tasks", {
         method: "PATCH",
@@ -101,6 +103,7 @@ const Course = ({ course }: IProps) => {
         },
         (response) => {
           mutate("/api/tasks")
+          console.log("succ")
           return TE.right(response)
         }
       )
@@ -184,53 +187,7 @@ const Course = ({ course }: IProps) => {
                   title="Tasks"
                   subheader={dataToShow.length ? "All tasks connected to this course" : "No tasks"}
                 />
-                <TableContainer component={Paper}>
-                  <Table aria-label="simple table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Name</TableCell>
-                        <TableCell>Status</TableCell>
-                        <TableCell>Prio</TableCell>
-                        <TableCell>Mark as done</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {dataToShow.map((task) => (
-                        <TableRow
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                            backgroundColor: task.completed ? "#c4c4c4" : null,
-                          }}
-                        >
-                          <TableCell component="th" scope="row">
-                            <Typography>{task.title}</Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Chip
-                              label={task.completed ? "Completed" : "In progess"}
-                              color={task.completed ? "success" : "info"}
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Chip
-                              label={task.prio}
-                              color={task.prio === "Low" ? "default" : task.prio === "High" ? "error" : "info"}
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <IconButton
-                              onClick={() => toggleTask(task._id, task.completed)}
-                              color={task.completed ? "info" : "success"}
-                              size="small"
-                            >
-                              {task.completed ? <ClearIcon /> : <FaCheck />}
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+                <SimpleTaskList dataToShow={dataToShow} toggleTask={toggleTask} />
               </Card>
             </Grid>
             <Grid item sm={6}>

@@ -12,6 +12,7 @@ export const ResourceTypeEnum = z.enum([
   "Forum",
   "Cheat sheet",
   "Video clip",
+  "Website",
   "Other",
 ])
 

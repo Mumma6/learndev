@@ -16,6 +16,7 @@ const typeColors = [
   "#795548",
   "#8bc34a",
   "#00bcd4",
+  "#e53935",
 ]
 
 export const tap = (val: any) => {
@@ -51,8 +52,10 @@ export const getResourceTypeColor = (type: ResourceEnum): string => {
       return typeColors[8]
     case "Video clip":
       return typeColors[9]
-    case "Other":
+    case "Website":
       return typeColors[10]
+    case "Other":
+      return typeColors[11]
     default:
       return "#000000" // default color for unknown types
   }

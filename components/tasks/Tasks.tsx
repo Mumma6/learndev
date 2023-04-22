@@ -45,8 +45,6 @@ const Tasks = () => {
 
   const { data } = useTasks()
 
-  // pass these to the datagrid
-
   const { mutate } = useSWRConfig()
 
   const zodForm = useZodFormValidation<InitialZodFormState>(TaskFormInputSchema, initialTaskFormstate)
