@@ -16,6 +16,7 @@ export const CourseModelContentInputSchema = z.object({
   duration: z.number(),
   url: z.union([z.literal(""), z.string().trim().url()]).default(""),
   certificateUrl: z.union([z.literal(""), z.string().trim().url()]).default(""),
+  resources: z.array(z.string()).default([]),
   status: StatusEnum,
   institution: InstitutionEnum,
 })
@@ -35,8 +36,6 @@ export const CourseModelSchema = CourseModelformInputSchema.extend({
   _id: z.union([z.string(), z.instanceof(ObjectId).transform((id) => id.toString())]),
   tags: z.string(),
   createdAt: z.date(),
-  tasks: z.array(z.string()).default([]),
-  resources: z.array(z.string()).default([]),
 })
 
 export type CourseModelSchemaType = z.infer<typeof CourseModelSchema>

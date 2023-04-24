@@ -17,9 +17,17 @@ import {
 } from "@mui/material"
 import { getResourceTypeColor } from "../../helpers/helpers"
 import { useRouter } from "next/router"
-import Link from "next/link"
+
+import * as TE from "fp-ts/TaskEither"
+import { toast } from "react-toastify"
+import { fetcherTE } from "../../lib/axiosFetcher"
+import { useSWRConfig } from "swr"
+
+import { pipe } from "fp-ts/lib/function"
+import * as O from "fp-ts/Option"
+import * as A from "fp-ts/Array"
 import { FaPen, FaTrash } from "react-icons/fa"
-import { ResourceModelInputSchemaType } from "../../schema/ResourceSchema"
+import { ResourceModelInputSchemaType, ResourceModelSchemaType } from "../../schema/ResourceSchema"
 
 /*
 
@@ -98,8 +106,39 @@ const rows = [
   },
 ]
 
-const ResourcesDataGrid = () => {
+interface IProps {
+  resources: ResourceModelSchemaType[] | null | undefined
+}
+
+const ResourcesDataGrid = ({ resources }: IProps) => {
   const router = useRouter()
+  const { mutate } = useSWRConfig()
+  type TResourceModelSchemaType = ResourceModelSchemaType & { id: string }
+  const addId = (resource: ResourceModelSchemaType): TResourceModelSchemaType => ({ ...resource, id: resource._id })
+
+  const data = pipe(
+    resources,
+    O.fromNullable,
+    O.map(A.map(addId)),
+    O.getOrElse<Array<TResourceModelSchemaType>>(() => [])
+  )
+
+  const deleteResource = async (id: string) => {
+    pipe(
+      fetcherTE(`/api/resources?id=${id}`, { method: "DELETE" }),
+      TE.fold(
+        (error) => {
+          toast.error(error)
+          return TE.left(error)
+        },
+        (response) => {
+          mutate("/api/resources")
+          toast.success(response?.message)
+          return TE.right(response)
+        }
+      )
+    )()
+  }
 
   const columns: GridColDef[] = [
     {
@@ -121,7 +160,6 @@ const ResourcesDataGrid = () => {
       // width: 110,
       renderCell: (params) => {
         const currentRow = params.row
-
         return (
           <Chip label={currentRow.type} style={{ backgroundColor: getResourceTypeColor(currentRow.type), color: "white" }} />
         )
@@ -143,7 +181,7 @@ const ResourcesDataGrid = () => {
         }
 
         const onClickDelete = (e: any) => {
-          console.log("dele")
+          deleteResource(currentRow._id)
         }
 
         const onClickGoTo = (e: any) => {
@@ -156,11 +194,11 @@ const ResourcesDataGrid = () => {
               <FiExternalLink />
             </IconButton>
 
-            <IconButton sx={{ marginRight: 2 }} onClick={onClickEdit} color="info">
+            <IconButton sx={{ marginRight: 2, fontSize: 20 }} onClick={onClickEdit} color="info">
               <FaPen />
             </IconButton>
 
-            <IconButton onClick={onClickDelete} color="error" edge="end" aria-label="delete">
+            <IconButton sx={{ fontSize: 20 }} onClick={onClickDelete} color="error" edge="end" aria-label="delete">
               <FaTrash />
             </IconButton>
           </Box>
@@ -172,7 +210,7 @@ const ResourcesDataGrid = () => {
   return (
     <Box sx={{ height: 600, width: "100%" }}>
       <DataGrid
-        rows={rows}
+        rows={data}
         columns={columns}
         initialState={{
           pagination: {

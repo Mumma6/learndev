@@ -7,7 +7,7 @@ import * as O from "fp-ts/Option"
 import * as TE from "fp-ts/TaskEither"
 
 import { useEffect, useState } from "react"
-import { useCourses } from "../../lib/hooks"
+import { useCourses, useResources } from "../../lib/hooks"
 import { useSWRConfig } from "swr"
 import AddCourseModal from "./AddCourseModal"
 import CourseCard from "./CourseCard"
@@ -28,8 +28,9 @@ import { SkillSchemaType } from "../../schema/SharedSchema"
 import { useZodFormValidation } from "zod-react-form"
 import InfoTooltip from "../shared/Tooltip"
 import { getOArraySize } from "../../helpers/helpers"
+import { ResourceModelSchemaType } from "../../schema/ResourceSchema"
 
-export const initialCourseFormState: CourseModelContentInputSchemaType = {
+export const initialCourseFormState: Omit<CourseModelContentInputSchemaType, "resources"> = {
   title: "",
   description: "",
   institution: InstitutionEnum.Enum.Other,
@@ -42,7 +43,8 @@ export const initialCourseFormState: CourseModelContentInputSchemaType = {
 const Courses = () => {
   const [open, setOpen] = useState(false)
   const [topicData, setTopicData] = useState<SkillSchemaType[]>([])
-  const [resources, setResources] = useState<string[]>([])
+  const [resources, setResources] = useState<ResourceModelSchemaType[]>([])
+  const [selectedResources, setSelectedResources] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [dataToShow, setDataToShow] = useState<CourseModelSchemaType[]>([])
   const [statusValue, setStatusValue] = useState<StatusEnumType>("In progress") // show correct courses based on this state
@@ -51,12 +53,13 @@ const Courses = () => {
     setStatusValue(newValue)
   }
 
-  const zodForm = useZodFormValidation<CourseModelContentInputSchemaType>(
-    CourseModelContentInputSchema,
+  const zodForm = useZodFormValidation<Omit<CourseModelContentInputSchemaType, "resources">>(
+    CourseModelContentInputSchema.omit({ resources: true }),
     initialCourseFormState
   )
 
   const { data } = useCourses()
+  const { data: resourceData } = useResources()
   const { mutate } = useSWRConfig()
 
   const getCorrectStatus = (status: StatusEnumType) =>
@@ -71,6 +74,19 @@ const Courses = () => {
       (data) => data
     )
   )
+
+  useEffect(() => {
+    setResources(
+      pipe(
+        resourceData?.payload,
+        O.fromNullable,
+        O.fold(
+          () => [],
+          (resources) => resources
+        )
+      )
+    )
+  }, [resourceData])
 
   useEffect(() => {
     setDataToShow(getData)
@@ -106,9 +122,11 @@ const Courses = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: {
-          content: zodForm.values,
+          content: {
+            ...zodForm.values,
+            resources: selectedResources,
+          },
           topics: topicData,
-          resources,
         },
       }),
       TE.fold(
@@ -151,6 +169,9 @@ const Courses = () => {
         setTopicData={setTopicData}
         topicData={topicData}
         zodForm={zodForm}
+        resources={resources}
+        selectedResources={selectedResources}
+        setSelectedResources={setSelectedResources}
       />
       <Container maxWidth={false}>
         <CoursesToolbar handleClickOpen={handleClickOpen} />

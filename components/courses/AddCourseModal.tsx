@@ -1,5 +1,4 @@
-import { ChangeEvent, useState } from "react"
-
+import { ChangeEvent, FormEvent, useState } from "react"
 import TextField from "@mui/material/TextField"
 import Checkbox from "@mui/material/Checkbox"
 import Chip from "@mui/material/Chip"
@@ -11,7 +10,7 @@ import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import Button from "@mui/material/Button"
 import FormControlLabel from "@mui/material/FormControlLabel"
-import { Box, Divider, FormControl, InputLabel, MenuItem, Select } from "@mui/material"
+import { Box, Divider, FormControl, InputLabel, MenuItem, Select, ListItemIcon, ListItemText } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
 import { ClickEventRet, SetState } from "../../types/generics"
 import { skillsData } from "../../constants/skillsData"
@@ -20,6 +19,8 @@ import { SkillSchemaType } from "../../schema/SharedSchema"
 import { CourseModelContentInputSchemaType, InstitutionEnum } from "../../schema/CourseSchema"
 import { IZodFormValidation } from "zod-react-form"
 import { StatusEnum } from "../../schema/CourseSchema"
+import { ResourceModelSchemaType } from "../../schema/ResourceSchema"
+import { string } from "yup"
 
 interface IProps {
   open: boolean
@@ -27,10 +28,23 @@ interface IProps {
   topicData: SkillSchemaType[]
   setTopicData: SetState<SkillSchemaType[]>
   onAddCourse: ClickEventRet<Promise<void>>
-  zodForm: IZodFormValidation<CourseModelContentInputSchemaType>
+  zodForm: IZodFormValidation<Omit<CourseModelContentInputSchemaType, "resources">>
+  resources: ResourceModelSchemaType[]
+  selectedResources: string[]
+  setSelectedResources: SetState<string[]>
 }
 
-const AddCourseModal = ({ open, handleClose, onAddCourse, setTopicData, topicData, zodForm }: IProps) => {
+const AddCourseModal = ({
+  open,
+  handleClose,
+  onAddCourse,
+  setTopicData,
+  topicData,
+  zodForm,
+  resources,
+  selectedResources,
+  setSelectedResources,
+}: IProps) => {
   const { title, description, institution, url, certificateUrl, duration, status } = zodForm.values
 
   const [newSkill, setNewSkill] = useState<SkillSchemaType | null>()
@@ -51,7 +65,7 @@ const AddCourseModal = ({ open, handleClose, onAddCourse, setTopicData, topicDat
   }
 
   const onChange = (key: string, value: string | number) => {
-    zodForm.setFieldValue(key as keyof CourseModelContentInputSchemaType, value)
+    zodForm.setFieldValue(key as keyof Omit<CourseModelContentInputSchemaType, "resources">, value)
   }
 
   const handleTopicDelete = (topicToDelete: SkillSchemaType) => () => {
@@ -66,6 +80,16 @@ const AddCourseModal = ({ open, handleClose, onAddCourse, setTopicData, topicDat
     }
 
     return false
+  }
+
+  const handleResourceChange = (event: any) => {
+    console.log(event)
+    setSelectedResources(event.target.value)
+    /*
+    selectedResources.includes(v)
+      ? setSelectedResources(selectedResources.filter((x) => x !== v))
+      : setSelectedResources((prev) => [...prev, v])
+      */
   }
 
   return (
@@ -163,6 +187,27 @@ const AddCourseModal = ({ open, handleClose, onAddCourse, setTopicData, topicDat
               <MenuItem value={StatusEnum.Enum.Done}>Done</MenuItem>
               <MenuItem value={StatusEnum.Enum["In progress"]}>In progress</MenuItem>
               <MenuItem value={StatusEnum.Enum.Wishlist}>Wishlist</MenuItem>
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth>
+            <InputLabel>Resources</InputLabel>
+            <Select
+              labelId="mutiple-select-label"
+              multiple
+              label="Resources"
+              value={selectedResources}
+              onChange={(e) => handleResourceChange(e)}
+              renderValue={(selected) => selected.join(", ")}
+            >
+              {resources.map((option) => (
+                <MenuItem key={option._id} value={option.title}>
+                  <ListItemIcon>
+                    <Checkbox checked={selectedResources.indexOf(option.title) > -1} />
+                  </ListItemIcon>
+                  <ListItemText primary={option.title} />
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
 

@@ -9,6 +9,7 @@ import { UserModelSchemaType } from "../schema/UserSchema"
 
 import { fetcher, fetcherTE } from "./axiosFetcher"
 import { TaskModelType } from "../schema/TaskSchema"
+import { ResourceModelSchemaType } from "../schema/ResourceSchema"
 
 // useSWR vs useSWRImmutable
 // https://swr.vercel.app/docs/revalidation#disable-automatic-revalidations
@@ -26,6 +27,10 @@ export const useCourses = () => {
 
 export const useTasks = () => {
   return useSWR("/api/tasks", (url) => fetcher<TaskModelType[], undefined>(url))
+}
+
+export const useResources = () => {
+  return useSWR("/api/resources", (url) => fetcher<ResourceModelSchemaType[], undefined>(url))
 }
 
 export const useProjects = () => {

@@ -16,7 +16,8 @@ const typeColors = [
   "#795548",
   "#8bc34a",
   "#00bcd4",
-  "#e53935",
+  "#a12828",
+  "#807d7d",
 ]
 
 export const tap = (val: any) => {

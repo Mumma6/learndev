@@ -42,8 +42,6 @@ handler.post(...auths, async (req, res) => {
       tags: createTags(data),
       createdAt: new Date(),
       userId,
-      tasks: [], // får komma in som data
-      resources: [], // får komma in som data
     })
 
   const task = pipe(

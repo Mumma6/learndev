@@ -35,8 +35,9 @@ import * as TE from "fp-ts/TaskEither"
 import { fetcherTE } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
 import { TaskModelType } from "../../schema/TaskSchema"
-import { useTasks } from "../../lib/hooks"
+import { useResources, useTasks } from "../../lib/hooks"
 import SimpleTaskList from "../tasks/SimpleTaskList"
+import { getResourceTypeColor } from "../../helpers/helpers"
 
 /*
 
@@ -74,11 +75,22 @@ const Course = ({ course }: IProps) => {
   const { mutate } = useSWRConfig()
 
   const { data } = useTasks()
+  const { data: resourceData } = useResources()
 
   const dataToShow = pipe(
     data?.payload,
     O.fromNullable,
     O.map(A.filter((p) => p.activityId === course._id)),
+    O.fold(
+      () => [],
+      (d) => d
+    )
+  )
+
+  const resourceDataToShow = pipe(
+    resourceData?.payload,
+    O.fromNullable,
+    O.map(A.filter((r) => course.content.resources.includes(r.title))),
     O.fold(
       () => [],
       (d) => d
@@ -203,13 +215,13 @@ const Course = ({ course }: IProps) => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {resurs.map((r) => (
+                      {resourceDataToShow.map((r) => (
                         <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                           <TableCell component="th" scope="row">
                             <Typography>{r.title}</Typography>
                           </TableCell>
                           <TableCell>
-                            <Typography>{r.type}</Typography>
+                            <Chip label={r.type} style={{ backgroundColor: getResourceTypeColor(r.type), color: "white" }} />
                           </TableCell>
                           <TableCell>
                             <Link style={{ textDecoration: "none" }} href={r.link} target="_blank" passHref>

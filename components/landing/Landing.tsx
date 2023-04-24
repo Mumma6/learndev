@@ -11,6 +11,14 @@ import Services from "./services/Services"
 import { styled } from "@mui/material/styles"
 import Scroll, { Link as ScrollLink } from "react-scroll"
 
+/*
+
+Sälj pitches
+
+Every developer should learn and develop their skill. Regardless if you have worked for a couple of years or are just learning this app can help you.
+
+*/
+
 const Landing = () => {
   const Element = Scroll.Element
 
@@ -27,7 +35,7 @@ const Landing = () => {
           <Typography color="textPrimary" variant="h4" sx={{ fontSize: 64 }}>
             Simplify Your Learning Journey with <span style={{ color: "#7c4dff" }}>Studify</span>
           </Typography>
-          <Grid sx={{ marginTop: 10 }} container spacing={2}>
+          <Grid sx={{ marginTop: 1 }} container spacing={2}>
             <Grid item xs={12} sm={12} md={6} sx={{ marginTop: "auto", marginBottom: "auto" }}>
               <Typography color="textPrimary" variant="h4" sx={{ fontSize: 34, marginBottom: 10 }}>
                 Take control of your learning with Studify: the all-in-one platform for self-taught developers

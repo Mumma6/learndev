@@ -148,6 +148,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
             institution: course.content.institution,
             duration: formValues.duration,
             status: formValues.status,
+            resources: content.resources,
           },
           topics: topicsData,
           _id,

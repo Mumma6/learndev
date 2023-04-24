@@ -48,6 +48,8 @@ export const Projects = () => {
   const { data } = useProjects()
   const { mutate } = useSWRConfig()
 
+  const tee = ProjectModelFormInputSchema.omit({ techStack: true })
+
   const zodForm = useZodFormValidation<Omit<ProjectModelFromInputType, "techStack">>(
     ProjectModelFormInputSchema.omit({ techStack: true }),
     initialProjectsFormData

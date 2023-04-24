@@ -55,7 +55,7 @@
     "yup": "^0.32.11",
     "zod": "^3.20.2",
     "zod-formik-adapter": "^1.2.0",
-    "zod-react-form": "^1.0.22"
+    "zod-react-form": "^1.0.31"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
