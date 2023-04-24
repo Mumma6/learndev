@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 
 import TextField from "@mui/material/TextField"
 import Chip from "@mui/material/Chip"
@@ -9,14 +9,20 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import Button from "@mui/material/Button"
-import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material"
+import { Box, Checkbox, FormControl, InputLabel, ListItemIcon, ListItemText, MenuItem, Select } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
+import { pipe } from "fp-ts/function"
+import * as A from "fp-ts/Array"
+import * as O from "fp-ts/Option"
+import * as TE from "fp-ts/TaskEither"
 
 import { ClickEvent, ClickEventRet, SetState } from "../../types/generics"
 import { Skill, skillsData } from "../../constants/skillsData"
 import { FaPlus } from "react-icons/fa"
 import { ProjectModelFromInputType, ProjectStatusEnum } from "../../schema/ProjectSchema"
 import { IZodFormValidation } from "zod-react-form"
+import { useResources } from "../../lib/hooks"
+import { ResourceModelSchemaType } from "../../schema/ResourceSchema"
 
 interface IProps {
   open: boolean
@@ -28,7 +34,11 @@ interface IProps {
 }
 
 const AddProjectModal = ({ open, handleClose, setTopicData, topicData, onAddProject, zodForm }: IProps) => {
-  const { title, deployedUrl, sourceCodeUrl, description, status } = zodForm.values
+  const { title, deployedUrl, sourceCodeUrl, description, status, resources } = zodForm.values
+
+  const { data: resourceData } = useResources()
+
+  const [resourcesOptions, setResourcesOptions] = useState<ResourceModelSchemaType[]>([])
 
   // gör till en customHook, samma sak i AddCourseModal
   const [newSkill, setNewSkill] = useState<Skill | null>(null)
@@ -39,6 +49,19 @@ const AddProjectModal = ({ open, handleClose, setTopicData, topicData, onAddProj
       setNewSkill(null)
     }
   }
+
+  useEffect(() => {
+    setResourcesOptions(
+      pipe(
+        resourceData?.payload,
+        O.fromNullable,
+        O.fold(
+          () => [],
+          (resources) => resources
+        )
+      )
+    )
+  }, [resourceData])
 
   const onChange = (key: string, value: string) => {
     zodForm.setFieldValue(key as keyof Omit<ProjectModelFromInputType, "techStack" | "completed">, value)
@@ -62,9 +85,13 @@ const AddProjectModal = ({ open, handleClose, setTopicData, topicData, onAddProj
   }
 
   const isDisabled = () => {
-    const hasTopics = () => !topicData.length
+    const formErrors = Object.values(zodForm.errors).some((error) => error)
 
-    return zodForm.isDisabled(hasTopics)
+    if (formErrors || !topicData.length) {
+      return true
+    }
+
+    return false
   }
 
   return (
@@ -78,6 +105,7 @@ const AddProjectModal = ({ open, handleClose, setTopicData, topicData, onAddProj
         <Box component="form">
           <TextField
             name="title"
+            required
             inputProps={{ maxLength: 100 }}
             value={title}
             autoFocus
@@ -92,6 +120,7 @@ const AddProjectModal = ({ open, handleClose, setTopicData, topicData, onAddProj
             error={Boolean(zodForm.touched.title && zodForm.errors.title)}
           />
           <TextField
+            required
             name="description"
             value={description}
             multiline
@@ -138,6 +167,7 @@ const AddProjectModal = ({ open, handleClose, setTopicData, topicData, onAddProj
             <InputLabel>Project status</InputLabel>
             <Select
               value={status}
+              required
               label="Project status"
               name="status"
               onChange={(e) => zodForm.setFieldValue("status", e.target.value)}
@@ -147,6 +177,27 @@ const AddProjectModal = ({ open, handleClose, setTopicData, topicData, onAddProj
               <MenuItem value={ProjectStatusEnum.Enum.Done}>Done</MenuItem>
               <MenuItem value={ProjectStatusEnum.Enum["In progress"]}>In progress</MenuItem>
               <MenuItem value={ProjectStatusEnum.Enum.Planning}>Planning</MenuItem>
+            </Select>
+          </FormControl>
+
+          <FormControl style={{ marginTop: 10, marginBottom: 30 }} fullWidth>
+            <InputLabel>Resources</InputLabel>
+            <Select
+              labelId="mutiple-select-label"
+              multiple
+              label="Resources"
+              value={resources}
+              onChange={(e) => zodForm.setFieldValue("resources", e.target.value)}
+              renderValue={(selected) => selected.join(", ")}
+            >
+              {resourcesOptions.map((option) => (
+                <MenuItem key={option._id} value={option.title}>
+                  <ListItemIcon>
+                    <Checkbox checked={resources.indexOf(option.title) > -1} />
+                  </ListItemIcon>
+                  <ListItemText primary={option.title} />
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
           <Box

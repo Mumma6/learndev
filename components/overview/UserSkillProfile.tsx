@@ -14,7 +14,7 @@ const UserSkillProfile = () => {
   // utveckla denna funktion så den tar hänsyn till fler saker för en bättre "viktning"
 
   const getPercentageValue = (score: number, maxScore: number) => {
-    return (score / maxScore) * 100
+    return ((score / maxScore) * 100).toFixed()
   }
 
   // Måste ha minst 3 träffar?

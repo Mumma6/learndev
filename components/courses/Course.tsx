@@ -51,24 +51,6 @@ interface IProps {
   course: CourseModelSchemaType
 }
 
-const resurs = [
-  {
-    title: "Vue docs",
-    type: "Documentation",
-    link: "/",
-  },
-  {
-    title: "Vue intro book",
-    type: "Book",
-    link: "",
-  },
-  {
-    title: "Vue Best Practice",
-    type: "Articel",
-    link: "/",
-  },
-]
-
 const Course = ({ course }: IProps) => {
   const [open, setOpen] = useState(false)
 
@@ -98,7 +80,6 @@ const Course = ({ course }: IProps) => {
   )
 
   const toggleTask = async (_id: string, completed: boolean) => {
-    console.log("toggle")
     pipe(
       fetcherTE<TaskModelType, Partial<TaskModelType>>("/api/tasks", {
         method: "PATCH",
@@ -115,7 +96,6 @@ const Course = ({ course }: IProps) => {
         },
         (response) => {
           mutate("/api/tasks")
-          console.log("succ")
           return TE.right(response)
         }
       )

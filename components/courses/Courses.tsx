@@ -44,6 +44,8 @@ const Courses = () => {
   const [open, setOpen] = useState(false)
   const [topicData, setTopicData] = useState<SkillSchemaType[]>([])
   const [resources, setResources] = useState<ResourceModelSchemaType[]>([])
+
+  // Kan selectedResources vara en del av zodForm?
   const [selectedResources, setSelectedResources] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [dataToShow, setDataToShow] = useState<CourseModelSchemaType[]>([])

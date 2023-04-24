@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { pipe } from "fp-ts/function"
+
 import * as E from "fp-ts/Either"
 import * as TE from "fp-ts/TaskEither"
 import {
@@ -33,6 +33,8 @@ import {
   Checkbox,
   Chip,
   InputLabel,
+  ListItemIcon,
+  ListItemText,
   MenuItem,
   Paper,
   Select,
@@ -40,6 +42,10 @@ import {
   Typography,
 } from "@mui/material"
 import { z } from "zod"
+import { useResources } from "../../lib/hooks"
+import { pipe } from "fp-ts/function"
+import * as A from "fp-ts/Array"
+import * as O from "fp-ts/Option"
 
 interface IProps {
   open: boolean
@@ -58,8 +64,17 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
 
   const [disabled, setDisabeld] = useState(false)
 
+  const { data: resourceData } = useResources()
+
   const { content, _id } = course
-  const { title, description, url, certificateUrl, duration, status, institution } = content
+  const { title, description, url, certificateUrl, duration, status, institution, resources } = content
+
+  const resourcesOptions = pipe(
+    resourceData?.payload,
+    O.fromNullable,
+    O.map((resource) => resource.flatMap(({ title }) => title)),
+    O.getOrElse<string[]>(() => [])
+  )
 
   // Create a useSkillsHook
   const addNewskill = () => {
@@ -88,12 +103,6 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
     setIsRefreshing(false)
   }, [course])
 
-  const validateSchema = CourseModelformInputSchema.omit({ content: true, topics: true }).merge(
-    CourseModelContentInputSchema.omit({ institution: true })
-  )
-
-  type validateSchemaType = z.infer<typeof validateSchema>
-
   const formik = useFormik({
     initialValues: {
       title,
@@ -103,6 +112,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
       duration,
       status,
       institution,
+      resources,
     },
     onSubmit: (formValues) => {
       onUpdateCourse(formValues)
@@ -122,13 +132,15 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
       formik.values.certificateUrl === course.content.certificateUrl &&
       formik.values.status === course.content.status &&
       formik.values.institution === course.content.institution &&
-      isEqual(topicsData, course.topics)
+      isEqual(topicsData, course.topics) &&
+      isEqual(formik.values.resources, course.content.resources)
     )
   }
 
   // Reseta formulärret korrekt. Om det finns ändringar, gör en prompt
   const onClose = () => {
     setNewSkill(null)
+    formik.resetForm()
     handleClose()
   }
 
@@ -148,7 +160,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
             institution: course.content.institution,
             duration: formValues.duration,
             status: formValues.status,
-            resources: content.resources,
+            resources: formValues.resources,
           },
           topics: topicsData,
           _id,
@@ -265,6 +277,28 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
                   <MenuItem value={InstitutionEnum.Enum.Linkedin}>Linkedin</MenuItem>
                   <MenuItem value={InstitutionEnum.Enum.Pluralsight}>Pluralsight</MenuItem>
                   <MenuItem value={InstitutionEnum.Enum.Youtube}>Youtube</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl style={{ marginTop: 10 }} fullWidth>
+                <InputLabel>Resources</InputLabel>
+                <Select
+                  labelId="mutiple-select-label"
+                  multiple
+                  label="Resources"
+                  name="resources"
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                  value={formik.values.resources}
+                  renderValue={(selected) => selected.filter((x) => resourcesOptions.includes(x)).join(", ")}
+                >
+                  {resourcesOptions.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      <ListItemIcon>
+                        <Checkbox checked={formik.values.resources.indexOf(option) > -1} />
+                      </ListItemIcon>
+                      <ListItemText primary={option} />
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Box>

@@ -10,6 +10,7 @@ import * as TE from "fp-ts/TaskEither"
 import { checkUser, handleAPIError, handleAPIResponse } from "../../../lib/utils"
 import { IQuiz } from "../../../models/Quiz"
 import { Response } from "../../../types/response"
+import { getMongoDb } from "../../../lib/mongodb"
 
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<IQuiz[] | null>>>()
 

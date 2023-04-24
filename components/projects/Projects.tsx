@@ -35,6 +35,7 @@ export const initialProjectsFormData: Omit<ProjectModelFromInputType, "techStack
   sourceCodeUrl: "",
   deployedUrl: "",
   status: ProjectStatusEnum.Enum["In progress"],
+  resources: [""],
 }
 
 export const Projects = () => {
@@ -47,8 +48,6 @@ export const Projects = () => {
 
   const { data } = useProjects()
   const { mutate } = useSWRConfig()
-
-  const tee = ProjectModelFormInputSchema.omit({ techStack: true })
 
   const zodForm = useZodFormValidation<Omit<ProjectModelFromInputType, "techStack">>(
     ProjectModelFormInputSchema.omit({ techStack: true }),

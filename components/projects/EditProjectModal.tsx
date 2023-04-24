@@ -16,7 +16,9 @@ import { truncate } from "fs"
 import { fetcher } from "../../lib/axiosFetcher"
 import { SkillSchemaType } from "../../schema/SharedSchema"
 import { toast } from "react-toastify"
-import { useSWRConfig } from "swr"
+import { pipe } from "fp-ts/function"
+import * as A from "fp-ts/Array"
+import * as O from "fp-ts/Option"
 import {
   Autocomplete,
   Box,
@@ -25,6 +27,8 @@ import {
   Chip,
   FormControl,
   InputLabel,
+  ListItemIcon,
+  ListItemText,
   MenuItem,
   Paper,
   Select,
@@ -36,6 +40,7 @@ import { FaPlus } from "react-icons/fa"
 import SubmitButton from "../shared/SubmitButton"
 import { isEqual } from "lodash"
 import { useRouter } from "next/router"
+import { useResources } from "../../lib/hooks"
 
 interface IProps {
   open: boolean
@@ -54,7 +59,16 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
   const [techStack, setTechStack] = useState<SkillSchemaType[]>(project.techStack)
   const [newSkill, setNewSkill] = useState<SkillSchemaType | null>(null)
 
-  const { title, description, sourceCodeUrl, deployedUrl, _id, status } = project
+  const { title, description, sourceCodeUrl, deployedUrl, _id, status, resources } = project
+
+  const { data: resourceData } = useResources()
+
+  const resourcesOptions = pipe(
+    resourceData?.payload,
+    O.fromNullable,
+    O.map((resource) => resource.flatMap(({ title }) => title)),
+    O.getOrElse<string[]>(() => [])
+  )
 
   // Create a useSkillsHook
   const addNewskill = () => {
@@ -92,6 +106,7 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
       sourceCodeUrl,
       deployedUrl,
       status,
+      resources,
     },
     onSubmit: (formValues) => {
       onAddProject(formValues)
@@ -105,7 +120,8 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
       formik.values.deployedUrl === project.deployedUrl &&
       formik.values.sourceCodeUrl === project.sourceCodeUrl &&
       formik.values.status === project.status &&
-      isEqual(techStack, project.techStack)
+      isEqual(techStack, project.techStack) &&
+      isEqual(formik.values.resources, project.resources)
     )
   }
 
@@ -225,6 +241,28 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
                   <MenuItem value={ProjectStatusEnum.Enum.Done}>Done</MenuItem>
                   <MenuItem value={ProjectStatusEnum.Enum["In progress"]}>In progress</MenuItem>
                   <MenuItem value={ProjectStatusEnum.Enum.Planning}>Planning</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl style={{ marginTop: 10 }} fullWidth>
+                <InputLabel>Resources</InputLabel>
+                <Select
+                  labelId="mutiple-select-label"
+                  multiple
+                  label="Resources"
+                  name="resources"
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                  value={formik.values.resources}
+                  renderValue={(selected) => selected.filter((x) => resourcesOptions.includes(x)).join(", ")}
+                >
+                  {resourcesOptions.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      <ListItemIcon>
+                        <Checkbox checked={formik.values.resources.indexOf(option) > -1} />
+                      </ListItemIcon>
+                      <ListItemText primary={option} />
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Box>
