@@ -44,6 +44,11 @@ Lägg till default text på grafer som behöver. tex om det inte finns några ev
 
 Lägg till en line chart brevid tech coveracge som visar hur många timmar man lagt på events för per vecka.
 
+
+----graf-----
+
+Time spent on each topic. Alla kurser som innehåller "React". Slå ihop antal
+
 */
 
 const Home = ({ user }: IProps) => {

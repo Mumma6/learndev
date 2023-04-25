@@ -2,6 +2,7 @@ import { z } from "zod"
 import { SkillSchema } from "./SharedSchema"
 import { ObjectId } from "bson"
 
+// Lägg till flera här, t ex Coursera, freecodecamp, codeCademy osv osv
 export const InstitutionEnum = z.enum(["Udemy", "Youtube", "Pluralsight", "Linkedin", "Other"])
 
 export type InstitutionEnumType = z.infer<typeof InstitutionEnum>

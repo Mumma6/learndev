@@ -26,7 +26,7 @@ import TableCell from "@mui/material/TableCell"
 import TableContainer from "@mui/material/TableContainer"
 import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
-import { FiCode, FiExternalLink } from "react-icons/fi"
+import { FiCode, FiExternalLink, FiCheckCircle } from "react-icons/fi"
 import Link from "next/link"
 import { CgWebsite } from "react-icons/cg"
 import { FaBlog, FaGithub, FaLinkedin, FaTwitter, FaYoutube } from "react-icons/fa"
@@ -123,34 +123,51 @@ const PublicProfile = ({ user, courses, projects, quizResults }: IProps) => {
                     <TableCell>Institution</TableCell>
                     <TableCell>Status</TableCell>
                     <TableCell>Link</TableCell>
+                    <TableCell>Certificate</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {courses.map((course) => (
-                    <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                      <TableCell component="th" scope="row">
-                        <Typography>{course.content.title}</Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography>{course.content.institution}</Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Chip
-                          label={course.content.status === "Done" ? "Completed" : "In progess"}
-                          color={course.content.status === "Done" ? "success" : "info"}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        {course.content.url && (
-                          <Link style={{ textDecoration: "none" }} href={course.content.url} target="_blank" passHref>
-                            <IconButton>
-                              <FiExternalLink />
-                            </IconButton>
-                          </Link>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {courses
+                    .filter((c) => c.content.status !== "Wishlist")
+                    .map((course) => (
+                      <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                        <TableCell component="th" scope="row">
+                          <Typography>{course.content.title}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography>{course.content.institution}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            label={course.content.status === "Done" ? "Completed" : "In progess"}
+                            color={course.content.status === "Done" ? "success" : "info"}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          {course.content.url && (
+                            <Link style={{ textDecoration: "none" }} href={course.content.url} target="_blank" passHref>
+                              <IconButton>
+                                <FiExternalLink />
+                              </IconButton>
+                            </Link>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {course.content.certificateUrl && (
+                            <Link
+                              style={{ textDecoration: "none" }}
+                              href={course.content.certificateUrl}
+                              target="_blank"
+                              passHref
+                            >
+                              <IconButton>
+                                <FiCheckCircle />
+                              </IconButton>
+                            </Link>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </TableContainer>

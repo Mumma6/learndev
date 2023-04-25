@@ -12,6 +12,15 @@ const UserSkillProfile = () => {
   const userQuizResult = userQuizData?.payload?.filter((p) => p.user_id === userData?.payload?._id)
 
   // utveckla denna funktion så den tar hänsyn till fler saker för en bättre "viktning"
+  // Slå ihop alla resultat inom samma mainTopic. t e x React.
+  /*
+
+  Fråga chatGpt. fler quizzes ska ge bättre resultat.
+
+  react1, 80% -> 80
+  react2: 60% medianen gånger (x1,2) -> 84    // 70 x 1.2. // 70 eftersom det är mellan 80 och 60
+  react3: 50% (x1,3) -> 65
+  */
 
   const getPercentageValue = (score: number, maxScore: number) => {
     return ((score / maxScore) * 100).toFixed()
