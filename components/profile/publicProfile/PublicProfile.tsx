@@ -34,6 +34,12 @@ import LatestQuizResults from "../../overview/LatestQuizResults"
 
 // https://www.npmjs.com/package/react-to-pdf
 
+/*
+
+Användaren ska själv bestämma vilka grafer som ska synas
+
+*/
+
 interface IProps {
   user: UserModelSchemaType
   courses: CourseModelSchemaType[]
@@ -226,10 +232,6 @@ const PublicProfile = ({ user, courses, projects, quizResults }: IProps) => {
           </CardContent>
         </Card>
 
-        <Box mt={5}>
-          <LatestQuizResults quizResults={quizResults} />
-        </Box>
-
         <Card sx={{ height: "100%", marginTop: 5 }}>
           <CardHeader title="Socials" />
           <Divider />
@@ -298,3 +300,9 @@ const PublicProfile = ({ user, courses, projects, quizResults }: IProps) => {
 }
 
 export default PublicProfile
+
+/*
+<Box mt={5}>
+          <LatestQuizResults quizResults={quizResults} />
+        </Box>
+*/

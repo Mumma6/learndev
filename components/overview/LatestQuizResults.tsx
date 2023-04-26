@@ -40,8 +40,25 @@ interface IProps {
 }
 
 const LatestQuizResults = ({ quizResults }: IProps) => {
-  const getAvatarUrl = (title: string) =>
-    title.includes("React") ? "/assets/images/react-logo.png" : "/assets/images/Javascript_Logo.png"
+  // Make this into a helper function
+  const getAvatarUrl = (title: string) => {
+    if (title.includes("React")) {
+      return "/assets/images/react-logo.png"
+    }
+
+    if (title.includes("Javascript")) {
+      return "/assets/images/Javascript_Logo.png"
+    }
+
+    if (title.includes("CSS")) {
+      return "/assets/images/css-logo.png"
+    }
+
+    if (title.includes("HTML")) {
+      return "/assets/images/html-logo.png"
+    }
+    return title.includes("React") ? "/assets/images/react-logo.png" : "/assets/images/Javascript_Logo.png"
+  }
 
   const getPercentageValue = (score: number, maxScore: number) => (score / maxScore) * 100
 

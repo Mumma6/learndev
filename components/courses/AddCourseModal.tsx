@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import TextField from "@mui/material/TextField"
 import Checkbox from "@mui/material/Checkbox"
 import Chip from "@mui/material/Chip"
@@ -20,7 +20,11 @@ import { CourseModelContentInputSchemaType, InstitutionEnum } from "../../schema
 import { IZodFormValidation } from "zod-react-form"
 import { StatusEnum } from "../../schema/CourseSchema"
 import { ResourceModelSchemaType } from "../../schema/ResourceSchema"
-import { string } from "yup"
+import { useResources } from "../../lib/hooks"
+import { pipe } from "fp-ts/function"
+import * as A from "fp-ts/Array"
+import * as O from "fp-ts/Option"
+import * as TE from "fp-ts/TaskEither"
 
 interface IProps {
   open: boolean
@@ -28,24 +32,28 @@ interface IProps {
   topicData: SkillSchemaType[]
   setTopicData: SetState<SkillSchemaType[]>
   onAddCourse: ClickEventRet<Promise<void>>
-  zodForm: IZodFormValidation<Omit<CourseModelContentInputSchemaType, "resources">>
-  resources: ResourceModelSchemaType[]
-  selectedResources: string[]
-  setSelectedResources: SetState<string[]>
+  zodForm: IZodFormValidation<CourseModelContentInputSchemaType>
 }
 
-const AddCourseModal = ({
-  open,
-  handleClose,
-  onAddCourse,
-  setTopicData,
-  topicData,
-  zodForm,
-  resources,
-  selectedResources,
-  setSelectedResources,
-}: IProps) => {
-  const { title, description, institution, url, certificateUrl, duration, status } = zodForm.values
+const AddCourseModal = ({ open, handleClose, onAddCourse, setTopicData, topicData, zodForm }: IProps) => {
+  const { title, description, institution, url, certificateUrl, duration, status, resources } = zodForm.values
+
+  const { data: resourceData } = useResources()
+
+  const [resourcesOptions, setResourcesOptions] = useState<ResourceModelSchemaType[]>([])
+
+  useEffect(() => {
+    setResourcesOptions(
+      pipe(
+        resourceData?.payload,
+        O.fromNullable,
+        O.fold(
+          () => [],
+          (resources) => resources
+        )
+      )
+    )
+  }, [resourceData])
 
   const [newSkill, setNewSkill] = useState<SkillSchemaType | null>()
 
@@ -80,16 +88,6 @@ const AddCourseModal = ({
     }
 
     return false
-  }
-
-  const handleResourceChange = (event: any) => {
-    console.log(event)
-    setSelectedResources(event.target.value)
-    /*
-    selectedResources.includes(v)
-      ? setSelectedResources(selectedResources.filter((x) => x !== v))
-      : setSelectedResources((prev) => [...prev, v])
-      */
   }
 
   return (
@@ -196,14 +194,14 @@ const AddCourseModal = ({
               labelId="mutiple-select-label"
               multiple
               label="Resources"
-              value={selectedResources}
-              onChange={(e) => handleResourceChange(e)}
+              value={resources}
+              onChange={(e) => zodForm.setFieldValue("resources", e.target.value)}
               renderValue={(selected) => selected.join(", ")}
             >
-              {resources.map((option) => (
+              {resourcesOptions.map((option) => (
                 <MenuItem key={option._id} value={option.title}>
                   <ListItemIcon>
-                    <Checkbox checked={selectedResources.indexOf(option.title) > -1} />
+                    <Checkbox checked={resources.indexOf(option.title) > -1} />
                   </ListItemIcon>
                   <ListItemText primary={option.title} />
                 </MenuItem>

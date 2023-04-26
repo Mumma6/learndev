@@ -1,12 +1,15 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Box, Button, Card, CardContent, TextField, InputAdornment, SvgIcon, Typography } from "@mui/material"
 import { FaSearch } from "react-icons/fa"
+import { SetState } from "../../types/generics"
 
 interface IProps {
   handleClickOpen: () => void
+  searchInput: string
+  setSearchInput: SetState<string>
 }
 
-const CoursesToolbar = ({ handleClickOpen }: IProps) => {
+const CoursesToolbar = ({ handleClickOpen, searchInput, setSearchInput }: IProps) => {
   return (
     <Box mt={1} mb={1}>
       <Box sx={{ mt: 3 }}>
@@ -16,6 +19,8 @@ const CoursesToolbar = ({ handleClickOpen }: IProps) => {
               <Box>
                 <TextField
                   fullWidth
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">

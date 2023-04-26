@@ -33,9 +33,7 @@ const ProjectCard = ({ project, deleteProject }: IProps) => {
         </Box>
         <Divider />
         <CardActions sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Button sx={{ width: "100%" }} onClick={() => router.push(`/projects/${project._id}`)}>
-            Go to
-          </Button>
+          <Button onClick={() => router.push(`/projects/${project._id}`)}>Go to</Button>
           <Button onClick={() => deleteProject(project._id as string)} color="error" size="small">
             Delete
           </Button>

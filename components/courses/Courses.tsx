@@ -30,7 +30,7 @@ import InfoTooltip from "../shared/Tooltip"
 import { getOArraySize } from "../../helpers/helpers"
 import { ResourceModelSchemaType } from "../../schema/ResourceSchema"
 
-export const initialCourseFormState: Omit<CourseModelContentInputSchemaType, "resources"> = {
+export const initialCourseFormState: CourseModelContentInputSchemaType = {
   title: "",
   description: "",
   institution: InstitutionEnum.Enum.Other,
@@ -38,15 +38,13 @@ export const initialCourseFormState: Omit<CourseModelContentInputSchemaType, "re
   url: "",
   certificateUrl: "",
   duration: 0,
+  resources: [""],
 }
 
 const Courses = () => {
   const [open, setOpen] = useState(false)
   const [topicData, setTopicData] = useState<SkillSchemaType[]>([])
-  const [resources, setResources] = useState<ResourceModelSchemaType[]>([])
-
-  // Kan selectedResources vara en del av zodForm?
-  const [selectedResources, setSelectedResources] = useState<string[]>([])
+  const [searchInput, setSearchInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [dataToShow, setDataToShow] = useState<CourseModelSchemaType[]>([])
   const [statusValue, setStatusValue] = useState<StatusEnumType>("In progress") // show correct courses based on this state
@@ -55,22 +53,28 @@ const Courses = () => {
     setStatusValue(newValue)
   }
 
-  const zodForm = useZodFormValidation<Omit<CourseModelContentInputSchemaType, "resources">>(
-    CourseModelContentInputSchema.omit({ resources: true }),
+  const zodForm = useZodFormValidation<CourseModelContentInputSchemaType>(
+    CourseModelContentInputSchema,
     initialCourseFormState
   )
 
-  const { data } = useCourses()
-  const { data: resourceData } = useResources()
+  const { data: courseData } = useCourses()
+
   const { mutate } = useSWRConfig()
 
   const getCorrectStatus = (status: StatusEnumType) =>
-    pipe(data?.payload, O.fromNullable, O.map(A.filter((d) => d.content.status === status)))
+    pipe(
+      courseData?.payload,
+      O.fromNullable,
+      O.map(A.filter((d) => d.content.status === status)),
+      O.map(A.filter((x) => x.tags.includes(searchInput.toLowerCase())))
+    )
 
   const getNumberOfStatuses = (status: StatusEnumType) => pipe(getCorrectStatus(status), getOArraySize)
 
-  const getData = pipe(
+  const getCourseData = pipe(
     getCorrectStatus(statusValue),
+    O.map(A.filter((x) => x.tags.includes(searchInput.toLowerCase()))),
     O.fold(
       () => [],
       (data) => data
@@ -78,21 +82,8 @@ const Courses = () => {
   )
 
   useEffect(() => {
-    setResources(
-      pipe(
-        resourceData?.payload,
-        O.fromNullable,
-        O.fold(
-          () => [],
-          (resources) => resources
-        )
-      )
-    )
-  }, [resourceData])
-
-  useEffect(() => {
-    setDataToShow(getData)
-  }, [statusValue, data])
+    setDataToShow(getCourseData)
+  }, [statusValue, courseData, searchInput])
 
   const deleteCourse = async (id: string) => {
     pipe(
@@ -126,7 +117,6 @@ const Courses = () => {
         data: {
           content: {
             ...zodForm.values,
-            resources: selectedResources,
           },
           topics: topicData,
         },
@@ -171,12 +161,9 @@ const Courses = () => {
         setTopicData={setTopicData}
         topicData={topicData}
         zodForm={zodForm}
-        resources={resources}
-        selectedResources={selectedResources}
-        setSelectedResources={setSelectedResources}
       />
       <Container maxWidth={false}>
-        <CoursesToolbar handleClickOpen={handleClickOpen} />
+        <CoursesToolbar handleClickOpen={handleClickOpen} searchInput={searchInput} setSearchInput={setSearchInput} />
         <Card sx={{ marginTop: 4 }}>
           <CardHeader
             title={
