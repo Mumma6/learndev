@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import nextConnect from "next-connect"
 import auths from "../../../lib/middlewares/auth"
-import { deleteProjectById, getProjectsForUser, insertProject, updateProjectById } from "../../../lib/queries/projects"
 
 import {
   addUserId,
@@ -10,9 +9,8 @@ import {
   getUserId,
   handleAPIError,
   handleAPIResponse,
-  validateArrayData,
-  validateData,
-  validateReqBody,
+  validateArrayData2,
+  validateData2,
 } from "../../../lib/utils"
 import {
   ProjectModelFormInputSchema,
@@ -24,6 +22,13 @@ import * as E from "fp-ts/Either"
 import { pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
 import { Response } from "../../../types/response"
+import {
+  addToDbCollection,
+  deleteFromCollectionById,
+  getFromCollectionForUser,
+  updateFromCollectionById,
+} from "../../../lib/queries"
+import { validateReqBody2 } from "../../../lib/utils"
 
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<ProjectModelType[] | null>>>()
 
@@ -33,8 +38,8 @@ handler.get(...auths, async (req, res) => {
     checkUser,
     E.chain(getUserId),
     TE.fromEither,
-    TE.chain(getProjectsForUser),
-    TE.chain((projects) => TE.fromEither(validateArrayData<ProjectModelType>(projects, ProjectModelSchema)))
+    TE.chain(getFromCollectionForUser("projects")),
+    TE.chain(validateArrayData2<ProjectModelType>(ProjectModelSchema))
   )
 
   const either = await task()
@@ -53,8 +58,8 @@ const createTags = (data: Pick<ProjectModelType, "techStack" | "title">) =>
 
 handler.post(...auths, async (req, res) => {
   const addNonInputData =
-    (data: ProjectModelFromInputType) =>
-    (userId: string): Omit<ProjectModelType, "_id"> => ({
+    (userId: string) =>
+    (data: ProjectModelFromInputType): Omit<ProjectModelType, "_id"> => ({
       ...data,
       tags: createTags(data),
       userId,
@@ -64,10 +69,10 @@ handler.post(...auths, async (req, res) => {
   const task = pipe(
     req,
     checkUser,
-    E.chain((req) => validateReqBody<ProjectModelFromInputType>(req, ProjectModelFormInputSchema)),
-    E.map((project) => addNonInputData(project)(addUserId(req))),
+    E.chain(validateReqBody2<ProjectModelFromInputType>(ProjectModelFormInputSchema)),
+    E.map(addNonInputData(addUserId(req))),
     TE.fromEither,
-    TE.chain(insertProject)
+    TE.chain(addToDbCollection("projects"))
   )
 
   const either = await task()
@@ -75,30 +80,30 @@ handler.post(...auths, async (req, res) => {
   pipe(
     either,
     E.fold(
-      (error) => handleAPIError(res, error),
+      (error) => handleAPIError(res, { message: error }),
       () => handleAPIResponse(res, null, "Project added")
     )
   )
 })
 
-handler.delete(...auths, createDeleteHandler(deleteProjectById))
+handler.delete(...auths, createDeleteHandler(deleteFromCollectionById("projects")))
 
 handler.patch(...auths, async (req, res) => {
   const task = pipe(
     req,
     checkUser,
-    E.chain((req) => validateReqBody<Partial<ProjectModelFromInputType>>(req, ProjectModelSchema.partial())),
+    E.chain(validateReqBody2<Partial<ProjectModelFromInputType>>(ProjectModelSchema.partial())),
     TE.fromEither,
-    TE.chain(updateProjectById)
+    TE.chain(updateFromCollectionById("projects"))
   )
 
   const either = await task()
 
   pipe(
     either,
-    E.chain((data) => validateData<ProjectModelFromInputType>(data, ProjectModelSchema)),
+    E.chain(validateData2<ProjectModelFromInputType>(ProjectModelSchema)),
     E.fold(
-      (error) => handleAPIError(res, error),
+      (error) => handleAPIError(res, { message: error }),
       (data) => handleAPIResponse(res, data, "Project updated successfully")
     )
   )

@@ -185,7 +185,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
   }
 
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={open}>
       <form onSubmit={formik.handleSubmit}>
         <DialogTitle>{`Edit course ${course.content.title}`}</DialogTitle>
         <DialogContent>

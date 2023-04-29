@@ -95,7 +95,7 @@ const AddProjectModal = ({ open, handleClose, setTopicData, topicData, onAddProj
   }
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open}>
       <DialogTitle>Add project</DialogTitle>
       <DialogContent>
         <DialogContentText>

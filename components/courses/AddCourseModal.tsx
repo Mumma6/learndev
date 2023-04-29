@@ -91,7 +91,7 @@ const AddCourseModal = ({ open, handleClose, onAddCourse, setTopicData, topicDat
   }
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open}>
       <DialogTitle>Add course</DialogTitle>
       <DialogContent>
         <DialogContentText>To add a course, please fill in the information below.</DialogContentText>

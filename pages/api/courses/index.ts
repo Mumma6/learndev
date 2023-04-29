@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import nextConnect from "next-connect"
 import auths from "../../../lib/middlewares/auth"
-import { addCourseToDb, deleteCourseById, getCoursesForUser, updateCourseById } from "../../../lib/queries/course"
+
 import {
   addUserId,
   checkUser,
@@ -9,11 +9,8 @@ import {
   getUserId,
   handleAPIError,
   handleAPIResponse,
-  validateArrayData,
   validateArrayData2,
-  validateData,
   validateData2,
-  validateReqBody,
   validateReqBody2,
 } from "../../../lib/utils"
 
@@ -25,6 +22,12 @@ import { CourseModelformInputType } from "../../../schema/CourseSchema"
 import * as E from "fp-ts/Either"
 import { pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
+import {
+  addToDbCollection,
+  deleteFromCollectionById,
+  getFromCollectionForUser,
+  updateFromCollectionById,
+} from "../../../lib/queries"
 
 const createTags = (data: Pick<CourseModelSchemaType, "content" | "topics">): string => {
   return [data.content.title, data.content.institution, ...data.topics.map((t) => t.label)]
@@ -50,7 +53,7 @@ handler.post(...auths, async (req, res) => {
     E.chain(validateReqBody2<CourseModelformInputType>(CourseModelformInputSchema)),
     E.map(addNonInputData(addUserId(req))),
     TE.fromEither,
-    TE.chain(addCourseToDb)
+    TE.chain(addToDbCollection("courses"))
   )
 
   const either = await task()
@@ -70,7 +73,7 @@ handler.get(...auths, async (req, res) => {
     checkUser,
     E.chain(getUserId),
     TE.fromEither,
-    TE.chain(getCoursesForUser),
+    TE.chain(getFromCollectionForUser("courses")),
     TE.chain(validateArrayData2<CourseModelSchemaType>(CourseModelSchema))
   )
 
@@ -85,7 +88,7 @@ handler.get(...auths, async (req, res) => {
   )
 })
 
-handler.delete(...auths, createDeleteHandler(deleteCourseById))
+handler.delete(...auths, createDeleteHandler(deleteFromCollectionById("courses")))
 
 handler.patch(...auths, async (req, res) => {
   const task = pipe(
@@ -93,7 +96,7 @@ handler.patch(...auths, async (req, res) => {
     checkUser,
     E.chain(validateReqBody2<Partial<CourseModelSchemaType>>(CourseModelSchema.partial())),
     TE.fromEither,
-    TE.chain(updateCourseById)
+    TE.chain(updateFromCollectionById("resources"))
   )
 
   const either = await task()
