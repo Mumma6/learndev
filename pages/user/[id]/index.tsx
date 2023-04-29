@@ -7,7 +7,6 @@ import { ParsedUrlQuery } from "querystring"
 import { ObjectId, WithId } from "mongodb"
 import { UserModelSchema, UserModelSchemaType } from "../../../schema/UserSchema"
 
-import { getProjectsForUser } from "../../../lib/queries/projects"
 import { getAllQuizzes, getQuizResultsForUser } from "../../../lib/queries/quizzes"
 import { CourseModelSchema, CourseModelSchemaType } from "../../../schema/CourseSchema"
 import { z } from "zod"
@@ -95,80 +94,3 @@ const Profile = ({ user, courses, projects, quizResults }: IProps) => {
 }
 
 export default Profile
-
-/*
-import * as E from 'fp-ts/lib/Either';
-import * as TE from 'fp-ts/lib/TaskEither';
-import { pipe } from 'fp-ts/lib/function';
-import { ObjectId } from 'mongodb';
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { id } = context.params as IParams;
-
-  const userOrNotFound = await pipe(
-    getMongoDb(),
-    TE.chain((db) => findUserById(db, id)),
-    TE.chain((user) => {
-      const parsedUser = UserModelSchema.omit({ password: true }).safeParse(user);
-      return parsedUser.success
-        ? TE.right(serilizeObject(parsedUser.data))
-        : TE.left({ notFound: true });
-    }),
-    TE.toUnion
-  )();
-
-  const coursesOrNotFound = await pipe(
-    getC(id),
-    TE.chain((courses) =>
-      pipe(
-        z.array(CourseModelSchema).safeParse(courses),
-        E.map(serilizeObject),
-        E.mapLeft(() => ({ notFound: true }))
-      )
-    ),
-    TE.toUnion
-  )();
-
-  const projectsOrNotFound = await pipe(
-    getMongoDb(),
-    TE.chain((db) => getProjectsForUser(db, id)),
-    TE.chain((projects) =>
-      pipe(
-        z.array(ProjectModelSchema).safeParse(projects),
-        E.map(serilizeObject),
-        E.mapLeft(() => ({ notFound: true }))
-      )
-    ),
-    TE.toUnion
-  )();
-
-  const quizResults = await pipe(
-    getMongoDb(),
-    TE.chain((db) => getQuizResultsForUser(db, id)),
-    TE.map((results) => results.map(serilizeObject))
-  )();
-
-  const quizzes = await pipe(
-    getAllQuizzes(db),
-    TE.map((allQuizzes) =>
-      allQuizzes
-        .filter((quiz) => quizResults.map((q) => q.quiz_id).includes(quiz._id.toString()))
-        .map(serilizeObject)
-    )
-  )();
-
-  return {
-    props: pipe(
-      userOrNotFound,
-      E.map((user) => ({
-        user,
-        courses: coursesOrNotFound,
-        projects: projectsOrNotFound,
-        quizResults,
-        quizzes,
-      })),
-      E.getOrElse(() => ({ notFound: true }))
-    ),
-  };
-};
-*/
