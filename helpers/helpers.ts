@@ -5,7 +5,7 @@ import * as R from "fp-ts/lib/Record"
 import * as S from "fp-ts/lib/string"
 import { ResourceEnum, ResourceTypeEnum } from "../schema/ResourceSchema"
 
-const typeColors = [
+export const typeColors = [
   "#14b8a6",
   "#7c4dff",
   "#3F51B5",

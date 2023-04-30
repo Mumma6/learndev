@@ -18,6 +18,7 @@ import * as O from "fp-ts/Option"
 import { IQuizResult } from "../../models/QuizResult"
 import { getOArraySize } from "../../helpers/helpers"
 import TotalTasks from "./TotalTasks"
+import TimePerTech from "./TimePerTech"
 
 interface IProps {
   user: UserModelSchemaType
@@ -165,8 +166,11 @@ const Home = ({ user }: IProps) => {
             <Grid item lg={6} md={6} xl={3} xs={12}>
               <UpcomingEvents />
             </Grid>
-            <Grid item lg={6} md={6} xl={3} xs={12}>
-              <TopicsChart />
+            <Grid item lg={6} md={12} xl={3} xs={12}>
+              <TopicsChart courses={data?.payload} projects={projectsData?.payload} />
+            </Grid>
+            <Grid item lg={6} md={12} xl={9} xs={12}>
+              <TimePerTech courses={data?.payload} />
             </Grid>
           </Grid>
         </Container>

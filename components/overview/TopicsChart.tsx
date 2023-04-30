@@ -6,22 +6,27 @@ import CardHeaderTitle from "../shared/CardHeaderTitle"
 import { pipe } from "fp-ts/function"
 import * as A from "fp-ts/Array"
 import * as O from "fp-ts/Option"
+import { CourseModelSchemaType } from "../../schema/CourseSchema"
+import { ProjectModelType } from "../../schema/ProjectSchema"
 
-const TopicsChart = () => {
+interface IProps {
+  courses: CourseModelSchemaType[] | null | undefined
+  projects: ProjectModelType[] | null | undefined
+}
+
+const TopicsChart = ({ courses, projects }: IProps) => {
   const theme = useTheme()
-  const { data: courseData } = useCourses()
-  const { data: projectData } = useProjects()
 
   type Total = {
     [key: string]: number
   }
 
   const topicsOccurrences = pipe(
-    projectData?.payload?.flatMap((project) => project.techStack.map((tech) => tech.label)),
+    projects?.flatMap((project) => project.techStack.map((tech) => tech.label)),
     O.fromNullable,
     O.chain((a1) =>
       pipe(
-        courseData?.payload?.map((course) => course.topics.map((topic) => topic.label)).flat(),
+        courses?.map((course) => course.topics.map((topic) => topic.label)).flat(),
         O.fromNullable,
         O.map((a2) => A.concat(a1)(a2))
       )
@@ -100,7 +105,7 @@ const TopicsChart = () => {
       <CardHeader
         title={
           <CardHeaderTitle
-            title="Tech coverage"
+            title="Top 5 Most Used Technologies"
             toolTipText="This graph shows your most used technologies from your courses and projects. Each number represent how many courses and projects use that technology"
           />
         }

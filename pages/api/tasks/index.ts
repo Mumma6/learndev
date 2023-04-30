@@ -10,6 +10,7 @@ import {
   getUserId,
   handleAPIError,
   handleAPIResponse,
+  validateAndGetUserId,
   validateArrayData,
   validateArrayData2,
   validateData,
@@ -19,7 +20,7 @@ import {
 } from "../../../lib/utils"
 import { TaskFormInputSchema, TaskFormInputType, TaskModelSchema, TaskModelType } from "../../../schema/TaskSchema"
 import * as E from "fp-ts/Either"
-import { pipe } from "fp-ts/function"
+import { flow, pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
 
 import { Response } from "../../../types/response"
@@ -35,9 +36,7 @@ const handler = nextConnect<NextApiRequest, NextApiResponse<Response<TaskModelTy
 handler.get(...auths, async (req, res) => {
   const task = pipe(
     req,
-    checkUser,
-    E.chain(getUserId),
-    TE.fromEither,
+    validateAndGetUserId,
     TE.chain(getFromCollectionForUser("tasks")),
     TE.chain(validateArrayData2<TaskModelType>(TaskModelSchema))
   )

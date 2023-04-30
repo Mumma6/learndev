@@ -9,6 +9,7 @@ import {
   getUserId,
   handleAPIError,
   handleAPIResponse,
+  validateAndGetUserId,
   validateArrayData2,
   validateData2,
 } from "../../../lib/utils"
@@ -35,9 +36,7 @@ const handler = nextConnect<NextApiRequest, NextApiResponse<Response<ProjectMode
 handler.get(...auths, async (req, res) => {
   const task = pipe(
     req,
-    checkUser,
-    E.chain(getUserId),
-    TE.fromEither,
+    validateAndGetUserId,
     TE.chain(getFromCollectionForUser("projects")),
     TE.chain(validateArrayData2<ProjectModelType>(ProjectModelSchema))
   )

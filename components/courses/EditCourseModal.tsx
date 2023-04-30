@@ -174,6 +174,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
           return TE.left(error)
         },
         (response) => {
+          console.log(response)
           refreshData()
           toast.success(response?.message)
           setIsLoading(false)

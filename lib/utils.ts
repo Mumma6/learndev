@@ -6,7 +6,7 @@ import { ParsedUrlQuery } from "querystring"
 import { Db, DeleteResult } from "mongodb"
 import { AnyZodObject, z } from "zod"
 import * as E from "fp-ts/Either"
-import { pipe } from "fp-ts/function"
+import { flow, pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
 
 /*
@@ -115,6 +115,8 @@ export const addUserId = (req: NextApiRequest) =>
     E.getOrElse(() => "")
   )
 
+export const validateAndGetUserId = flow(checkUser, E.chain(getUserId), TE.fromEither)
+
 /**
  *
  * @param data any data object to parse
@@ -174,7 +176,9 @@ export const validateData = <T>(data: unknown, schema: z.ZodSchema): E.Either<st
 export const validateData2 =
   <T>(schema: z.ZodSchema) =>
   (data: unknown): E.Either<string, T> => {
+    console.log(data)
     const parsedData = schema.safeParse(data)
+    console.log(parsedData)
     return parsedData.success ? E.right(parsedData.data) : E.left("Error while parsing req data")
   }
 

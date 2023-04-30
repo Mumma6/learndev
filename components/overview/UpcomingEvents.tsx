@@ -36,7 +36,7 @@ const UpcomingEvents = () => {
   return (
     <Card sx={{ height: "100%" }}>
       <CardHeader
-        title={<CardHeaderTitle title="Upcoming events" toolTipText="This graph shows your next 5 upcoming events" />}
+        title={<CardHeaderTitle title="Upcoming Events" toolTipText="This graph shows your next 5 upcoming events" />}
       />
       <Divider />
       <CardContent>

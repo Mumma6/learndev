@@ -9,6 +9,7 @@ import {
   getUserId,
   handleAPIError,
   handleAPIResponse,
+  validateAndGetUserId,
   validateArrayData2,
   validateData2,
   validateReqBody2,
@@ -70,9 +71,7 @@ handler.post(...auths, async (req, res) => {
 handler.get(...auths, async (req, res) => {
   const task = pipe(
     req,
-    checkUser,
-    E.chain(getUserId),
-    TE.fromEither,
+    validateAndGetUserId,
     TE.chain(getFromCollectionForUser("courses")),
     TE.chain(validateArrayData2<CourseModelSchemaType>(CourseModelSchema))
   )
@@ -96,7 +95,7 @@ handler.patch(...auths, async (req, res) => {
     checkUser,
     E.chain(validateReqBody2<Partial<CourseModelSchemaType>>(CourseModelSchema.partial())),
     TE.fromEither,
-    TE.chain(updateFromCollectionById("resources"))
+    TE.chain(updateFromCollectionById("courses"))
   )
 
   const either = await task()

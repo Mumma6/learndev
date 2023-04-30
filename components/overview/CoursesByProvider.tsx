@@ -80,7 +80,7 @@ const CoursesByProvider = ({ courses }: IProps) => {
       <CardHeader
         title={
           <CardHeaderTitle
-            title="Courses by provider"
+            title="Course Distribution by Provider"
             toolTipText="This graph shows the number of courses you have from each provider. This will give you an overview of your favorit learning resource"
           />
         }

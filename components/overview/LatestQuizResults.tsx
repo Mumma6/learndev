@@ -83,7 +83,7 @@ const LatestQuizResults = ({ quizResults }: IProps) => {
   return (
     <Card sx={{ height: "100%" }}>
       <CardHeader
-        title={<CardHeaderTitle title="Latest quizzes" toolTipText="This graph shows your latest quiz results" />}
+        title={<CardHeaderTitle title="Recent Quiz Performance" toolTipText="This graph shows your latest quiz results" />}
       />
       <Divider />
       <CardContent>

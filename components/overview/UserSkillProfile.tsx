@@ -75,7 +75,7 @@ const UserSkillProfile = () => {
     <Card sx={{ height: "100%" }}>
       <CardHeader
         title={
-          <CardHeaderTitle title="Skill profile" toolTipText="This graph shows your skill profile based quiz results" />
+          <CardHeaderTitle title="Skill Profile" toolTipText="This graph shows your skill profile based quiz results" />
         }
       />
       <Divider />
