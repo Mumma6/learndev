@@ -61,6 +61,8 @@ export const UserModelSchema = UserRegistrationSchema.extend({
   skills: z.array(SkillSchema).default([]),
   workexperience: z.array(UserWorkexperienceSchema).default([]),
   userSettings: UserSettingsModelSchema.default({}),
+  hasCompletedOnboarding: z.boolean().default(false),
+  createdAt: z.date().default(new Date()),
 })
 
 export type UserModelSchemaType = z.infer<typeof UserModelSchema>

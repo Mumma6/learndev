@@ -81,7 +81,7 @@ const AddEventInfoModal = ({ open, handleClose, eventFormData, setEventFormData,
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Add event</DialogTitle>
       <DialogContent>
-        <DialogContentText>To add a course, please fill in the information below.</DialogContentText>
+        <DialogContentText>To add a event, please fill in the information below.</DialogContentText>
         <Box component="form">
           <TextField
             name="title"

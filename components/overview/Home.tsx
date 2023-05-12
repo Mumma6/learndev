@@ -19,6 +19,7 @@ import { IQuizResult } from "../../models/QuizResult"
 import { getOArraySize } from "../../helpers/helpers"
 import TotalTasks from "./TotalTasks"
 import TimePerTech from "./TimePerTech"
+import { OnBoardingModal } from "./OnBoardingModal"
 
 interface IProps {
   user: UserModelSchemaType
@@ -53,6 +54,7 @@ Time spent on each topic. Alla kurser som innehåller "React". Slå ihop antal
 */
 
 const Home = ({ user }: IProps) => {
+  console.log(user)
   const { data } = useCourses()
   const { data: projectsData } = useProjects()
   const { data: quizResultsData } = useQuizResults()
@@ -89,7 +91,8 @@ const Home = ({ user }: IProps) => {
         }}
       >
         <Box mb={3}>
-          <Box sx={{ mt: 3 }}>
+          {/*
+           <Box sx={{ mt: 3 }}>
             <Card>
               <CardContent>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -102,8 +105,10 @@ const Home = ({ user }: IProps) => {
               </CardContent>
             </Card>
           </Box>
+          */}
         </Box>
         <Container maxWidth={false}>
+          <OnBoardingModal showOnboarding={!user.hasCompletedOnboarding} />
           <Grid container spacing={3}>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
               <TotalCourses
