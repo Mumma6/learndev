@@ -117,7 +117,7 @@ export const OnBoardingModal = ({ showOnboarding = false }: IProps) => {
     <Dialog fullWidth open={showModal}>
       <Container maxWidth="lg">
         <Card>
-          <CardHeader subheader="Step by step guide" title="On boarding" />
+          <CardHeader subheader={`Step by step guide: Step ${currentIndex + 1}/${STEPS.length}`} title="On boarding" />
           <Divider />
           <CardContent
             sx={{
