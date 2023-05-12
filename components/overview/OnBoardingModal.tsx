@@ -38,36 +38,36 @@ const STEPS: ISteps[] = [
     title: "Manage Your Schedule",
     description:
       "Use our powerful calendar tool to organize your study schedule, plan your learning sessions, and set project deadlines.",
-    image: "/assets/images/onb-calendar.jpg",
+    image: "/assets/images/on-calendar.jpg",
   },
   {
     title: "Take Control of Your Courses",
     description:
       "Easily plan and track your progress with our course management system. Manage all your resources and activities in one place.",
-    image: "/assets/images/onb-courses.jpg",
+    image: "/assets/images/on-courses.jpg",
   },
   {
     title: "Track Your Progress",
     description:
       "With our intuitive dashboard, you can analyze your progress, visualize your achievements, and make data-driven decisions to improve your skills.",
-    image: "/assets/images/onb-dashboard.jpg",
+    image: "/assets/images/on-dashboard.jpg",
   },
   {
     title: "Manage Your Projects",
     description: "Keep all your code, notes, and project progress in one place, making project management a breeze.",
-    image: "/assets/images/onb-project.jpg",
+    image: "/assets/images/on-project.jpg",
   },
   {
     title: "Test Your Knowledge",
     description:
       "Use Studify's built-in quizzes and assessments to test your skills and knowledge, and identify areas of improvement.",
-    image: "/assets/images/onb-quiz.jpg",
+    image: "/assets/images/on-quiz.jpg",
   },
   {
     title: "Showcase Your Skills",
     description:
       "Create an impressive profile and share it with potential recruiters. Showcase your learning journey, skills, and projects.",
-    image: "/assets/images/onb-share.jpg",
+    image: "/assets/images/on-share.jpg",
   },
   {
     title: "You're All Set!",
