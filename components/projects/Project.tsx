@@ -159,7 +159,7 @@ const Project = ({ project }: IProps) => {
             </Box>
           </Box>
         </Card>
-        <Box mt={8}>
+        <Box mt={2}>
           <Grid container spacing={2}>
             <Grid item sm={6}>
               <Card>

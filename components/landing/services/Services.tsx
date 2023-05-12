@@ -12,32 +12,32 @@ import ServiceCard from "./ServiceCard"
 const SERVICES_DATA = [
   {
     image: serviceImage1,
-    text: "Get organized and take control of your study schedule with our powerful calendar tool. Plan your sessions, set deadlines, and stay on track to achieve your goals",
+    text: "Get organized and take control of your study schedule with our powerful calendar tool. Plan your learning sessions, set project deadlines, and stay on track to achieve your coding goals.",
     heading: "Calendar",
   },
   {
     image: serviceImage2,
-    text: "Take control of your learning with Studify's course management system. Easily plan your studies and stay on track towards your goals",
+    text: "Studify's course management system lets you easily plan and track your progress. Stay on course towards your goals, manage your resources, and keep a record of all your learning activities.",
     heading: "Courses",
   },
   {
     image: serviceImage3,
-    text: "Take control of your coding education with Studify's powerful dashboard. Analyze your progress and make data-driven decisions to improve your skills",
+    text: "Take control of your coding education with Studify's intuitive dashboard. Analyze your progress, visualize your achievements, and make data-driven decisions to improve your skills.",
     heading: "Personal overview",
   },
   {
     image: serviceImage4,
-    text: "Manage your coding projects with ease using Studify. Keep all your code, notes, and progress in one place",
+    text: "Manage your projects efficiently. Keep all your code, notes, and progress in one place with Studify.",
     heading: "Projects",
   },
   {
     image: serviceImage5,
-    text: "Test your skills and knowledge with Studify's built-in quizzes and assessments",
+    text: "Studify's built-in quizzes and assessments offer an effective way to test your skills and knowledge. Identify areas of improvement and gain confidence in your coding abilities.",
     heading: "Quizzes",
   },
   {
     image: serviceImage6,
-    text: "Elevate your profile and share it with recruiters using Studify's integrated job search tools",
+    text: "Create an impressive profile using Studify's integrated tools. Share your learning journey, showcase your skills and projects, and catch the attention of potential recruiters.",
     heading: "Profile",
   },
 ]

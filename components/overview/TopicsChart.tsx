@@ -1,7 +1,6 @@
 import React from "react"
 import { Box, Card, CardContent, CardHeader, Divider, useTheme } from "@mui/material"
 import { Bar } from "react-chartjs-2"
-import { useCourses, useProjects } from "../../lib/hooks"
 import CardHeaderTitle from "../shared/CardHeaderTitle"
 import { pipe } from "fp-ts/function"
 import * as A from "fp-ts/Array"

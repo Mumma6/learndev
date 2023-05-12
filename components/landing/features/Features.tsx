@@ -13,7 +13,7 @@ Make sure all img are same size
 
 */
 
-type CoreFeatures = "Profile overview" | "Calendar" | "Courses & Projects" | "Quizzes"
+type CoreFeatures = "Profile overview" | "Calendar" | "Courses" | "Project"
 
 const Features = () => {
   const [selected, setSelected] = useState<CoreFeatures>("Profile overview")
@@ -75,21 +75,21 @@ const Features = () => {
           <Grid item>
             <Button
               startIcon={<AiOutlineFundProjectionScreen />}
-              variant={getVariant("Courses & Projects")}
+              variant={getVariant("Project")}
               size="large"
-              onClick={() => setSelected("Courses & Projects")}
+              onClick={() => setSelected("Project")}
             >
-              Courses & Projects
+              Project
             </Button>
           </Grid>
           <Grid item>
             <Button
               startIcon={<MdQuiz />}
-              variant={getVariant("Quizzes")}
+              variant={getVariant("Courses")}
               size="large"
-              onClick={() => setSelected("Quizzes")}
+              onClick={() => setSelected("Courses")}
             >
-              Quizzes
+              Courses
             </Button>
           </Grid>
         </Grid>
@@ -102,7 +102,7 @@ const Features = () => {
                 maxHeight: "100%",
               }}
               alt="core"
-              src="/assets/images/calendar.png"
+              src="/assets/images/home1.jpg"
             />
           )}
           {selected === "Calendar" && (
@@ -112,27 +112,27 @@ const Features = () => {
                 maxHeight: "100%",
               }}
               alt="core"
-              src="/assets/images/calendar.png"
+              src="/assets/images/calendar.jpg"
             />
           )}
-          {selected === "Courses & Projects" && (
+          {selected === "Project" && (
             <img
               style={{
                 maxWidth: "100%",
                 maxHeight: "100%",
               }}
               alt="core"
-              src="/assets/images/calendar.png"
+              src="/assets/images/proj1.jpg"
             />
           )}
-          {selected === "Quizzes" && (
+          {selected === "Courses" && (
             <img
               style={{
                 maxWidth: "100%",
                 maxHeight: "100%",
               }}
               alt="core"
-              src="/assets/images/calendar.png"
+              src="/assets/images/mycourses.jpg"
             />
           )}
         </Box>

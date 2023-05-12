@@ -1,5 +1,9 @@
 import React, { useState, useCallback, useEffect } from "react"
 import * as _ from "lodash"
+import { pipe } from "fp-ts/function"
+import * as A from "fp-ts/Array"
+import * as O from "fp-ts/Option"
+import * as TE from "fp-ts/TaskEither"
 
 import {
   Box,
@@ -32,7 +36,7 @@ import { IQuiz } from "../../models/Quiz"
 import AddEventInfoModal from "./AddEventInfoModal"
 import { ClickEvent } from "../../types/generics"
 import { useCourses, useCurrentUser, useEvents } from "../../lib/hooks"
-import { fetcher } from "../../lib/axiosFetcher"
+import { fetcher, fetcherTE } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
 import { useSWRConfig } from "swr"
 import EditEventInfoModal from "./EditEventInfoModal"
@@ -167,19 +171,21 @@ const StudyCalendar = () => {
     const match = eventsData?.payload?.find(findFn)
 
     if (match) {
-      try {
-        const { _id } = match
-        const response = await fetcher(`/api/events?_id=${_id}`, {
-          method: "DELETE",
-        })
-
-        if (response?.error) {
-          toast.error(response.error)
-        } else {
-          mutate("/api/events")
-          toast.success(response?.message)
-        }
-      } catch (error) {}
+      const { _id } = match
+      pipe(
+        fetcherTE(`/api/events?id=${_id}`, { method: "DELETE" }),
+        TE.fold(
+          (error) => {
+            toast.error(error)
+            return TE.left(error)
+          },
+          (response) => {
+            mutate("/api/events")
+            toast.success(response?.message)
+            return TE.right(response)
+          }
+        )
+      )()
     }
 
     handleEditModalClose()

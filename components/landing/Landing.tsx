@@ -38,10 +38,11 @@ const Landing = () => {
           <Grid sx={{ marginTop: 1 }} container spacing={2}>
             <Grid item xs={12} sm={12} md={6} sx={{ marginTop: "auto", marginBottom: "auto" }}>
               <Typography color="textPrimary" variant="h4" sx={{ fontSize: 34, marginBottom: 10 }}>
-                Take control of your learning with Studify: the all-in-one platform for self-taught developers
+                Unlock your potential: the all-in-one platform for self-taught developers.
               </Typography>
               <Box>
-                <ScrollLink smooth to="pricing">
+                {/*
+<ScrollLink smooth to="pricing">
                   <Button
                     sx={{
                       fontSize: 30,
@@ -53,6 +54,20 @@ const Landing = () => {
                     Get started
                   </Button>
                 </ScrollLink>
+                */}
+
+                <Link style={{ textDecoration: "none" }} href="/sign-up" passHref>
+                  <Button
+                    sx={{
+                      fontSize: 30,
+                    }}
+                    size="large"
+                    color="secondary"
+                    variant="contained"
+                  >
+                    Get started
+                  </Button>
+                </Link>
               </Box>
             </Grid>
             <Grid sx={{ marginTop: 5 }} item xs={12} sm={12} md={6}>
@@ -79,8 +94,8 @@ const Landing = () => {
             </Grid>
             <Grid item xs={12} sm={12} md={6} sx={{ display: "flex", alignItems: "center" }}>
               <Typography color="textPrimary" variant="h4" sx={{ fontSize: 34 }}>
-                The way we learn is changing. In a online world with endless resources it can be overwhelming and hard to
-                keep track. We help to bring your vision to life
+                In an online world with endless resources, it can be overwhelming to keep track. We bring your learning
+                vision to life, providing the tools to organize and control your self-guided coding education.
               </Typography>
             </Grid>
           </Grid>
@@ -92,9 +107,12 @@ const Landing = () => {
       <Element name="features">
         <Features />
       </Element>
-      <Element name="pricing">
+      {/*
+        <Element name="pricing">
         <Pricing />
       </Element>
+      */}
+
       <LandingFooter />
     </div>
   )

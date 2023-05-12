@@ -15,7 +15,7 @@ import Link from "next/link"
 import { useCurrentUser } from "../../lib/hooks"
 import { Link as ScrollLink } from "react-scroll"
 
-const pages = ["Services", "Features", "Pricing"]
+const pages = ["Services", "Features"] // , "Pricing"
 
 function LandingHeader() {
   const { data } = useCurrentUser()

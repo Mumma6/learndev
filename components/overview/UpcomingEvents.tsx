@@ -19,15 +19,15 @@ const UpcomingEvents = () => {
   const formateDate = (date: Date) => format(new Date(date), "MM-dd HH:mm")
 
   const createRow = (event: IEventInfo) => (
-    <TableRow sx={{ borderRadius: 40, backgroundColor: event.labelColor || null }}>
+    <TableRow sx={{ borderRadius: 40, backgroundColor: event.labelColor || "#db5cd2" }}>
       <TableCell component="th" scope="row">
         <Box sx={{ display: "flex" }}>
-          <Typography>{event.title}</Typography>
+          <Typography sx={{ color: "white" }}>{event.title}</Typography>
         </Box>
       </TableCell>
       <TableCell>
         <Box sx={{ display: "flex" }}>
-          <Typography>{`${formateDate(event.start!)} - ${formateDate(event.end!)}`}</Typography>
+          <Typography sx={{ color: "white" }}>{`${formateDate(event.start!)} - ${formateDate(event.end!)}`}</Typography>
         </Box>
       </TableCell>
     </TableRow>
@@ -53,7 +53,7 @@ const UpcomingEvents = () => {
                 data?.payload?.filter((e) => isAfter(new Date(e.start!), startOfToday())),
                 ["start", "title"]
               )
-                .slice(0, 6)
+                .slice(0, 5)
                 .map((event) => createRow(event))}
             </TableBody>
           </Table>

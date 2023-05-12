@@ -74,7 +74,7 @@ const Courses = () => {
 
   const getCourseData = pipe(
     getCorrectStatus(statusValue),
-    O.map(A.filter((x) => x.tags.includes(searchInput.toLowerCase()))),
+    // O.map(A.filter((x) => x.tags.includes(searchInput.toLowerCase()))),
     O.fold(
       () => [],
       (data) => data

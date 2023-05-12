@@ -21,6 +21,7 @@ const LandingFooter = () => {
       style={{ backgroundColor: "white", boxShadow: "1px 0px 5px rgb(100 116 139 / 12%)", paddingTop: 1, paddingBottom: 40 }}
     >
       <Container sx={{ mt: 10 }}>
+        {/*
         <Grid container spacing={1}>
           <Grid item xs={4}>
             <div>
@@ -64,6 +65,8 @@ const LandingFooter = () => {
             </div>
           </Grid>
         </Grid>
+        */}
+
         <Divider sx={{ borderBottomWidth: 3 }} />
         <h1>Studify</h1>
       </Container>
