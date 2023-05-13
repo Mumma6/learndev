@@ -61,16 +61,7 @@ const Services = () => {
               marginBottom: 30,
             }}
           >
-            What the features of product
-          </p>
-          <p
-            style={{
-              lineHeight: 1,
-              fontSize: 20,
-              color: "#858B91",
-            }}
-          >
-            Features are highlighted here
+            Features overview
           </p>
         </Box>
         <Grid mb={4} mt={2} container spacing={2}>

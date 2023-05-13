@@ -24,33 +24,6 @@ const Features = () => {
   return (
     <Box>
       <Container>
-        <Box
-          sx={{
-            textAlign: "center",
-            mb: 5,
-            mt: 10,
-          }}
-        >
-          <p
-            style={{
-              color: "#0F2137",
-              fontSize: 30,
-              fontWeight: 700,
-              lineHeight: 1,
-            }}
-          >
-            What are the core features
-          </p>
-          <p
-            style={{
-              lineHeight: 1,
-              fontSize: 20,
-              color: "#858B91",
-            }}
-          >
-            Features overview
-          </p>
-        </Box>
         <Grid mb={4} mt={2} container spacing={2} sx={{ justifyContent: "center" }}>
           <Grid item>
             <Button
