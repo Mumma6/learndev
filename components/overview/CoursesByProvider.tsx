@@ -95,6 +95,9 @@ const CoursesByProvider = ({ courses }: IProps) => {
         >
           <Doughnut data={data} options={options} />
         </Box>
+        <Box sx={{ textAlign: "center", paddingTop: 3 }}>
+          <Typography variant="body1">Top 5</Typography>
+        </Box>
         <Box
           sx={{
             display: "flex",
@@ -107,22 +110,26 @@ const CoursesByProvider = ({ courses }: IProps) => {
               No courses
             </Typography>
           )}
-          {amountOfProviders.map(({ color, institution, percentage }) => (
-            <Box
-              key={institution}
-              sx={{
-                p: 1,
-                textAlign: "center",
-              }}
-            >
-              <Typography color="textPrimary" variant="body1">
-                {institution}
-              </Typography>
-              <Typography style={{ color }} variant="body1">
-                {percentage}%
-              </Typography>
-            </Box>
-          ))}
+
+          {amountOfProviders
+            .sort((a, b) => b.percentage - a.percentage)
+            .slice(0, 4)
+            .map(({ color, institution, percentage }) => (
+              <Box
+                key={institution}
+                sx={{
+                  p: 1,
+                  textAlign: "center",
+                }}
+              >
+                <Typography color="textPrimary" variant="body1">
+                  {institution}
+                </Typography>
+                <Typography style={{ color }} variant="body1">
+                  {percentage}%
+                </Typography>
+              </Box>
+            ))}
         </Box>
       </CardContent>
     </Card>

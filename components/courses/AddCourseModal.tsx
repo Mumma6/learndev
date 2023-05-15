@@ -268,11 +268,11 @@ const AddCourseModal = ({ open, handleClose, onAddCourse, setTopicData, topicDat
               onBlur={() => zodForm.onBlur("institution")}
               error={Boolean(zodForm.touched.institution && zodForm.errors.institution)}
             >
-              <MenuItem value={InstitutionEnum.Enum.Other}>Other</MenuItem>
-              <MenuItem value={InstitutionEnum.Enum.Udemy}>Udemy</MenuItem>
-              <MenuItem value={InstitutionEnum.Enum.Linkedin}>Linkedin</MenuItem>
-              <MenuItem value={InstitutionEnum.Enum.Pluralsight}>Pluralsight</MenuItem>
-              <MenuItem value={InstitutionEnum.Enum.Youtube}>Youtube</MenuItem>
+              {InstitutionEnum.options.sort().map((institution) => (
+                <MenuItem key={institution} value={institution}>
+                  {institution}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Box>

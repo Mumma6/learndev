@@ -273,11 +273,11 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
                   onChange={formik.handleChange}
                   value={formik.values.institution}
                 >
-                  <MenuItem value={InstitutionEnum.Enum.Other}>Other</MenuItem>
-                  <MenuItem value={InstitutionEnum.Enum.Udemy}>Udemy</MenuItem>
-                  <MenuItem value={InstitutionEnum.Enum.Linkedin}>Linkedin</MenuItem>
-                  <MenuItem value={InstitutionEnum.Enum.Pluralsight}>Pluralsight</MenuItem>
-                  <MenuItem value={InstitutionEnum.Enum.Youtube}>Youtube</MenuItem>
+                  {InstitutionEnum.options.sort().map((institution) => (
+                    <MenuItem key={institution} value={institution}>
+                      {institution}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
               <FormControl style={{ marginTop: 10 }} fullWidth>
@@ -388,23 +388,3 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
 }
 
 export default EditCourseModal
-
-/*
- <FormControl style={{ marginTop: 20, marginBottom: 20 }}>
-            <InputLabel id="demo-simple-select-label">institution</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              label="Institution"
-              name="institution"
-              value={formik.values.institution}
-              error={Boolean(formik.touched?.institution && formik.errors?.institution)}
-            >
-              <MenuItem value={InstitutionEnum.Enum.Other}>Other</MenuItem>
-              <MenuItem value={InstitutionEnum.Enum.Udemy}>Udemy</MenuItem>
-              <MenuItem value={InstitutionEnum.Enum.Linkedin}>Linkedin</MenuItem>
-              <MenuItem value={InstitutionEnum.Enum.Pluralsight}>Pluralsight</MenuItem>
-              <MenuItem value={InstitutionEnum.Enum.Youtube}>Youtube</MenuItem>
-            </Select>
-          </FormControl>
-*/
