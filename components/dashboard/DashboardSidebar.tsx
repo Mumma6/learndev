@@ -10,7 +10,7 @@ import { BsCollection, BsFillCollectionFill } from "react-icons/bs"
 import { AiOutlineFundProjectionScreen } from "react-icons/ai"
 import NavItem from "./NavItem"
 import Link from "next/link"
-import { MdQuiz } from "react-icons/md"
+import { MdQuiz, MdFeedback } from "react-icons/md"
 import { IconType } from "react-icons"
 import { UserModelSchemaType } from "../../schema/UserSchema"
 import { RiMenuFoldFill } from "react-icons/ri"
@@ -112,6 +112,7 @@ const DashboardSidebar = ({ open, onClose, user }: IProps) => {
         )}
       </Box>
 
+      {/** ersätt med en logo, kanske ha en divider under */}
       <Box sx={{ margin: 2 }}>
         <Link style={{ textDecoration: "none" }} href="/" passHref>
           <Button size="large" color="primary" variant="contained">
@@ -132,6 +133,11 @@ const DashboardSidebar = ({ open, onClose, user }: IProps) => {
           {items.map((item) => (
             <NavItem key={item.title} icon={item.icon} href={item.href} title={item.title} />
           ))}
+        </Box>
+
+        <Box mb={2}>
+          <Divider sx={{ backgroundColor: "#ffffff", marginLeft: 1, marginRight: 1, marginBottom: 1 }} />
+          <NavItem key={"Feedback"} icon={<MdFeedback fontSize="small" />} href={"/feedback"} title={"Feedback"} />
         </Box>
       </Box>
     </>

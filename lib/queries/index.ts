@@ -3,7 +3,7 @@ import * as TE from "fp-ts/TaskEither"
 import { getMongoDb } from "../mongodb"
 import { Document, ObjectId } from "mongodb"
 
-export type CollectionType = "resources" | "tasks" | "courses" | "projects"
+export type CollectionType = "resources" | "tasks" | "courses" | "projects" | "feedback"
 
 export const getFromCollectionForUser = (collection: CollectionType) => (userId: string) =>
   TE.tryCatch(

@@ -39,6 +39,7 @@ export const handleAPIResponse = <T>(
   res.json({ payload, error: null, message })
 }
 
+// Add the error to a logs collection here?
 export const handleAPIError = (res: NextApiResponse, error: any): void => {
   res.statusCode = 400
   res.json({ payload: null, error: error.message, message: error || "An error occurred" })
