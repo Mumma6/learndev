@@ -3,10 +3,10 @@ import auths from "../../../lib/middlewares/auth"
 import { getMongoDb } from "../../../lib/mongodb"
 
 import { findUserByEmail, insertUser } from "../../../lib/queries/user"
-import { Response } from "../../../types/response"
-import { NextApiRequest, NextApiResponse } from "next"
+import { type Response } from "../../../types/response"
+import { type NextApiRequest, type NextApiResponse } from "next"
 import { handleAPIError, handleAPIResponse } from "../../../lib/utils"
-import { UserModelSchemaType, UserRegistrationSchema } from "../../../schema/UserSchema"
+import { type UserModelSchemaType, UserRegistrationSchema } from "../../../schema/UserSchema"
 
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<UserModelSchemaType | null>>>()
 
@@ -19,32 +19,32 @@ handler.post(...auths, async (req, res) => {
     if (!parsedFormInput.success) {
       console.log(parsedFormInput.error)
 
-      return handleAPIError(res, { message: "Validation error" })
+      handleAPIError(res, { message: "Validation error" }); return
     }
 
     const { data } = parsedFormInput
     const { email, password, name } = data
 
     if (await findUserByEmail(db, email)) {
-      return handleAPIError(res, { message: "The email you entered is already in use." })
+      handleAPIError(res, { message: "The email you entered is already in use." }); return
     }
 
     // All other props will get a default value in the function
     const user = await insertUser(db, {
       email,
       password,
-      name,
+      name
     })
 
     req.logIn(user, (err: any) => {
       if (err) {
         console.log("error with passport logIn fn")
         console.log(err)
-        return handleAPIError(res, err)
+        handleAPIError(res, err); return
       }
 
       if (!user) {
-        return handleAPIError(res, { message: "No user found" })
+        handleAPIError(res, { message: "No user found" }); return
       }
 
       handleAPIResponse(res, user, "User found")

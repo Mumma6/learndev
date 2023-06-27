@@ -1,20 +1,14 @@
-import React, { useState, useEffect } from "react"
-import Paper from "@mui/material/Paper"
+import React, { useEffect, useState } from "react"
 import Dialog from "@mui/material/Dialog"
-import DialogActions from "@mui/material/DialogActions"
-import DialogContent from "@mui/material/DialogContent"
-import DialogContentText from "@mui/material/DialogContentText"
-import DialogTitle from "@mui/material/DialogTitle"
-import { Avatar, Box, Button, Card, CardContent, CardHeader, Divider, Container, Typography } from "@mui/material"
+import { Box, Button, Card, CardContent, CardHeader, Container, Divider } from "@mui/material"
 import { FaArrowLeft, FaArrowRight, FaCheck } from "react-icons/fa"
-import SubmitButton from "../shared/SubmitButton"
 import OnBoardingStep from "./OnBoardingStep"
 
 import { toast } from "react-toastify"
 import { pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
 import { fetcherTE } from "../../lib/axiosFetcher"
-import { UserModelSchemaType } from "../../schema/UserSchema"
+import { type UserModelSchemaType } from "../../schema/UserSchema"
 import { useSWRConfig } from "swr"
 
 interface IProps {
@@ -32,48 +26,48 @@ const STEPS: ISteps[] = [
     title: "Welcome to Studify!",
     description:
       "An all-in-one platform for self-taught developers. Let's get started with a quick tour to get you famailiar with the app!",
-    image: undefined,
+    image: undefined
   },
   {
     title: "Manage Your Schedule",
     description:
       "Use our powerful calendar tool to organize your study schedule, plan your learning sessions, and set project deadlines.",
-    image: "/assets/images/on-calendar.jpg",
+    image: "/assets/images/on-calendar.jpg"
   },
   {
     title: "Take Control of Your Courses",
     description:
       "Easily plan and track your progress with our course management system. Manage all your resources and activities in one place.",
-    image: "/assets/images/on-courses.jpg",
+    image: "/assets/images/on-courses.jpg"
   },
   {
     title: "Track Your Progress",
     description:
       "With our intuitive dashboard, you can analyze your progress, visualize your achievements, and make data-driven decisions to improve your skills.",
-    image: "/assets/images/on-dashboard.jpg",
+    image: "/assets/images/on-dashboard.jpg"
   },
   {
     title: "Manage Your Projects",
     description: "Keep all your code, notes, and project progress in one place, making project management a breeze.",
-    image: "/assets/images/on-project.jpg",
+    image: "/assets/images/on-project.jpg"
   },
   {
     title: "Test Your Knowledge",
     description:
       "Use Studify's built-in quizzes and assessments to test your skills and knowledge, and identify areas of improvement.",
-    image: "/assets/images/on-quiz.jpg",
+    image: "/assets/images/on-quiz.jpg"
   },
   {
     title: "Showcase Your Skills",
     description:
       "Create an impressive profile and share it with potential recruiters. Showcase your learning journey, skills, and projects.",
-    image: "/assets/images/on-share.jpg",
+    image: "/assets/images/on-share.jpg"
   },
   {
     title: "You're All Set!",
     description: "Now you're ready to dive in and start learning with Studify. Happy coding!",
-    image: undefined,
-  },
+    image: undefined
+  }
 ]
 
 export const OnBoardingModal = ({ showOnboarding = false }: IProps) => {
@@ -95,8 +89,8 @@ export const OnBoardingModal = ({ showOnboarding = false }: IProps) => {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
         data: {
-          hasCompletedOnboarding: true,
-        },
+          hasCompletedOnboarding: true
+        }
       }),
       TE.fold(
         (error) => {
@@ -121,7 +115,7 @@ export const OnBoardingModal = ({ showOnboarding = false }: IProps) => {
           <Divider />
           <CardContent
             sx={{
-              minHeight: 600,
+              minHeight: 600
             }}
           >
             <OnBoardingStep step={currentStep} />
@@ -132,28 +126,30 @@ export const OnBoardingModal = ({ showOnboarding = false }: IProps) => {
               display: "flex",
               justifyContent: "space-between",
               p: 2,
-              float: "right",
+              float: "right"
             }}
           >
             {" "}
             {currentIndex !== 0 && (
-              <Button onClick={() => setCurrentIndex((index) => index - 1)} startIcon={<FaArrowLeft />}>
+              <Button onClick={() => { setCurrentIndex((index) => index - 1) }} startIcon={<FaArrowLeft />}>
                 Previous
               </Button>
             )}
-            {currentIndex === STEPS.length - 1 ? (
-              <Button onClick={() => onDone()} endIcon={<FaCheck />}>
+            {currentIndex === STEPS.length - 1
+              ? (
+              <Button onClick={() => { onDone() }} endIcon={<FaCheck />}>
                 Done
               </Button>
-            ) : (
+                )
+              : (
               <Button
                 disabled={currentIndex === STEPS.length - 1}
-                onClick={() => setCurrentIndex((index) => index + 1)}
+                onClick={() => { setCurrentIndex((index) => index + 1) }}
                 endIcon={<FaArrowRight />}
               >
                 Next
               </Button>
-            )}
+                )}
           </Box>
         </Card>
       </Container>

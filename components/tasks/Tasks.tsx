@@ -1,11 +1,11 @@
 import React, { useState } from "react"
-import { Box, Container, Card, CardContent, Divider, CardHeader } from "@mui/material"
+import { Box, Card, CardContent, CardHeader, Container, Divider } from "@mui/material"
 import CardHeaderTitle from "../shared/CardHeaderTitle"
 import TaskDataGrid from "./TaskDataGrid"
 
 import Button from "@mui/material/Button"
 import AddTaskModal from "./AddTaskModal"
-import { PrioEnum, TaskFormInputSchema, TaskFormInputType, TaskModelType, TaskPrioEnumType } from "../../schema/TaskSchema"
+import { PrioEnum, TaskFormInputSchema, type TaskFormInputType, type TaskModelType } from "../../schema/TaskSchema"
 import { useZodFormValidation } from "zod-react-form"
 import { useTasks } from "../../lib/hooks"
 import { useSWRConfig } from "swr"
@@ -13,7 +13,6 @@ import { pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
 import { fetcherTE } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
-import InfoTooltip from "../shared/Tooltip"
 
 /*
 
@@ -29,13 +28,13 @@ export const initialTaskFormstate: InitialZodFormState = {
   title: "",
   description: "",
   completed: false,
-  prio: PrioEnum.Enum["Medium"],
+  prio: PrioEnum.Enum.Medium
 }
 
 export const initialActivityTaskFormstate: InitialActivityFromState = {
   activityName: "",
   activityId: "",
-  activityGroup: "",
+  activityGroup: ""
 }
 
 const Tasks = () => {
@@ -62,8 +61,8 @@ const Tasks = () => {
         headers: { "Content-Type": "application/json" },
         data: {
           ...zodForm.values,
-          ...activityFormState,
-        },
+          ...activityFormState
+        }
       }),
       TE.fold(
         (error) => {
@@ -88,8 +87,8 @@ const Tasks = () => {
         headers: { "Content-Type": "application/json" },
         data: {
           _id,
-          completed,
-        },
+          completed
+        }
       }),
       TE.fold(
         (error) => {
@@ -136,7 +135,7 @@ const Tasks = () => {
     <Box
       component="main"
       sx={{
-        paddingTop: 10,
+        paddingTop: 10
       }}
     >
       <Container maxWidth={false}>
@@ -156,7 +155,7 @@ const Tasks = () => {
                   <div
                     style={{
                       display: "flex",
-                      justifyContent: "space-between",
+                      justifyContent: "space-between"
                     }}
                   >
                     <CardHeaderTitle title="Tasks" />

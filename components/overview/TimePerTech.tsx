@@ -4,10 +4,9 @@ import { Bar } from "react-chartjs-2"
 import { pipe } from "fp-ts/function"
 import * as A from "fp-ts/Array"
 import * as O from "fp-ts/Option"
-import * as R from "fp-ts/Record"
 
 import CardHeaderTitle from "../shared/CardHeaderTitle"
-import { CourseModelSchemaType } from "../../schema/CourseSchema"
+import { type CourseModelSchemaType } from "../../schema/CourseSchema"
 import { typeColors } from "../../helpers/helpers"
 
 interface IProps {
@@ -21,7 +20,7 @@ const TimePerTech = ({ courses }: IProps) => {
 
   const addDuration = (acc: TechDuration, [tech, duration]: [string, number]): TechDuration => ({
     ...acc,
-    [tech]: (acc[tech] ?? 0) + duration,
+    [tech]: (acc[tech] ?? 0) + duration
   })
 
   const mergeTechDurations = (techDurations: TechDuration[]): TechDuration =>
@@ -57,7 +56,7 @@ const TimePerTech = ({ courses }: IProps) => {
   const options = {
     responsive: true,
     legend: {
-      display: false,
+      display: false
     },
     scales: {
       y: {
@@ -65,16 +64,16 @@ const TimePerTech = ({ courses }: IProps) => {
         ticks: {
           stepSize: 10,
           callback: function (value: unknown) {
-            return value + "h"
-          },
-        },
-      },
+            return value as string + "h"
+          }
+        }
+      }
     },
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false,
-      },
+        display: false
+      }
     },
     tooltips: {
       backgroundColor: theme.palette.background.paper,
@@ -85,8 +84,8 @@ const TimePerTech = ({ courses }: IProps) => {
       footerFontColor: theme.palette.text.secondary,
       intersect: false,
       mode: "index",
-      titleFontColor: theme.palette.text.primary,
-    },
+      titleFontColor: theme.palette.text.primary
+    }
   }
 
   const data = {
@@ -95,9 +94,9 @@ const TimePerTech = ({ courses }: IProps) => {
       {
         data: durationForEachTech.map(({ duration }) => duration),
         backgroundColor: typeColors,
-        maxBarThickness: 50,
-      },
-    ],
+        maxBarThickness: 50
+      }
+    ]
   }
 
   return (
@@ -115,7 +114,7 @@ const TimePerTech = ({ courses }: IProps) => {
         <Box
           sx={{
             height: 300,
-            position: "relative",
+            position: "relative"
           }}
         >
           <Bar options={options} data={data} />

@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material"
+import { Box } from "@mui/material"
 import React from "react"
 import Image from "next/image"
 
@@ -6,10 +6,10 @@ const styles = {
   serviceCard: {
     display: "flex",
     flexDirection: "column",
-    textAlign: "center",
+    textAlign: "center"
   },
   image: {
-    flexShrink: 0,
+    flexShrink: 0
   },
   content: {
     ml: ["0", null, null, "30px"],
@@ -18,16 +18,16 @@ const styles = {
       color: "#0F2137",
       fontWeight: 700,
       fontSize: "18px",
-      lineHeight: 1,
+      lineHeight: 1
     },
     p: {
       fontSize: "16px",
       lineHeight: 1.87,
       color: "#343D48",
       mt: "20px",
-      mb: "20px",
-    },
-  },
+      mb: "20px"
+    }
+  }
 }
 
 interface IProps {
@@ -42,19 +42,19 @@ const ServiceCard = ({ image, text, heading }: IProps) => {
       sx={{
         display: "flex",
         flexDirection: "row",
-        textAlign: "left",
+        textAlign: "left"
       }}
     >
       <Box
         sx={{
-          flexShrink: 0,
+          flexShrink: 0
         }}
       >
         <Image alt={heading} src={image} />
       </Box>
       <Box
         style={{
-          marginLeft: 30,
+          marginLeft: 30
         }}
       >
         <p
@@ -62,7 +62,7 @@ const ServiceCard = ({ image, text, heading }: IProps) => {
             color: "#0F2137",
             fontWeight: 700,
             fontSize: "18px",
-            lineHeight: 1,
+            lineHeight: 1
           }}
         >
           {heading}
@@ -71,7 +71,7 @@ const ServiceCard = ({ image, text, heading }: IProps) => {
           style={{
             fontSize: "16px",
             lineHeight: 1.87,
-            color: "#343D48",
+            color: "#343D48"
           }}
         >
           {text}

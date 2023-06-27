@@ -1,20 +1,17 @@
 import React from "react"
 import {
   Box,
-  Button,
-  Grid,
   Card,
   CardContent,
-  TextField,
+  Container,
+  Grid,
   InputAdornment,
   SvgIcon,
-  Typography,
-  Container,
+  TextField
 } from "@mui/material"
 import { FaSearch } from "react-icons/fa"
-import { useCurrentUser, useQuizzes } from "../../lib/hooks"
+import { useQuizzes } from "../../lib/hooks"
 import QuizzesCard from "./QuizzesCard"
-import { IQuestion } from "../../models/Quiz"
 
 const Quizzes = () => {
   const { data } = useQuizzes()
@@ -26,7 +23,7 @@ const Quizzes = () => {
         sx={{
           flexGrow: 1,
           py: 8,
-          marginTop: 5,
+          marginTop: 5
         }}
       >
         <Container maxWidth={false}>
@@ -44,7 +41,7 @@ const Quizzes = () => {
                               <FaSearch />
                             </SvgIcon>
                           </InputAdornment>
-                        ),
+                        )
                       }}
                       placeholder="Search quiz"
                       variant="outlined"

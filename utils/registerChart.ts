@@ -3,14 +3,14 @@ import {
   BarElement,
   CategoryScale,
   Chart,
-  Legend,
-  LinearScale,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-  RadialLinearScale,
   Filler,
+  Legend,
+  LineElement,
+  LinearScale,
+  PointElement,
+  RadialLinearScale,
+  Title,
+  Tooltip
 } from "chart.js"
 
 export const registerChartJs = () => {

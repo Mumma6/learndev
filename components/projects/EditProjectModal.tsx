@@ -5,19 +5,14 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import {
-  ProjectModelFormInputSchema,
-  ProjectModelFromInputType,
-  ProjectModelType,
-  ProjectStatusEnum,
+  type ProjectModelType,
+  ProjectStatusEnum
 } from "../../schema/ProjectSchema"
-import { toFormikValidate } from "zod-formik-adapter"
 import { useFormik } from "formik"
-import { truncate } from "fs"
 import { fetcher } from "../../lib/axiosFetcher"
-import { SkillSchemaType } from "../../schema/SharedSchema"
+import { type SkillSchemaType } from "../../schema/SharedSchema"
 import { toast } from "react-toastify"
 import { pipe } from "fp-ts/function"
-import * as A from "fp-ts/Array"
 import * as O from "fp-ts/Option"
 import {
   Autocomplete,
@@ -32,8 +27,7 @@ import {
   MenuItem,
   Paper,
   Select,
-  TextField,
-  Typography,
+  TextField
 } from "@mui/material"
 import { skillsData } from "../../constants/skillsData"
 import { FaPlus } from "react-icons/fa"
@@ -106,11 +100,11 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
       sourceCodeUrl,
       deployedUrl,
       status,
-      resources,
+      resources
     },
     onSubmit: (formValues) => {
       onAddProject(formValues)
-    },
+    }
   })
 
   const isDisabled = () => {
@@ -146,8 +140,8 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
         data: {
           ...formValues,
           techStack,
-          _id,
-        },
+          _id
+        }
       })
 
       if (response?.error) {
@@ -258,7 +252,7 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
                   {resourcesOptions.map((option) => (
                     <MenuItem key={option} value={option}>
                       <ListItemIcon>
-                        <Checkbox checked={formik.values.resources.indexOf(option) > -1} />
+                        <Checkbox checked={formik.values.resources.includes(option)} />
                       </ListItemIcon>
                       <ListItemText primary={option} />
                     </MenuItem>
@@ -274,7 +268,7 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
                 justifyContent: "start",
                 flexWrap: "wrap",
                 listStyle: "none",
-                paddingBottom: !techStack.length ? 5 : 0,
+                paddingBottom: !techStack.length ? 5 : 0
               }}
             >
               <Autocomplete
@@ -297,7 +291,7 @@ const EditProjectModal = ({ open, handleClose, project }: IProps) => {
                 flexWrap: "wrap",
                 listStyle: "none",
                 p: 0.5,
-                mt: 8,
+                mt: 8
               }}
               component="ul"
             >

@@ -12,7 +12,7 @@ export const TaskFormInputSchema = z.object({
   prio: PrioEnum,
   activityName: z.string().default(""),
   activityId: z.string().default(""),
-  activityGroup: z.string().default(""),
+  activityGroup: z.string().default("")
 })
 
 export type TaskFormInputType = z.infer<typeof TaskFormInputSchema>
@@ -20,7 +20,7 @@ export type TaskFormInputType = z.infer<typeof TaskFormInputSchema>
 export const TaskModelSchema = TaskFormInputSchema.extend({
   userId: z.instanceof(ObjectId).transform((id) => id.toString()),
   _id: z.union([z.string(), z.instanceof(ObjectId).transform((id) => id.toString())]),
-  createdAt: z.date(),
+  createdAt: z.date()
 })
 
 export type TaskModelType = z.infer<typeof TaskModelSchema>

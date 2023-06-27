@@ -1,5 +1,5 @@
 import React from "react"
-import { Box, Alert, Card, CardContent, CardHeader, Divider } from "@mui/material"
+import { Alert, Box, Card, CardContent, CardHeader, Divider } from "@mui/material"
 import { pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
 import Button from "@mui/material/Button"
@@ -30,7 +30,7 @@ const DeleteAccount = () => {
   const handleDelete = async () => {
     pipe(
       fetcherTE("/api/user", {
-        method: "DELETE",
+        method: "DELETE"
       }),
       TE.fold(
         (error) => {
@@ -63,7 +63,7 @@ const DeleteAccount = () => {
         sx={{
           display: "flex",
           justifyContent: "flex-end",
-          p: 2,
+          p: 2
         }}
       >
         <div>

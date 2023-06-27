@@ -8,7 +8,7 @@ import Paper from "@mui/material/Paper"
 import Typography from "@mui/material/Typography"
 import { Divider } from "@mui/material"
 import { useRouter } from "next/router"
-import { ProjectModelType } from "../../schema/ProjectSchema"
+import { type ProjectModelType } from "../../schema/ProjectSchema"
 
 interface IProps {
   deleteProject: (id: string) => void
@@ -33,8 +33,8 @@ const ProjectCard = ({ project, deleteProject }: IProps) => {
         </Box>
         <Divider />
         <CardActions sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Button onClick={() => router.push(`/projects/${project._id}`)}>Go to</Button>
-          <Button onClick={() => deleteProject(project._id as string)} color="error" size="small">
+          <Button onClick={async () => await router.push(`/projects/${project._id}`)}>Go to</Button>
+          <Button onClick={() => { deleteProject(project._id) }} color="error" size="small">
             Delete
           </Button>
         </CardActions>

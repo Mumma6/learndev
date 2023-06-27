@@ -1,20 +1,19 @@
 import bcrypt from "bcryptjs"
-import { Db, ObjectId } from "mongodb"
+import { type Db, ObjectId } from "mongodb"
 import normalizeEmail from "validator/lib/normalizeEmail"
-import * as _ from "lodash"
-import { UserModelSchema, UserModelSchemaType } from "../../schema/UserSchema"
+import { UserModelSchema, type UserModelSchemaType } from "../../schema/UserSchema"
 
 // Add TaskEither to all these functions
 
-export function dbProjectionUsers(prefix = "") {
+export function dbProjectionUsers (prefix = "") {
   return {
     [`${prefix}password`]: 0,
     [`${prefix}email`]: 0,
-    [`${prefix}emailVerified`]: 0,
+    [`${prefix}emailVerified`]: 0
   }
 }
 
-export async function findUserWithEmailAndPassword(db: Db, email: string, password: string) {
+export async function findUserWithEmailAndPassword (db: Db, email: string, password: string) {
   const normalizedEmail = normalizeEmail(email)
   const user = await db.collection("users").findOne({ email: normalizedEmail })
   if (user && (await bcrypt.compare(password, user.password))) {
@@ -23,7 +22,8 @@ export async function findUserWithEmailAndPassword(db: Db, email: string, passwo
   return null
 }
 
-export async function findUserForAuth(db: Db, userId: string) {
+export async function findUserForAuth (db: Db, userId: string) {
+  // eslint-disable-next-line no-useless-catch
   try {
     const user = await db.collection("users").findOne({ _id: new ObjectId(userId) }, { projection: { password: 0 } })
     return user || null
@@ -32,22 +32,22 @@ export async function findUserForAuth(db: Db, userId: string) {
   }
 }
 
-export async function findUserById(db: Db, userId: string) {
-  return db
+export async function findUserById (db: Db, userId: string) {
+  return await db
     .collection("users")
     .findOne({ _id: new ObjectId(userId) }, { projection: { password: 0 } })
     .then((user) => user || null)
 }
 
-export async function findCompleteUserById(db: Db, userId: string) {
-  return db
+export async function findCompleteUserById (db: Db, userId: string) {
+  return await db
     .collection("users")
     .findOne({ _id: new ObjectId(userId) })
     .then((user) => user || null)
 }
 
-export async function findUserByEmail(db: Db, email: string) {
-  return db
+export async function findUserByEmail (db: Db, email: string) {
+  return await db
     .collection("users")
     .findOne({ email }, { projection: dbProjectionUsers() })
     .then((user) => user || null)
@@ -66,14 +66,14 @@ const setDefaultValues = async (
   if (!defaultUserValues.success) {
     return {
       ...(userDbValues && { ...userDbValues }),
-      ...data,
+      ...data
     }
   }
 
   return {
     ...(defaultUserValues.data && { ...defaultUserValues.data }),
     ...(userDbValues && { ...userDbValues }),
-    ...data,
+    ...data
   }
 }
 
@@ -92,7 +92,7 @@ export const updateUserById = async (db: Db, id: string, data: Partial<UserModel
   }
 }
 
-export async function insertUser(db: Db, data: Pick<UserModelSchemaType, "email" | "password" | "name">) {
+export async function insertUser (db: Db, data: Pick<UserModelSchemaType, "email" | "password" | "name">) {
   const parsedData = UserModelSchema.omit({ name: true, email: true, password: true, _id: true }).safeParse(data)
 
   if (!parsedData.success) {
@@ -104,7 +104,7 @@ export async function insertUser(db: Db, data: Pick<UserModelSchemaType, "email"
     ...parsedData.data,
     email,
     password,
-    name,
+    name
   }
   const hashedPassword = await bcrypt.hash(user.password, 10)
 
@@ -115,7 +115,7 @@ export async function insertUser(db: Db, data: Pick<UserModelSchemaType, "email"
   return userOutput
 }
 
-export async function updateUserPasswordByOldPassword(db: Db, id: string, oldPassword: string, newPassword: string) {
+export async function updateUserPasswordByOldPassword (db: Db, id: string, oldPassword: string, newPassword: string) {
   const user = await db.collection("users").findOne(new ObjectId(id))
   if (!user) return false
   const matched = await bcrypt.compare(oldPassword, user.password)
@@ -125,7 +125,8 @@ export async function updateUserPasswordByOldPassword(db: Db, id: string, oldPas
   return true
 }
 
-export async function UNSAFE_updateUserPassword(db: Db, id: string, newPassword: string) {
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export async function UNSAFE_updateUserPassword (db: Db, id: string, newPassword: string) {
   const password = await bcrypt.hash(newPassword, 10)
   await db.collection("users").updateOne({ _id: new ObjectId(id) }, { $set: { password } })
 }

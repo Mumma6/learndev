@@ -6,7 +6,7 @@ import DialogTitle from "@mui/material/DialogTitle"
 import Button from "@mui/material/Button"
 
 import React from "react"
-import { TaskModelType } from "../../schema/TaskSchema"
+import { type TaskModelType } from "../../schema/TaskSchema"
 
 interface IProps {
   task: TaskModelType | undefined

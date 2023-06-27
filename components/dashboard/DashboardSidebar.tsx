@@ -1,18 +1,15 @@
-import React, { ReactElement } from "react"
-import { Box, Button, Divider, Drawer, IconButton, Tooltip, Typography, useMediaQuery } from "@mui/material"
-import NextLink from "next/link"
-import { useRouter } from "next/router"
+import React, { type ReactElement } from "react"
+import { Box, Button, Divider, Drawer, IconButton, useMediaQuery } from "@mui/material"
 import { useTheme } from "@mui/material/styles"
 
-import { FaBriefcase, FaCog, FaHome, FaRegCalendarAlt, FaTasks, FaUser, FaUsers } from "react-icons/fa"
+import { FaCog, FaHome, FaRegCalendarAlt, FaTasks, FaUser } from "react-icons/fa"
 import { ImBooks } from "react-icons/im"
-import { BsCollection, BsFillCollectionFill } from "react-icons/bs"
+import { BsFillCollectionFill } from "react-icons/bs"
 import { AiOutlineFundProjectionScreen } from "react-icons/ai"
 import NavItem from "./NavItem"
 import Link from "next/link"
-import { MdQuiz, MdFeedback } from "react-icons/md"
-import { IconType } from "react-icons"
-import { UserModelSchemaType } from "../../schema/UserSchema"
+import { MdFeedback, MdQuiz } from "react-icons/md"
+import { type UserModelSchemaType } from "../../schema/UserSchema"
 import { RiMenuFoldFill } from "react-icons/ri"
 
 interface SidbarNavItems {
@@ -25,44 +22,44 @@ const items: SidbarNavItems[] = [
   {
     href: "/home",
     icon: <FaHome fontSize="small" />,
-    title: "Home",
+    title: "Home"
   },
   {
     href: "/calendar",
     icon: <FaRegCalendarAlt fontSize="small" />,
-    title: "Calendar",
+    title: "Calendar"
   },
 
   {
     href: "/courses",
     icon: <ImBooks fontSize="small" />,
-    title: "My courses",
+    title: "My courses"
   },
   {
     href: "/projects",
     icon: <AiOutlineFundProjectionScreen fontSize="small" />,
-    title: "My projects",
+    title: "My projects"
   },
 
   {
     href: "/tasks",
     icon: <FaTasks fontSize="small" />,
-    title: "Tasks",
+    title: "Tasks"
   },
   {
     href: "/resources",
     icon: <BsFillCollectionFill fontSize="small" />,
-    title: "Resources",
+    title: "Resources"
   },
   {
     href: "/quizzes",
     icon: <MdQuiz fontSize="small" />,
-    title: "Quizzes",
+    title: "Quizzes"
   },
   {
     href: "/profile",
     icon: <FaUser fontSize="small" />,
-    title: "Profile",
+    title: "Profile"
   },
   /*
   {
@@ -70,7 +67,6 @@ const items: SidbarNavItems[] = [
     icon: <FaBriefcase fontSize="small" />,
     title: "Job listing",
   },
-  
 
   {
     href: "/study-rooms",
@@ -81,8 +77,8 @@ const items: SidbarNavItems[] = [
   {
     href: "/settings",
     icon: <FaCog fontSize="small" />,
-    title: "Settings",
-  },
+    title: "Settings"
+  }
 ]
 
 interface IProps {
@@ -104,7 +100,7 @@ const DashboardSidebar = ({ open, onClose, user }: IProps) => {
             sx={{
               color: "white",
               float: "right",
-              marginTop: 1.5,
+              marginTop: 1.5
             }}
           >
             <RiMenuFoldFill />
@@ -126,7 +122,7 @@ const DashboardSidebar = ({ open, onClose, user }: IProps) => {
           marginTop: 4,
           display: "flex",
           flexDirection: "column",
-          height: "100%",
+          height: "100%"
         }}
       >
         <Box sx={{ flexGrow: 1 }}>
@@ -152,11 +148,11 @@ const DashboardSidebar = ({ open, onClose, user }: IProps) => {
           sx: {
             backgroundColor: "#ededed",
             background: "linear-gradient(195deg, rgb(66, 66, 74), rgb(25, 25,25))",
-            width: 280,
+            width: 280
             // borderRadius: 2,
-            //margin: 2,
-            //height: "calc(100vh - 2rem)",
-          },
+            // margin: 2,
+            // height: "calc(100vh - 2rem)",
+          }
         }}
         variant="permanent"
       >
@@ -174,8 +170,8 @@ const DashboardSidebar = ({ open, onClose, user }: IProps) => {
         sx: {
           backgroundColor: "#ededed",
           background: "linear-gradient(195deg, rgb(66, 66, 74), rgb(25, 25,25))",
-          width: 280,
-        },
+          width: 280
+        }
       }}
       sx={{ zIndex: (theme) => theme.zIndex.appBar + 100 }}
       variant="temporary"

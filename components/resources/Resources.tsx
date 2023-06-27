@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Box, Container, Grid, Button, Card, CardContent, Typography, Divider, CardHeader } from "@mui/material"
+import { Box, Button, Card, CardContent, CardHeader, Container, Divider } from "@mui/material"
 import ResourcesDataGrid from "./ResourcesDataGrid"
 import CardHeaderTitle from "../shared/CardHeaderTitle"
 import AddResourceModal from "./AddResourceModal"
@@ -19,7 +19,7 @@ const Resources = () => {
     <Box
       component="main"
       sx={{
-        paddingTop: 10,
+        paddingTop: 10
       }}
     >
       <Container maxWidth={false}>
@@ -33,12 +33,12 @@ const Resources = () => {
                   <div
                     style={{
                       display: "flex",
-                      justifyContent: "space-between",
+                      justifyContent: "space-between"
                     }}
                   >
                     <CardHeaderTitle title="Resources" />
                     <div style={{ display: "flex" }}>
-                      <Button sx={{ marginLeft: 1 }} color="primary" variant="contained" onClick={() => setOpen(true)}>
+                      <Button sx={{ marginLeft: 1 }} color="primary" variant="contained" onClick={() => { setOpen(true) }}>
                         Add resource
                       </Button>
                     </div>

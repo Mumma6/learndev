@@ -1,9 +1,7 @@
 import React from "react"
-import { Event } from "react-big-calendar"
-import { IEventInfo } from "../../models/EventInfo"
+import { type IEventInfo } from "../../models/EventInfo"
 
-import { Box, Container, Typography, Pagination, Card, CardContent, CardHeader, Divider, Button } from "@mui/material"
-import { useRouter } from "next/router"
+import { Typography } from "@mui/material"
 
 interface IProps {
   event: IEventInfo

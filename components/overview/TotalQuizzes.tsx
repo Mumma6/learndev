@@ -1,7 +1,6 @@
 import { Avatar, Card, CardContent, Grid, Typography } from "@mui/material"
 import React from "react"
 import { FaMicroscope } from "react-icons/fa"
-import { useCurrentUser, useQuizResults } from "../../lib/hooks"
 
 interface IProps {
   amount: number
@@ -25,7 +24,7 @@ const TotalQuizzes = ({ amount }: IProps) => {
               sx={{
                 backgroundColor: "primary.main",
                 height: 56,
-                width: 56,
+                width: 56
               }}
             >
               <FaMicroscope />

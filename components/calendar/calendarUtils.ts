@@ -1,6 +1,6 @@
-import { IQuiz } from "../../models/Quiz"
-import { CourseModelSchemaType } from "../../schema/CourseSchema"
-import { ProjectModelType } from "../../schema/ProjectSchema"
+import { type IQuiz } from "../../models/Quiz"
+import { type CourseModelSchemaType } from "../../schema/CourseSchema"
+import { type ProjectModelType } from "../../schema/ProjectSchema"
 
 export interface ActivitesData {
   id: string | undefined
@@ -14,7 +14,7 @@ export const getCourses = (data: CourseModelSchemaType[]): ActivitesData[] => {
     .map((d) => ({
       id: d._id,
       name: d.content.title,
-      group: "Courses",
+      group: "Courses"
     }))
 }
 
@@ -24,7 +24,7 @@ export const getProjects = (data: ProjectModelType[]): ActivitesData[] => {
     .map((d) => ({
       id: d._id,
       name: d.title,
-      group: "Projects",
+      group: "Projects"
     }))
 }
 
@@ -34,6 +34,6 @@ export const getQuizzes = (data: IQuiz[], completedQuizzes: string[]): Activites
     .map((d) => ({
       id: d._id.toString(),
       name: d.title,
-      group: "Quizzes",
+      group: "Quizzes"
     }))
 }

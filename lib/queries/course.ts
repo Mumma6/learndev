@@ -1,12 +1,5 @@
-import { Db, InsertOneResult, ObjectId, WithId } from "mongodb"
-import { CourseModelContentInputSchemaType, CourseModelSchema, CourseModelSchemaType } from "../../schema/CourseSchema"
-import { ZodError } from "zod"
-
-import * as E from "fp-ts/Either"
-import { pipe } from "fp-ts/function"
-import * as TE from "fp-ts/TaskEither"
-import { getMongoDb } from "../mongodb"
-import { NextApiRequest } from "next"
+import { type Db, ObjectId } from "mongodb"
+import { CourseModelSchema } from "../../schema/CourseSchema"
 
 // The parsing should not be done here
 export const findCoursebyId = async (db: Db, _id: string) => {

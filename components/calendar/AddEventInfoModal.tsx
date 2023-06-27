@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react"
+import { type ChangeEvent, useEffect, useState } from "react"
 
 import TextField from "@mui/material/TextField"
 import Dialog from "@mui/material/Dialog"
@@ -7,13 +7,13 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import Button from "@mui/material/Button"
-import { Autocomplete, Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material"
-import { ClickEventRet, SetState } from "../../types/generics"
-import { EventFormData, initialEventFormState } from "./StudyCalendar"
-import { Event } from "react-big-calendar"
-import { ActivitesData, getCourses, getProjects, getQuizzes } from "./calendarUtils"
+import { Autocomplete, Box } from "@mui/material"
+import { type ClickEventRet, type SetState } from "../../types/generics"
+import { type EventFormData, initialEventFormState } from "./StudyCalendar"
+import { type Event } from "react-big-calendar"
+import { type ActivitesData, getCourses, getProjects, getQuizzes } from "./calendarUtils"
 import { useCourses, useCurrentUser, useProjects, useQuizzes } from "../../lib/hooks"
-import { UserSettingsLabelType } from "../../schema/UserSchema"
+import { type UserSettingsLabelType } from "../../schema/UserSchema"
 
 interface IProps {
   open: boolean
@@ -41,7 +41,7 @@ const AddEventInfoModal = ({ open, handleClose, eventFormData, setEventFormData,
       setActivites([
         ...getCourses(courseData.payload),
         ...getProjects(projectData.payload),
-        ...getQuizzes(quizzData.payload, userData?.payload?.completedQuizzes as string[]),
+        ...getQuizzes(quizzData.payload, userData?.payload?.completedQuizzes as string[])
       ])
     }
   }, [courseData?.payload, projectData?.payload, quizzData?.payload])
@@ -56,7 +56,7 @@ const AddEventInfoModal = ({ open, handleClose, eventFormData, setEventFormData,
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     setEventFormData((prevState) => ({
       ...prevState,
-      [event.target.name]: event.target.value,
+      [event.target.name]: event.target.value
     }))
   }
 
@@ -65,7 +65,7 @@ const AddEventInfoModal = ({ open, handleClose, eventFormData, setEventFormData,
       ...prevState,
       activityName: value?.name,
       activityId: value?.id,
-      activityGroup: value?.group,
+      activityGroup: value?.group
     }))
   }
 
@@ -73,7 +73,7 @@ const AddEventInfoModal = ({ open, handleClose, eventFormData, setEventFormData,
     setEventFormData((prevState) => ({
       ...prevState,
       labelColor: value?.color,
-      labelName: value?.name,
+      labelName: value?.name
     }))
   }
 

@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import TextField from "@mui/material/TextField"
 import Checkbox from "@mui/material/Checkbox"
 import Chip from "@mui/material/Chip"
@@ -9,22 +9,19 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import Button from "@mui/material/Button"
-import FormControlLabel from "@mui/material/FormControlLabel"
-import { Box, Divider, FormControl, InputLabel, MenuItem, Select, ListItemIcon, ListItemText } from "@mui/material"
+import { Box, Divider, FormControl, InputLabel, ListItemIcon, ListItemText, MenuItem, Select } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
-import { ClickEventRet, SetState } from "../../types/generics"
+import { type ClickEventRet, type SetState } from "../../types/generics"
 import { skillsData } from "../../constants/skillsData"
 import { FaPlus } from "react-icons/fa"
-import { SkillSchemaType } from "../../schema/SharedSchema"
-import { CourseModelContentInputSchemaType, InstitutionEnum } from "../../schema/CourseSchema"
-import { IZodFormValidation } from "zod-react-form"
-import { StatusEnum } from "../../schema/CourseSchema"
-import { ResourceModelSchemaType } from "../../schema/ResourceSchema"
+import { type SkillSchemaType } from "../../schema/SharedSchema"
+import { type CourseModelContentInputSchemaType, InstitutionEnum, StatusEnum } from "../../schema/CourseSchema"
+import { type IZodFormValidation } from "zod-react-form"
+
+import { type ResourceModelSchemaType } from "../../schema/ResourceSchema"
 import { useResources } from "../../lib/hooks"
 import { pipe } from "fp-ts/function"
-import * as A from "fp-ts/Array"
 import * as O from "fp-ts/Option"
-import * as TE from "fp-ts/TaskEither"
 
 interface IProps {
   open: boolean
@@ -108,8 +105,8 @@ const AddCourseModal = ({ open, handleClose, onAddCourse, setTopicData, topicDat
             type="text"
             fullWidth
             required
-            onChange={(e) => onChange(e.target.name, e.target.value)}
-            onBlur={() => zodForm.onBlur("title")}
+            onChange={(e) => { onChange(e.target.name, e.target.value) }}
+            onBlur={() => { zodForm.onBlur("title") }}
             helperText={(zodForm.touched.title && zodForm.errors.title) || " "}
             error={Boolean(zodForm.touched.title && zodForm.errors.title)}
           />
@@ -125,8 +122,8 @@ const AddCourseModal = ({ open, handleClose, onAddCourse, setTopicData, topicDat
             type="text"
             fullWidth
             required
-            onChange={(e) => onChange(e.target.name, e.target.value)}
-            onBlur={() => zodForm.onBlur("description")}
+            onChange={(e) => { onChange(e.target.name, e.target.value) }}
+            onBlur={() => { zodForm.onBlur("description") }}
             helperText={(zodForm.touched.description && zodForm.errors.description) || " "}
             error={Boolean(zodForm.touched.description && zodForm.errors.description)}
           />
@@ -140,8 +137,8 @@ const AddCourseModal = ({ open, handleClose, onAddCourse, setTopicData, topicDat
             type="number"
             required
             fullWidth
-            onChange={(e) => onChange(e.target.name, Number(e.target.value))}
-            onBlur={() => zodForm.onBlur("duration")}
+            onChange={(e) => { onChange(e.target.name, Number(e.target.value)) }}
+            onBlur={() => { zodForm.onBlur("duration") }}
             helperText={(zodForm.touched.duration && zodForm.errors.duration) || " "}
             error={Boolean(zodForm.touched.duration && zodForm.errors.duration)}
           />
@@ -153,8 +150,8 @@ const AddCourseModal = ({ open, handleClose, onAddCourse, setTopicData, topicDat
             label="Url to course"
             type="text"
             fullWidth
-            onChange={(e) => onChange(e.target.name, e.target.value)}
-            onBlur={() => zodForm.onBlur("url")}
+            onChange={(e) => { onChange(e.target.name, e.target.value) }}
+            onBlur={() => { zodForm.onBlur("url") }}
             helperText={(zodForm.touched.url && zodForm.errors.url) || " "}
             error={Boolean(zodForm.touched.url && zodForm.errors.url)}
           />
@@ -166,8 +163,8 @@ const AddCourseModal = ({ open, handleClose, onAddCourse, setTopicData, topicDat
             label="Url to certificate"
             type="text"
             fullWidth
-            onChange={(e) => onChange(e.target.name, e.target.value)}
-            onBlur={() => zodForm.onBlur("certificateUrl")}
+            onChange={(e) => { onChange(e.target.name, e.target.value) }}
+            onBlur={() => { zodForm.onBlur("certificateUrl") }}
             helperText={(zodForm.touched.certificateUrl && zodForm.errors.certificateUrl) || " "}
             error={Boolean(zodForm.touched.certificateUrl && zodForm.errors.certificateUrl)}
           />
@@ -178,8 +175,8 @@ const AddCourseModal = ({ open, handleClose, onAddCourse, setTopicData, topicDat
               value={status}
               label="Course status"
               name="status"
-              onChange={(e) => onChange(e.target.name, e.target.value)}
-              onBlur={() => zodForm.onBlur("status")}
+              onChange={(e) => { onChange(e.target.name, e.target.value) }}
+              onBlur={() => { zodForm.onBlur("status") }}
               error={Boolean(zodForm.touched.status && zodForm.errors.status)}
             >
               <MenuItem value={StatusEnum.Enum.Done}>Done</MenuItem>
@@ -195,13 +192,13 @@ const AddCourseModal = ({ open, handleClose, onAddCourse, setTopicData, topicDat
               multiple
               label="Resources"
               value={resources}
-              onChange={(e) => zodForm.setFieldValue("resources", e.target.value)}
+              onChange={(e) => { zodForm.setFieldValue("resources", e.target.value) }}
               renderValue={(selected) => selected.join(", ")}
             >
               {resourcesOptions.map((option) => (
                 <MenuItem key={option._id} value={option.title}>
                   <ListItemIcon>
-                    <Checkbox checked={resources.indexOf(option.title) > -1} />
+                    <Checkbox checked={resources.includes(option.title)} />
                   </ListItemIcon>
                   <ListItemText primary={option.title} />
                 </MenuItem>
@@ -216,7 +213,7 @@ const AddCourseModal = ({ open, handleClose, onAddCourse, setTopicData, topicDat
               flexWrap: "wrap",
               listStyle: "none",
               marginTop: 3,
-              paddingBottom: !topicData.length ? 11 : 0,
+              paddingBottom: !topicData.length ? 11 : 0
             }}
           >
             <Autocomplete
@@ -225,8 +222,8 @@ const AddCourseModal = ({ open, handleClose, onAddCourse, setTopicData, topicDat
               id="combo-box-demo"
               ListboxProps={{
                 style: {
-                  maxHeight: 200,
-                },
+                  maxHeight: 200
+                }
               }}
               options={skillsData}
               sx={{ width: 450, marginRight: 2 }}
@@ -244,7 +241,7 @@ const AddCourseModal = ({ open, handleClose, onAddCourse, setTopicData, topicDat
                     flexWrap: "wrap",
                     listStyle: "none",
                     p: 1.5,
-                    mt: 2,
+                    mt: 2
                   }}
                   component="ul"
                 >
@@ -264,8 +261,8 @@ const AddCourseModal = ({ open, handleClose, onAddCourse, setTopicData, topicDat
               value={institution}
               label="Institution"
               name="institution"
-              onChange={(e) => onChange(e.target.name, e.target.value)}
-              onBlur={() => zodForm.onBlur("institution")}
+              onChange={(e) => { onChange(e.target.name, e.target.value) }}
+              onBlur={() => { zodForm.onBlur("institution") }}
               error={Boolean(zodForm.touched.institution && zodForm.errors.institution)}
             >
               {InstitutionEnum.options.sort().map((institution) => (

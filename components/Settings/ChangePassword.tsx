@@ -1,8 +1,8 @@
-import React, { useState, ChangeEvent, FormEvent, useEffect } from "react"
+import React, { type ChangeEvent, type FormEvent, useEffect, useState } from "react"
 
 import { toast } from "react-toastify"
 import SubmitButton from "../shared/SubmitButton"
-import { Box, Alert, Card, CardContent, CardHeader, Divider, TextField } from "@mui/material"
+import { Alert, Box, Card, CardContent, CardHeader, Divider, TextField } from "@mui/material"
 import { fetcher } from "../../lib/axiosFetcher"
 
 const ChangePassword = () => {
@@ -17,7 +17,7 @@ const ChangePassword = () => {
 
   useEffect(() => {
     if (newPassword === "" || oldPassword === "" || confirmNewPassword === "") {
-      return setDisplayPasswordAlert(false)
+      setDisplayPasswordAlert(false); return
     }
 
     if (newPassword !== confirmNewPassword) {
@@ -43,8 +43,8 @@ const ChangePassword = () => {
         headers: { "Content-Type": "application/json" },
         data: {
           oldPassword,
-          newPassword,
-        },
+          newPassword
+        }
       })
 
       if (response.error) {
@@ -77,7 +77,7 @@ const ChangePassword = () => {
               label="Old password"
               margin="normal"
               name="old"
-              onChange={(event: ChangeEvent<HTMLInputElement>) => setOldPassword(event.target.value)}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => { setOldPassword(event.target.value) }}
               type="password"
               value={oldPassword}
               variant="outlined"
@@ -88,7 +88,7 @@ const ChangePassword = () => {
               label="New password"
               margin="normal"
               name="new"
-              onChange={(event: ChangeEvent<HTMLInputElement>) => setNewPassword(event.target.value)}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => { setNewPassword(event.target.value) }}
               value={newPassword}
               type="password"
               variant="outlined"
@@ -99,7 +99,7 @@ const ChangePassword = () => {
               label="Confirm password"
               margin="normal"
               name="confirm"
-              onChange={(event: ChangeEvent<HTMLInputElement>) => setConfirmNewPassword(event.target.value)}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => { setConfirmNewPassword(event.target.value) }}
               value={confirmNewPassword}
               type="password"
               variant="outlined"
@@ -111,7 +111,7 @@ const ChangePassword = () => {
             sx={{
               display: "flex",
               justifyContent: "space-between",
-              p: 2,
+              p: 2
             }}
           >
             {displayPasswordAlert ? <Alert severity="error">{displayPasswordAlertText}</Alert> : <div></div>}

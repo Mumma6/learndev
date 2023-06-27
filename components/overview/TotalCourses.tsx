@@ -38,7 +38,7 @@ const TotalCourses = ({ completedAmount, inProgressAmount, wishlistAmount }: IPr
               sx={{
                 backgroundColor: "success.main",
                 height: 56,
-                width: 56,
+                width: 56
               }}
             >
               <ImBooks />

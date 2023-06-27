@@ -32,7 +32,7 @@ const TotalTasks = ({ completed, inProgress }: IProps) => {
               sx={{
                 backgroundColor: "primary.main",
                 height: 56,
-                width: 56,
+                width: 56
               }}
             >
               <FaTasks />

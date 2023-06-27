@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react"
+import { type FormEvent, useEffect, useState } from "react"
 import { pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
 import { Box, Button, Container, Paper, TextField, Typography } from "@mui/material"
@@ -9,13 +9,13 @@ import { useCurrentUser } from "../../lib/hooks"
 import SubmitButton from "../shared/SubmitButton"
 import { fetcherTE } from "../../lib/axiosFetcher"
 import { FaArrowLeft } from "react-icons/fa"
-import { UserModelSchemaType, UserRegistrationSchema, UserRegistrationSchemaType } from "../../schema/UserSchema"
-import { Status } from "../../types/status"
+import { type UserModelSchemaType, UserRegistrationSchema, type UserRegistrationSchemaType } from "../../schema/UserSchema"
+import { type Status } from "../../types/status"
 import { useZodFormValidation } from "zod-react-form"
 
 const initialState = {
   email: "",
-  password: "",
+  password: ""
 }
 
 type TLogin = Omit<UserRegistrationSchemaType, "name">
@@ -43,7 +43,7 @@ const Login = () => {
       fetcherTE<UserModelSchemaType, TLogin>("/api/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        data: values,
+        data: values
       }),
       TE.fold(
         (error) => {
@@ -70,14 +70,14 @@ const Login = () => {
         display: "flex",
         flexGrow: 1,
         minHeight: "100%",
-        marginTop: 20,
+        marginTop: 20
       }}
     >
       <Container maxWidth="sm">
         <Paper
           elevation={20}
           sx={{
-            padding: 5,
+            padding: 5
           }}
         >
           <NextLink href="/" passHref>
@@ -92,7 +92,7 @@ const Login = () => {
             <Box
               sx={{
                 pb: 1,
-                pt: 1,
+                pt: 1
               }}
             >
               <Typography align="center" color="textSecondary" variant="body1">
@@ -104,8 +104,8 @@ const Login = () => {
               label="Email Address"
               margin="normal"
               name="email"
-              onBlur={() => onBlur("email")}
-              onChange={(e) => setFieldValue("email", e.target.value)}
+              onBlur={() => { onBlur("email") }}
+              onChange={(e) => { setFieldValue("email", e.target.value) }}
               value={values.email}
               type="email"
               variant="outlined"
@@ -120,8 +120,8 @@ const Login = () => {
               label="Password"
               margin="normal"
               name="password"
-              onBlur={() => onBlur("password")}
-              onChange={(e) => setFieldValue("password", e.target.value)}
+              onBlur={() => { onBlur("password") }}
+              onChange={(e) => { setFieldValue("password", e.target.value) }}
               type="password"
               value={values.password}
               variant="outlined"

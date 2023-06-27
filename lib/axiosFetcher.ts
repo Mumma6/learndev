@@ -1,7 +1,6 @@
-import axios, { AxiosError, AxiosResponse } from "axios"
-import { Response } from "../types/response"
+import axios, { type AxiosError, type AxiosResponse } from "axios"
+import { type Response } from "../types/response"
 import { pipe } from "fp-ts/function"
-import * as E from "fp-ts/Either"
 import * as TE from "fp-ts/TaskEither"
 
 export type HTTPMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH"
@@ -29,8 +28,8 @@ const handleError = <R>(error: AxiosError): Response<R> => {
   }
 }
 
-export const fetcher = <R, T>(url?: string, options?: Options<T>): Promise<Response<R>> => {
-  return axios
+export const fetcher = async <R, T>(url?: string, options?: Options<T>): Promise<Response<R>> => {
+  return await axios
     .request({ url, ...options })
     .then(handleResponse)
     .catch((error) => handleError<R>(error))
@@ -40,7 +39,7 @@ export const fetcher = <R, T>(url?: string, options?: Options<T>): Promise<Respo
 export const fetcherTE = <A, T>(url: string, options: Options<T>): TE.TaskEither<string, Response<A>> =>
   pipe(
     TE.tryCatch(
-      () => fetcher<A, T>(url, options),
+      async () => await fetcher<A, T>(url, options),
       (reason) => `Error fetching from ${url}: ${reason}`
     ),
     TE.chain((response: Response<A>) => (response.error ? TE.left(response.error) : TE.right(response)))

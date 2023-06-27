@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer"
-import { MailOptions } from "nodemailer/lib/json-transport"
+import { type MailOptions } from "nodemailer/lib/json-transport"
 
 console.log(process.env.NODEMAILER_CONFIG)
 
@@ -11,19 +11,19 @@ const config = {
   secure: true, // use SSL
   auth: {
     user: "learndev.io@gmail.com",
-    pass: "wcztmbihpzubjwgo",
-  },
+    pass: "wcztmbihpzubjwgo"
+  }
 }
 
 const transporter = nodemailer.createTransport(config)
 
-export async function sendMail({ from, to, subject, html }: MailOptions) {
+export async function sendMail ({ from, to, subject, html }: MailOptions) {
   try {
     await transporter.sendMail({
       from,
       to,
       subject,
-      html,
+      html
     })
   } catch (e: any) {
     console.log(e)
@@ -32,5 +32,5 @@ export async function sendMail({ from, to, subject, html }: MailOptions) {
 }
 
 export const CONFIG = {
-  from: nodemailerConfig?.auth?.user,
+  from: nodemailerConfig?.auth?.user
 }

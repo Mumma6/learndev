@@ -1,13 +1,13 @@
 import React from "react"
 import { Doughnut } from "react-chartjs-2"
 import { Box, Card, CardContent, CardHeader, Divider, Typography, useTheme } from "@mui/material"
-import { CourseModelSchemaType } from "../../schema/CourseSchema"
+import { type CourseModelSchemaType } from "../../schema/CourseSchema"
 import CardHeaderTitle from "../shared/CardHeaderTitle"
 import { colors } from "../../constants/colors"
 import { pipe } from "fp-ts/function"
 import * as A from "fp-ts/Array"
 import * as O from "fp-ts/Option"
-import * as Record from "fp-ts/Record"
+import type * as Record from "fp-ts/Record"
 
 interface IProps {
   courses: CourseModelSchemaType[] | null | undefined
@@ -24,14 +24,14 @@ const getAmountOfProviders = (courses: CourseModelSchemaType[] | null | undefine
           _courses,
           A.reduce({}, (total: Record<string, number>, course) => ({
             ...total,
-            [course.content.institution]: (total[course.content.institution] || 0) + 1,
+            [course.content.institution]: (total[course.content.institution] || 0) + 1
           })),
           Object.entries,
           A.mapWithIndex((index, [institution, count]) => ({
             institution,
             count,
             color: colors[index % colors.length],
-            percentage: Math.round((count / A.size(_courses)) * 100),
+            percentage: Math.round((count / A.size(_courses)) * 100)
           }))
         )
     )
@@ -48,17 +48,17 @@ const CoursesByProvider = ({ courses }: IProps) => {
         backgroundColor: colors,
         borderWidth: 8,
         borderColor: "#FFFFFF",
-        hoverBorderColor: "#FFFFFF",
-      },
+        hoverBorderColor: "#FFFFFF"
+      }
     ],
-    labels: amountOfProviders.map(({ institution }) => institution),
+    labels: amountOfProviders.map(({ institution }) => institution)
   }
 
   const options = {
     cutoutPercentage: 80,
     layout: { padding: 0 },
     legend: {
-      display: false,
+      display: false
     },
     maintainAspectRatio: false,
     responsive: true,
@@ -71,8 +71,8 @@ const CoursesByProvider = ({ courses }: IProps) => {
       footerFontColor: theme.palette.text.secondary,
       intersect: false,
       mode: "index",
-      titleFontColor: theme.palette.text.primary,
-    },
+      titleFontColor: theme.palette.text.primary
+    }
   }
 
   return (
@@ -90,7 +90,7 @@ const CoursesByProvider = ({ courses }: IProps) => {
         <Box
           sx={{
             height: 300,
-            position: "relative",
+            position: "relative"
           }}
         >
           <Doughnut data={data} options={options} />
@@ -102,7 +102,7 @@ const CoursesByProvider = ({ courses }: IProps) => {
           sx={{
             display: "flex",
             justifyContent: "center",
-            pt: 2,
+            pt: 2
           }}
         >
           {!amountOfProviders.length && (
@@ -119,7 +119,7 @@ const CoursesByProvider = ({ courses }: IProps) => {
                 key={institution}
                 sx={{
                   p: 1,
-                  textAlign: "center",
+                  textAlign: "center"
                 }}
               >
                 <Typography color="textPrimary" variant="body1">

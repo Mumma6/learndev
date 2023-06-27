@@ -13,7 +13,7 @@ import * as TE from "fp-ts/TaskEither"
 
 const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
-  boxShadow: theme.shadows[3],
+  boxShadow: theme.shadows[3]
 }))
 
 interface IProps {
@@ -28,7 +28,7 @@ export const DashboardNavbar = ({ onSidebarOpen }: IProps) => {
   const onSignOut = useCallback(async () => {
     pipe(
       fetcherTE("/api/auth", {
-        method: "DELETE",
+        method: "DELETE"
       }),
       TE.fold(
         (error) => {
@@ -49,11 +49,11 @@ export const DashboardNavbar = ({ onSidebarOpen }: IProps) => {
       <DashboardNavbarRoot
         sx={{
           left: {
-            lg: 270,
+            lg: 270
           },
           width: {
-            lg: "calc(100% - 270px)",
-          },
+            lg: "calc(100% - 270px)"
+          }
         }}
       >
         <Toolbar
@@ -61,7 +61,7 @@ export const DashboardNavbar = ({ onSidebarOpen }: IProps) => {
           sx={{
             minHeight: 64,
             left: 0,
-            px: 2,
+            px: 2
           }}
         >
           <IconButton
@@ -69,8 +69,8 @@ export const DashboardNavbar = ({ onSidebarOpen }: IProps) => {
             sx={{
               display: {
                 xs: "inline-flex",
-                lg: "none",
-              },
+                lg: "none"
+              }
             }}
           >
             <RiMenuUnfoldFill />

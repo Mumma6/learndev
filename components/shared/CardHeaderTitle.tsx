@@ -13,7 +13,7 @@ const CardHeaderTitle = ({ title, toolTipText }: IProps) => {
         style={{
           fontWeight: 600,
           fontSize: "1.125rem",
-          lineHeight: 1.375,
+          lineHeight: 1.375
         }}
       >
         {title}

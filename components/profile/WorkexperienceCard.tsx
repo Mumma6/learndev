@@ -1,8 +1,7 @@
 import React from "react"
-import { Box, Divider, Typography, Button } from "@mui/material"
-import Icon from "@mui/material/Icon"
-import { FaPen, FaTrash } from "react-icons/fa"
-import { UserWorkexperienceSchemaType } from "../../schema/UserSchema"
+import { Box, Button, Typography } from "@mui/material"
+import { FaTrash } from "react-icons/fa"
+import { type UserWorkexperienceSchemaType } from "../../schema/UserSchema"
 
 interface IProps {
   work: UserWorkexperienceSchemaType
@@ -18,7 +17,7 @@ const WorkexperienceCard = ({ work, deleteWorkexperience }: IProps) => {
       justifyContent="space-between"
       alignItems="flex-start"
       sx={{
-        backgroundColor: "#F8F9FA",
+        backgroundColor: "#F8F9FA"
       }}
       borderRadius="lg"
       p={3}
@@ -38,12 +37,12 @@ const WorkexperienceCard = ({ work, deleteWorkexperience }: IProps) => {
           </Typography>
 
           <Box display="flex" alignItems="center" mt={{ xs: 2, sm: 0 }} ml={{ xs: -1.5, sm: 0 }}>
-            {/*<Box mr={1}>
+            {/* <Box mr={1}>
               <Button variant="text" color="info">
                 <FaPen style={{ marginRight: 5 }} /> edit
               </Button>
-    </Box>*/}
-            <Button onClick={() => deleteWorkexperience(work)} variant="text" color="error">
+    </Box> */}
+            <Button onClick={() => { deleteWorkexperience(work) }} variant="text" color="error">
               <FaTrash style={{ marginRight: 5 }} /> delete
             </Button>
           </Box>

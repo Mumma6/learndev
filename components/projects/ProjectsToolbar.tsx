@@ -1,5 +1,5 @@
 import React from "react"
-import { Box, Button, Card, CardContent, TextField, InputAdornment, SvgIcon, Typography } from "@mui/material"
+import { Box, Button, Card, CardContent, InputAdornment, SvgIcon, TextField } from "@mui/material"
 import { FaSearch } from "react-icons/fa"
 
 interface IProps {
@@ -24,7 +24,7 @@ const ProjectsToolbar = ({ handleClickOpen }: IProps) => {
                           <FaSearch />
                         </SvgIcon>
                       </InputAdornment>
-                    ),
+                    )
                   }}
                   placeholder="Search project"
                   variant="outlined"

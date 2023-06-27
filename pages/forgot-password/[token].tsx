@@ -1,6 +1,6 @@
-import { GetServerSideProps } from "next"
+import { type GetServerSideProps } from "next"
 import Head from "next/head"
-import { ParsedUrlQuery } from "querystring"
+import { type ParsedUrlQuery } from "querystring"
 import React from "react"
 import ForgotPasswordToken from "../../components/auth/ForgotPasswordToken"
 import { getMongoDb } from "../../lib/mongodb"
@@ -17,10 +17,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const tokenDoc = await findTokenByIdAndType(db, token, "passwordReset")
 
-  return { props: { token: token, valid: !!tokenDoc } }
+  return { props: { token, valid: !!tokenDoc } }
 }
 
-const ResetPasswordTokenPage = ({ valid, token }: { valid: boolean; token: any }) => {
+const ResetPasswordTokenPage = ({ valid, token }: { valid: boolean, token: any }) => {
   return (
     <>
       <Head>

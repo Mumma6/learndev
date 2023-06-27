@@ -1,15 +1,12 @@
-import { Button, Container, Grid, Typography } from "@mui/material"
-import { Box } from "@mui/material"
-import Image from "next/image"
+import { Box, Button, Container, Grid, Typography } from "@mui/material"
+
 import Link from "next/link"
 import React from "react"
 import Features from "./features/Features"
 import LandingFooter from "./LandingFooter"
 import LandingHeader from "./LandingHeader"
-import Pricing from "./pricing/Pricing"
 import Services from "./services/Services"
-import { styled } from "@mui/material/styles"
-import Scroll, { Link as ScrollLink } from "react-scroll"
+import Scroll from "react-scroll"
 
 /*
 
@@ -29,7 +26,7 @@ const Landing = () => {
         <Box
           sx={{
             textAlign: "center",
-            mb: 5,
+            mb: 5
           }}
         >
           <Typography color="textPrimary" variant="h4" sx={{ fontSize: 64 }}>
@@ -59,7 +56,7 @@ const Landing = () => {
                 <Link style={{ textDecoration: "none" }} href="/sign-up" passHref>
                   <Button
                     sx={{
-                      fontSize: 30,
+                      fontSize: 30
                     }}
                     size="large"
                     color="secondary"
@@ -77,7 +74,7 @@ const Landing = () => {
                 style={{
                   maxWidth: "100%",
                   maxHeight: "100%",
-                  height: 500,
+                  height: 500
                 }}
               />
             </Grid>
@@ -88,7 +85,7 @@ const Landing = () => {
                 style={{
                   maxWidth: "100%",
                   maxHeight: "100%",
-                  height: 500,
+                  height: 500
                 }}
               />
             </Grid>

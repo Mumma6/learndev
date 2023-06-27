@@ -1,9 +1,9 @@
 import { Alert, Button } from "@mui/material"
-import React, { FormEvent, useState } from "react"
+import React, { type FormEvent, useState } from "react"
 import { toast } from "react-toastify"
-import { fetcher, fetcherTE } from "../../lib/axiosFetcher"
-import { UserModelSchemaType } from "../../schema/UserSchema"
-import { Status } from "../../types/status"
+import { fetcherTE } from "../../lib/axiosFetcher"
+import { type UserModelSchemaType } from "../../schema/UserSchema"
+import { type Status } from "../../types/status"
 import { pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
 
@@ -17,8 +17,8 @@ const EmailVerify = ({ user }: { user: UserModelSchemaType }) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: {
-          userId: user._id,
-        },
+          userId: user._id
+        }
       }),
       TE.fold(
         (error) => {
@@ -29,7 +29,7 @@ const EmailVerify = ({ user }: { user: UserModelSchemaType }) => {
         (data) => {
           setStatus("success")
           toast.info("An email has been sent to your mailbox. Follow the instruction to verify your email.", {
-            autoClose: 4000,
+            autoClose: 4000
           })
           return TE.right(data)
         }
@@ -49,7 +49,7 @@ const EmailVerify = ({ user }: { user: UserModelSchemaType }) => {
         action={
           <Button
             disabled={status === "success" || status === "loading"}
-            onClick={(event) => onSubmit(event)}
+            onClick={async (event) => { await onSubmit(event) }}
             variant="contained"
             sx={{ margin: 1 }}
           >

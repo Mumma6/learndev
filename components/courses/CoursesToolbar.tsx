@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react"
-import { Box, Button, Card, CardContent, TextField, InputAdornment, SvgIcon, Typography } from "@mui/material"
+import React from "react"
+import { Box, Button, Card, CardContent, InputAdornment, SvgIcon, TextField } from "@mui/material"
 import { FaSearch } from "react-icons/fa"
-import { SetState } from "../../types/generics"
+import { type SetState } from "../../types/generics"
 
 interface IProps {
   handleClickOpen: () => void
@@ -20,7 +20,7 @@ const CoursesToolbar = ({ handleClickOpen, searchInput, setSearchInput }: IProps
                 <TextField
                   fullWidth
                   value={searchInput}
-                  onChange={(e) => setSearchInput(e.target.value)}
+                  onChange={(e) => { setSearchInput(e.target.value) }}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -28,7 +28,7 @@ const CoursesToolbar = ({ handleClickOpen, searchInput, setSearchInput }: IProps
                           <FaSearch />
                         </SvgIcon>
                       </InputAdornment>
-                    ),
+                    )
                   }}
                   placeholder="Search course"
                   variant="outlined"

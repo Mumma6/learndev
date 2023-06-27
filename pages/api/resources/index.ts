@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next"
+import { type NextApiRequest, type NextApiResponse } from "next"
 import nextConnect from "next-connect"
 
 import auths from "../../../lib/middlewares/auth"
@@ -11,25 +11,23 @@ import {
   handleAPIError,
   handleAPIResponse,
   validateArrayData2,
-  validateData2,
-  validateReqBody2,
+  validateReqBody2
 } from "../../../lib/utils"
 
 import * as E from "fp-ts/Either"
 import { pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
-import { Response } from "../../../types/response"
+import { type Response } from "../../../types/response"
 import {
   addToDbCollection,
   deleteFromCollectionById,
-  getFromCollectionForUser,
-  updateFromCollectionById,
+  getFromCollectionForUser
 } from "../../../lib/queries"
 import {
   ResourceModelInputSchema,
-  ResourceModelInputSchemaType,
+  type ResourceModelInputSchemaType,
   ResourceModelSchema,
-  ResourceModelSchemaType,
+  type ResourceModelSchemaType
 } from "../../../schema/ResourceSchema"
 
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<ResourceModelSchemaType[] | null>>>()
@@ -49,8 +47,8 @@ handler.get(...auths, async (req, res) => {
   pipe(
     either,
     E.fold(
-      (error) => handleAPIError(res, { message: error }),
-      (data) => handleAPIResponse(res, data, `resources for user: ${req.user?.name}`)
+      (error) => { handleAPIError(res, { message: error }) },
+      (data) => { handleAPIResponse(res, data, `resources for user: ${req.user?.name}`) }
     )
   )
 })
@@ -58,11 +56,11 @@ handler.get(...auths, async (req, res) => {
 handler.post(...auths, async (req, res) => {
   const addNonInputData =
     (userId: string) =>
-    (data: ResourceModelInputSchemaType): Omit<ResourceModelSchemaType, "_id"> => ({
-      ...data,
-      createdAt: new Date(),
-      userId,
-    })
+      (data: ResourceModelInputSchemaType): Omit<ResourceModelSchemaType, "_id"> => ({
+        ...data,
+        createdAt: new Date(),
+        userId
+      })
 
   const task = pipe(
     req,
@@ -78,8 +76,8 @@ handler.post(...auths, async (req, res) => {
   pipe(
     either,
     E.fold(
-      (error) => handleAPIError(res, { message: error }),
-      () => handleAPIResponse(res, null, "Task added")
+      (error) => { handleAPIError(res, { message: error }) },
+      () => { handleAPIResponse(res, null, "Task added") }
     )
   )
 })

@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react"
-import { Box, Container, Grid, Pagination, Card, CardContent, Typography, Divider, CardHeader } from "@mui/material"
+import React, { useEffect, useState } from "react"
+import { Box, Card, CardContent, CardHeader, Container, Divider, Grid } from "@mui/material"
 import { toast } from "react-toastify"
-import { ClickEvent } from "../../types/generics"
-import { fetcher, fetcherTE } from "../../lib/axiosFetcher"
-import { Skill } from "../../constants/skillsData"
+import { fetcherTE } from "../../lib/axiosFetcher"
+import { type Skill } from "../../constants/skillsData"
 import { useProjects } from "../../lib/hooks"
 import { useSWRConfig } from "swr"
 import ProjectsToolbar from "./ProjectsToolbar"
@@ -19,12 +18,11 @@ import * as TE from "fp-ts/TaskEither"
 import AddProjectModal from "./AddProjectModal"
 import {
   ProjectModelFormInputSchema,
-  ProjectModelFromInputType,
-  ProjectModelType,
+  type ProjectModelFromInputType,
+  type ProjectModelType,
   ProjectStatusEnum,
-  ProjectStatusEnumType,
+  type ProjectStatusEnumType
 } from "../../schema/ProjectSchema"
-import { StatusEnum } from "../../schema/CourseSchema"
 import InfoTooltip from "../shared/Tooltip"
 import { getOArraySize } from "../../helpers/helpers"
 import { useZodFormValidation } from "zod-react-form"
@@ -35,7 +33,7 @@ export const initialProjectsFormData: Omit<ProjectModelFromInputType, "techStack
   sourceCodeUrl: "",
   deployedUrl: "",
   status: ProjectStatusEnum.Enum["In progress"],
-  resources: [""],
+  resources: [""]
 }
 
 export const Projects = () => {
@@ -97,8 +95,8 @@ export const Projects = () => {
         headers: { "Content-Type": "application/json" },
         data: {
           ...zodForm.values,
-          techStack: topicData,
-        },
+          techStack: topicData
+        }
       }),
       TE.fold(
         (error) => {
@@ -142,7 +140,7 @@ export const Projects = () => {
       <Box
         component="main"
         sx={{
-          paddingTop: 10,
+          paddingTop: 10
         }}
       >
         <AddProjectModal

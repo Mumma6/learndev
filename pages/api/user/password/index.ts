@@ -1,9 +1,9 @@
 import nextConnect from "next-connect"
 import auths from "../../../../lib/middlewares/auth"
-import { NextApiRequest, NextApiResponse } from "next"
+import { type NextApiRequest, type NextApiResponse } from "next"
 import { getMongoDb } from "../../../../lib/mongodb"
 import { updateUserPasswordByOldPassword } from "../../../../lib/queries/user"
-import { Response } from "../../../../types/response"
+import { type Response } from "../../../../types/response"
 import { handleAPIError, handleAPIResponse } from "../../../../lib/utils"
 
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<null>>>()

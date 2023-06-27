@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next"
+import { type NextApiRequest, type NextApiResponse } from "next"
 import nextConnect from "next-connect"
 import auths from "../../../lib/middlewares/auth"
 import { addQuizResult, getAllQuizResults } from "../../../lib/queries/quizzes"
@@ -8,8 +8,8 @@ import * as TE from "fp-ts/TaskEither"
 
 import { checkUser, handleAPIError, handleAPIResponse } from "../../../lib/utils"
 
-import { IQuizResult } from "../../../models/QuizResult"
-import { Response } from "../../../types/response"
+import { type IQuizResult } from "../../../models/QuizResult"
+import { type Response } from "../../../types/response"
 
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<IQuizResult[] | null>>>()
 
@@ -22,7 +22,7 @@ handler.post(...auths, async (req, res) => {
     E.map((req) => ({
       user_id: req.user?._id,
       takenAt: new Date(),
-      ...req.body,
+      ...req.body
     })),
     TE.fromEither,
     TE.chain(addQuizResult)
@@ -33,8 +33,8 @@ handler.post(...auths, async (req, res) => {
   pipe(
     either,
     E.fold(
-      (error) => handleAPIError(res, error),
-      () => handleAPIResponse(res, null, "Quizresult added")
+      (error) => { handleAPIError(res, error) },
+      () => { handleAPIResponse(res, null, "Quizresult added") }
     )
   )
 })
@@ -47,8 +47,8 @@ handler.get(...auths, async (req, res) => {
   pipe(
     either,
     E.fold(
-      (error) => handleAPIError(res, error),
-      (quizresults) => handleAPIResponse(res, quizresults, "All quizResults")
+      (error) => { handleAPIError(res, error) },
+      (quizresults) => { handleAPIResponse(res, quizresults, "All quizResults") }
     )
   )
 })

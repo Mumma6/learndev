@@ -4,7 +4,6 @@ import { FaChartBar } from "react-icons/fa"
 
 /*
 
-
 */
 
 const LearningProgress = ({ number }: { number: number }) => {
@@ -25,7 +24,7 @@ const LearningProgress = ({ number }: { number: number }) => {
               sx={{
                 backgroundColor: "warning.main",
                 height: 56,
-                width: 56,
+                width: 56
               }}
             >
               <FaChartBar />

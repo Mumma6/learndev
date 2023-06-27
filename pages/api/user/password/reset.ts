@@ -1,16 +1,15 @@
 import nextConnect from "next-connect"
-import normalizeEmail from "validator/lib/normalizeEmail"
 import { CONFIG as MAIL_CONFIG, sendMail } from "../../../../lib/mail"
 import { getMongoDb } from "../../../../lib/mongodb"
 import { createToken, findAndDeleteTokenByIdAndType } from "../../../../lib/queries/token"
-import { findUserByEmail, UNSAFE_updateUserPassword } from "../../../../lib/queries/user"
+import { UNSAFE_updateUserPassword, findUserByEmail } from "../../../../lib/queries/user"
 
 const ncOpts = {
-  onError(err: any, req: any, res: any) {
+  onError (err: any, req: any, res: any) {
     console.error(err)
     res.statusCode = err.status && err.status >= 100 && err.status < 600 ? err.status : 500
     res.json({ message: err.message })
-  },
+  }
 }
 
 const handler = nextConnect(ncOpts)
@@ -22,7 +21,7 @@ handler.post(async (req, res) => {
   if (!user) {
     console.log("no user")
     res.status(404).json({
-      error: { message: "We couldnt find that email. Please try again." },
+      error: { message: "We couldnt find that email. Please try again." }
     })
     return
   }
@@ -30,7 +29,7 @@ handler.post(async (req, res) => {
   const token = await createToken(db, {
     creatorId: user._id,
     type: "passwordReset",
-    expireAt: new Date(Date.now() + 1000 * 60 * 20),
+    expireAt: new Date(Date.now() + 1000 * 60 * 20)
   })
 
   await sendMail({
@@ -42,7 +41,7 @@ handler.post(async (req, res) => {
         <p>Hello, ${user.name}</p>
         <p>Please follow <a href="${process.env.WEB_URI}/forgot-password/${token.securedTokenId}">this link</a> to reset your password.</p>
       </div>
-      `,
+      `
   })
 
   res.status(200).json({ message: "email sent" })

@@ -1,4 +1,4 @@
-import { UserModelSchemaType } from "../schema/UserSchema"
+import { type UserModelSchemaType } from "../schema/UserSchema"
 
 declare module "next" {
   interface NextApiRequest {
@@ -13,6 +13,7 @@ declare module "next" {
 }
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface User extends UserModelSchemaType {}
   }

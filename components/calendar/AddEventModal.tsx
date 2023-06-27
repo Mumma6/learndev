@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, useEffect } from "react"
+import React, { type ChangeEvent, useEffect, useState } from "react"
 import TextField from "@mui/material/TextField"
 import Dialog from "@mui/material/Dialog"
 import DialogActions from "@mui/material/DialogActions"
@@ -8,31 +8,20 @@ import DialogTitle from "@mui/material/DialogTitle"
 import Button from "@mui/material/Button"
 import {
   Autocomplete,
-  Box,
-  AutocompleteRenderGroupParams,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
+  Box
 } from "@mui/material"
 import Checkbox from "@mui/material/Checkbox"
 
 // Ersätt dayjs med date-fns
-import dayjs, { Dayjs } from "dayjs"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
-import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import Typography from "@mui/material/Typography"
-import { ClickEventRet, SetState } from "../../types/generics"
-import { ExternEventFormData } from "./StudyCalendar"
+import { type ClickEventRet, type SetState } from "../../types/generics"
+import { type ExternEventFormData } from "./StudyCalendar"
 import { DateTimePicker } from "@mui/x-date-pickers"
 import { useCourses, useCurrentUser, useProjects, useQuizzes } from "../../lib/hooks"
-import { CourseModelSchemaType } from "../../schema/CourseSchema"
-import { ProjectModelType } from "../../schema/ProjectSchema"
-import { IQuiz } from "../../models/Quiz"
-import { UserSettingsLabelType } from "../../schema/UserSchema"
-import { ActivitesData, getCourses, getProjects, getQuizzes } from "./calendarUtils"
+import { type UserSettingsLabelType } from "../../schema/UserSchema"
+import { type ActivitesData, getCourses, getProjects, getQuizzes } from "./calendarUtils"
 
 interface IProps {
   open: boolean
@@ -49,7 +38,7 @@ const AddEventModal = ({
   externEventFormData,
   setExternEventFormData,
   onAddExternEvent,
-  labels,
+  labels
 }: IProps) => {
   // detta är en copy paste i båda modalerna, gör en customHook
   const [activites, setActivites] = useState<ActivitesData[]>([])
@@ -64,7 +53,7 @@ const AddEventModal = ({
       setActivites([
         ...getCourses(courseData.payload),
         ...getProjects(projectData.payload),
-        ...getQuizzes(quizzData.payload, userData?.payload?.completedQuizzes as string[]),
+        ...getQuizzes(quizzData.payload, userData?.payload?.completedQuizzes as string[])
       ])
     }
   }, [courseData?.payload, projectData?.payload, quizzData?.payload])
@@ -80,14 +69,14 @@ const AddEventModal = ({
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     setExternEventFormData((prevState) => ({
       ...prevState,
-      [event.target.name]: event.target.value,
+      [event.target.name]: event.target.value
     }))
   }
 
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
     setExternEventFormData((prevState) => ({
       ...prevState,
-      allDay: event.target.checked,
+      allDay: event.target.checked
     }))
   }
 
@@ -96,7 +85,7 @@ const AddEventModal = ({
       ...prevState,
       activityName: value?.name,
       activityId: value?.id,
-      activityGroup: value?.group,
+      activityGroup: value?.group
     }))
   }
 
@@ -104,13 +93,13 @@ const AddEventModal = ({
     setExternEventFormData((prevState) => ({
       ...prevState,
       labelColor: value?.color,
-      labelName: value?.name,
+      labelName: value?.name
     }))
   }
 
   const isDisabled = () => {
     const checkend = () => {
-      if (allDay !== true && end === null) {
+      if (!allDay && end === null) {
         return true
       }
     }
@@ -159,7 +148,7 @@ const AddEventModal = ({
                 onChange={(newValue) => {
                   setExternEventFormData((prevState) => ({
                     ...prevState,
-                    start: new Date(newValue!),
+                    start: new Date(newValue!)
                   }))
                 }}
                 renderInput={(params) => <TextField {...params} />}
@@ -183,7 +172,7 @@ const AddEventModal = ({
               onChange={(newValue) => {
                 setExternEventFormData((prevState) => ({
                   ...prevState,
-                  end: new Date(newValue!),
+                  end: new Date(newValue!)
                 }))
               }}
               renderInput={(params) => <TextField {...params} />}

@@ -10,11 +10,12 @@ const home = () => {
 
   return (
     <>
+      { data && <div>Hej</div>}
       <DashboardLayout>
         <Head>
           <title>{`Dashboard | ${data?.payload?.name}`}</title>
         </Head>
-        <Home user={data?.payload!} />
+        {data && <Home user={data.payload} />}
       </DashboardLayout>
     </>
   )

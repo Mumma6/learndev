@@ -1,6 +1,6 @@
 import React from "react"
-import { IQuestion, IQuiz } from "../../models/Quiz"
-import { Box, Paper, Card, CardContent, CardHeader, Divider, Container, Button } from "@mui/material"
+import { type IQuestion, type IQuiz } from "../../models/Quiz"
+import { Box, Button, Card, CardContent, CardHeader, Container, Divider } from "@mui/material"
 import SubmitButton from "../shared/SubmitButton"
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa"
 import NextLink from "next/link"
@@ -8,7 +8,7 @@ import Question from "./Question"
 import { useCurrentUser } from "../../lib/hooks"
 import { fetcher } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
-import { UserModelSchemaType } from "../../schema/UserSchema"
+import { type UserModelSchemaType } from "../../schema/UserSchema"
 
 interface IProps {
   quiz: IQuiz
@@ -33,7 +33,8 @@ const Quiz = ({ quiz }: IProps) => {
 
   const setNextQuestion = () => {
     if (currentIndex === questions.length) {
-      return
+      // eslint-disable-next-line no-extra-semi
+      ;
     } else {
       if (choosenAnwserKey === currentQuestion.correctAnswer) {
         setScore((score) => score + 1)
@@ -61,16 +62,16 @@ const Quiz = ({ quiz }: IProps) => {
         difficulty,
         maxScore: questions.length,
         topic: mainTopic,
-        title,
-      },
+        title
+      }
     })
 
     const userResponse = await fetcher<UserModelSchemaType, Pick<UserModelSchemaType, "completedQuizzes">>("/api/user", {
       headers: { "Content-Type": "application/json" },
       method: "PATCH",
       data: {
-        completedQuizzes: [...(data?.payload?.completedQuizzes || []), quiz._id.toString()],
-      },
+        completedQuizzes: [...(data?.payload?.completedQuizzes || []), quiz._id.toString()]
+      }
     })
 
     if (quizResultResponse.error) {
@@ -96,7 +97,7 @@ const Quiz = ({ quiz }: IProps) => {
       component="main"
       sx={{
         flexGrow: 1,
-        py: 8,
+        py: 8
       }}
     >
       <Container maxWidth="lg">
@@ -123,7 +124,7 @@ const Quiz = ({ quiz }: IProps) => {
         component="main"
         sx={{
           flexGrow: 1,
-          py: 8,
+          py: 8
         }}
       >
         <Container maxWidth="lg">
@@ -147,11 +148,12 @@ const Quiz = ({ quiz }: IProps) => {
                 display: "flex",
                 justifyContent: "space-between",
                 p: 2,
-                float: "right",
+                float: "right"
               }}
             >
               {" "}
-              {currentIndex === questions.length - 1 ? (
+              {currentIndex === questions.length - 1
+                ? (
                 <SubmitButton
                   customStyle={{ margin: 1 }}
                   color="success"
@@ -161,15 +163,16 @@ const Quiz = ({ quiz }: IProps) => {
                   isLoading={false}
                   isDisabled={currentIndex !== questions.length - 1 || choosenAnwserKey === null || isLoading}
                 />
-              ) : (
+                  )
+                : (
                 <Button
                   disabled={currentIndex === questions.length - 1 || choosenAnwserKey === null}
-                  onClick={() => setNextQuestion()}
+                  onClick={() => { setNextQuestion() }}
                   endIcon={<FaArrowRight />}
                 >
                   Next question
                 </Button>
-              )}
+                  )}
             </Box>
           </Card>
         </Container>

@@ -5,8 +5,8 @@ import CardHeaderTitle from "../shared/CardHeaderTitle"
 import { pipe } from "fp-ts/function"
 import * as A from "fp-ts/Array"
 import * as O from "fp-ts/Option"
-import { CourseModelSchemaType } from "../../schema/CourseSchema"
-import { ProjectModelType } from "../../schema/ProjectSchema"
+import { type CourseModelSchemaType } from "../../schema/CourseSchema"
+import { type ProjectModelType } from "../../schema/ProjectSchema"
 
 interface IProps {
   courses: CourseModelSchemaType[] | null | undefined
@@ -16,9 +16,7 @@ interface IProps {
 const TopicsChart = ({ courses, projects }: IProps) => {
   const theme = useTheme()
 
-  type Total = {
-    [key: string]: number
-  }
+  type Total = Record<string, number>
 
   const topicsOccurrences = pipe(
     projects?.flatMap((project) => project.techStack.map((tech) => tech.label)),
@@ -60,21 +58,21 @@ const TopicsChart = ({ courses, projects }: IProps) => {
   const options = {
     responsive: true,
     legend: {
-      display: false,
+      display: false
     },
     scales: {
       y: {
         min: 0,
         ticks: {
-          stepSize: 1,
-        },
-      },
+          stepSize: 1
+        }
+      }
     },
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false,
-      },
+        display: false
+      }
     },
     tooltips: {
       backgroundColor: theme.palette.background.paper,
@@ -85,8 +83,8 @@ const TopicsChart = ({ courses, projects }: IProps) => {
       footerFontColor: theme.palette.text.secondary,
       intersect: false,
       mode: "index",
-      titleFontColor: theme.palette.text.primary,
-    },
+      titleFontColor: theme.palette.text.primary
+    }
   }
 
   const data = {
@@ -95,9 +93,9 @@ const TopicsChart = ({ courses, projects }: IProps) => {
       {
         data: mappedOccurrences.map((obj) => Object.values(obj)[0]),
         backgroundColor: ["#14b8a6", "#7c4dff", "#3F51B5", "#e53935", "#FF9800"],
-        maxBarThickness: 50,
-      },
-    ],
+        maxBarThickness: 50
+      }
+    ]
   }
   return (
     <Card sx={{ height: "100%" }}>
@@ -114,7 +112,7 @@ const TopicsChart = ({ courses, projects }: IProps) => {
         <Box
           sx={{
             height: 300,
-            position: "relative",
+            position: "relative"
           }}
         >
           <Bar options={options} data={data} />

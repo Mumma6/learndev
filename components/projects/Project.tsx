@@ -1,21 +1,21 @@
 import React, { useState } from "react"
 import {
   Box,
-  Paper,
+  Button,
   Card,
   CardContent,
   CardHeader,
-  Divider,
-  Container,
-  Button,
   Chip,
-  Typography,
+  Container,
+  Divider,
   Grid,
   IconButton,
+  Paper,
+  Typography
 } from "@mui/material"
 import NextLink from "next/link"
-import { FaArrowLeft, FaPen, FaPenAlt } from "react-icons/fa"
-import { ProjectModelType, ProjectModelFromInputType } from "../../schema/ProjectSchema"
+import { FaArrowLeft, FaPen } from "react-icons/fa"
+import { type ProjectModelType } from "../../schema/ProjectSchema"
 import EditProjectModal from "./EditProjectModal"
 import { pipe } from "fp-ts/function"
 import * as A from "fp-ts/Array"
@@ -24,7 +24,7 @@ import * as TE from "fp-ts/TaskEither"
 import { useResources, useTasks } from "../../lib/hooks"
 import SimpleTaskList from "../tasks/SimpleTaskList"
 import { fetcherTE } from "../../lib/axiosFetcher"
-import { TaskModelType } from "../../schema/TaskSchema"
+import { type TaskModelType } from "../../schema/TaskSchema"
 import { toast } from "react-toastify"
 import { useSWRConfig } from "swr"
 import Table from "@mui/material/Table"
@@ -85,8 +85,8 @@ const Project = ({ project }: IProps) => {
         headers: { "Content-Type": "application/json" },
         data: {
           _id,
-          completed,
-        },
+          completed
+        }
       }),
       TE.fold(
         (error) => {
@@ -106,7 +106,7 @@ const Project = ({ project }: IProps) => {
       component="main"
       sx={{
         marginTop: 15,
-        paddingBottom: 43,
+        paddingBottom: 43
       }}
     >
       <EditProjectModal open={open} handleClose={handleClose} project={project} />
@@ -118,7 +118,7 @@ const Project = ({ project }: IProps) => {
                 Back
               </Button>
             </NextLink>
-            <Button onClick={() => setOpen(true)} sx={{ float: "right" }} variant="contained" startIcon={<FaPen />}>
+            <Button onClick={() => { setOpen(true) }} sx={{ float: "right" }} variant="contained" startIcon={<FaPen />}>
               Edit
             </Button>
           </Box>
@@ -149,7 +149,7 @@ const Project = ({ project }: IProps) => {
                 flexWrap: "wrap",
                 listStyle: "none",
                 p: 1.5,
-                mt: 3,
+                mt: 3
               }}
               component="ul"
             >
@@ -184,7 +184,7 @@ const Project = ({ project }: IProps) => {
                     </TableHead>
                     <TableBody>
                       {resourceDataToShow.map((r) => (
-                        <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                        <TableRow key={r._id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                           <TableCell component="th" scope="row">
                             <Typography>{r.title}</Typography>
                           </TableCell>

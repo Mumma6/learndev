@@ -20,7 +20,7 @@ export const InstitutionEnum = z.enum([
   "Treehouse",
   "FutureLearn",
   "University",
-  "College",
+  "College"
 ])
 
 export type InstitutionEnumType = z.infer<typeof InstitutionEnum>
@@ -37,14 +37,14 @@ export const CourseModelContentInputSchema = z.object({
   certificateUrl: z.union([z.literal(""), z.string().trim().url()]).default(""),
   resources: z.array(z.string()).default([]),
   status: StatusEnum,
-  institution: InstitutionEnum,
+  institution: InstitutionEnum
 })
 
 export type CourseModelContentInputSchemaType = z.infer<typeof CourseModelContentInputSchema>
 
 export const CourseModelformInputSchema = z.object({
   content: CourseModelContentInputSchema,
-  topics: z.array(SkillSchema),
+  topics: z.array(SkillSchema)
 })
 
 // We transform the ObjectId to a string so the rest of the application can use it
@@ -54,7 +54,7 @@ export const CourseModelSchema = CourseModelformInputSchema.extend({
   userId: z.instanceof(ObjectId).transform((id) => id.toString()),
   _id: z.union([z.string(), z.instanceof(ObjectId).transform((id) => id.toString())]),
   tags: z.string(),
-  createdAt: z.date(),
+  createdAt: z.date()
 })
 
 export type CourseModelSchemaType = z.infer<typeof CourseModelSchema>
@@ -62,7 +62,7 @@ export type CourseModelSchemaType = z.infer<typeof CourseModelSchema>
 export type CourseModelformInputType = z.infer<typeof CourseModelformInputSchema>
 
 /*
-Ieads to add 
+Ieads to add
 completionDate: The date when the course was completed. This could be useful for tracking progress and pacing.
 
 instructor: The name of the course instructor or instructors. This could be helpful for users who prefer courses taught by certain instructors.

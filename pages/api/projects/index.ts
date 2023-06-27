@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next"
+import { type NextApiRequest, type NextApiResponse } from "next"
 import nextConnect from "next-connect"
 import auths from "../../../lib/middlewares/auth"
 
@@ -6,30 +6,29 @@ import {
   addUserId,
   checkUser,
   createDeleteHandler,
-  getUserId,
   handleAPIError,
   handleAPIResponse,
   validateAndGetUserId,
   validateArrayData2,
-  validateData2,
+  validateData2
+  , validateReqBody2
 } from "../../../lib/utils"
 import {
   ProjectModelFormInputSchema,
-  ProjectModelFromInputType,
+  type ProjectModelFromInputType,
   ProjectModelSchema,
-  ProjectModelType,
+  type ProjectModelType
 } from "../../../schema/ProjectSchema"
 import * as E from "fp-ts/Either"
 import { pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
-import { Response } from "../../../types/response"
+import { type Response } from "../../../types/response"
 import {
   addToDbCollection,
   deleteFromCollectionById,
   getFromCollectionForUser,
-  updateFromCollectionById,
+  updateFromCollectionById
 } from "../../../lib/queries"
-import { validateReqBody2 } from "../../../lib/utils"
 
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<ProjectModelType[] | null>>>()
 
@@ -46,8 +45,8 @@ handler.get(...auths, async (req, res) => {
   pipe(
     either,
     E.fold(
-      (error) => handleAPIError(res, { message: error }),
-      (data) => handleAPIResponse(res, data, `Projects for user: ${req.user?.name}`)
+      (error) => { handleAPIError(res, { message: error }) },
+      (data) => { handleAPIResponse(res, data, `Projects for user: ${req.user?.name}`) }
     )
   )
 })
@@ -58,12 +57,12 @@ const createTags = (data: Pick<ProjectModelType, "techStack" | "title">) =>
 handler.post(...auths, async (req, res) => {
   const addNonInputData =
     (userId: string) =>
-    (data: ProjectModelFromInputType): Omit<ProjectModelType, "_id"> => ({
-      ...data,
-      tags: createTags(data),
-      userId,
-      createdAt: new Date(),
-    })
+      (data: ProjectModelFromInputType): Omit<ProjectModelType, "_id"> => ({
+        ...data,
+        tags: createTags(data),
+        userId,
+        createdAt: new Date()
+      })
 
   const task = pipe(
     req,
@@ -79,8 +78,8 @@ handler.post(...auths, async (req, res) => {
   pipe(
     either,
     E.fold(
-      (error) => handleAPIError(res, { message: error }),
-      () => handleAPIResponse(res, null, "Project added")
+      (error) => { handleAPIError(res, { message: error }) },
+      () => { handleAPIResponse(res, null, "Project added") }
     )
   )
 })
@@ -102,8 +101,8 @@ handler.patch(...auths, async (req, res) => {
     either,
     E.chain(validateData2<ProjectModelFromInputType>(ProjectModelSchema)),
     E.fold(
-      (error) => handleAPIError(res, { message: error }),
-      (data) => handleAPIResponse(res, data, "Project updated successfully")
+      (error) => { handleAPIError(res, { message: error }) },
+      (data) => { handleAPIResponse(res, data, "Project updated successfully") }
     )
   )
 })

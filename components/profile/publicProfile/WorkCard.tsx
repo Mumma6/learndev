@@ -1,6 +1,6 @@
 import React from "react"
-import { Box, Divider, Typography, Button } from "@mui/material"
-import { UserWorkexperienceSchemaType } from "../../../schema/UserSchema"
+import { Box, Typography } from "@mui/material"
+import { type UserWorkexperienceSchemaType } from "../../../schema/UserSchema"
 
 interface IProps {
   work: UserWorkexperienceSchemaType
@@ -15,7 +15,7 @@ const WorkCard = ({ work }: IProps) => {
       justifyContent="space-between"
       alignItems="flex-start"
       sx={{
-        backgroundColor: "#F8F9FA",
+        backgroundColor: "#F8F9FA"
       }}
       borderRadius="lg"
       mb={1}

@@ -1,23 +1,20 @@
 import React from "react"
-import { IQuiz } from "../../../models/Quiz"
-import { IQuizResult } from "../../../models/QuizResult"
-import { CourseModelSchemaType } from "../../../schema/CourseSchema"
-import { ProjectModelType } from "../../../schema/ProjectSchema"
-import { UserModelSchemaType } from "../../../schema/UserSchema"
+import { type IQuizResult } from "../../../models/QuizResult"
+import { type CourseModelSchemaType } from "../../../schema/CourseSchema"
+import { type ProjectModelType } from "../../../schema/ProjectSchema"
+import { type UserModelSchemaType } from "../../../schema/UserSchema"
 import {
-  Button,
-  Container,
-  Grid,
-  Typography,
   Box,
-  Paper,
   Card,
-  CardHeader,
-  Divider,
-  Chip,
   CardContent,
-  Badge,
+  CardHeader,
+  Chip,
+  Container,
+  Divider,
+  Grid,
   IconButton,
+  Paper,
+  Typography
 } from "@mui/material"
 import WorkCard from "./WorkCard"
 import Table from "@mui/material/Table"
@@ -26,11 +23,10 @@ import TableCell from "@mui/material/TableCell"
 import TableContainer from "@mui/material/TableContainer"
 import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
-import { FiCode, FiExternalLink, FiCheckCircle } from "react-icons/fi"
+import { FiCheckCircle, FiCode, FiExternalLink } from "react-icons/fi"
 import Link from "next/link"
 import { CgWebsite } from "react-icons/cg"
 import { FaBlog, FaGithub, FaLinkedin, FaTwitter, FaYoutube } from "react-icons/fa"
-import LatestQuizResults from "../../overview/LatestQuizResults"
 
 // https://www.npmjs.com/package/react-to-pdf
 
@@ -58,12 +54,12 @@ const PublicProfile = ({ user, courses, projects, quizResults }: IProps) => {
         <Card
           sx={{
             marginTop: 5,
-            marginBottom: 5,
+            marginBottom: 5
           }}
         >
           <CardHeader
             sx={{
-              paddingBottom: 2,
+              paddingBottom: 2
             }}
             subheader="About"
             title={user.name}
@@ -97,12 +93,12 @@ const PublicProfile = ({ user, courses, projects, quizResults }: IProps) => {
         <Card
           sx={{
             marginBottom: 2,
-            marginTop: 4,
+            marginTop: 4
           }}
         >
           <CardHeader
             sx={{
-              paddingBottom: 2,
+              paddingBottom: 2
             }}
             subheader="Information about the person"
             title="Work experience"
@@ -136,7 +132,7 @@ const PublicProfile = ({ user, courses, projects, quizResults }: IProps) => {
                   {courses
                     .filter((c) => c.content.status !== "Wishlist")
                     .map((course) => (
-                      <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                      <TableRow key={course._id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                         <TableCell component="th" scope="row">
                           <Typography>{course.content.title}</Typography>
                         </TableCell>
@@ -196,7 +192,7 @@ const PublicProfile = ({ user, courses, projects, quizResults }: IProps) => {
                 </TableHead>
                 <TableBody>
                   {projects.map((project) => (
-                    <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                    <TableRow key={project._id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                       <TableCell component="th" scope="row">
                         <Typography>{project.title}</Typography>
                       </TableCell>
