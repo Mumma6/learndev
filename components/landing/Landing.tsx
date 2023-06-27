@@ -94,8 +94,8 @@ const Landing = () => {
             </Grid>
             <Grid item xs={12} sm={12} md={6} sx={{ display: "flex", alignItems: "center" }}>
               <Typography color="textPrimary" variant="h4" sx={{ fontSize: 34 }}>
-                In an online world with endless resources, it can be overwhelming to keep track. We bring your learning
-                vision to life, providing the tools to organize and control your self-guided coding education.
+                In a online world with endless resources, it can be overwhelming to keep track. We bring your learning vision
+                to life, providing the tools to organize and control your self-guided coding education.
               </Typography>
             </Grid>
           </Grid>
