@@ -1,10 +1,10 @@
-import React, { useState, ChangeEvent, FormEvent } from "react"
+import React, { type ChangeEvent, type FormEvent, useState } from "react"
 import { pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
 import SubmitButton from "../shared/SubmitButton"
 import { toast } from "react-toastify"
 import useRedirect from "../customHooks/useRedirect"
-import { Status } from "../../types/status"
+import { type Status } from "../../types/status"
 import { FaArrowLeft } from "react-icons/fa"
 import NextLink from "next/link"
 import { Box, Button, Container, TextField, Typography } from "@mui/material"
@@ -22,7 +22,7 @@ const ForgotPassword = () => {
       fetcherTE("/api/user/password/reset", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        data: email,
+        data: email
       }),
       TE.fold(
         (error) => {
@@ -38,7 +38,7 @@ const ForgotPassword = () => {
           toast.success(
             `An email has been sent to ${email}. Please follow the link to reset your password. Redirecting to login page`,
             {
-              autoClose: 4000,
+              autoClose: 4000
             }
           )
           return TE.right(data)
@@ -55,7 +55,7 @@ const ForgotPassword = () => {
         display: "flex",
         flexGrow: 1,
         minHeight: "100%",
-        marginTop: 20,
+        marginTop: 20
       }}
     >
       <Container maxWidth="sm">
@@ -73,7 +73,7 @@ const ForgotPassword = () => {
           <Box
             sx={{
               pb: 1,
-              pt: 1,
+              pt: 1
             }}
           >
             <Typography align="center" color="textSecondary" variant="body1">
@@ -85,7 +85,7 @@ const ForgotPassword = () => {
             label="Email"
             margin="normal"
             name="email"
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => { setEmail(event.target.value) }}
             value={email}
             type="text"
             variant="outlined"

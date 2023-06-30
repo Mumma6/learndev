@@ -1,4 +1,4 @@
-import { ObjectId } from "mongodb"
+import { type ObjectId } from "mongodb"
 
 // Replace these with Zod
 
@@ -183,8 +183,6 @@ export interface IQuiz {
       },
     ],
   })
-
-
 
 const a = {
   title: "CSS Quiz",

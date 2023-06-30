@@ -1,5 +1,5 @@
-import { Db, ObjectId } from "mongodb"
-import { IEventInfo } from "../../models/EventInfo"
+import { ObjectId } from "mongodb"
+import { type IEventInfo } from "../../models/EventInfo"
 import * as TE from "fp-ts/TaskEither"
 import { getMongoDb } from "../mongodb"
 
@@ -33,7 +33,7 @@ export const deleteEventById = (id: string) =>
     async () => {
       const db = await getMongoDb()
       const result = db.collection("events").deleteOne({ _id: new ObjectId(id) })
-      return result
+      return await result
     },
-    () => `Failed to delete event`
+    () => "Failed to delete event"
   )

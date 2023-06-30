@@ -1,12 +1,12 @@
 import React from "react"
-import { Box, Container, Grid, Pagination, Card, CardContent, Typography, Divider, CardHeader } from "@mui/material"
+import { Box, Card, CardContent, CardHeader, Container, Divider } from "@mui/material"
 
 const StudyRooms = () => {
   return (
     <Box
       component="main"
       sx={{
-        paddingTop: 10,
+        paddingTop: 10
       }}
     >
       <Container maxWidth={false}>

@@ -1,6 +1,6 @@
-import { Dispatch, SetStateAction, MouseEvent } from "react"
-import { KeyedMutator } from "swr"
-import { Response } from "./response"
+import { type Dispatch, type MouseEvent, type SetStateAction } from "react"
+import { type KeyedMutator } from "swr"
+import { type Response } from "./response"
 
 // When passing a setter function as props
 export type SetState<T> = Dispatch<SetStateAction<T>>

@@ -1,7 +1,5 @@
-import { ObjectId } from "mongodb"
-import { Event } from "react-big-calendar"
-
-import { IQuiz } from "./Quiz"
+import { type ObjectId } from "mongodb"
+import { type Event } from "react-big-calendar"
 
 // Replace these with Zod
 

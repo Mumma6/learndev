@@ -1,8 +1,5 @@
-import { Db, ObjectId } from "mongodb"
-import { ProjectModelSchema, ProjectModelType } from "../../schema/ProjectSchema"
-import { pipe } from "fp-ts/function"
-import * as TE from "fp-ts/TaskEither"
-import { getMongoDb } from "../mongodb"
+import { type Db, ObjectId } from "mongodb"
+import { ProjectModelSchema } from "../../schema/ProjectSchema"
 
 export const findProjectById = async (db: Db, _id: string) => {
   const project = await db.collection("projects").findOne({ _id: new ObjectId(_id) })

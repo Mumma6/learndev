@@ -19,9 +19,10 @@ const SubmitButton = ({
   fullWidth = true,
   size = "large",
   customStyle = {},
-  color = "primary",
+  color = "primary"
 }: IProps) => {
-  return isLoading ? (
+  return isLoading
+    ? (
     <Button
       style={customStyle}
       color={color}
@@ -34,7 +35,8 @@ const SubmitButton = ({
       Loading...
       <CircularProgress style={{ marginRight: 5 }} size="sm" role="status" aria-hidden="true" />
     </Button>
-  ) : (
+      )
+    : (
     <Button
       style={customStyle}
       color={color}
@@ -46,7 +48,7 @@ const SubmitButton = ({
     >
       {text}
     </Button>
-  )
+      )
 }
 
 export default SubmitButton

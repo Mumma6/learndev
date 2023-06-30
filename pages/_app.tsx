@@ -6,8 +6,8 @@ import "react-toastify/dist/ReactToastify.css"
 import "../styles/index.css"
 import { theme } from "../theme"
 import createEmotionCache from "../utils/createEmotionCache"
-import { CacheProvider, EmotionCache } from "@emotion/react"
-import { createTheme, ThemeProvider } from "@mui/material/styles"
+import { CacheProvider, type EmotionCache } from "@emotion/react"
+import { ThemeProvider } from "@mui/material/styles"
 
 import { registerChartJs } from "../utils/registerChart"
 
@@ -23,10 +23,10 @@ interface AppProps extends AppInitialProps {
 
 const clientSideEmotionCache = createEmotionCache()
 
-export default function App({
+export default function App ({
   emotionCache = clientSideEmotionCache,
   Component,
-  pageProps: { session, ...pageProps },
+  pageProps: { session, ...pageProps }
 }: AppProps) {
   return (
     <CacheProvider value={emotionCache}>

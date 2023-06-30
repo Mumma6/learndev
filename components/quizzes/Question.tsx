@@ -1,6 +1,6 @@
 import React from "react"
-import { IQuestion, IQuiz } from "../../models/Quiz"
-import { Box, Alert, Card, CardContent, CardHeader, Divider, TextField, Button } from "@mui/material"
+import { type IQuestion } from "../../models/Quiz"
+import { Card, CardContent, CardHeader } from "@mui/material"
 import Radio from "@mui/material/Radio"
 import RadioGroup from "@mui/material/RadioGroup"
 import FormControlLabel from "@mui/material/FormControlLabel"
@@ -30,7 +30,7 @@ const Question = ({ question, choosenAnwserKey, handleChange }: IProps) => {
             onChange={handleChange}
           >
             {answers.map((answer) => (
-              <FormControlLabel value={answer.key} control={<Radio />} label={answer.text} />
+              <FormControlLabel key={answer.key} value={answer.key} control={<Radio />} label={answer.text} />
             ))}
           </RadioGroup>
         </FormControl>

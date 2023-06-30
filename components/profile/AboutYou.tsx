@@ -1,12 +1,12 @@
-import React, { FormEvent, useState, useEffect } from "react"
+import React, { type FormEvent, useEffect, useState } from "react"
 
 import { toast } from "react-toastify"
 import { pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
 import SubmitButton from "../shared/SubmitButton"
-import { Box, Alert, Card, CardContent, CardHeader, Divider, TextField, Typography } from "@mui/material"
+import { Box, Card, CardContent, CardHeader, Divider, TextField, Typography } from "@mui/material"
 import { fetcherTE } from "../../lib/axiosFetcher"
-import { UserModelSchema, UserModelSchemaType } from "../../schema/UserSchema"
+import { UserModelSchema, type UserModelSchemaType } from "../../schema/UserSchema"
 import { useCurrentUser } from "../../lib/hooks"
 import { useSWRConfig } from "swr"
 import Checkbox from "@mui/material/Checkbox"
@@ -24,7 +24,7 @@ const initialFormState = {
   about: "",
   goals: "",
   from: "",
-  lookingForWork: false,
+  lookingForWork: false
 }
 
 const AboutYou = () => {
@@ -35,7 +35,7 @@ const AboutYou = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   const { values, errors, setFieldValue, onBlur, touched, isDisabled, setValues } = useZodFormValidation<
-    Pick<UserModelSchemaType, "about" | "goals" | "from" | "lookingForWork">
+  Pick<UserModelSchemaType, "about" | "goals" | "from" | "lookingForWork">
   >(UserModelSchema.pick({ about: true, goals: true }), initialFormState)
 
   useEffect(() => {
@@ -44,7 +44,7 @@ const AboutYou = () => {
         about: data?.payload?.about || "",
         goals: data?.payload?.goals || "",
         from: data?.payload?.from || "",
-        lookingForWork: !!data?.payload?.lookingForWork,
+        lookingForWork: !!data?.payload?.lookingForWork
       })
     }
   }, [data?.payload])
@@ -56,7 +56,7 @@ const AboutYou = () => {
       fetcherTE<UserModelSchemaType, Pick<UserModelSchemaType, "about" | "goals" | "from" | "lookingForWork">>("/api/user", {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
-        data: values,
+        data: values
       }),
       TE.fold(
         (error) => {
@@ -88,8 +88,8 @@ const AboutYou = () => {
               label="About"
               margin="normal"
               name="about"
-              onBlur={() => onBlur("about")}
-              onChange={(e) => setFieldValue("about", e.target.value)}
+              onBlur={() => { onBlur("about") }}
+              onChange={(e) => { setFieldValue("about", e.target.value) }}
               value={values.about}
               type="text"
               variant="outlined"
@@ -104,8 +104,8 @@ const AboutYou = () => {
               label="Goals"
               margin="normal"
               name="goals"
-              onBlur={() => onBlur("goals")}
-              onChange={(e) => setFieldValue("goals", e.target.value)}
+              onBlur={() => { onBlur("goals") }}
+              onChange={(e) => { setFieldValue("goals", e.target.value) }}
               value={values.goals}
               type="text"
               variant="outlined"
@@ -118,8 +118,8 @@ const AboutYou = () => {
               label="Where are you from"
               margin="normal"
               name="from"
-              onBlur={() => onBlur("from")}
-              onChange={(e) => setFieldValue("from", e.target.value)}
+              onBlur={() => { onBlur("from") }}
+              onChange={(e) => { setFieldValue("from", e.target.value) }}
               value={values.from}
               type="text"
               variant="outlined"
@@ -134,7 +134,7 @@ const AboutYou = () => {
               <Checkbox
                 sx={{ transform: "scale(1.3)" }}
                 name="lookingForWork"
-                onChange={(e) => setFieldValue("lookingForWork", e.target.checked)}
+                onChange={(e) => { setFieldValue("lookingForWork", e.target.checked) }}
                 value={values.lookingForWork}
                 checked={values.lookingForWork}
               />
@@ -146,7 +146,7 @@ const AboutYou = () => {
               display: "flex",
               justifyContent: "space-between",
               p: 2,
-              float: "right",
+              float: "right"
             }}
           >
             <SubmitButton
@@ -162,7 +162,7 @@ const AboutYou = () => {
                   about: data?.payload?.about,
                   goals: data?.payload?.goals,
                   from: data?.payload?.from,
-                  lookingForWork: data?.payload?.lookingForWork,
+                  lookingForWork: data?.payload?.lookingForWork
                 })
               }
             />

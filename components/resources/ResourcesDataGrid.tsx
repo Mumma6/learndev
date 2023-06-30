@@ -1,9 +1,8 @@
-import React, { useState } from "react"
-import { DataGrid, GridApi, GridColDef, GridEditCellValueParams, GridValueGetterParams } from "@mui/x-data-grid"
+import React from "react"
+import { DataGrid, type GridColDef } from "@mui/x-data-grid"
 import { FiExternalLink } from "react-icons/fi"
-import { Box, Chip, IconButton, Grid } from "@mui/material"
+import { Box, Chip, IconButton } from "@mui/material"
 import { getResourceTypeColor } from "../../helpers/helpers"
-import { useRouter } from "next/router"
 
 import * as TE from "fp-ts/TaskEither"
 import { toast } from "react-toastify"
@@ -13,8 +12,8 @@ import { useSWRConfig } from "swr"
 import { pipe } from "fp-ts/lib/function"
 import * as O from "fp-ts/Option"
 import * as A from "fp-ts/Array"
-import { FaPen, FaTrash } from "react-icons/fa"
-import { ResourceModelInputSchemaType, ResourceModelSchemaType } from "../../schema/ResourceSchema"
+import { FaTrash } from "react-icons/fa"
+import { type ResourceModelSchemaType } from "../../schema/ResourceSchema"
 import Link from "next/link"
 
 /*
@@ -41,7 +40,7 @@ const ResourcesDataGrid = ({ resources }: IProps) => {
     resources,
     O.fromNullable,
     O.map(A.map(addId)),
-    O.getOrElse<Array<TResourceModelSchemaType>>(() => [])
+    O.getOrElse<TResourceModelSchemaType[]>(() => [])
   )
 
   const deleteResource = async (id: string) => {
@@ -65,13 +64,13 @@ const ResourcesDataGrid = ({ resources }: IProps) => {
     {
       field: "title",
       headerName: "Title",
-      flex: 0.4,
+      flex: 0.4
       // width: 150,
     },
     {
       field: "description",
       headerName: "Description",
-      flex: 0.7,
+      flex: 0.7
       // width: 150,
     },
     {
@@ -84,7 +83,7 @@ const ResourcesDataGrid = ({ resources }: IProps) => {
         return (
           <Chip label={currentRow.type} style={{ backgroundColor: getResourceTypeColor(currentRow.type), color: "white" }} />
         )
-      },
+      }
     },
 
     {
@@ -97,7 +96,7 @@ const ResourcesDataGrid = ({ resources }: IProps) => {
         const currentRow = params.row
 
         const onClickEdit = (e: any) => {
-          //toggleTask(currentRow._id, !currentRow.completed)
+          // toggleTask(currentRow._id, !currentRow.completed)
           console.log("edit")
         }
 
@@ -125,8 +124,8 @@ const ResourcesDataGrid = ({ resources }: IProps) => {
             </IconButton>
           </Box>
         )
-      },
-    },
+      }
+    }
   ]
 
   return (
@@ -137,14 +136,14 @@ const ResourcesDataGrid = ({ resources }: IProps) => {
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 10,
-            },
-          },
+              pageSize: 10
+            }
+          }
         }}
         sx={{
           display: "flex",
           justifyContent: "center",
-          textAlign: "center",
+          textAlign: "center"
         }}
         pageSizeOptions={[10]}
         disableRowSelectionOnClick

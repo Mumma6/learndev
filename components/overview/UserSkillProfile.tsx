@@ -29,7 +29,7 @@ const UserSkillProfile = () => {
   // Måste ha minst 3 träffar?
   const mappedResults = userQuizResult?.map((res) => ({
     label: res.title,
-    weight: getPercentageValue(res.score, res.maxScore),
+    weight: getPercentageValue(res.score, res.maxScore)
   }))
 
   const data = {
@@ -40,21 +40,21 @@ const UserSkillProfile = () => {
         data: mappedResults?.map(({ weight }) => weight),
         backgroundColor: "rgb(205, 187, 255)", // theme.palette.primary.main,
         borderColor: theme.palette.primary.main,
-        borderWidth: 2,
-      },
-    ],
+        borderWidth: 2
+      }
+    ]
   }
 
   const options = {
     scale: {
       min: 0,
       max: 100,
-      fontColor: theme.palette.text.secondary,
+      fontColor: theme.palette.text.secondary
     },
     plugins: {
       legend: {
-        display: false,
-      },
+        display: false
+      }
     },
     maintainAspectRatio: false,
     responsive: true,
@@ -67,8 +67,8 @@ const UserSkillProfile = () => {
       footerFontColor: theme.palette.text.secondary,
       intersect: false,
       mode: "index",
-      titleFontColor: theme.palette.text.primary,
-    },
+      titleFontColor: theme.palette.text.primary
+    }
   }
 
   return (
@@ -86,7 +86,7 @@ const UserSkillProfile = () => {
             marginLeft: "auto",
             marginRight: "auto",
             height: "20rem",
-            width: "20rem",
+            width: "20rem"
           }}
         >
           <Radar data={data} options={options} />
@@ -95,7 +95,7 @@ const UserSkillProfile = () => {
           sx={{
             display: "flex",
             justifyContent: "center",
-            pt: 2,
+            pt: 2
           }}
         >
           {mappedResults?.map(({ label, weight }, index) => (
@@ -103,7 +103,7 @@ const UserSkillProfile = () => {
               key={index}
               sx={{
                 p: 1,
-                textAlign: "center",
+                textAlign: "center"
               }}
             >
               <Typography color="textPrimary" variant="body1">

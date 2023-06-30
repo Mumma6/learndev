@@ -1,28 +1,25 @@
 import Head from "next/head"
-import React, { FormEvent, useState, useEffect } from "react"
+import React, { type FormEvent, useState } from "react"
 import { toast } from "react-toastify"
 import { DashboardLayout } from "../components/dashboard/DashboardLayout"
 import { useCurrentUser } from "../lib/hooks"
-import { Box, Divider, TextField, Card, CardContent, Container, CardHeader, Typography } from "@mui/material"
+import { Box, Card, CardContent, CardHeader, Container, Divider, TextField } from "@mui/material"
 import SubmitButton from "../components/shared/SubmitButton"
 import { pipe } from "fp-ts/function"
-import * as A from "fp-ts/Array"
-import * as O from "fp-ts/Option"
 import * as TE from "fp-ts/TaskEither"
 
 import { useZodFormValidation } from "zod-react-form"
 import {
   FeedbackInputSchema,
-  FeedbackInputSchemaType,
-  FeedbackModel,
-  FeedbackModelSchemaType,
+  type FeedbackInputSchemaType,
+  type FeedbackModelSchemaType
 } from "../schema/FeedbackSchema"
 import { fetcherTE } from "../lib/axiosFetcher"
 
 const initialFormState = {
   good: "",
   bad: "",
-  other: "",
+  other: ""
 }
 
 const feedback = () => {
@@ -30,7 +27,7 @@ const feedback = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   const { values, errors, setFieldValue, onBlur, touched, isDisabled, reset, setValues } = useZodFormValidation<
-    Omit<FeedbackInputSchemaType, "reporterName" | "reporterEmail">
+  Omit<FeedbackInputSchemaType, "reporterName" | "reporterEmail">
   >(FeedbackInputSchema.omit({ reporterEmail: true, reporterName: true }), initialFormState)
 
   // show a "thank you note on submiting"
@@ -45,8 +42,8 @@ const feedback = () => {
         data: {
           ...values,
           reporterName: data?.payload?.name!,
-          reporterEmail: data?.payload?.email!,
-        },
+          reporterEmail: data?.payload?.email!
+        }
       }),
       TE.fold(
         (error) => {
@@ -79,7 +76,7 @@ const feedback = () => {
             sx={{
               flexGrow: 1,
               py: 8,
-              marginTop: 2,
+              marginTop: 2
             }}
           >
             <Container maxWidth={false}>
@@ -96,8 +93,8 @@ const feedback = () => {
                       label="What do you like about Studify"
                       margin="normal"
                       name="good"
-                      onBlur={() => onBlur("good")}
-                      onChange={(e) => setFieldValue("good", e.target.value)}
+                      onBlur={() => { onBlur("good") }}
+                      onChange={(e) => { setFieldValue("good", e.target.value) }}
                       value={values.good}
                       type="text"
                       variant="outlined"
@@ -113,8 +110,8 @@ const feedback = () => {
                       label="What do you not like about Studify"
                       margin="normal"
                       name="bad"
-                      onBlur={() => onBlur("bad")}
-                      onChange={(e) => setFieldValue("bad", e.target.value)}
+                      onBlur={() => { onBlur("bad") }}
+                      onChange={(e) => { setFieldValue("bad", e.target.value) }}
                       value={values.bad}
                       type="text"
                       variant="outlined"
@@ -129,8 +126,8 @@ const feedback = () => {
                       label="Any other feedback"
                       margin="normal"
                       name="other"
-                      onBlur={() => onBlur("other")}
-                      onChange={(e) => setFieldValue("other", e.target.value)}
+                      onBlur={() => { onBlur("other") }}
+                      onChange={(e) => { setFieldValue("other", e.target.value) }}
                       value={values.other}
                       type="text"
                       variant="outlined"
@@ -145,7 +142,7 @@ const feedback = () => {
                       display: "flex",
                       justifyContent: "space-between",
                       p: 2,
-                      float: "right",
+                      float: "right"
                     }}
                   >
                     <SubmitButton

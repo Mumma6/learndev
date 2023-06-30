@@ -1,10 +1,10 @@
-import { GetServerSidePropsContext, NextApiResponse, NextApiRequest } from "next"
-import { Response } from "../types/response"
+import { type GetServerSidePropsContext, type NextApiRequest, type NextApiResponse } from "next"
+import { type Response } from "../types/response"
 import { getMongoDb } from "./mongodb"
 import { findUserBySession } from "./queries/user"
-import { ParsedUrlQuery } from "querystring"
-import { Db, DeleteResult } from "mongodb"
-import { AnyZodObject, z } from "zod"
+import { type ParsedUrlQuery } from "querystring"
+import { type Db, type DeleteResult } from "mongodb"
+import { type AnyZodObject, z } from "zod"
 import * as E from "fp-ts/Either"
 import { flow, pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
@@ -12,16 +12,12 @@ import * as TE from "fp-ts/TaskEither"
 /*
  ***** Only used on the server side.
 
-
-
  https://www.youtube.com/watch?v=mw97Dum7TnM&ab_channel=RyanDavisDev
-
 
  Use smart constructs instead of E.right | E.left
 
  // todo- Make all validate functions partial.
 
- 
  */
 
 export const handleAPIResponse = <T>(
@@ -31,7 +27,7 @@ export const handleAPIResponse = <T>(
   statusCode = 200
 ): void => {
   /*
-  The payload contains _id: Mongodb ID here. 
+  The payload contains _id: Mongodb ID here.
   But will get converted to a string by JSON.
   https://stackoverflow.com/questions/39598987/id-get-converted-from-objectid-to-string-in-mean-application
   */
@@ -58,12 +54,13 @@ export const handleAuthGetServerSideProps = async <ObjectType>(
   objectName: string,
   schema?: AnyZodObject
 ) => {
+  // eslint-disable-next-line no-lone-blocks
   {
     const redirect = {
       redirect: {
         destination: "/",
-        permanent: false,
-      },
+        permanent: false
+      }
     }
     const sessionId = context.req.cookies.sid
 
@@ -87,8 +84,8 @@ export const handleAuthGetServerSideProps = async <ObjectType>(
 
     return {
       props: {
-        [objectName]: serilizeObject(object), // nextjs cant serilize ObjectId, need to convert to Id
-      },
+        [objectName]: serilizeObject(object) // nextjs cant serilize ObjectId, need to convert to Id
+      }
     }
   }
 }
@@ -132,10 +129,10 @@ export const validateArrayData = <T>(data: unknown[], schema: z.ZodSchema): E.Ei
 
 export const validateArrayData2 =
   <T>(schema: z.ZodSchema) =>
-  (data: unknown[]): TE.TaskEither<string, T[]> => {
-    const parsedData = z.array(schema).safeParse(data)
-    return parsedData.success ? TE.right(parsedData.data) : TE.left("Error while parsing data")
-  }
+    (data: unknown[]): TE.TaskEither<string, T[]> => {
+      const parsedData = z.array(schema).safeParse(data)
+      return parsedData.success ? TE.right(parsedData.data) : TE.left("Error while parsing data")
+    }
 
 /**
  *
@@ -150,17 +147,17 @@ export const validateReqBody = <T>(req: NextApiRequest, schema: z.ZodSchema): E.
 }
 
 // We use currying so we dont need to pass the parameter in the pipe steps
-/* 
+/*
 E.chain((req) => validateReqBody<Partial<CourseModelSchemaType>>(req, CourseModelSchema.partial())),
 
 E.chain(validateReqBody2<TaskFormInputType>(TaskFormInputSchema)),
 */
 export const validateReqBody2 =
   <T>(schema: z.ZodSchema) =>
-  (req: NextApiRequest): E.Either<string, T> => {
-    const parsedBody = schema.safeParse(req.body)
-    return parsedBody.success ? E.right(parsedBody.data) : E.left("Error while parsing req data")
-  }
+    (req: NextApiRequest): E.Either<string, T> => {
+      const parsedBody = schema.safeParse(req.body)
+      return parsedBody.success ? E.right(parsedBody.data) : E.left("Error while parsing req data")
+    }
 
 /**
  *
@@ -176,12 +173,12 @@ export const validateData = <T>(data: unknown, schema: z.ZodSchema): E.Either<st
 
 export const validateData2 =
   <T>(schema: z.ZodSchema) =>
-  (data: unknown): E.Either<string, T> => {
-    console.log(data)
-    const parsedData = schema.safeParse(data)
-    console.log(parsedData)
-    return parsedData.success ? E.right(parsedData.data) : E.left("Error while parsing req data")
-  }
+    (data: unknown): E.Either<string, T> => {
+      console.log(data)
+      const parsedData = schema.safeParse(data)
+      console.log(parsedData)
+      return parsedData.success ? E.right(parsedData.data) : E.left("Error while parsing req data")
+    }
 
 /**
  *
@@ -194,16 +191,16 @@ export const validateQueryParam = (req: NextApiRequest): E.Either<string, string
 // Should be able to create a getHandler aswell?
 export const createDeleteHandler =
   (deleteFunction: (id: string) => TE.TaskEither<string, DeleteResult>) =>
-  async (req: NextApiRequest, res: NextApiResponse) => {
-    const task = pipe(req, checkUser, E.chain(validateQueryParam), TE.fromEither, TE.chain(deleteFunction))
+    async (req: NextApiRequest, res: NextApiResponse) => {
+      const task = pipe(req, checkUser, E.chain(validateQueryParam), TE.fromEither, TE.chain(deleteFunction))
 
-    const either = await task()
+      const either = await task()
 
-    pipe(
-      either,
-      E.fold(
-        (error) => handleAPIError(res, { message: error }),
-        () => handleAPIResponse(res, null, `Resource was deleted successfully`)
+      pipe(
+        either,
+        E.fold(
+          (error) => { handleAPIError(res, { message: error }) },
+          () => { handleAPIResponse(res, null, "Resource was deleted successfully") }
+        )
       )
-    )
-  }
+    }

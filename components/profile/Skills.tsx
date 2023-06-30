@@ -1,5 +1,5 @@
-import React, { useState, FormEvent } from "react"
-import { Box, Alert, Card, CardContent, CardHeader, Divider, TextField, Button } from "@mui/material"
+import React, { type FormEvent, useState } from "react"
+import { Box, Button, Card, CardContent, CardHeader, Divider, TextField } from "@mui/material"
 import SubmitButton from "../shared/SubmitButton"
 import Chip from "@mui/material/Chip"
 import Paper from "@mui/material/Paper"
@@ -9,13 +9,11 @@ import { FaPlus } from "react-icons/fa"
 import { fetcherTE } from "../../lib/axiosFetcher"
 import { pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
-import * as A from "fp-ts/lib/Array"
-import * as O from "fp-ts/lib/Option"
 import { toast } from "react-toastify"
 import { useCurrentUser } from "../../lib/hooks"
 import * as _ from "lodash"
-import { UserModelSchemaType } from "../../schema/UserSchema"
-import { SkillSchemaType } from "../../schema/SharedSchema"
+import { type UserModelSchemaType } from "../../schema/UserSchema"
+import { type SkillSchemaType } from "../../schema/SharedSchema"
 import { useSWRConfig } from "swr"
 
 const Skills = () => {
@@ -63,8 +61,8 @@ const Skills = () => {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
         data: {
-          skills: chipData,
-        },
+          skills: chipData
+        }
       }),
       TE.fold(
         (error) => {
@@ -95,7 +93,7 @@ const Skills = () => {
                 justifyContent: "start",
                 flexWrap: "wrap",
                 listStyle: "none",
-                paddingBottom: !chipData.length ? 5 : 0,
+                paddingBottom: !chipData.length ? 5 : 0
               }}
             >
               <Autocomplete
@@ -118,7 +116,7 @@ const Skills = () => {
                 flexWrap: "wrap",
                 listStyle: "none",
                 p: 0.5,
-                mt: 8,
+                mt: 8
               }}
               component="ul"
             >
@@ -139,7 +137,7 @@ const Skills = () => {
               display: "flex",
               justifyContent: "space-between",
               p: 2,
-              float: "right",
+              float: "right"
             }}
           >
             <SubmitButton

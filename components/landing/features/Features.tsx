@@ -1,11 +1,8 @@
 import React, { useState } from "react"
-import { Container, Grid, Typography, Box, Button, Divider } from "@mui/material"
+import { Box, Button, Container, Divider, Grid } from "@mui/material"
 import { FaRegCalendarAlt, FaUser } from "react-icons/fa"
 import { MdQuiz } from "react-icons/md"
 import { AiOutlineFundProjectionScreen } from "react-icons/ai"
-import Image from "next/image"
-import overviewImg from "../../../public/assets/images/overview.png"
-import calendarImg from "../../../public/assets/images/calendar.png"
 
 /*
 
@@ -30,7 +27,7 @@ const Features = () => {
               startIcon={<FaUser />}
               variant={getVariant("Profile overview")}
               size="large"
-              onClick={() => setSelected("Profile overview")}
+              onClick={() => { setSelected("Profile overview") }}
             >
               Profile overview
             </Button>
@@ -40,7 +37,7 @@ const Features = () => {
               startIcon={<FaRegCalendarAlt />}
               variant={getVariant("Calendar")}
               size="large"
-              onClick={() => setSelected("Calendar")}
+              onClick={() => { setSelected("Calendar") }}
             >
               Calendar
             </Button>
@@ -50,7 +47,7 @@ const Features = () => {
               startIcon={<AiOutlineFundProjectionScreen />}
               variant={getVariant("Project")}
               size="large"
-              onClick={() => setSelected("Project")}
+              onClick={() => { setSelected("Project") }}
             >
               Project
             </Button>
@@ -60,7 +57,7 @@ const Features = () => {
               startIcon={<MdQuiz />}
               variant={getVariant("Courses")}
               size="large"
-              onClick={() => setSelected("Courses")}
+              onClick={() => { setSelected("Courses") }}
             >
               Courses
             </Button>
@@ -72,7 +69,7 @@ const Features = () => {
             <img
               style={{
                 maxWidth: "100%",
-                maxHeight: "100%",
+                maxHeight: "100%"
               }}
               alt="core"
               src="/assets/images/home1.jpg"
@@ -82,7 +79,7 @@ const Features = () => {
             <img
               style={{
                 maxWidth: "100%",
-                maxHeight: "100%",
+                maxHeight: "100%"
               }}
               alt="core"
               src="/assets/images/calendar.jpg"
@@ -92,7 +89,7 @@ const Features = () => {
             <img
               style={{
                 maxWidth: "100%",
-                maxHeight: "100%",
+                maxHeight: "100%"
               }}
               alt="core"
               src="/assets/images/proj1.jpg"
@@ -102,7 +99,7 @@ const Features = () => {
             <img
               style={{
                 maxWidth: "100%",
-                maxHeight: "100%",
+                maxHeight: "100%"
               }}
               alt="core"
               src="/assets/images/mycourses.jpg"

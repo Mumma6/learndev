@@ -1,12 +1,11 @@
-import { GetServerSideProps } from "next"
+import { type GetServerSideProps } from "next"
 import Head from "next/head"
-import { ParsedUrlQuery } from "querystring"
+import { type ParsedUrlQuery } from "querystring"
 import React from "react"
 import EmailVerifyToken from "../../components/auth/EmailVerifyToken"
 import { getMongoDb } from "../../lib/mongodb"
 import { findAndDeleteTokenByIdAndType } from "../../lib/queries/token"
 import { updateUserById } from "../../lib/queries/user"
-import { IToken } from "../../types/token"
 
 interface IParams extends ParsedUrlQuery {
   token: string
@@ -22,7 +21,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (!deletedToken) return { props: { valid: false } }
 
   await updateUserById(db, deletedToken.creatorId, {
-    emailVerified: true,
+    emailVerified: true
   })
 
   return { props: { valid: true } }

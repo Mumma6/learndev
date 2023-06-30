@@ -1,8 +1,8 @@
 import passport from "../passport"
 import session from "./sessions"
-import { NextConnect } from "next-connect"
+import { type NextConnect } from "next-connect"
 
-import { NextApiRequest, NextApiResponse } from "next"
+import { type NextApiRequest, type NextApiResponse } from "next"
 
 interface IMiddleware extends NextConnect<NextApiRequest, NextApiResponse> {}
 

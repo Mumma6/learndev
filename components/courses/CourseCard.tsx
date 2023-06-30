@@ -8,7 +8,7 @@ import Paper from "@mui/material/Paper"
 import Typography from "@mui/material/Typography"
 import { Divider } from "@mui/material"
 import { useRouter } from "next/router"
-import { CourseModelSchemaType } from "../../schema/CourseSchema"
+import { type CourseModelSchemaType } from "../../schema/CourseSchema"
 
 interface IProps {
   deleteCourse: (id: string) => void
@@ -37,8 +37,8 @@ const CourseCard = ({ course, deleteCourse }: IProps) => {
 
         <Divider />
         <CardActions sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Button onClick={() => router.push(`/courses/${course._id}`)}>Go to</Button>
-          <Button onClick={() => deleteCourse(course._id)} color="error" size="small">
+          <Button onClick={async () => await router.push(`/courses/${course._id}`)}>Go to</Button>
+          <Button onClick={() => { deleteCourse(course._id) }} color="error" size="small">
             Delete
           </Button>
         </CardActions>

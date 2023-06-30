@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
 import TextField from "@mui/material/TextField"
 import Chip from "@mui/material/Chip"
@@ -12,17 +12,15 @@ import Button from "@mui/material/Button"
 import { Box, Checkbox, FormControl, InputLabel, ListItemIcon, ListItemText, MenuItem, Select } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
 import { pipe } from "fp-ts/function"
-import * as A from "fp-ts/Array"
 import * as O from "fp-ts/Option"
-import * as TE from "fp-ts/TaskEither"
 
-import { ClickEvent, ClickEventRet, SetState } from "../../types/generics"
-import { Skill, skillsData } from "../../constants/skillsData"
+import { type ClickEvent, type ClickEventRet, type SetState } from "../../types/generics"
+import { type Skill, skillsData } from "../../constants/skillsData"
 import { FaPlus } from "react-icons/fa"
-import { ProjectModelFromInputType, ProjectStatusEnum } from "../../schema/ProjectSchema"
-import { IZodFormValidation } from "zod-react-form"
+import { type ProjectModelFromInputType, ProjectStatusEnum } from "../../schema/ProjectSchema"
+import { type IZodFormValidation } from "zod-react-form"
 import { useResources } from "../../lib/hooks"
-import { ResourceModelSchemaType } from "../../schema/ResourceSchema"
+import { type ResourceModelSchemaType } from "../../schema/ResourceSchema"
 
 interface IProps {
   open: boolean
@@ -114,8 +112,8 @@ const AddProjectModal = ({ open, handleClose, setTopicData, topicData, onAddProj
             label="Title"
             type="text"
             fullWidth
-            onChange={(e) => onChange(e.target.name, e.target.value)}
-            onBlur={() => zodForm.onBlur("title")}
+            onChange={(e) => { onChange(e.target.name, e.target.value) }}
+            onBlur={() => { zodForm.onBlur("title") }}
             helperText={(zodForm.touched.title && zodForm.errors.title) || " "}
             error={Boolean(zodForm.touched.title && zodForm.errors.title)}
           />
@@ -131,8 +129,8 @@ const AddProjectModal = ({ open, handleClose, setTopicData, topicData, onAddProj
             inputProps={{ maxLength: 1500 }}
             type="text"
             fullWidth
-            onChange={(e) => onChange(e.target.name, e.target.value)}
-            onBlur={() => zodForm.onBlur("description")}
+            onChange={(e) => { onChange(e.target.name, e.target.value) }}
+            onBlur={() => { zodForm.onBlur("description") }}
             helperText={(zodForm.touched.description && zodForm.errors.description) || " "}
             error={Boolean(zodForm.touched.description && zodForm.errors.description)}
           />
@@ -144,8 +142,8 @@ const AddProjectModal = ({ open, handleClose, setTopicData, topicData, onAddProj
             label="Link to site"
             type="text"
             fullWidth
-            onChange={(e) => onChange(e.target.name, e.target.value)}
-            onBlur={() => zodForm.onBlur("deployedUrl")}
+            onChange={(e) => { onChange(e.target.name, e.target.value) }}
+            onBlur={() => { zodForm.onBlur("deployedUrl") }}
             helperText={(zodForm.touched.deployedUrl && zodForm.errors.deployedUrl) || " "}
             error={Boolean(zodForm.touched.deployedUrl && zodForm.errors.deployedUrl)}
           />
@@ -157,8 +155,8 @@ const AddProjectModal = ({ open, handleClose, setTopicData, topicData, onAddProj
             label="Source code link"
             type="text"
             fullWidth
-            onChange={(e) => onChange(e.target.name, e.target.value)}
-            onBlur={() => zodForm.onBlur("sourceCodeUrl")}
+            onChange={(e) => { onChange(e.target.name, e.target.value) }}
+            onBlur={() => { zodForm.onBlur("sourceCodeUrl") }}
             helperText={(zodForm.touched.sourceCodeUrl && zodForm.errors.sourceCodeUrl) || " "}
             error={Boolean(zodForm.touched.sourceCodeUrl && zodForm.errors.sourceCodeUrl)}
           />
@@ -170,8 +168,8 @@ const AddProjectModal = ({ open, handleClose, setTopicData, topicData, onAddProj
               required
               label="Project status"
               name="status"
-              onChange={(e) => zodForm.setFieldValue("status", e.target.value)}
-              onBlur={() => zodForm.onBlur("status")}
+              onChange={(e) => { zodForm.setFieldValue("status", e.target.value) }}
+              onBlur={() => { zodForm.onBlur("status") }}
               error={Boolean(zodForm.touched.status && zodForm.errors.status)}
             >
               <MenuItem value={ProjectStatusEnum.Enum.Done}>Done</MenuItem>
@@ -187,13 +185,13 @@ const AddProjectModal = ({ open, handleClose, setTopicData, topicData, onAddProj
               multiple
               label="Resources"
               value={resources}
-              onChange={(e) => zodForm.setFieldValue("resources", e.target.value)}
+              onChange={(e) => { zodForm.setFieldValue("resources", e.target.value) }}
               renderValue={(selected) => selected.join(", ")}
             >
               {resourcesOptions.map((option) => (
                 <MenuItem key={option._id} value={option.title}>
                   <ListItemIcon>
-                    <Checkbox checked={resources.indexOf(option.title) > -1} />
+                    <Checkbox checked={resources.includes(option.title)} />
                   </ListItemIcon>
                   <ListItemText primary={option.title} />
                 </MenuItem>
@@ -205,7 +203,7 @@ const AddProjectModal = ({ open, handleClose, setTopicData, topicData, onAddProj
               display: "flex",
               justifyContent: "start",
               flexWrap: "wrap",
-              listStyle: "none",
+              listStyle: "none"
             }}
           >
             <Autocomplete
@@ -228,7 +226,7 @@ const AddProjectModal = ({ open, handleClose, setTopicData, topicData, onAddProj
                     flexWrap: "wrap",
                     listStyle: "none",
                     p: 1.5,
-                    mt: 3,
+                    mt: 3
                   }}
                   component="ul"
                 >

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, useEffect } from "react"
+import React, { type ChangeEvent, useEffect, useState } from "react"
 import TextField from "@mui/material/TextField"
 import Dialog from "@mui/material/Dialog"
 import DialogActions from "@mui/material/DialogActions"
@@ -6,17 +6,14 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import Button from "@mui/material/Button"
-import { ClickEventRet, SetState } from "../../types/generics"
-import { PrioEnum, TaskFormInputType } from "../../schema/TaskSchema"
-import { IZodFormValidation } from "zod-react-form"
-import { InitialActivityFromState, InitialZodFormState } from "./Tasks"
+import { type ClickEventRet, type SetState } from "../../types/generics"
+import { PrioEnum } from "../../schema/TaskSchema"
+import { type IZodFormValidation } from "zod-react-form"
+import { type InitialActivityFromState, type InitialZodFormState } from "./Tasks"
 import { useCourses, useProjects } from "../../lib/hooks"
-import { CourseModelSchemaType } from "../../schema/CourseSchema"
-import { ProjectModelType } from "../../schema/ProjectSchema"
-import { Autocomplete, Box, Typography, Checkbox, FormControl, InputLabel, MenuItem, Select, Divider } from "@mui/material"
-import * as A from "fp-ts/Array"
-import * as O from "fp-ts/Option"
-import { pipe } from "fp-ts/function"
+import { type CourseModelSchemaType } from "../../schema/CourseSchema"
+import { type ProjectModelType } from "../../schema/ProjectSchema"
+import { Autocomplete, Box, Checkbox, Divider, FormControl, InputLabel, MenuItem, Select, Typography } from "@mui/material"
 
 interface IProps {
   open: boolean
@@ -36,14 +33,14 @@ const getCourses = (data: CourseModelSchemaType[]): ActivitesData[] =>
   data.map((d) => ({
     id: d._id,
     name: d.content.title,
-    group: "Courses",
+    group: "Courses"
   }))
 
 const getProjects = (data: ProjectModelType[]): ActivitesData[] =>
   data.map((d) => ({
     id: d._id,
     name: d.title,
-    group: "Projects",
+    group: "Projects"
   }))
 
 const AddTaskModal = ({ open, handleClose, onAddTask, zodForm, setActivityFormState }: IProps) => {
@@ -98,7 +95,7 @@ const AddTaskModal = ({ open, handleClose, onAddTask, zodForm, setActivityFormSt
       ...prevState,
       activityName: value?.name || "",
       activityId: value?.id || "",
-      activityGroup: value?.group || "",
+      activityGroup: value?.group || ""
     }))
   }
 
@@ -121,8 +118,8 @@ const AddTaskModal = ({ open, handleClose, onAddTask, zodForm, setActivityFormSt
             type="text"
             fullWidth
             required
-            onChange={(e) => onChange(e.target.name, e.target.value)}
-            onBlur={() => zodForm.onBlur("title")}
+            onChange={(e) => { onChange(e.target.name, e.target.value) }}
+            onBlur={() => { zodForm.onBlur("title") }}
             helperText={(zodForm.touched.title && zodForm.errors.title) || " "}
             error={Boolean(zodForm.touched.title && zodForm.errors.title)}
           />
@@ -135,8 +132,8 @@ const AddTaskModal = ({ open, handleClose, onAddTask, zodForm, setActivityFormSt
             type="text"
             fullWidth
             required
-            onChange={(e) => onChange(e.target.name, e.target.value)}
-            onBlur={() => zodForm.onBlur("description")}
+            onChange={(e) => { onChange(e.target.name, e.target.value) }}
+            onBlur={() => { zodForm.onBlur("description") }}
             helperText={(zodForm.touched.description && zodForm.errors.description) || " "}
             error={Boolean(zodForm.touched.description && zodForm.errors.description)}
           />
@@ -145,7 +142,7 @@ const AddTaskModal = ({ open, handleClose, onAddTask, zodForm, setActivityFormSt
               Completed?
             </Typography>
             <Checkbox
-              onChange={(event: ChangeEvent<HTMLInputElement>) => zodForm.setFieldValue("completed", event.target.checked)}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => { zodForm.setFieldValue("completed", event.target.checked) }}
               value={zodForm.values.completed}
             />
           </Box>
@@ -156,8 +153,8 @@ const AddTaskModal = ({ open, handleClose, onAddTask, zodForm, setActivityFormSt
               value={prio}
               label="Task prio"
               name="prio"
-              onChange={(e) => onChange(e.target.name, e.target.value)}
-              onBlur={() => zodForm.onBlur("prio")}
+              onChange={(e) => { onChange(e.target.name, e.target.value) }}
+              onBlur={() => { zodForm.onBlur("prio") }}
               error={Boolean(zodForm.touched.prio && zodForm.errors.prio)}
             >
               <MenuItem value={PrioEnum.Enum.Low}>Low</MenuItem>

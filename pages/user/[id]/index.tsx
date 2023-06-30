@@ -1,19 +1,18 @@
 import React from "react"
-import { GetServerSideProps } from "next"
+import { type GetServerSideProps } from "next"
 import Head from "next/head"
 import { getMongoDb } from "../../../lib/mongodb"
 import { findUserById } from "../../../lib/queries/user"
-import { ParsedUrlQuery } from "querystring"
-import { ObjectId, WithId } from "mongodb"
-import { UserModelSchema, UserModelSchemaType } from "../../../schema/UserSchema"
+import { type ParsedUrlQuery } from "querystring"
+import { ObjectId } from "mongodb"
+import { UserModelSchema, type UserModelSchemaType } from "../../../schema/UserSchema"
 
-import { getAllQuizzes, getQuizResultsForUser } from "../../../lib/queries/quizzes"
-import { CourseModelSchema, CourseModelSchemaType } from "../../../schema/CourseSchema"
+import { getQuizResultsForUser } from "../../../lib/queries/quizzes"
+import { CourseModelSchema, type CourseModelSchemaType } from "../../../schema/CourseSchema"
 import { z } from "zod"
-import { ProjectModelSchema, ProjectModelType } from "../../../schema/ProjectSchema"
-import { IQuiz } from "../../../models/Quiz"
+import { ProjectModelSchema, type ProjectModelType } from "../../../schema/ProjectSchema"
 import PublicProfile from "../../../components/profile/publicProfile/PublicProfile"
-import { IQuizResult } from "../../../models/QuizResult"
+import { type IQuizResult } from "../../../models/QuizResult"
 import { serilizeObject } from "../../../lib/utils"
 
 interface IParams extends ParsedUrlQuery {
@@ -33,7 +32,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (!user || !parsedUser.success) {
     console.log("return not found")
     return {
-      notFound: true,
+      notFound: true
     }
   }
 
@@ -61,7 +60,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   if (!userCourses.success || !userProjects.success) {
     return {
-      notFound: true,
+      notFound: true
     }
   }
 
@@ -70,8 +69,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       user: serilizeObject(parsedUser.data),
       courses: serilizeObject(userCourses.data),
       projects: serilizeObject(userProjects.data),
-      quizResults: userQuizResults,
-    },
+      quizResults: userQuizResults
+    }
   }
 }
 

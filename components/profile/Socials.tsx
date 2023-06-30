@@ -1,17 +1,17 @@
-import { useState, FormEvent, useEffect } from "react"
+import { type FormEvent, useEffect, useState } from "react"
 import Box from "@mui/material/Box"
 import Card from "@mui/material/Card"
 import { CardContent, CardHeader, Divider, TextField } from "@mui/material"
-import { FaBlog, FaGithub, FaHome, FaLinkedin, FaTwitter, FaYoutube } from "react-icons/fa"
+import { FaBlog, FaGithub, FaLinkedin, FaTwitter, FaYoutube } from "react-icons/fa"
 import * as _ from "lodash"
 import { pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
 import { CgWebsite } from "react-icons/cg"
 import SubmitButton from "../shared/SubmitButton"
 import { useCurrentUser } from "../../lib/hooks"
-import { fetcher, fetcherTE } from "../../lib/axiosFetcher"
+import { fetcherTE } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
-import { UserModelSchemaType, UserSocialsSchema, UserSocialsSchemaType } from "../../schema/UserSchema"
+import { type UserModelSchemaType, UserSocialsSchema, type UserSocialsSchemaType } from "../../schema/UserSchema"
 import { useZodFormValidation } from "zod-react-form"
 import { useSWRConfig } from "swr"
 
@@ -21,7 +21,7 @@ const initialFormState = {
   linkedin: "",
   blog: "",
   personalWebsite: "",
-  github: "",
+  github: ""
 }
 
 const Socials = () => {
@@ -50,8 +50,8 @@ const Socials = () => {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
         data: {
-          socials: values,
-        },
+          socials: values
+        }
       }),
       TE.fold(
         (error) => {
@@ -82,8 +82,8 @@ const Socials = () => {
                 label="Github"
                 name="github"
                 variant="standard"
-                onBlur={() => onBlur("github")}
-                onChange={(e) => setFieldValue("github", e.target.value)}
+                onBlur={() => { onBlur("github") }}
+                onChange={(e) => { setFieldValue("github", e.target.value) }}
                 value={values.github}
                 type="text"
                 helperText={(touched.github && errors.github) || " "}
@@ -96,8 +96,8 @@ const Socials = () => {
               <TextField
                 label="Twitter"
                 name="twitter"
-                onBlur={() => onBlur("twitter")}
-                onChange={(e) => setFieldValue("twitter", e.target.value)}
+                onBlur={() => { onBlur("twitter") }}
+                onChange={(e) => { setFieldValue("twitter", e.target.value) }}
                 value={values.twitter}
                 helperText={(touched.twitter && errors.twitter) || " "}
                 error={Boolean(touched.twitter && errors.twitter)}
@@ -111,8 +111,8 @@ const Socials = () => {
               <TextField
                 label="Linkedin"
                 name="linkedin"
-                onBlur={() => onBlur("linkedin")}
-                onChange={(e) => setFieldValue("linkedin", e.target.value)}
+                onBlur={() => { onBlur("linkedin") }}
+                onChange={(e) => { setFieldValue("linkedin", e.target.value) }}
                 value={values.linkedin}
                 helperText={(touched.linkedin && errors.linkedin) || " "}
                 error={Boolean(touched.linkedin && errors.linkedin)}
@@ -126,8 +126,8 @@ const Socials = () => {
               <TextField
                 label="Youtube"
                 name="youtube"
-                onBlur={() => onBlur("youtube")}
-                onChange={(e) => setFieldValue("youtube", e.target.value)}
+                onBlur={() => { onBlur("youtube") }}
+                onChange={(e) => { setFieldValue("youtube", e.target.value) }}
                 value={values.youtube}
                 helperText={(touched.youtube && errors.youtube) || " "}
                 error={Boolean(touched.youtube && errors.youtube)}
@@ -141,8 +141,8 @@ const Socials = () => {
               <TextField
                 label="Personal website"
                 name="personalWebsite"
-                onBlur={() => onBlur("personalWebsite")}
-                onChange={(e) => setFieldValue("personalWebsite", e.target.value)}
+                onBlur={() => { onBlur("personalWebsite") }}
+                onChange={(e) => { setFieldValue("personalWebsite", e.target.value) }}
                 value={values.personalWebsite}
                 helperText={(touched.personalWebsite && errors.personalWebsite) || " "}
                 error={Boolean(touched.personalWebsite && errors.personalWebsite)}
@@ -156,8 +156,8 @@ const Socials = () => {
               <TextField
                 label="Blog"
                 name="blog"
-                onBlur={() => onBlur("blog")}
-                onChange={(e) => setFieldValue("blog", e.target.value)}
+                onBlur={() => { onBlur("blog") }}
+                onChange={(e) => { setFieldValue("blog", e.target.value) }}
                 value={values.blog}
                 helperText={(touched.blog && errors.blog) || " "}
                 error={Boolean(touched.blog && errors.blog)}
@@ -173,7 +173,7 @@ const Socials = () => {
               display: "flex",
               justifyContent: "space-between",
               p: 2,
-              float: "right",
+              float: "right"
             }}
           >
             <SubmitButton

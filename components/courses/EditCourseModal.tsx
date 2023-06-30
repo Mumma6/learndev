@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react"
 
-import * as E from "fp-ts/Either"
 import * as TE from "fp-ts/TaskEither"
 import {
-  CourseModelSchemaType,
-  CourseModelformInputSchema,
-  CourseModelContentInputSchema,
-  CourseModelformInputType,
+  type CourseModelSchemaType,
   InstitutionEnum,
-  StatusEnum,
+  StatusEnum
 } from "../../schema/CourseSchema"
 import Dialog from "@mui/material/Dialog"
 import FormControl from "@mui/material/FormControl"
@@ -21,10 +17,9 @@ import { useRouter } from "next/router"
 import { skillsData } from "../../constants/skillsData"
 import { FaPlus } from "react-icons/fa"
 import SubmitButton from "../shared/SubmitButton"
-import { SkillSchemaType } from "../../schema/SharedSchema"
+import { type SkillSchemaType } from "../../schema/SharedSchema"
 import { useFormik } from "formik"
-import { toFormikValidate } from "zod-formik-adapter"
-import { fetcher, fetcherTE } from "../../lib/axiosFetcher"
+import { fetcherTE } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
 import {
   Autocomplete,
@@ -38,13 +33,10 @@ import {
   MenuItem,
   Paper,
   Select,
-  TextField,
-  Typography,
+  TextField
 } from "@mui/material"
-import { z } from "zod"
 import { useResources } from "../../lib/hooks"
 import { pipe } from "fp-ts/function"
-import * as A from "fp-ts/Array"
 import * as O from "fp-ts/Option"
 
 interface IProps {
@@ -112,11 +104,11 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
       duration,
       status,
       institution,
-      resources,
+      resources
     },
     onSubmit: (formValues) => {
       onUpdateCourse(formValues)
-    },
+    }
   })
 
   useEffect(() => {
@@ -160,11 +152,11 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
             institution: course.content.institution,
             duration: formValues.duration,
             status: formValues.status,
-            resources: formValues.resources,
+            resources: formValues.resources
           },
           topics: topicsData,
-          _id,
-        },
+          _id
+        }
       }),
       TE.fold(
         (error) => {
@@ -295,7 +287,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
                   {resourcesOptions.map((option) => (
                     <MenuItem key={option} value={option}>
                       <ListItemIcon>
-                        <Checkbox checked={formik.values.resources.indexOf(option) > -1} />
+                        <Checkbox checked={formik.values.resources.includes(option)} />
                       </ListItemIcon>
                       <ListItemText primary={option} />
                     </MenuItem>
@@ -329,7 +321,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
                 justifyContent: "start",
                 flexWrap: "wrap",
                 listStyle: "none",
-                paddingBottom: !topicsData.length ? 5 : 0,
+                paddingBottom: !topicsData.length ? 5 : 0
               }}
             >
               <Autocomplete
@@ -352,7 +344,7 @@ const EditCourseModal = ({ open, handleClose, course }: IProps) => {
                 flexWrap: "wrap",
                 listStyle: "none",
                 p: 0.5,
-                mt: 8,
+                mt: 8
               }}
               component="ul"
             >

@@ -1,5 +1,4 @@
 import Head from "next/head"
-import NextLink from "next/link"
 import { Box, Button, Container, Typography } from "@mui/material"
 import { FaArrowLeft } from "react-icons/fa"
 import { useRouter } from "next/router"
@@ -18,7 +17,7 @@ const Page = () => {
           alignItems: "center",
           display: "flex",
           flexGrow: 1,
-          minHeight: "100%",
+          minHeight: "100%"
         }}
       >
         <Container maxWidth="md">
@@ -26,7 +25,7 @@ const Page = () => {
             sx={{
               alignItems: "center",
               display: "flex",
-              flexDirection: "column",
+              flexDirection: "column"
             }}
           >
             <Typography align="center" color="textPrimary" variant="h1">
@@ -43,7 +42,7 @@ const Page = () => {
                   marginTop: 50,
                   display: "inline-block",
                   maxWidth: "100%",
-                  width: 560,
+                  width: 560
                 }}
               />
             </Box>
@@ -52,7 +51,7 @@ const Page = () => {
               startIcon={<FaArrowLeft fontSize="small" />}
               sx={{ mt: 3 }}
               variant="contained"
-              onClick={() => router.back()}
+              onClick={() => { router.back() }}
             >
               Go back
             </Button>

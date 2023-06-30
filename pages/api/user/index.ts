@@ -2,24 +2,23 @@ import nextConnect from "next-connect"
 import auths from "../../../lib/middlewares/auth"
 import { getMongoDb } from "../../../lib/mongodb"
 import { deleteUser, updateUserById } from "../../../lib/queries/user"
-import { NextApiRequest, NextApiResponse } from "next"
+import { type NextApiRequest, type NextApiResponse } from "next"
 
-import { Response } from "../../../types/response"
+import { type Response } from "../../../types/response"
 import { handleAPIError, handleAPIResponse } from "../../../lib/utils"
 
-import { UserModelSchema, UserModelSchemaType } from "../../../schema/UserSchema"
+import { UserModelSchema, type UserModelSchemaType } from "../../../schema/UserSchema"
 
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<Omit<UserModelSchemaType, "password"> | null>>>()
 
 handler.use(...auths)
 
-handler.get(async (req, res) =>
-  !req.user ? handleAPIResponse(res, null, "No user found") : handleAPIResponse(res, req.user, "User found")
+handler.get(async (req, res) => { !req.user ? handleAPIResponse(res, null, "No user found") : handleAPIResponse(res, req.user, "User found") }
 )
 
 handler.delete(async (req, res) => {
   if (!req.user) {
-    return handleAPIResponse(res, null, "No user found")
+    handleAPIResponse(res, null, "No user found"); return
   }
 
   try {
@@ -35,7 +34,7 @@ handler.delete(async (req, res) => {
 
 handler.patch(async (req, res) => {
   if (!req.user) {
-    return handleAPIResponse(res, null, "No user found")
+    handleAPIResponse(res, null, "No user found"); return
   }
 
   try {
@@ -43,9 +42,8 @@ handler.patch(async (req, res) => {
 
     const parsedBody = UserModelSchema.partial().safeParse(req.body)
 
-
     if (!parsedBody.success) {
-      return handleAPIError(res, { message: "Validation error. User input" })
+      handleAPIError(res, { message: "Validation error. User input" }); return
     }
 
     const user = await updateUserById(db, req.user?._id, parsedBody.data)
@@ -53,7 +51,7 @@ handler.patch(async (req, res) => {
     const parsedUser = UserModelSchema.omit({ password: true }).safeParse(user)
 
     if (!parsedUser.success) {
-      return handleAPIError(res, { message: "Validation error when updating user" })
+      handleAPIError(res, { message: "Validation error when updating user" }); return
     }
 
     handleAPIResponse(res, parsedUser.data, "User updated successfully")

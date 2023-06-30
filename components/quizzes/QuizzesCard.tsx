@@ -1,11 +1,9 @@
 import React from "react"
 import { Avatar, Box, Button, Card, CardContent, Chip, Divider, Grid, Typography } from "@mui/material"
 import Rating from "@mui/material/Rating"
-import { IQuiz } from "../../models/Quiz"
+import { type IQuiz } from "../../models/Quiz"
 import { useRouter } from "next/router"
 import { useCurrentUser, useQuizResults } from "../../lib/hooks"
-import { BsZoomOut } from "react-icons/bs"
-import { ChipTypeMap } from "@mui/material/Chip"
 
 interface IProps {
   quiz: IQuiz
@@ -28,25 +26,25 @@ const QuizzesCard = ({ quiz }: IProps) => {
     if (!userQuizResult) {
       return {
         label: "Not taken",
-        color: "primary",
+        color: "primary"
       }
     }
     if (userQuizResult?.approved) {
       return {
         label: "Approved",
-        color: "success",
+        color: "success"
       }
     }
 
     if (!userQuizResult?.approved) {
       return {
         label: "Retry 30 days", // todo. calc correct amount of days
-        color: "error",
+        color: "error"
       }
     }
     return {
       label: "Not taken",
-      color: "primary",
+      color: "primary"
     }
   }
 
@@ -75,21 +73,21 @@ const QuizzesCard = ({ quiz }: IProps) => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: "100%",
+        height: "100%"
       }}
     >
       <Box
         sx={{
-          backgroundColor: !!userQuizResult ? "#cdcdcd" : null,
+          backgroundColor: userQuizResult ? "#cdcdcd" : null
         }}
       >
-        <Button sx={{ width: "100%" }} disabled={!!userQuizResult} onClick={() => router.push(`/quizzes/${_id}`)}>
+        <Button sx={{ width: "100%" }} disabled={!!userQuizResult} onClick={async () => await router.push(`/quizzes/${_id}`)}>
           <CardContent>
             <Box
               sx={{
                 display: "flex",
                 justifyContent: "center",
-                pb: 3,
+                pb: 3
               }}
             >
               <Avatar sx={{ width: 64, height: 64 }} alt="Logo" src={getAvatarUrl()} variant="square" />
@@ -103,7 +101,7 @@ const QuizzesCard = ({ quiz }: IProps) => {
           </CardContent>
         </Button>
       </Box>
-      <Box sx={{ flexGrow: 1, backgroundColor: !!userQuizResult ? "#cdcdcd" : null }} />
+      <Box sx={{ flexGrow: 1, backgroundColor: userQuizResult ? "#cdcdcd" : null }} />
       <Divider />
       <Box sx={{ p: 2 }}>
         <Grid container spacing={2} sx={{ justifyContent: "space-between" }}>
@@ -111,7 +109,7 @@ const QuizzesCard = ({ quiz }: IProps) => {
             item
             sx={{
               alignItems: "center",
-              display: "flex",
+              display: "flex"
             }}
           >
             <Typography component="legend">Difficulty:</Typography>

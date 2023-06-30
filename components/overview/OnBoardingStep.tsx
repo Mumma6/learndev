@@ -1,12 +1,6 @@
 import React from "react"
-import { IQuestion, IQuiz } from "../../models/Quiz"
-import { Box, Alert, Card, Typography, CardHeader, Divider, TextField, Button } from "@mui/material"
-import Radio from "@mui/material/Radio"
-import RadioGroup from "@mui/material/RadioGroup"
-import FormControlLabel from "@mui/material/FormControlLabel"
-import FormControl from "@mui/material/FormControl"
-import FormLabel from "@mui/material/FormLabel"
-import { ISteps } from "./OnBoardingModal"
+import { Box, Typography } from "@mui/material"
+import { type ISteps } from "./OnBoardingModal"
 
 interface IProps {
   step: ISteps
@@ -24,7 +18,7 @@ const OnBoardingStep = ({ step }: IProps) => {
           <img
             style={{
               maxWidth: "100%",
-              maxHeight: "100%",
+              maxHeight: "100%"
             }}
             alt="core"
             src={image}

@@ -1,21 +1,20 @@
 import React from "react"
-import { Box, Button, ButtonGroup, Card, CardContent, Container, Grid, Typography } from "@mui/material"
+import { Box, Container, Grid } from "@mui/material"
 import TotalCourses from "./TotalCourses"
 import LearningProgress from "./LearningProgress"
 import CoursesByProvider from "./CoursesByProvider"
-import TotalQuizzes from "./TotalQuizzes"
 import TotalProjects from "./TotalProjects"
 import { useCourses, useProjects, useQuizResults, useTasks } from "../../lib/hooks"
 import LatestQuizResults from "./LatestQuizResults"
 import UserSkillProfile from "./UserSkillProfile"
-import { UserModelSchemaType } from "../../schema/UserSchema"
+import { type UserModelSchemaType } from "../../schema/UserSchema"
 import UpcomingEvents from "./UpcomingEvents"
 import TopicsChart from "./TopicsChart"
 import { pipe } from "fp-ts/function"
 import * as A from "fp-ts/Array"
 
 import * as O from "fp-ts/Option"
-import { IQuizResult } from "../../models/QuizResult"
+import { type IQuizResult } from "../../models/QuizResult"
 import { getOArraySize } from "../../helpers/helpers"
 import TotalTasks from "./TotalTasks"
 import TimePerTech from "./TimePerTech"
@@ -29,23 +28,16 @@ interface IProps {
 
 Byt till samma ikoner som sidebaren
 
-
 Use Notifications. Like when you complete or miss a goal
-
 
 Create goals. Custom timeframe
 Goals should be on the user object.
 
-
-
 Ska man kunna lägga till grafer till sin publica profile? "Add to public profile" knapp på varje graf?
-
 
 Lägg till default text på grafer som behöver. tex om det inte finns några events eller kurser osv.
 
-
 Lägg till en line chart brevid tech coveracge som visar hur många timmar man lagt på events för per vecka.
-
 
 ----graf-----
 
@@ -66,7 +58,7 @@ const Home = ({ user }: IProps) => {
     O.chain((data) => O.fromNullable(data.payload)),
     O.map(A.filter((p) => p.user_id === user._id)),
     O.map(A.takeLeft(5)),
-    O.getOrElse<Array<IQuizResult>>(() => [])
+    O.getOrElse<IQuizResult[]>(() => [])
   )
 
   const numberOfApprovedQuizzes = pipe(
@@ -87,7 +79,7 @@ const Home = ({ user }: IProps) => {
         sx={{
           flexGrow: 1,
           py: 8,
-          marginTop: 1,
+          marginTop: 1
         }}
       >
         <Box mb={3}>

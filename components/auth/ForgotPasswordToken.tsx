@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, FormEvent } from "react"
+import React, { type ChangeEvent, type FormEvent, useState } from "react"
 import { Box, Button, Container, TextField, Typography } from "@mui/material"
 import SubmitButton from "../shared/SubmitButton"
 import { toast } from "react-toastify"
@@ -8,9 +8,9 @@ import useRedirect from "../customHooks/useRedirect"
 import { fetcherTE } from "../../lib/axiosFetcher"
 import { pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
-import { Status } from "../../types/status"
+import { type Status } from "../../types/status"
 
-const ForgotPasswordToken = ({ valid, token }: { valid: boolean; token: any }) => {
+const ForgotPasswordToken = ({ valid, token }: { valid: boolean, token: any }) => {
   const [status, setStatus] = useState<Status>("idle")
   const [newPassword, setNewPassword] = useState("")
 
@@ -24,8 +24,8 @@ const ForgotPasswordToken = ({ valid, token }: { valid: boolean; token: any }) =
         headers: { "Content-Type": "application/json" },
         data: {
           token,
-          password: newPassword,
-        },
+          password: newPassword
+        }
       }),
       TE.fold(
         (error) => {
@@ -39,7 +39,7 @@ const ForgotPasswordToken = ({ valid, token }: { valid: boolean; token: any }) =
           setNewPassword("")
           activateTimer()
           toast.success("Your password has been updated successfully. Redirecting to login page", {
-            autoClose: 4000,
+            autoClose: 4000
           })
           return TE.right(data)
         }
@@ -56,10 +56,11 @@ const ForgotPasswordToken = ({ valid, token }: { valid: boolean; token: any }) =
           display: "flex",
           flexGrow: 1,
           minHeight: "100%",
-          marginTop: 20,
+          marginTop: 20
         }}
       >
-        {!valid ? (
+        {!valid
+          ? (
           <Container maxWidth="sm">
             <Typography color="textPrimary" variant="h4">
               Invalid link
@@ -73,7 +74,8 @@ const ForgotPasswordToken = ({ valid, token }: { valid: boolean; token: any }) =
               </Button>
             </NextLink>
           </Container>
-        ) : (
+            )
+          : (
           <Container maxWidth="sm">
             <form onSubmit={onSubmit}>
               <Box sx={{ my: 3 }}>
@@ -84,7 +86,7 @@ const ForgotPasswordToken = ({ valid, token }: { valid: boolean; token: any }) =
               <Box
                 sx={{
                   pb: 1,
-                  pt: 1,
+                  pt: 1
                 }}
               >
                 <Typography align="center" color="textSecondary" variant="body1">
@@ -96,7 +98,7 @@ const ForgotPasswordToken = ({ valid, token }: { valid: boolean; token: any }) =
                 label="Password"
                 margin="normal"
                 name="password"
-                onChange={(event: ChangeEvent<HTMLInputElement>) => setNewPassword(event.target.value)}
+                onChange={(event: ChangeEvent<HTMLInputElement>) => { setNewPassword(event.target.value) }}
                 value={newPassword}
                 type="password"
                 variant="outlined"
@@ -106,7 +108,7 @@ const ForgotPasswordToken = ({ valid, token }: { valid: boolean; token: any }) =
               </Box>
             </form>
           </Container>
-        )}
+            )}
       </Box>
     </>
   )

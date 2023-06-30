@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next"
+import { type NextApiRequest, type NextApiResponse } from "next"
 import nextConnect from "next-connect"
 import auths from "../../../lib/middlewares/auth"
 
@@ -6,19 +6,16 @@ import {
   addUserId,
   checkUser,
   createDeleteHandler,
-  getUserId,
   handleAPIError,
   handleAPIResponse,
   validateAndGetUserId,
   validateArrayData2,
   validateData2,
-  validateReqBody2,
+  validateReqBody2
 } from "../../../lib/utils"
 
-import { CourseModelformInputSchema, CourseModelSchema, CourseModelSchemaType } from "../../../schema/CourseSchema"
-import { Response } from "../../../types/response"
-
-import { CourseModelformInputType } from "../../../schema/CourseSchema"
+import { CourseModelSchema, type CourseModelSchemaType, CourseModelformInputSchema, type CourseModelformInputType } from "../../../schema/CourseSchema"
+import { type Response } from "../../../types/response"
 
 import * as E from "fp-ts/Either"
 import { pipe } from "fp-ts/function"
@@ -27,7 +24,7 @@ import {
   addToDbCollection,
   deleteFromCollectionById,
   getFromCollectionForUser,
-  updateFromCollectionById,
+  updateFromCollectionById
 } from "../../../lib/queries"
 
 const createTags = (data: Pick<CourseModelSchemaType, "content" | "topics">): string => {
@@ -41,12 +38,12 @@ const handler = nextConnect<NextApiRequest, NextApiResponse<Response<CourseModel
 handler.post(...auths, async (req, res) => {
   const addNonInputData =
     (userId: string) =>
-    (data: CourseModelformInputType): Omit<CourseModelSchemaType, "_id"> => ({
-      ...data,
-      tags: createTags(data),
-      createdAt: new Date(),
-      userId,
-    })
+      (data: CourseModelformInputType): Omit<CourseModelSchemaType, "_id"> => ({
+        ...data,
+        tags: createTags(data),
+        createdAt: new Date(),
+        userId
+      })
 
   const task = pipe(
     req,
@@ -62,8 +59,8 @@ handler.post(...auths, async (req, res) => {
   pipe(
     either,
     E.fold(
-      (error) => handleAPIError(res, error),
-      () => handleAPIResponse(res, null, "Course added")
+      (error) => { handleAPIError(res, error) },
+      () => { handleAPIResponse(res, null, "Course added") }
     )
   )
 })
@@ -81,8 +78,8 @@ handler.get(...auths, async (req, res) => {
   pipe(
     either,
     E.fold(
-      (error) => handleAPIError(res, { message: error }),
-      (data) => handleAPIResponse(res, data, `Courses for user: ${req.user?.name}`)
+      (error) => { handleAPIError(res, { message: error }) },
+      (data) => { handleAPIResponse(res, data, `Courses for user: ${req.user?.name}`) }
     )
   )
 })
@@ -104,8 +101,8 @@ handler.patch(...auths, async (req, res) => {
     either,
     E.chain(validateData2<CourseModelSchemaType>(CourseModelSchema)),
     E.fold(
-      (error) => handleAPIError(res, error),
-      (data) => handleAPIResponse(res, data, "Course updated successfully")
+      (error) => { handleAPIError(res, error) },
+      (data) => { handleAPIResponse(res, data, "Course updated successfully") }
     )
   )
 })

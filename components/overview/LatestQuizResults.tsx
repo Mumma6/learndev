@@ -1,5 +1,5 @@
 import React from "react"
-import { Box, Card, CardContent, CardHeader, Divider, Typography, Avatar } from "@mui/material"
+import { Avatar, Box, Card, CardContent, CardHeader, Divider, Typography } from "@mui/material"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
@@ -7,10 +7,10 @@ import TableContainer from "@mui/material/TableContainer"
 import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
 import Paper from "@mui/material/Paper"
-import { Theme, styled } from "@mui/material/styles"
+import { type Theme, styled } from "@mui/material/styles"
 import LinearProgress, { linearProgressClasses } from "@mui/material/LinearProgress"
 import CardHeaderTitle from "../shared/CardHeaderTitle"
-import { IQuizResult } from "../../models/QuizResult"
+import { type IQuizResult } from "../../models/QuizResult"
 import { pipe } from "fp-ts/function"
 import * as O from "fp-ts/Option"
 
@@ -27,12 +27,12 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme, value }) => ({
   height: 7,
   borderRadius: 5,
   [`&.${linearProgressClasses.colorPrimary}`]: {
-    backgroundColor: theme.palette.grey[theme.palette.mode === "light" ? 200 : 800],
+    backgroundColor: theme.palette.grey[theme.palette.mode === "light" ? 200 : 800]
   },
   [`& .${linearProgressClasses.bar}`]: {
     borderRadius: 5,
-    backgroundColor: theme.palette.mode === "light" ? getBackgroundColor(theme, value) : "#308fe8",
-  },
+    backgroundColor: theme.palette.mode === "light" ? getBackgroundColor(theme, value) : "#308fe8"
+  }
 }))
 
 interface IProps {

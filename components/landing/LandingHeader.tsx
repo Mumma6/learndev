@@ -6,9 +6,7 @@ import IconButton from "@mui/material/IconButton"
 import Typography from "@mui/material/Typography"
 import Menu from "@mui/material/Menu"
 import Container from "@mui/material/Container"
-import Avatar from "@mui/material/Avatar"
 import Button from "@mui/material/Button"
-import Tooltip from "@mui/material/Tooltip"
 import MenuItem from "@mui/material/MenuItem"
 import { FiMenu } from "react-icons/fi"
 import Link from "next/link"
@@ -17,7 +15,7 @@ import { Link as ScrollLink } from "react-scroll"
 
 const pages = ["Services", "Features"] // , "Pricing"
 
-function LandingHeader() {
+function LandingHeader () {
   const { data } = useCurrentUser()
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
@@ -46,7 +44,7 @@ function LandingHeader() {
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
-              textDecoration: "none",
+              textDecoration: "none"
             }}
           >
             Studify
@@ -68,17 +66,17 @@ function LandingHeader() {
               anchorEl={anchorElNav}
               anchorOrigin={{
                 vertical: "bottom",
-                horizontal: "left",
+                horizontal: "left"
               }}
               keepMounted
               transformOrigin={{
                 vertical: "top",
-                horizontal: "left",
+                horizontal: "left"
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
-                display: { xs: "block", md: "none" },
+                display: { xs: "block", md: "none" }
               }}
             >
               {pages.map((page) => (
@@ -103,7 +101,7 @@ function LandingHeader() {
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
-              textDecoration: "none",
+              textDecoration: "none"
             }}
           >
             Studify
@@ -126,19 +124,21 @@ function LandingHeader() {
             </Box>
           )}
           <Box sx={{ marginLeft: 2 }}>
-            {!data?.payload ? (
+            {!data?.payload
+              ? (
               <Link style={{ textDecoration: "none" }} href="/login" passHref>
                 <Button disabled={!data} size="large" color="primary" variant="outlined">
                   Sign in
                 </Button>
               </Link>
-            ) : (
+                )
+              : (
               <Link style={{ textDecoration: "none" }} href="/home" passHref>
                 <Button size="large" color="primary" variant="contained">
                   Dashboard
                 </Button>
               </Link>
-            )}
+                )}
           </Box>
         </Toolbar>
       </Container>

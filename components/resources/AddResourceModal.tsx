@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, useEffect } from "react"
+import React, { useState } from "react"
 import TextField from "@mui/material/TextField"
 import Dialog from "@mui/material/Dialog"
 import DialogActions from "@mui/material/DialogActions"
@@ -6,20 +6,14 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import Button from "@mui/material/Button"
-import { ClickEventRet, SetState } from "../../types/generics"
-import { IZodFormValidation, useZodFormValidation } from "zod-react-form"
-import { useCourses, useProjects } from "../../lib/hooks"
-import { CourseModelSchemaType } from "../../schema/CourseSchema"
-import { ProjectModelType } from "../../schema/ProjectSchema"
-import { Autocomplete, Box, Typography, Checkbox, FormControl, InputLabel, MenuItem, Select, Divider } from "@mui/material"
-import * as A from "fp-ts/Array"
-import * as O from "fp-ts/Option"
+import { useZodFormValidation } from "zod-react-form"
+import { Box, Divider, FormControl, InputLabel, MenuItem, Select } from "@mui/material"
 import { pipe } from "fp-ts/function"
 import {
   ResourceModelInputSchema,
-  ResourceModelInputSchemaType,
-  ResourceModelSchemaType,
-  ResourceTypeEnum,
+  type ResourceModelInputSchemaType,
+  type ResourceModelSchemaType,
+  ResourceTypeEnum
 } from "../../schema/ResourceSchema"
 import * as TE from "fp-ts/TaskEither"
 import { toast } from "react-toastify"
@@ -43,7 +37,7 @@ const initialState: ResourceModelInputSchemaType = {
   title: "",
   description: "",
   link: "",
-  type: ResourceTypeEnum.Enum.Other,
+  type: ResourceTypeEnum.Enum.Other
 }
 
 const AddResourceModal = ({ open, handleClose }: IProps) => {
@@ -66,8 +60,8 @@ const AddResourceModal = ({ open, handleClose }: IProps) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: {
-          ...zodForm.values,
-        },
+          ...zodForm.values
+        }
       }),
       TE.fold(
         (error) => {
@@ -102,8 +96,8 @@ const AddResourceModal = ({ open, handleClose }: IProps) => {
             type="text"
             fullWidth
             required
-            onChange={(e) => zodForm.setFieldValue("title", e.target.value)}
-            onBlur={() => zodForm.onBlur("title")}
+            onChange={(e) => { zodForm.setFieldValue("title", e.target.value) }}
+            onBlur={() => { zodForm.onBlur("title") }}
             helperText={(zodForm.touched.title && zodForm.errors.title) || " "}
             error={Boolean(zodForm.touched.title && zodForm.errors.title)}
           />
@@ -116,8 +110,8 @@ const AddResourceModal = ({ open, handleClose }: IProps) => {
             type="text"
             fullWidth
             required
-            onChange={(e) => zodForm.setFieldValue("description", e.target.value)}
-            onBlur={() => zodForm.onBlur("description")}
+            onChange={(e) => { zodForm.setFieldValue("description", e.target.value) }}
+            onBlur={() => { zodForm.onBlur("description") }}
             helperText={(zodForm.touched.description && zodForm.errors.description) || " "}
             error={Boolean(zodForm.touched.description && zodForm.errors.description)}
           />
@@ -130,8 +124,8 @@ const AddResourceModal = ({ open, handleClose }: IProps) => {
             type="text"
             fullWidth
             required
-            onChange={(e) => zodForm.setFieldValue("link", e.target.value)}
-            onBlur={() => zodForm.onBlur("link")}
+            onChange={(e) => { zodForm.setFieldValue("link", e.target.value) }}
+            onBlur={() => { zodForm.onBlur("link") }}
             helperText={(zodForm.touched.link && zodForm.errors.link) || " "}
             error={Boolean(zodForm.touched.link && zodForm.errors.link)}
           />
@@ -141,8 +135,8 @@ const AddResourceModal = ({ open, handleClose }: IProps) => {
               value={type}
               label="Resource type"
               name="type"
-              onChange={(e) => zodForm.setFieldValue("type", e.target.value)}
-              onBlur={() => zodForm.onBlur("link")}
+              onChange={(e) => { zodForm.setFieldValue("type", e.target.value) }}
+              onBlur={() => { zodForm.onBlur("link") }}
               error={Boolean(zodForm.touched.link && zodForm.errors.link)}
             >
               <MenuItem value={ResourceTypeEnum.Enum.Article}>Article</MenuItem>

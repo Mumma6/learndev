@@ -223,7 +223,7 @@ export const skillsData: Skill[] = [
   { label: "Data Science" },
   { label: "Data Structures" },
   { label: "Debian" },
-  { label: "Functional programming" },
+  { label: "Functional programming" }
 ]
   .filter((v, i, a) => a.findIndex((v2) => v2.label === v.label) === i)
   .sort((a, b) => a.label.localeCompare(b.label))

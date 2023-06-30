@@ -1,9 +1,8 @@
-import { Db, ObjectId } from "mongodb"
-import { pipe } from "fp-ts/function"
+import { type Db, ObjectId } from "mongodb"
 import * as TE from "fp-ts/TaskEither"
 
-import { IQuiz } from "../../models/Quiz"
-import { IQuizResult } from "../../models/QuizResult"
+import { type IQuiz } from "../../models/Quiz"
+import { type IQuizResult } from "../../models/QuizResult"
 import { getMongoDb } from "../mongodb"
 
 export const getAllQuizzes = () =>

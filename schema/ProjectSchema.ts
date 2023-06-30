@@ -13,7 +13,7 @@ export const ProjectModelFormInputSchema = z.object({
   status: z.enum(["In progress", "Done", "Planning"]),
   sourceCodeUrl: z.union([z.literal(""), z.string().trim().url()]).default(""),
   deployedUrl: z.union([z.literal(""), z.string().trim().url()]).default(""),
-  resources: z.array(z.string()).default([]),
+  resources: z.array(z.string()).default([])
 })
 
 export type ProjectModelFromInputType = z.infer<typeof ProjectModelFormInputSchema>
@@ -22,7 +22,7 @@ export const ProjectModelSchema = ProjectModelFormInputSchema.extend({
   userId: z.instanceof(ObjectId).transform((id) => id.toString()),
   _id: z.union([z.string(), z.instanceof(ObjectId).transform((id) => id.toString())]),
   tags: z.string(),
-  createdAt: z.date(),
+  createdAt: z.date()
 })
 
 export type ProjectModelType = z.infer<typeof ProjectModelSchema>

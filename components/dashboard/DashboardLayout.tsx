@@ -12,8 +12,8 @@ const DashboardLayoutRoot = styled("div")(({ theme }) => ({
   maxWidth: "100%",
   paddingTop: 20,
   [theme.breakpoints.up("lg")]: {
-    paddingLeft: 280,
-  },
+    paddingLeft: 280
+  }
 }))
 
 interface IProps {
@@ -34,12 +34,13 @@ export const DashboardLayout = ({ children }: IProps) => {
   }, [router, data])
 
   // The spinner should be in the center
-  if (!data?.payload)
+  if (!data?.payload) {
     return (
       <Container>
         <CircularProgress />
       </Container>
     )
+  }
 
   return (
     <>
@@ -51,14 +52,14 @@ export const DashboardLayout = ({ children }: IProps) => {
             flexDirection: "column",
             width: "100%",
             paddingLeft: 2,
-            paddingRight: 2,
+            paddingRight: 2
           }}
         >
           {children}
         </Box>
       </DashboardLayoutRoot>
-      <DashboardNavbar onSidebarOpen={() => setSidebarOpen(true)} />
-      <DashboardSidebar user={data.payload} onClose={() => setSidebarOpen(false)} open={isSidebarOpen} />
+      <DashboardNavbar onSidebarOpen={() => { setSidebarOpen(true) }} />
+      <DashboardSidebar user={data.payload} onClose={() => { setSidebarOpen(false) }} open={isSidebarOpen} />
     </>
   )
 }

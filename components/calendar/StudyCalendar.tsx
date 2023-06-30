@@ -1,51 +1,44 @@
-import React, { useState, useCallback, useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import * as _ from "lodash"
 import { pipe } from "fp-ts/function"
-import * as A from "fp-ts/Array"
-import * as O from "fp-ts/Option"
 import * as TE from "fp-ts/TaskEither"
 
 import {
   Box,
-  Container,
-  Typography,
-  Pagination,
+  Button,
+  ButtonGroup,
   Card,
   CardContent,
   CardHeader,
-  Divider,
-  Button,
-  ButtonGroup,
+  Container,
+  Divider
 } from "@mui/material"
 
-import { Calendar, dateFnsLocalizer, Event, Views } from "react-big-calendar"
+import { Calendar, type Event, dateFnsLocalizer } from "react-big-calendar"
 
 import format from "date-fns/format"
 import parse from "date-fns/parse"
 import startOfWeek from "date-fns/startOfWeek"
 import getDay from "date-fns/getDay"
 import enUS from "date-fns/locale/en-US"
-import addHours from "date-fns/addHours"
-import startOfHour from "date-fns/startOfHour"
 
 import "react-big-calendar/lib/css/react-big-calendar.css"
 
 import EventInfo from "./EventInfo"
-import { IEventInfo } from "../../models/EventInfo"
-import { IQuiz } from "../../models/Quiz"
+import { type IEventInfo } from "../../models/EventInfo"
 import AddEventInfoModal from "./AddEventInfoModal"
-import { ClickEvent } from "../../types/generics"
-import { useCourses, useCurrentUser, useEvents } from "../../lib/hooks"
+import { type ClickEvent } from "../../types/generics"
+import { useCurrentUser, useEvents } from "../../lib/hooks"
 import { fetcher, fetcherTE } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
 import { useSWRConfig } from "swr"
 import EditEventInfoModal from "./EditEventInfoModal"
 import AddEventModal from "./AddEventModal"
 import AddLabelModal from "./AddLabelModal"
-import { UserSettingsLabelType } from "../../schema/UserSchema"
+import { type UserSettingsLabelType } from "../../schema/UserSchema"
 
 const locales = {
-  "en-US": enUS,
+  "en-US": enUS
 }
 
 const localizer = dateFnsLocalizer({
@@ -53,7 +46,7 @@ const localizer = dateFnsLocalizer({
   parse,
   startOfWeek,
   getDay,
-  locales,
+  locales
 })
 
 export interface EventFormData {
@@ -73,7 +66,7 @@ export const initialEventFormState: EventFormData = {
   activityId: undefined,
   labelName: undefined,
   labelColor: undefined,
-  activityGroup: undefined,
+  activityGroup: undefined
 }
 
 export interface ExternEventFormData {
@@ -99,11 +92,11 @@ export const initialExternEventFormState: ExternEventFormData = {
   activityId: undefined,
   labelName: undefined,
   labelColor: undefined,
-  activityGroup: undefined,
+  activityGroup: undefined
 }
 
 const StudyCalendar = () => {
-  const [myEvents, setEvents] = useState<Omit<IEventInfo, "userId">[]>([])
+  const [myEvents, setEvents] = useState<Array<Omit<IEventInfo, "userId">>>([])
   const [currentEvent, setCurrentEvent] = useState<Event | IEventInfo | null>(null)
   const [open, setOpen] = useState(false)
   const [openExternModal, setOpenExternModal] = useState(false)
@@ -127,8 +120,8 @@ const StudyCalendar = () => {
       ...(eventsData?.payload || []).map((e) => ({
         ...e,
         start: new Date(e.start!),
-        end: new Date(e.end!),
-      })),
+        end: new Date(e.end!)
+      }))
     ])
   }, [eventsData?.payload])
 
@@ -154,7 +147,7 @@ const StudyCalendar = () => {
     const e1 = {
       title: currentEvent?.title,
       start: currentEvent?.start,
-      end: currentEvent?.end,
+      end: currentEvent?.end
     }
 
     // This is only because currentEvent dont have a id field....
@@ -162,7 +155,7 @@ const StudyCalendar = () => {
       const matchEvent = {
         title: event.title,
         start: new Date(event.start!),
-        end: new Date(event.end!),
+        end: new Date(event.end!)
       }
 
       return _.isEqual(e1, matchEvent)
@@ -198,10 +191,8 @@ const StudyCalendar = () => {
   const onAddExternEvent = async (e: ClickEvent) => {
     e.preventDefault()
 
-    function addHours(date: any, hours: number) {
-      date.setHours(date.getHours() + hours)
-
-      return date
+    function addHours (date: Date | undefined, hours: number) {
+      return date ? date.setHours(date.getHours() + hours) : undefined
     }
 
     const setMinToZero = (date: any) => {
@@ -217,8 +208,8 @@ const StudyCalendar = () => {
         data: {
           ...externEventFormData,
           start: setMinToZero(externEventFormData.start),
-          end: externEventFormData.allDay ? addHours(externEventFormData.start, 12) : setMinToZero(externEventFormData.end),
-        },
+          end: externEventFormData.allDay ? addHours(externEventFormData.start, 12) : setMinToZero(externEventFormData.end)
+        }
       })
 
       if (response?.error) {
@@ -244,8 +235,8 @@ const StudyCalendar = () => {
         data: {
           ...eventFormData,
           start: currentEvent?.start,
-          end: currentEvent?.end,
-        },
+          end: currentEvent?.end
+        }
       })
 
       if (response?.error) {
@@ -277,10 +268,10 @@ const StudyCalendar = () => {
       component="main"
       sx={{
         flexGrow: 1,
-        py: 8,
+        py: 8
       }}
     >
-      <AddLabelModal open={openLabelModal} handleClose={() => setOpenLabelModal(false)} />
+      <AddLabelModal open={openLabelModal} handleClose={() => { setOpenLabelModal(false) }} />
       <Container maxWidth={false}>
         <Card>
           <CardHeader
@@ -291,10 +282,10 @@ const StudyCalendar = () => {
           <CardContent>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <ButtonGroup size="large" variant="contained" aria-label="outlined primary button group">
-                <Button onClick={() => setOpenExternModal(true)} size="small" variant="contained">
+                <Button onClick={() => { setOpenExternModal(true) }} size="small" variant="contained">
                   Add event
                 </Button>
-                <Button onClick={() => setOpenLabelModal(true)} size="small" variant="contained">
+                <Button onClick={() => { setOpenLabelModal(true) }} size="small" variant="contained">
                   Create label
                 </Button>
               </ButtonGroup>
@@ -304,7 +295,7 @@ const StudyCalendar = () => {
             <Divider style={{ margin: 10 }} />
             <AddEventModal
               open={openExternModal}
-              handleClose={() => setOpenExternModal(false)}
+              handleClose={() => { setOpenExternModal(false) }}
               externEventFormData={externEventFormData}
               setExternEventFormData={setExternEventFormData}
               onAddExternEvent={onAddExternEvent}
@@ -339,12 +330,12 @@ const StudyCalendar = () => {
                 return {
                   style: {
                     backgroundColor: event.labelColor || "#b64fc8",
-                    borderColor: event.labelColor || "#b64fc8",
-                  },
+                    borderColor: event.labelColor || "#b64fc8"
+                  }
                 }
               }}
               style={{
-                height: 900,
+                height: 900
               }}
             />
           </CardContent>
@@ -363,6 +354,5 @@ Schema validation needs to be done sometime
 -------------------
 
 Add min={date} and max={date} to calender to control the time view.
-
 
 */

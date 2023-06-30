@@ -1,7 +1,6 @@
 import React from "react"
-import { useCurrentUser } from "../../lib/hooks"
 import AboutYou from "./AboutYou"
-import { Box, Container, Typography } from "@mui/material"
+import { Box, Container } from "@mui/material"
 import Skills from "./Skills"
 import Workexperience from "./Workexperience"
 import Socials from "./Socials"
@@ -14,7 +13,7 @@ const Profile = () => {
         sx={{
           marginTop: 5,
           flexGrow: 1,
-          py: 8,
+          py: 8
         }}
       >
         <Container maxWidth={false}>

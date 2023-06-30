@@ -1,20 +1,19 @@
 import React, { useState } from "react"
 import {
   Box,
-  Paper,
+  Button,
   Card,
   CardContent,
   CardHeader,
-  Divider,
-  Container,
-  Button,
-  Typography,
   Chip,
-  IconButton,
+  Container,
+  Divider,
   Grid,
+  IconButton,
+  Paper,
+  Typography
 } from "@mui/material"
-import { FiCode, FiExternalLink } from "react-icons/fi"
-import Link from "next/link"
+import { FiExternalLink } from "react-icons/fi"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
@@ -22,10 +21,9 @@ import TableContainer from "@mui/material/TableContainer"
 import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
 import NextLink from "next/link"
-import { FaArrowLeft, FaArrowRight, FaCheck, FaPen, FaTrash } from "react-icons/fa"
-import { CourseModelSchemaType } from "../../schema/CourseSchema"
+import { FaArrowLeft, FaPen } from "react-icons/fa"
+import { type CourseModelSchemaType } from "../../schema/CourseSchema"
 import EditCourseModal from "./EditCourseModal"
-import ClearIcon from "@mui/icons-material/Clear"
 
 import { useSWRConfig } from "swr"
 import { pipe } from "fp-ts/function"
@@ -34,7 +32,7 @@ import * as O from "fp-ts/Option"
 import * as TE from "fp-ts/TaskEither"
 import { fetcherTE } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
-import { TaskModelType } from "../../schema/TaskSchema"
+import { type TaskModelType } from "../../schema/TaskSchema"
 import { useResources, useTasks } from "../../lib/hooks"
 import SimpleTaskList from "../tasks/SimpleTaskList"
 import { getResourceTypeColor } from "../../helpers/helpers"
@@ -86,8 +84,8 @@ const Course = ({ course }: IProps) => {
         headers: { "Content-Type": "application/json" },
         data: {
           _id,
-          completed,
-        },
+          completed
+        }
       }),
       TE.fold(
         (error) => {
@@ -110,7 +108,7 @@ const Course = ({ course }: IProps) => {
       component="main"
       sx={{
         marginTop: 15,
-        paddingBottom: 40,
+        paddingBottom: 40
       }}
     >
       <EditCourseModal open={open} handleClose={handleClose} course={course} />
@@ -122,7 +120,7 @@ const Course = ({ course }: IProps) => {
                 Back
               </Button>
             </NextLink>
-            <Button onClick={() => setOpen(true)} sx={{ float: "right" }} variant="contained" startIcon={<FaPen />}>
+            <Button onClick={() => { setOpen(true) }} sx={{ float: "right" }} variant="contained" startIcon={<FaPen />}>
               Edit
             </Button>
           </Box>
@@ -161,7 +159,7 @@ const Course = ({ course }: IProps) => {
                 flexWrap: "wrap",
                 listStyle: "none",
                 p: 1.5,
-                mt: 3,
+                mt: 3
               }}
               component="ul"
             >
@@ -196,7 +194,7 @@ const Course = ({ course }: IProps) => {
                     </TableHead>
                     <TableBody>
                       {resourceDataToShow.map((r) => (
-                        <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                        <TableRow key={r._id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                           <TableCell component="th" scope="row">
                             <Typography>{r.title}</Typography>
                           </TableCell>
@@ -204,11 +202,11 @@ const Course = ({ course }: IProps) => {
                             <Chip label={r.type} style={{ backgroundColor: getResourceTypeColor(r.type), color: "white" }} />
                           </TableCell>
                           <TableCell>
-                            <Link style={{ textDecoration: "none" }} href={r.link} target="_blank" passHref>
+                            <NextLink style={{ textDecoration: "none" }} href={r.link} target="_blank" passHref>
                               <IconButton color="primary" disabled={!r.link}>
                                 <FiExternalLink />
                               </IconButton>
-                            </Link>
+                            </NextLink>
                           </TableCell>
                         </TableRow>
                       ))}

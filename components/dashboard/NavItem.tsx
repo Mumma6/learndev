@@ -1,9 +1,7 @@
 import React from "react"
 import NextLink from "next/link"
 import { useRouter } from "next/router"
-import { Box, Button, ListItem } from "@mui/material"
-import { IconBaseProps } from "react-icons/lib"
-import { createTheme, ThemeProvider } from "@mui/material/styles"
+import { Box, Button } from "@mui/material"
 
 interface IProps {
   href: string
@@ -19,7 +17,7 @@ const NavItem = ({ href, icon, title }: IProps) => {
     <div
       style={{
         padding: 10,
-        paddingBottom: 1,
+        paddingBottom: 1
       }}
     >
       <NextLink style={{ textDecoration: "none" }} href={href} passHref>
@@ -38,8 +36,8 @@ const NavItem = ({ href, icon, title }: IProps) => {
             width: "100%",
             "&:hover": {
               backgroundColor: "primary.light",
-              color: "#ffffff",
-            },
+              color: "#ffffff"
+            }
           }}
         >
           <Box sx={{ flexGrow: 1, marginLeft: 1 }}>{title}</Box>

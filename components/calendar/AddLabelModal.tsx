@@ -8,7 +8,7 @@ import { pipe } from "fp-ts/function"
 import * as A from "fp-ts/Array"
 import * as O from "fp-ts/Option"
 import * as TE from "fp-ts/TaskEither"
-import { UserModelSchemaType, UserSettingsType } from "../../schema/UserSchema"
+import { type UserModelSchemaType, type UserSettingsType } from "../../schema/UserSchema"
 import { Box, Button, Divider, IconButton, List, ListItem, ListItemText, TextField } from "@mui/material"
 import { HexColorPicker } from "react-colorful"
 import { useCurrentUser } from "../../lib/hooks"
@@ -44,11 +44,11 @@ const AddLabelModal = ({ open, handleClose }: IProps) => {
             O.fromNullable,
             O.map((settings) => ({
               ...settings,
-              labels: [...(settings.labels || []), { name, color }],
+              labels: [...(settings.labels || []), { name, color }]
             })),
             O.getOrElseW(() => ({ labels: [] }))
-          ),
-        },
+          )
+        }
       }),
       TE.fold(
         (error) => {
@@ -83,11 +83,11 @@ const AddLabelModal = ({ open, handleClose }: IProps) => {
                 settings.labels,
                 A.filter((label) => label.name !== name),
                 (filteredLabels) => filteredLabels
-              ),
+              )
             })),
             O.getOrElseW(() => ({ labels: [] }))
-          ),
-        },
+          )
+        }
       }),
       TE.fold(
         (error) => {
@@ -123,7 +123,7 @@ const AddLabelModal = ({ open, handleClose }: IProps) => {
             sx={{ mb: 6 }}
             required
             variant="standard"
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => { setName(e.target.value) }}
             value={name}
           />
           <Box sx={{ display: "flex", justifyContent: "space-around" }}>
@@ -134,8 +134,9 @@ const AddLabelModal = ({ open, handleClose }: IProps) => {
             <List sx={{ marginTop: 3 }}>
               {data?.payload?.userSettings.labels.map((label) => (
                 <ListItem
+                  key={label.name}
                   secondaryAction={
-                    <IconButton onClick={() => onDeleteLabel(label.name)} color="error" edge="end" aria-label="delete">
+                    <IconButton onClick={async () => { await onDeleteLabel(label.name) }} color="error" edge="end" aria-label="delete">
                       <FaTrash />
                     </IconButton>
                   }
@@ -158,7 +159,7 @@ const AddLabelModal = ({ open, handleClose }: IProps) => {
           Cancel
         </Button>
         <Button
-          onClick={() => onAddLabel()}
+          onClick={async () => { await onAddLabel() }}
           disabled={name === "" || color === "" || isLoading}
           sx={{ marginRight: 2 }}
           variant="contained"

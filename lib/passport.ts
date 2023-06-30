@@ -1,7 +1,6 @@
 import passport from "passport"
-import { Strategy as LocalStrategy, Strategy } from "passport-local"
-import { NextApiRequest } from "next"
-import { Request } from "express"
+import { Strategy as LocalStrategy } from "passport-local"
+import { type NextApiRequest } from "next"
 import { getMongoDb } from "./mongodb"
 import { findUserForAuth, findUserWithEmailAndPassword } from "./queries/user"
 
@@ -38,8 +37,6 @@ passport.use(
 export default passport
 
 /*
-
-
 
 The serializeUser and deserializeUser functions are used to store and retrieve user data from the session. The serializeUser function is called when a user logs in, and it saves the user's unique identifier (in this case, their _id field from the MongoDB database) to the session. The deserializeUser function is called on every subsequent request, and it retrieves the user's data from the database using the unique identifier saved in the session.
 

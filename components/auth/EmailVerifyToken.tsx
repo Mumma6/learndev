@@ -11,8 +11,8 @@ const EmailVerifyToken = ({ valid }: { valid: boolean }) => {
   useEffect(() => {
     if (valid) {
       activateTimer()
-      toast.success(`Thank you for verifying your email. Redirecting to settings page`, {
-        autoClose: 4000,
+      toast.success("Thank you for verifying your email. Redirecting to settings page", {
+        autoClose: 4000
       })
     }
   }, [valid])
@@ -24,11 +24,12 @@ const EmailVerifyToken = ({ valid }: { valid: boolean }) => {
         display: "flex",
         flexGrow: 1,
         minHeight: "100%",
-        marginTop: 20,
+        marginTop: 20
       }}
     >
       <Container maxWidth="sm">
-        {!valid ? (
+        {!valid
+          ? (
           <>
             <Typography color="textPrimary" variant="h4">
               Invalid link
@@ -42,7 +43,8 @@ const EmailVerifyToken = ({ valid }: { valid: boolean }) => {
               </Button>
             </NextLink>
           </>
-        ) : (
+            )
+          : (
           <>
             <Typography color="textPrimary" variant="h4">
               Thank you for verifying your email. You may close this page
@@ -53,7 +55,7 @@ const EmailVerifyToken = ({ valid }: { valid: boolean }) => {
               </Button>
             </NextLink>
           </>
-        )}
+            )}
       </Container>
     </Box>
   )

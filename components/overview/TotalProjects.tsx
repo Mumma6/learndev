@@ -1,6 +1,5 @@
 import { Avatar, Box, Card, CardContent, Grid, Typography } from "@mui/material"
 import React from "react"
-import { BsCollection } from "react-icons/bs"
 import { AiOutlineFundProjectionScreen } from "react-icons/ai"
 
 interface IProps {
@@ -39,7 +38,7 @@ const TotalProjects = ({ completedAmount, inProgressAmount, planningAmount }: IP
               sx={{
                 backgroundColor: "info.main",
                 height: 56,
-                width: 56,
+                width: 56
               }}
             >
               <AiOutlineFundProjectionScreen />

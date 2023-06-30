@@ -1,5 +1,5 @@
 import React from "react"
-import { Container, Grid, Typography, Box } from "@mui/material"
+import { Box, Container, Grid } from "@mui/material"
 
 import serviceImage1 from "../../../public/assets/images/service-1.png"
 import serviceImage2 from "../../../public/assets/images/service-2.png"
@@ -13,33 +13,33 @@ const SERVICES_DATA = [
   {
     image: serviceImage1,
     text: "Get organized and take control of your study schedule with our powerful calendar tool. Plan your learning sessions, set project deadlines, and stay on track to achieve your coding goals.",
-    heading: "Calendar",
+    heading: "Calendar"
   },
   {
     image: serviceImage2,
     text: "Studify's course management system lets you easily plan and track your progress. Stay on course towards your goals, manage your resources, and keep a record of all your learning activities.",
-    heading: "Courses",
+    heading: "Courses"
   },
   {
     image: serviceImage3,
     text: "Take control of your coding education with Studify's intuitive dashboard. Analyze your progress, visualize your achievements, and make data-driven decisions to improve your skills.",
-    heading: "Personal overview",
+    heading: "Personal overview"
   },
   {
     image: serviceImage4,
     text: "Manage your projects efficiently. Keep all your code, notes, and progress in one place with Studify.",
-    heading: "Projects",
+    heading: "Projects"
   },
   {
     image: serviceImage5,
     text: "Studify's built-in quizzes and assessments offer an effective way to test your skills and knowledge. Identify areas of improvement and gain confidence in your coding abilities.",
-    heading: "Quizzes",
+    heading: "Quizzes"
   },
   {
     image: serviceImage6,
     text: "Create an impressive profile using Studify's integrated tools. Share your learning journey, showcase your skills and projects, and catch the attention of potential recruiters.",
-    heading: "Profile",
-  },
+    heading: "Profile"
+  }
 ]
 
 const Services = () => {
@@ -49,7 +49,7 @@ const Services = () => {
         <Box
           sx={{
             textAlign: "center",
-            mb: 15,
+            mb: 15
           }}
         >
           <p
@@ -58,7 +58,7 @@ const Services = () => {
               fontSize: 30,
               fontWeight: 700,
               lineHeight: 1,
-              marginBottom: 30,
+              marginBottom: 30
             }}
           >
             Features overview

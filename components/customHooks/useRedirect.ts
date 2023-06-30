@@ -1,13 +1,13 @@
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 
-export default function useRedirect(redirectTo = "/", seconds = 5) {
+export default function useRedirect (redirectTo = "/", seconds = 5) {
   const [secondsRemaining, setSecondsRemaining] = useState(seconds)
   const [activate, setActivate] = useState(false)
 
   const router = useRouter()
 
-  const activateTimer = () => setActivate(true)
+  const activateTimer = () => { setActivate(true) }
 
   useEffect(() => {
     if (!activate) return

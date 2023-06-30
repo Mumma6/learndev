@@ -1,18 +1,14 @@
 import React from "react"
 import {
   Box,
-  Alert,
-  Card,
-  CardContent,
-  Grid,
-  Divider,
-  Typography,
   Button,
+  Divider,
+  Grid,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  CardActions,
+  Typography
 } from "@mui/material"
 import { FaCheck } from "react-icons/fa"
 import { ImCross } from "react-icons/im"
@@ -46,7 +42,7 @@ const PricingCard = ({ data }: IProps) => {
         marginTop: 2,
         borderRadius: "16px",
         borderColor: isRecommended ? "primary.main" : "#c7c7c7",
-        backgroundColor: !isRecommended ? "#eeeeee" : null,
+        backgroundColor: !isRecommended ? "#eeeeee" : null
       }}
     >
       <Box mt={4}>
@@ -60,7 +56,7 @@ const PricingCard = ({ data }: IProps) => {
             <Grid item>
               <Typography
                 style={{
-                  textDecoration: "line-through",
+                  textDecoration: "line-through"
                 }}
                 color={"primary"}
                 variant="h4"

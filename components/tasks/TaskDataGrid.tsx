@@ -1,12 +1,12 @@
 import React, { useState } from "react"
 import Box from "@mui/material/Box"
 import Chip from "@mui/material/Chip"
-import { DataGrid, GridApi, GridColDef, GridEditCellValueParams, GridValueGetterParams } from "@mui/x-data-grid"
+import { DataGrid, type GridColDef } from "@mui/x-data-grid"
 import format from "date-fns/format"
 
-import { FaArrowRight, FaTrash, FaCheck, FaPlus, FaInfoCircle } from "react-icons/fa"
+import { FaArrowRight, FaCheck, FaInfoCircle, FaPlus, FaTrash } from "react-icons/fa"
 import { IconButton } from "@mui/material"
-import { TaskModelType } from "../../schema/TaskSchema"
+import { type TaskModelType } from "../../schema/TaskSchema"
 import { pipe } from "fp-ts/lib/function"
 import * as O from "fp-ts/Option"
 import * as A from "fp-ts/Array"
@@ -36,19 +36,19 @@ const TaskDataGrid = ({ tasks, deleteTask, toggleTask }: IProps) => {
     {
       field: "title",
       headerName: "Title",
-      flex: 0.7,
+      flex: 0.7
       // width: 150,
     },
     {
       field: "activityGroup",
       headerName: "Activity group",
-      flex: 0.7,
+      flex: 0.7
       // width: 150,
     },
     {
       field: "activityName",
       headerName: "Activity",
-      flex: 0.5,
+      flex: 0.5
       // width: 150,
     },
     {
@@ -61,7 +61,7 @@ const TaskDataGrid = ({ tasks, deleteTask, toggleTask }: IProps) => {
         return <p>{format(new Date(currentRow.createdAt), "yyyy-MM-dd hh:mm")}</p>
       },
       sortComparator: (v1, v2) => v1.localeCompare(v2),
-      valueGetter: (params) => params.row.createdAt,
+      valueGetter: (params) => params.row.createdAt
       // width: 110,
       // editable: true,
     },
@@ -81,7 +81,7 @@ const TaskDataGrid = ({ tasks, deleteTask, toggleTask }: IProps) => {
         )
       },
       sortComparator: (v1, v2) => v1.localeCompare(v2),
-      valueGetter: (params) => params.row.prio,
+      valueGetter: (params) => params.row.prio
     },
 
     {
@@ -93,20 +93,20 @@ const TaskDataGrid = ({ tasks, deleteTask, toggleTask }: IProps) => {
       renderCell: (params) => {
         const currentRow = params.row
 
-        const onClickToggle = (e: any) => {
+        const onClickToggle = (_e: any) => {
           toggleTask(currentRow._id, !currentRow.completed)
         }
 
-        const onClickDelete = (e: any) => {
+        const onClickDelete = (_e: any) => {
           deleteTask(currentRow._id)
         }
 
-        const onClickInfo = (e: any) => {
+        const onClickInfo = (_e: any) => {
           setShowModal(true)
           setInfoTask(tasks?.find((task) => task._id === currentRow._id))
         }
 
-        const onClickGoTo = (e: any) => {
+        const onClickGoTo = (_e: any) => {
           router.push(`/${currentRow.activityGroup?.toLocaleLowerCase()}/${currentRow?.activityId}`)
         }
 
@@ -131,8 +131,8 @@ const TaskDataGrid = ({ tasks, deleteTask, toggleTask }: IProps) => {
             </IconButton>
           </>
         )
-      },
-    },
+      }
+    }
   ]
 
   type TTaskModelType = TaskModelType & { id: string }
@@ -151,7 +151,7 @@ const TaskDataGrid = ({ tasks, deleteTask, toggleTask }: IProps) => {
     O.fromNullable,
     O.map(A.map(mapT)),
     O.map(A.sort(taskTitleOrd)),
-    O.getOrElse<Array<TTaskModelType>>(() => [])
+    O.getOrElse<TTaskModelType[]>(() => [])
   )
 
   return (
@@ -163,21 +163,21 @@ const TaskDataGrid = ({ tasks, deleteTask, toggleTask }: IProps) => {
           "& .super-app-theme--true": {
             bgcolor: () => "#c4c4c4",
             "&:hover": {
-              backgroundColor: "#c4c4c4",
-            },
+              backgroundColor: "#c4c4c4"
+            }
           },
           "& .super-app-theme--false": {
-            bgcolor: () => "white",
-          },
+            bgcolor: () => "white"
+          }
         }}
         getRowClassName={(params) => `super-app-theme--${params.row.completed}`}
         columns={columns}
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 10,
-            },
-          },
+              pageSize: 10
+            }
+          }
         }}
         pageSizeOptions={[10]}
         disableRowSelectionOnClick

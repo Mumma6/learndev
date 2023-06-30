@@ -1,16 +1,14 @@
-import { ChangeEvent, useCallback, useState } from "react"
 
-import TextField from "@mui/material/TextField"
 import Dialog from "@mui/material/Dialog"
 import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
 import Button from "@mui/material/Button"
-import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material"
-import { ClickEventRet, SetState } from "../../types/generics"
+import { Box, Typography } from "@mui/material"
+import { type ClickEventRet, type SetState } from "../../types/generics"
 import { useRouter } from "next/router"
-import { IEventInfo } from "../../models/EventInfo"
+import { type IEventInfo } from "../../models/EventInfo"
 
 interface IProps {
   open: boolean
@@ -33,7 +31,7 @@ const EditEventInfoModal = ({ open, handleClose, onDeleteEvent, currentEvent }: 
           <Button
             variant="outlined"
             sx={{ width: "100%", marginBottom: 2, marginTop: 2 }}
-            onClick={() => router.push(`/${currentEvent.activityGroup?.toLocaleLowerCase()}/${currentEvent?.activityId}`)}
+            onClick={async () => await router.push(`/${currentEvent.activityGroup?.toLocaleLowerCase()}/${currentEvent?.activityId}`)}
           >
             <Typography variant="body2">Go to: {currentEvent.activityName}</Typography>
           </Button>

@@ -1,19 +1,18 @@
-import React, { useState } from "react"
+import React from "react"
 import {
   Box,
   Button,
   Card,
   CardContent,
-  TextField,
+  FormControlLabel,
+  FormGroup,
   InputAdornment,
   SvgIcon,
-  Typography,
-  FormGroup,
-  FormControlLabel,
+  TextField
 } from "@mui/material"
 import { FaSearch } from "react-icons/fa"
 import Switch from "@mui/material/Switch"
-import { SetState } from "../../types/generics"
+import { type SetState } from "../../types/generics"
 
 interface IProps {
   handleClickOpen: () => void
@@ -38,7 +37,7 @@ const TasksToolbar = ({ handleClickOpen, showCompleted, setShowCompleted }: IPro
                           <FaSearch />
                         </SvgIcon>
                       </InputAdornment>
-                    ),
+                    )
                   }}
                   placeholder="Search task"
                   variant="outlined"
@@ -47,7 +46,7 @@ const TasksToolbar = ({ handleClickOpen, showCompleted, setShowCompleted }: IPro
               <div style={{ display: "flex" }}>
                 <FormGroup style={{ alignSelf: "center" }}>
                   <FormControlLabel
-                    control={<Switch checked={showCompleted} onChange={() => setShowCompleted(!showCompleted)} />}
+                    control={<Switch checked={showCompleted} onChange={() => { setShowCompleted(!showCompleted) }} />}
                     label={showCompleted ? "Hide completed" : "Show completed"}
                   />
                 </FormGroup>

@@ -1,9 +1,7 @@
-import { flow, pipe } from "fp-ts/function"
+import { flow } from "fp-ts/function"
 import * as A from "fp-ts/Array"
 import * as O from "fp-ts/Option"
-import * as R from "fp-ts/lib/Record"
-import * as S from "fp-ts/lib/string"
-import { ResourceEnum, ResourceTypeEnum } from "../schema/ResourceSchema"
+import { type ResourceEnum } from "../schema/ResourceSchema"
 
 export const typeColors = [
   "#14b8a6",
@@ -17,7 +15,7 @@ export const typeColors = [
   "#8bc34a",
   "#00bcd4",
   "#a12828",
-  "#807d7d",
+  "#807d7d"
 ]
 
 export const tap = (val: any) => {

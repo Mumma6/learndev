@@ -1,4 +1,4 @@
-import { Box, Container, Grid, Pagination, Card, CardContent, Typography, Divider, CardHeader } from "@mui/material"
+import { Box, Card, CardContent, CardHeader, Container, Divider, Grid, Pagination } from "@mui/material"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
 import { pipe } from "fp-ts/function"
@@ -7,28 +7,25 @@ import * as O from "fp-ts/Option"
 import * as TE from "fp-ts/TaskEither"
 
 import { useEffect, useState } from "react"
-import { useCourses, useResources } from "../../lib/hooks"
+import { useCourses } from "../../lib/hooks"
 import { useSWRConfig } from "swr"
 import AddCourseModal from "./AddCourseModal"
 import CourseCard from "./CourseCard"
 import CoursesToolbar from "./CoursesToolbar"
 import { toast } from "react-toastify"
-import { fetcher, fetcherTE } from "../../lib/axiosFetcher"
+import { fetcherTE } from "../../lib/axiosFetcher"
 import {
   CourseModelContentInputSchema,
-  CourseModelContentInputSchemaType,
-  CourseModelSchemaType,
-  CourseModelformInputSchema,
-  CourseModelformInputType,
+  type CourseModelContentInputSchemaType,
+  type CourseModelSchemaType,
   InstitutionEnum,
   StatusEnum,
-  StatusEnumType,
+  type StatusEnumType
 } from "../../schema/CourseSchema"
-import { SkillSchemaType } from "../../schema/SharedSchema"
+import { type SkillSchemaType } from "../../schema/SharedSchema"
 import { useZodFormValidation } from "zod-react-form"
 import InfoTooltip from "../shared/Tooltip"
 import { getOArraySize } from "../../helpers/helpers"
-import { ResourceModelSchemaType } from "../../schema/ResourceSchema"
 
 export const initialCourseFormState: CourseModelContentInputSchemaType = {
   title: "",
@@ -38,7 +35,7 @@ export const initialCourseFormState: CourseModelContentInputSchemaType = {
   url: "",
   certificateUrl: "",
   duration: 0,
-  resources: [""],
+  resources: [""]
 }
 
 const Courses = () => {
@@ -116,10 +113,10 @@ const Courses = () => {
         headers: { "Content-Type": "application/json" },
         data: {
           content: {
-            ...zodForm.values,
+            ...zodForm.values
           },
-          topics: topicData,
-        },
+          topics: topicData
+        }
       }),
       TE.fold(
         (error) => {
@@ -151,7 +148,7 @@ const Courses = () => {
     <Box
       component="main"
       sx={{
-        paddingTop: 10,
+        paddingTop: 10
       }}
     >
       <AddCourseModal
@@ -197,7 +194,7 @@ const Courses = () => {
           sx={{
             display: "flex",
             justifyContent: "center",
-            pt: 3,
+            pt: 3
           }}
         >
           {false && <Pagination color="primary" count={3} size="small" />}

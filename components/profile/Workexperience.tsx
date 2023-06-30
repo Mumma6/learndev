@@ -1,4 +1,4 @@
-import { useEffect, useState, FormEvent } from "react"
+import { type FormEvent, useState } from "react"
 import Box from "@mui/material/Box"
 import Card from "@mui/material/Card"
 import { Button, CardHeader, Divider, Typography } from "@mui/material"
@@ -9,10 +9,10 @@ import { useCurrentUser } from "../../lib/hooks"
 import { pipe } from "fp-ts/function"
 import * as TE from "fp-ts/TaskEither"
 import WorkexperienceModal from "./WorkexperienceModal"
-import { fetcher, fetcherTE } from "../../lib/axiosFetcher"
+import { fetcherTE } from "../../lib/axiosFetcher"
 import { toast } from "react-toastify"
 import * as _ from "lodash"
-import { UserModelSchemaType, UserWorkexperienceSchema, UserWorkexperienceSchemaType } from "../../schema/UserSchema"
+import { type UserModelSchemaType, UserWorkexperienceSchema, type UserWorkexperienceSchemaType } from "../../schema/UserSchema"
 import { useZodFormValidation } from "zod-react-form"
 import { useSWRConfig } from "swr"
 
@@ -22,7 +22,7 @@ export const initialFormState: UserWorkexperienceSchemaType = {
   startDate: "",
   endDate: "",
   currentJob: false,
-  description: "",
+  description: ""
 }
 
 const Workexperience = () => {
@@ -64,14 +64,14 @@ const Workexperience = () => {
     <Box
       sx={{
         display: "flex",
-        justifyContent: "space-between",
+        justifyContent: "space-between"
       }}
     >
       <Typography
         sx={{
           fontSize: "0.875rem",
           fontWeight: 400,
-          lineHeight: 1.57,
+          lineHeight: 1.57
         }}
       >
         Add any relevant work experience
@@ -80,7 +80,7 @@ const Workexperience = () => {
         onClick={handleClickOpen}
         sx={{
           fontSize: 24,
-          top: -25,
+          top: -25
         }}
       >
         <FaPlus />
@@ -96,8 +96,8 @@ const Workexperience = () => {
         headers: { "Content-Type": "application/json" },
         method: "PATCH",
         data: {
-          workexperience,
-        },
+          workexperience
+        }
       }),
       TE.fold(
         (error) => {
@@ -120,7 +120,7 @@ const Workexperience = () => {
       <Card>
         <CardHeader
           sx={{
-            paddingBottom: 2,
+            paddingBottom: 2
           }}
           subheader={cardTitleNode}
           title="Work experience"
@@ -149,7 +149,7 @@ const Workexperience = () => {
             display: "flex",
             justifyContent: "space-between",
             p: 2,
-            float: "right",
+            float: "right"
           }}
         >
           <SubmitButton
