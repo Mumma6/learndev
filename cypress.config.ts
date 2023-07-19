@@ -10,4 +10,6 @@ export default defineConfig({
       bundler: "webpack"
     }
   }
+  // ToDo: Figure out settings...
+//   defaultCommandTimeout: 15000
 })

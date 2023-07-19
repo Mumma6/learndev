@@ -12,6 +12,41 @@
 //
 // -- This is a parent command --
 // Cypress.Commands.add('login', (email, password) => { ... })
+Cypress.Commands.add("getSession", () => {
+  cy.login("qwe@qwe.qwe", "qwe@qwe.qwe")
+})
+Cypress.Commands.add("login", (user, password) => {
+  cy.session([user, password], () => {
+    cy.visit("http://localhost:3000/")
+
+    // Find a button with class and contains text
+    cy.get(".MuiButton-root").contains("Sign in").click()
+
+    // The new url should include "/login"
+    cy.url().should("include", "/login")
+
+    // user: qwe@qwe.qwe
+    // pwd: qwe@qwe.qwe
+    // const user = "qwe@qwe.qwe"
+    // const password = "qwe@qwe.qwe"
+    cy.get("input[name=email]", { timeout: 15000 }).type(user)
+    cy.get("input[name=email]").should("have.value", user)
+
+    cy.get("input[name=password]").type(password)
+    cy.get("input[name=password]").should("have.value", password)
+
+    cy.get(".MuiButton-root").contains("Sign in Now").click()
+
+    cy.url({ timeout: 15000 }).should("include", "/home")
+
+    cy.intercept("/api/quizresults").as("quizresults")
+    cy.intercept("/api/events").as("events")
+    cy.intercept("/api/courses").as("courses")
+    cy.intercept("/api/projects").as("projects")
+    cy.intercept("/api/tasks").as("tasks")
+    cy.wait(["@quizresults", "@events", "@courses", "@projects", "@tasks"], { responseTimeout: 15000 })
+  })
+})
 //
 //
 // -- This is a child command --
@@ -25,16 +60,20 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 //
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Cypress {
+    interface Chainable {
+      // eslint-disable-next-line @typescript-eslint/method-signature-style
+      getSession(): Chainable<void>
+      // eslint-disable-next-line @typescript-eslint/method-signature-style
+      login(email: string, password: string): Chainable<void>
+    //   drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
+    //   dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
+    //   visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
+    }
+  }
+}
 
 // Prevent TypeScript from reading file as legacy script
-export {}
+export { }
