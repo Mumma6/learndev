@@ -3,19 +3,19 @@
 // https://github.com/cypress-io/eslint-plugin-cypress
 
 // Cypress E2E Test
-describe("Calendar", () => {
-  it("should navigate to the calendar page", () => {
+describe("Tasks", () => {
+  it("should navigate to the Quizes page", () => {
     cy.getSession()
 
     // Start from the index page
-    cy.visit("http://localhost:3000/calendar")
+    cy.visit("http://localhost:3000/quizzes")
 
     // The new url should include
-    cy.url().should("include", "/calendar")
+    cy.url().should("include", "/quizzes")
 
-    cy.get("button").contains("Add event").click()
+    cy.get(".MuiTypography-h5").contains("JavaScript Quiz").click()
 
-    cy.get("button").contains("Cancel").click()
+    cy.get("button").contains("Back").click()
   })
 })
 

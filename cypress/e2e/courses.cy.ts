@@ -3,17 +3,17 @@
 // https://github.com/cypress-io/eslint-plugin-cypress
 
 // Cypress E2E Test
-describe("Calendar", () => {
-  it("should navigate to the calendar page", () => {
+describe("My courses", () => {
+  it("should navigate to the courses page", () => {
     cy.getSession()
 
     // Start from the index page
-    cy.visit("http://localhost:3000/calendar")
+    cy.visit("http://localhost:3000/courses")
 
     // The new url should include
-    cy.url().should("include", "/calendar")
+    cy.url().should("include", "/courses")
 
-    cy.get("button").contains("Add event").click()
+    cy.get("button").contains("Add course").click()
 
     cy.get("button").contains("Cancel").click()
   })

@@ -23,13 +23,9 @@ Cypress.Commands.add("login", (username, password) => {
     // Find a button with class and contains text
     cy.get(".MuiButton-root").contains("Sign in").click()
 
-    // The new url should include "/login"
+    // The new url should include
     cy.url().should("include", "/login")
 
-    // username: qwe@qwe.qwe
-    // pwd: qwe@qwe.qwe
-    // const username = "qwe@qwe.qwe"
-    // const password = "qwe@qwe.qwe"
     cy.get("input[name=email]", { timeout: 15000 }).type(username)
     cy.get("input[name=email]").should("have.value", username)
 
