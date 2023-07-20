@@ -17,7 +17,8 @@
 import "./commands"
 
 it("does something on a secured page", function () {
-  cy.login("qwe@qwe.qwe", "qwe@qwe.qwe")
+  const { username, password } = Cypress.env()
+  cy.login(username, password)
 })
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

@@ -13,10 +13,11 @@
 // -- This is a parent command --
 // Cypress.Commands.add('login', (email, password) => { ... })
 Cypress.Commands.add("getSession", () => {
-  cy.login("qwe@qwe.qwe", "qwe@qwe.qwe")
+  const { username, password } = Cypress.env()
+  cy.login(username, password)
 })
-Cypress.Commands.add("login", (user, password) => {
-  cy.session([user, password], () => {
+Cypress.Commands.add("login", (username, password) => {
+  cy.session([username, password], () => {
     cy.visit("http://localhost:3000/")
 
     // Find a button with class and contains text
@@ -25,12 +26,12 @@ Cypress.Commands.add("login", (user, password) => {
     // The new url should include "/login"
     cy.url().should("include", "/login")
 
-    // user: qwe@qwe.qwe
+    // username: qwe@qwe.qwe
     // pwd: qwe@qwe.qwe
-    // const user = "qwe@qwe.qwe"
+    // const username = "qwe@qwe.qwe"
     // const password = "qwe@qwe.qwe"
-    cy.get("input[name=email]", { timeout: 15000 }).type(user)
-    cy.get("input[name=email]").should("have.value", user)
+    cy.get("input[name=email]", { timeout: 15000 }).type(username)
+    cy.get("input[name=email]").should("have.value", username)
 
     cy.get("input[name=password]").type(password)
     cy.get("input[name=password]").should("have.value", password)
