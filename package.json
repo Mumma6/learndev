@@ -7,10 +7,8 @@
     "eslint-fix": "eslint --fix --ext .js,.ts,.tsx .",
     "eslint": "eslint --ext .js,.ts,.tsx .",
     "cypress": "cypress open",
-    "e2e": "start-server-and-test dev http://localhost:3000 \"cypress open --e2e\"",
-    "e2e:headless": "start-server-and-test dev http://localhost:3000 \"cypress run --e2e\"",
-    "component": "cypress open --component",
-    "component:headless": "cypress run --component"
+    "dev-server-and-cypress": "start-server-and-test dev http://localhost:3000 \"cypress open --e2e\"",
+    "cypress-run-automated-tests": "start-server-and-test dev http://localhost:3000 \"cypress run --e2e\""
   },
   "dependencies": {
     "@emotion/cache": "^11.10.5",
