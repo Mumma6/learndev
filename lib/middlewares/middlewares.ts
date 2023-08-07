@@ -9,7 +9,7 @@ interface IMiddleware extends NextConnect<NextApiRequest, NextApiResponse> {}
 
 // TODO: Add these to all routes. Only "courses" have been converted
 
-const middlewares: IMiddleware[] = [
+const middlewares = [
   ...auths,
   mongoSanitize(),
   rateLimit({
@@ -18,6 +18,6 @@ const middlewares: IMiddleware[] = [
     standardHeaders: true,
     legacyHeaders: false,
   }),
-]
+] as IMiddleware[]
 
 export default middlewares
