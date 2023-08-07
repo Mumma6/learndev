@@ -5,7 +5,10 @@
     "build": "next build",
     "start": "next start",
     "eslint-fix": "eslint --fix --ext .js,.ts,.tsx .",
-    "eslint": "eslint --ext .js,.ts,.tsx ."
+    "eslint": "eslint --ext .js,.ts,.tsx .",
+    "cypress": "cypress open",
+    "dev-server-and-cypress": "start-server-and-test dev http://localhost:3000 \"cypress open --e2e\"",
+    "cypress-run-automated-tests": "start-server-and-test dev http://localhost:3000 \"cypress run --e2e\""
   },
   "dependencies": {
     "@emotion/cache": "^11.10.5",
@@ -71,13 +74,16 @@
     "@types/validator": "^13.7.10",
     "@typescript-eslint/eslint-plugin": "^5.60.0",
     "@typescript-eslint/parser": "^5.60.0",
+    "cypress": "^12.17.1",
     "eslint": "^8.43.0",
     "eslint-config-standard-with-typescript": "^35.0.0",
+    "eslint-plugin-cypress": "^2.13.3",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-n": "^15.7.0",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-unused-imports": "^2.0.0",
+    "start-server-and-test": "^2.0.0",
     "typescript": "^4.6.3"
   }
 }
