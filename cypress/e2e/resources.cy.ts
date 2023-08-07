@@ -3,7 +3,7 @@
 // https://github.com/cypress-io/eslint-plugin-cypress
 
 // Cypress E2E Test
-describe("Tasks", () => {
+describe("Resources", () => {
   it("should navigate to the Resources page", () => {
     cy.getSession()
 
@@ -13,11 +13,11 @@ describe("Tasks", () => {
     // The new url should include
     cy.url().should("include", "/resources")
 
-    cy.get("button").contains("Add resources").click()
+    cy.get("button").contains("Add resource").click()
 
     cy.get("button").contains("Cancel").click()
   })
 })
 
 // Prevent TypeScript from reading file as legacy script
-export { }
+export {}

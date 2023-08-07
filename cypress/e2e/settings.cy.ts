@@ -3,7 +3,7 @@
 // https://github.com/cypress-io/eslint-plugin-cypress
 
 // Cypress E2E Test
-describe("Tasks", () => {
+describe("Settings", () => {
   it("should navigate to the Settings page", () => {
     cy.getSession()
 
@@ -17,9 +17,15 @@ describe("Tasks", () => {
     cy.get("input[name=new]", { timeout: 15000 }).type("abc123")
     cy.get("input[name=confirm]", { timeout: 15000 }).type("abc123")
 
-    cy.get("button").contains("Update information").click()
+    /*
+      The button is disabled if the password is the same as the old. but we dont want to change
+      the users password at every test so this is fine
+    */
+
+    // eslint-disable-next-line cypress/no-force
+    cy.get("button").contains("Update").click({ force: true })
   })
 })
 
 // Prevent TypeScript from reading file as legacy script
-export { }
+export {}

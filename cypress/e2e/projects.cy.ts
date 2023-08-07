@@ -3,7 +3,7 @@
 // https://github.com/cypress-io/eslint-plugin-cypress
 
 // Cypress E2E Test
-describe("My projects", () => {
+describe("Projects", () => {
   it("should navigate to the projects page", () => {
     cy.getSession()
 
@@ -20,4 +20,4 @@ describe("My projects", () => {
 })
 
 // Prevent TypeScript from reading file as legacy script
-export { }
+export {}

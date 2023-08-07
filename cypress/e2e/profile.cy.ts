@@ -3,7 +3,7 @@
 // https://github.com/cypress-io/eslint-plugin-cypress
 
 // Cypress E2E Test
-describe("Tasks", () => {
+describe("Profile", () => {
   it("should navigate to the Profile page", () => {
     cy.getSession()
 
@@ -13,11 +13,11 @@ describe("Tasks", () => {
     // The new url should include
     cy.url().should("include", "/profile")
 
-    cy.get("textarea[name=email]", { timeout: 15000 }).type("The quick brown fox jumps over the lazy dog")
+    cy.get("textarea[name=about]", { timeout: 15000 }).type("The quick brown fox jumps over the lazy dog")
 
     cy.get("button").contains("Update information").click()
   })
 })
 
 // Prevent TypeScript from reading file as legacy script
-export { }
+export {}
