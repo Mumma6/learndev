@@ -11,10 +11,15 @@ import {
   validateAndGetUserId,
   validateArrayData2,
   validateData2,
-  validateReqBody2
+  validateReqBody2,
 } from "../../../lib/utils"
 
-import { CourseModelSchema, type CourseModelSchemaType, CourseModelformInputSchema, type CourseModelformInputType } from "../../../schema/CourseSchema"
+import {
+  CourseModelSchema,
+  type CourseModelSchemaType,
+  CourseModelformInputSchema,
+  type CourseModelformInputType,
+} from "../../../schema/CourseSchema"
 import { type Response } from "../../../types/response"
 
 import * as E from "fp-ts/Either"
@@ -24,8 +29,9 @@ import {
   addToDbCollection,
   deleteFromCollectionById,
   getFromCollectionForUser,
-  updateFromCollectionById
+  updateFromCollectionById,
 } from "../../../lib/queries"
+import middlewares from "../../../lib/middlewares/middlewares"
 
 const createTags = (data: Pick<CourseModelSchemaType, "content" | "topics">): string => {
   return [data.content.title, data.content.institution, ...data.topics.map((t) => t.label)]
@@ -35,15 +41,15 @@ const createTags = (data: Pick<CourseModelSchemaType, "content" | "topics">): st
 
 const handler = nextConnect<NextApiRequest, NextApiResponse<Response<CourseModelSchemaType[] | null>>>()
 
-handler.post(...auths, async (req, res) => {
+handler.post(...middlewares, async (req, res) => {
   const addNonInputData =
     (userId: string) =>
-      (data: CourseModelformInputType): Omit<CourseModelSchemaType, "_id"> => ({
-        ...data,
-        tags: createTags(data),
-        createdAt: new Date(),
-        userId
-      })
+    (data: CourseModelformInputType): Omit<CourseModelSchemaType, "_id"> => ({
+      ...data,
+      tags: createTags(data),
+      createdAt: new Date(),
+      userId,
+    })
 
   const task = pipe(
     req,
@@ -59,13 +65,17 @@ handler.post(...auths, async (req, res) => {
   pipe(
     either,
     E.fold(
-      (error) => { handleAPIError(res, error) },
-      () => { handleAPIResponse(res, null, "Course added") }
+      (error) => {
+        handleAPIError(res, error)
+      },
+      () => {
+        handleAPIResponse(res, null, "Course added")
+      }
     )
   )
 })
 
-handler.get(...auths, async (req, res) => {
+handler.get(...middlewares, async (req, res) => {
   const task = pipe(
     req,
     validateAndGetUserId,
@@ -78,15 +88,19 @@ handler.get(...auths, async (req, res) => {
   pipe(
     either,
     E.fold(
-      (error) => { handleAPIError(res, { message: error }) },
-      (data) => { handleAPIResponse(res, data, `Courses for user: ${req.user?.name}`) }
+      (error) => {
+        handleAPIError(res, { message: error })
+      },
+      (data) => {
+        handleAPIResponse(res, data, `Courses for user: ${req.user?.name}`)
+      }
     )
   )
 })
 
-handler.delete(...auths, createDeleteHandler(deleteFromCollectionById("courses")))
+handler.delete(...middlewares, createDeleteHandler(deleteFromCollectionById("courses")))
 
-handler.patch(...auths, async (req, res) => {
+handler.patch(...middlewares, async (req, res) => {
   const task = pipe(
     req,
     checkUser,
@@ -101,8 +115,12 @@ handler.patch(...auths, async (req, res) => {
     either,
     E.chain(validateData2<CourseModelSchemaType>(CourseModelSchema)),
     E.fold(
-      (error) => { handleAPIError(res, error) },
-      (data) => { handleAPIResponse(res, data, "Course updated successfully") }
+      (error) => {
+        handleAPIError(res, error)
+      },
+      (data) => {
+        handleAPIResponse(res, data, "Course updated successfully")
+      }
     )
   )
 })

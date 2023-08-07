@@ -32,6 +32,8 @@
     "connect-mongo": "^4.6.0",
     "date-fns": "^2.29.3",
     "dayjs": "^1.11.7",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^6.9.0",
     "express-session": "^1.17.3",
     "formik": "^2.2.9",
     "fp-ts": "^2.13.1",
