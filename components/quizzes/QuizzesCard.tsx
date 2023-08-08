@@ -4,12 +4,16 @@ import Rating from "@mui/material/Rating"
 import { type IQuiz } from "../../models/Quiz"
 import { useRouter } from "next/router"
 import { useCurrentUser, useQuizResults } from "../../lib/hooks"
+import { type SetState } from "../../types/generics"
+import * as O from "fp-ts/Option"
 
 interface IProps {
   quiz: IQuiz
+  setSelectedQuizForEdit: SetState<O.Option<IQuiz>>
+  setOpenEditQuizModal: SetState<boolean>
 }
 
-const QuizzesCard = ({ quiz }: IProps) => {
+const QuizzesCard = ({ quiz, setSelectedQuizForEdit, setOpenEditQuizModal }: IProps) => {
   const { title, description, difficulty, _id } = quiz
   const router = useRouter()
   const { data } = useCurrentUser()
@@ -26,25 +30,25 @@ const QuizzesCard = ({ quiz }: IProps) => {
     if (!userQuizResult) {
       return {
         label: "Not taken",
-        color: "primary"
+        color: "primary",
       }
     }
     if (userQuizResult?.approved) {
       return {
         label: "Approved",
-        color: "success"
+        color: "success",
       }
     }
 
     if (!userQuizResult?.approved) {
       return {
         label: "Retry 30 days", // todo. calc correct amount of days
-        color: "error"
+        color: "error",
       }
     }
     return {
       label: "Not taken",
-      color: "primary"
+      color: "primary",
     }
   }
 
@@ -68,26 +72,36 @@ const QuizzesCard = ({ quiz }: IProps) => {
     }
     return title.includes("React") ? "/assets/images/react-logo.png" : "/assets/images/Javascript_Logo.png"
   }
+
+  const handleQuizForEdit = () => {
+    setSelectedQuizForEdit(O.fromNullable(quiz))
+    setOpenEditQuizModal(true)
+  }
+
   return (
     <Card
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: "100%"
+        height: "100%",
       }}
     >
       <Box
         sx={{
-          backgroundColor: userQuizResult ? "#cdcdcd" : null
+          backgroundColor: userQuizResult ? "#cdcdcd" : null,
         }}
       >
-        <Button sx={{ width: "100%" }} disabled={!!userQuizResult} onClick={async () => await router.push(`/quizzes/${_id}`)}>
+        <Button
+          sx={{ width: "100%" }}
+          disabled={!!userQuizResult}
+          onClick={async () => await router.push(`/quizzes/${_id}`)}
+        >
           <CardContent>
             <Box
               sx={{
                 display: "flex",
                 justifyContent: "center",
-                pb: 3
+                pb: 3,
               }}
             >
               <Avatar sx={{ width: 64, height: 64 }} alt="Logo" src={getAvatarUrl()} variant="square" />
@@ -109,7 +123,7 @@ const QuizzesCard = ({ quiz }: IProps) => {
             item
             sx={{
               alignItems: "center",
-              display: "flex"
+              display: "flex",
             }}
           >
             <Typography component="legend">Difficulty:</Typography>
@@ -120,6 +134,21 @@ const QuizzesCard = ({ quiz }: IProps) => {
           </Grid>
         </Grid>
       </Box>
+      {data?.payload?.role === "Admin" && (
+        <>
+          <Divider />
+          <Box sx={{ p: 2 }}>
+            <Grid container spacing={2} sx={{ justifyContent: "space-between" }}>
+              <Grid>
+                <Button onClick={() => handleQuizForEdit()}>Edit</Button>
+              </Grid>
+              <Grid>
+                <Button color="error">Delete</Button>
+              </Grid>
+            </Grid>
+          </Box>
+        </>
+      )}
     </Card>
   )
 }

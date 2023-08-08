@@ -5,7 +5,7 @@ import { ObjectId } from "bson"
 export const UserRegistrationSchema = z.object({
   name: z.string().min(1).max(50),
   email: z.string().email(),
-  password: z.string().min(1).max(100)
+  password: z.string().min(1).max(100),
 })
 
 export type UserRegistrationSchemaType = z.infer<typeof UserRegistrationSchema>
@@ -18,7 +18,7 @@ export const UserSocialsSchema = z.object({
   youtube: UrlString,
   github: UrlString,
   personalWebsite: UrlString,
-  blog: UrlString
+  blog: UrlString,
 })
 
 export type UserSocialsSchemaType = z.infer<typeof UserSocialsSchema>
@@ -29,20 +29,20 @@ export const UserWorkexperienceSchema = z.object({
   endDate: z.union([z.literal(undefined), z.string()]).default(""),
   description: z.string().min(1).max(2000),
   company: z.string().min(1),
-  currentJob: z.boolean().default(false)
+  currentJob: z.boolean().default(false),
 })
 
 export type UserWorkexperienceSchemaType = z.infer<typeof UserWorkexperienceSchema>
 
 export const UserSettingsLabelSchema = z.object({
   name: z.string().min(1).default(""),
-  color: z.string().min(1).default("")
+  color: z.string().min(1).default(""),
 })
 
 export type UserSettingsLabelType = z.infer<typeof UserSettingsLabelSchema>
 
 export const UserSettingsModelSchema = z.object({
-  labels: z.array(UserSettingsLabelSchema).default([])
+  labels: z.array(UserSettingsLabelSchema).default([]),
 })
 
 export type UserSettingsType = z.infer<typeof UserSettingsModelSchema>
@@ -56,13 +56,14 @@ export const UserModelSchema = UserRegistrationSchema.extend({
   goals: z.string().min(1).max(2000).default(" "),
   from: z.string().min(1).max(100).default(" "),
   lookingForWork: z.boolean().default(false),
-  emailVerified: z.boolean().default(false), // Move this to userSettings
+  emailVerified: z.boolean().default(false),
   socials: UserSocialsSchema.default({}),
   skills: z.array(SkillSchema).default([]),
   workexperience: z.array(UserWorkexperienceSchema).default([]),
   userSettings: UserSettingsModelSchema.default({}),
   hasCompletedOnboarding: z.boolean().default(false),
-  createdAt: z.date().default(new Date())
+  createdAt: z.date().default(new Date()),
+  role: z.enum(["Admin", "User"]).default("User"),
 })
 
 export type UserModelSchemaType = z.infer<typeof UserModelSchema>
